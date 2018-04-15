@@ -6,7 +6,6 @@ import java.util.List;
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.twilio.sdk.TwilioRestClient;
@@ -23,13 +22,13 @@ public class OtpService {
 	 public static final String AUTH_TOKEN = "5208fdc172efe515843a64cd7e805a69";
 	 public static final String TWILIO_NUMBER = "+13173421074";
 	 
-	 @RequestMapping("/first")
+	// @RequestMapping("/first")
 		@ResponseBody
-		public String f(){
+		//public String f(){
 	    	//sendSMS();
-			return "hello world";
+		//	return "hello world";
 			
-			}
+		//	}
 	 public void sendSMS() {
 	        try {
 	            TwilioRestClient client = new TwilioRestClient(ACCOUNT_SID, AUTH_TOKEN);

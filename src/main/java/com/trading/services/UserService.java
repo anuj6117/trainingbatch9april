@@ -13,9 +13,13 @@ public class UserService {
 private	UserRepo userrepo;
 	@Autowired
 	private OtpService otpservice;
-public String insertDetails(User user) {
+	
+@Autowired
+private EmailService emailservice;
+public String insertDetails(User user) throws Exception {
 	if(!(userrepo.save(user)== null)) {
 		otpservice.sendSMS();
+		emailservice.sendEmail();
 		return "Success";
 	}
 	else 

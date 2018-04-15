@@ -16,7 +16,7 @@ public class UserController {
 private	UserService userservice;
 	
 	@RequestMapping(value = "/signup", method = RequestMethod.POST)
-	public String signupdetails(@RequestBody User obj)
+	public String signupdetails(@RequestBody User obj) throws Exception
 	{
 		User user = new User();
 		
