@@ -6,18 +6,20 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.trading.domain.User;
-import com.trading.services.UserService;
+import com.trading.domain.Role;
+import com.trading.services.RoleService;
 
 @RestController
-public class UserController {
-
-	@Autowired
-private	UserService userservice;
+public class RoleController {
 	
-	@RequestMapping(value = "/signup", method = RequestMethod.POST)
-	public String signupdetails(@RequestBody User obj) throws Exception
-	{
-		return userservice.insertDetails(obj);
+	@Autowired
+	private	RoleService roleservice;
+		
+		@RequestMapping(value = "/role", method = RequestMethod.POST)
+		public String roledetails(@RequestBody Role role) throws Exception
+		{
+			return roleservice.insertDetails(role);
+		}
 	}
-}
+
+

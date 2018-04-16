@@ -5,8 +5,8 @@ import java.util.List;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.twilio.sdk.TwilioRestClient;
 import com.twilio.sdk.TwilioRestException;
@@ -22,21 +22,17 @@ public class OtpService {
 	 public static final String AUTH_TOKEN = "5208fdc172efe515843a64cd7e805a69";
 	 public static final String TWILIO_NUMBER = "+13173421074";
 	 
-	// @RequestMapping("/first")
-		@ResponseBody
-		//public String f(){
-	    	//sendSMS();
-		//	return "hello world";
-			
-		//	}
-	 public void sendSMS() {
+	
+		@Autowired
+		UserService userservice = new UserService();
+	 public void sendSMS(int otp) {
 	        try {
 	            TwilioRestClient client = new TwilioRestClient(ACCOUNT_SID, AUTH_TOKEN);
 	     
 	            // Build a filter for the MessageList
 	            List<NameValuePair> params = new ArrayList<NameValuePair>();
 	            //params.add(new BasicNameValuePair("Body", "Hello, World!"));
-	            params.add(new BasicNameValuePair("Body", "Your first message from Twilio!"));
+	            params.add(new BasicNameValuePair("Body", "Your otp is" +userservice.otp));
 	            params.add(new BasicNameValuePair("To", "+919999686339")); //Add real number here
 	            params.add(new BasicNameValuePair("From", TWILIO_NUMBER));
 	     
