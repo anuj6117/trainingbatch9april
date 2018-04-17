@@ -13,6 +13,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.validation.constraints.NotNull;
 
 import com.trading.Enum.StatusType;
 
@@ -22,6 +23,7 @@ public class User {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private long id;
+	@NotNull
 	private String fullName;
 	private String emailId;
 	private long mobile;
@@ -30,6 +32,8 @@ public class User {
 	private Date date;
 	@Enumerated
 	private StatusType status;
+	
+	
 	
 	@ManyToMany(fetch = FetchType.LAZY,
             cascade = {
@@ -46,7 +50,7 @@ public class User {
 		return role;
 	}
 	public void setRole(Set<Role> role) {
-		this.role = role;
+		this.role = role; 
 	}
 	public StatusType getStatus() {
 		return status;

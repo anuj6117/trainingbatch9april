@@ -12,22 +12,15 @@ public class EmailService {
 	 
 	@Autowired
 	private JavaMailSender sender;
-	 String home() {
-		         try {
-		             sendEmail();
-		             return "Email Sent!";
-		         }catch(Exception ex) {
-		             return "Error in sending email: "+ex;
-		         }
-		     }
+	 
 
 	
-	    public void sendEmail() throws Exception{
+	    public void sendEmail(int otp) throws Exception{
 	        MimeMessage message = sender.createMimeMessage();
 	        MimeMessageHelper helper = new MimeMessageHelper(message);
 	         
 	        helper.setTo("vanshikamadan97@gmail.com");
-	        helper.setText("How are you?");
+	        helper.setText("How are you?" +otp);
 	        helper.setSubject("Hi");
 	         	        sender.send(message);
 	    }
