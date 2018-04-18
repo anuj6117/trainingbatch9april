@@ -10,8 +10,12 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotNull;
 
 import com.example.demo.enums.StatusEnum;
+
+
 
 @Entity
 @Table(name="Trading")
@@ -20,21 +24,29 @@ public class User {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Integer id;
 	@Column(name="name")
-	private String fullName;
-	
+	@NotNull
+	private String userName;
+	@Email
+	@Column(name="Email", unique=true, nullable=false)
 	private String email;
-	private String mobile;
+	@Column(name="phoneNumber", unique=true, nullable=false)
+	private String phoneNumber;
+	@NotNull
 	private String country;
+	@NotNull
 	private String password;
+	@Enumerated(EnumType.STRING)
+	@Column(name="status")
+	private StatusEnum status;
 	private String date;
+	
+	
+	
 	public Integer getId() {
 		return id;
 	}
 	
-	public void setId(Integer id) {
-		this.id = id;
-	}
-	
+		
 	public String getDate() {
 		return date;
 	}
@@ -43,9 +55,7 @@ public class User {
 		this.date = date;
 	}
 	
-	@Enumerated(EnumType.STRING)
-	@Column(name="status")
-	private StatusEnum status;
+	
 	public StatusEnum getStatus() {
 		return status;
 	}
@@ -63,12 +73,12 @@ public class User {
 	}
 	
 	
-	public User(String fullName, String email, String mobile, String country, String password, String date,
+	public User(String userName, String email, String phoneNumber, String country, String password, String date,
 			StatusEnum status) {
 		super();
-		this.fullName = fullName;
+		this.userName = userName;
 		this.email = email;
-		this.mobile = mobile;
+		this.phoneNumber = phoneNumber;
 		this.country = country;
 		this.password = password;
 		this.date = new Date().toString();
@@ -76,13 +86,13 @@ public class User {
 	}
 	
 	
-	public String getFullName() {
-		return fullName;
+	public String getUserName() {
+		return userName;
 	}
 	
 	
-	public void setFullName(String fullName) {
-		this.fullName = fullName;
+	public void setUserName(String userName) {
+		this.userName = userName;
 	}
 	
 	
@@ -94,12 +104,12 @@ public class User {
 		this.email = email;
 	}
 	
-	public String getMobile() {
-		return mobile;
+	public String getPhoneNumber() {
+		return phoneNumber;
 	}
 	
-	public void setMobile(String mobile) {
-		this.mobile = mobile;
+	public void setPhoneNumber(String phoneNumber) {
+		this.phoneNumber = phoneNumber;
 	}
 	
 	public String getCountry() {
