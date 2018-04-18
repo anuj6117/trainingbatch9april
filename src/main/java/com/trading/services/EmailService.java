@@ -20,8 +20,8 @@ public class EmailService {
 	        MimeMessageHelper helper = new MimeMessageHelper(message);
 	         
 	        helper.setTo("vanshikamadan97@gmail.com");
-	        helper.setText("How are you?" +otp);
-	        helper.setSubject("Hi");
+	        helper.setText("Your account has been succesfully created. Please verify it using OTP  " +otp);
+	        helper.setSubject("Verification");
 	         	        sender.send(message);
 	    }
 	}

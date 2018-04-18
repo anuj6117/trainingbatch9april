@@ -1,9 +1,12 @@
 package com.trading.repository;
 
-import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.repository.CrudRepository;
 
 import com.trading.domain.User;
 
-public interface UserRepo extends JpaRepository<User,Long>{
+public interface UserRepo extends CrudRepository<User,Long>{
+
+	public User findByEmail(String email);
+	public User findByphoneNumber(long phoneNumber);
 
 }

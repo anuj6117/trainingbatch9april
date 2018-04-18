@@ -4,6 +4,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
@@ -13,7 +14,9 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 import com.trading.Enum.StatusType;
 
@@ -22,13 +25,29 @@ import com.trading.Enum.StatusType;
 public class User {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	private long id;
+	private long userId;
 	@NotNull
-	private String fullName;
-	private String emailId;
-	private long mobile;
-	private String country;
+	@Size(max=25)
+	private String userName;
+	@NotNull
+	@Email
+	@Column(unique = true)
+	private String email;
+	@NotNull
 	private String password;
+	@NotNull
+	private String confirmpassword;
+	public String getConfirmpassword() {
+		return confirmpassword;
+	}
+	public void setConfirmpassword(String confirmpassword) {
+		this.confirmpassword = confirmpassword;
+	}
+	@NotNull
+	private String country;
+	@NotNull
+	@Column(unique = true)
+	private long phoneNumber;
 	private Date date;
 	@Enumerated
 	private StatusType status;
@@ -64,48 +83,23 @@ public class User {
 	public void setDate(Date date) {
 		this.date = date;
 	}
-	public User() {
-		
+	public long getUserId() {
+		return userId;
 	}
-	public User(long id, String fullName, String emailId, long mobile, String country, String password, Date date) {
-		super();
-		this.id = id;
-		this.fullName = fullName;
-		this.emailId = emailId;
-		this.mobile = mobile;
-		this.country = country;
-		this.password = password;
-		this.date = date;
+	public void setUserId(long userId) {
+		this.userId = userId;
 	}
-	public long getId() {
-		return id;
+	public String getUserName() {
+		return userName;
 	}
-	public void setId(long id) {
-		this.id = id;
+	public void setUserName(String userName) {
+		this.userName = userName;
 	}
-	public String getFullName() {
-		return fullName;
+	public String getEmail() {
+		return email;
 	}
-	public void setFullName(String fullName) {
-		this.fullName = fullName;
-	}
-	public String getEmailId() {
-		return emailId;
-	}
-	public void setEmailId(String emailId) {
-		this.emailId = emailId;
-	}
-	public long getMobile() {
-		return mobile;
-	}
-	public void setMobile(long mobile) {
-		this.mobile = mobile;
-	}
-	public String getCountry() {
-		return country;
-	}
-	public void setCountry(String country) {
-		this.country = country;
+	public void setEmail(String email) {
+		this.email = email;
 	}
 	public String getPassword() {
 		return password;
@@ -113,6 +107,19 @@ public class User {
 	public void setPassword(String password) {
 		this.password = password;
 	}
+	public String getCountry() {
+		return country;
+	}
+	public void setCountry(String country) {
+		this.country = country;
+	}
+	public long getPhoneNumber() {
+		return phoneNumber;
+	}
+	public void setPhoneNumber(long phoneNumber) {
+		this.phoneNumber = phoneNumber;
+	}
+	
 	
 	
 

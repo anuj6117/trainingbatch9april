@@ -1,10 +1,12 @@
 package com.trading.services;
-import org.apache.tomcat.jni.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.trading.Enum.StatusType;
+import com.trading.domain.User;
 import com.trading.domain.UserOtp;
 import com.trading.repository.UserOtpRepo;
+import com.trading.repository.UserRepo;
 
 
 
@@ -12,17 +14,20 @@ import com.trading.repository.UserOtpRepo;
 public class UserOtpService {
 	@Autowired
 	private UserOtpRepo userotprepo;
-			
-		User user = new User();
+	@Autowired
+private UserRepo userrepo;
+	
 
 UserOtp userotpdb;
 	public String verifyDetails(UserOtp userotp) throws Exception {
 		userotpdb=userotprepo.findByTokenOTP(userotp.gettokenOTP());
+		User user = userrepo.findByEmail(userotp.getEmail());
 		if(userotpdb!=null){
-			if(userotpdb.getEmailid().equals(userotp.getEmailid())) {
+			if(userotpdb.getEmail().equals(userotp.getEmail())) {
                userotprepo.deleteAll();
-               
-               return "Success";
+               user.setStatus(StatusType.Active);
+       		userrepo.save(user);               
+       		return "Success";
 	
 		}
 		else

@@ -1,10 +1,10 @@
 package com.trading.services;
 
 import java.util.Date;
+import java.util.Optional;
 import java.util.Random;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -31,9 +31,10 @@ private	UserRepo userrepo;
 
 		
 
-	private final Logger  logger = LoggerFactory.getLogger(this.getClass());
+	//private final Logger  logger = LoggerFactory.getLogger(this.getClass());
 @Autowired
 private EmailService emailservice;
+
 
 @Autowired
 private UserOtpRepo userotprepo;
@@ -41,30 +42,85 @@ private UserOtpRepo userotprepo;
 
 private UserOtp userotp = new UserOtp();
 public String insertDetails(User user) throws Exception {
-	logger.info("------"+user.getCountry());
-	logger.info("jjjjjjjjjjjj"+otp);
+	if(user.getPassword()== "")
+	{
+		return "Please enter a valid password";
+	}
+	if(user.getUserName()==null)
+	{
+		return "User name cannot be null";
+	}
+	if(userrepo.findByEmail(user.getEmail()) != null) {
+		return "Oopss, this email is already registered";
+
+	}
+	if(userrepo.findByphoneNumber(user.getPhoneNumber())!= null)
+	{
+		return "Oopss, this number is already registered";
+	}
+	if(user.getPassword().equals(user.getConfirmpassword()))
+	{
+		
+		
+	
 	System.out.println(userrepo.save(user)!= null);
+	
 	if(userrepo.save(user)!= null) {
 		
-		user.setDate(new Date());
+	 user.setDate(new Date());
 		user.setStatus(StatusType.INACTIVE);
 		userrepo.save(user);
-		String emailid = user.getEmailId();
+		String email = user.getEmail();
 	 otpservice.sendSMS(otp);
-emailservice.sendEmail(otp);
-userotp.settokenOTP(otp);
-userotp.setEmailid(emailid);
-userotprepo.save(userotp);
- 
+	 emailservice.sendEmail(otp);
+	 userotp.settokenOTP(otp);
+	 userotp.setEmail(email);
+	 userotprepo.save(userotp);
+	 
+	
 		return "Success";
 	}
 	else 
 		{
 		return "Failure";
 		}
+	}
+	else {
+		return "Please re-enter your password";
+	}
+}
+public Iterable <User> getDetails(){
 	
+	return userrepo.findAll();
 }
 
+public Optional<User> getById(long userId)
 
+{ 
+	
+	return userrepo.findById(userId);
+}
 
+User us;
+public User updateDetails(User user) {
+if(userrepo.findById(user.getUserId())!= null)
+{
+	user.setUserName(user.getUserName());
+	user.setCountry(user.getCountry());
+	user.setDate(new Date());
+	user.setStatus(StatusType.Active);
+	user.setEmail(user.getEmail());
+	user.setPassword(user.getPassword());
+	user.setPhoneNumber(user.getPhoneNumber());
+	return userrepo.save(user);
+
+}
+
+return null;}
+
+public String deleteById(long userId)
+{
+	userrepo.deleteById(userId);
+	return "Deleted";
+}
 }
