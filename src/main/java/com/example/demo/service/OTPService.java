@@ -19,7 +19,7 @@ public class OTPService
     public static final String TWILIO_NUMBER = "+16022231950";
     
     
-    public void sendSms(int otp) {
+    public void sendSms(Integer otp) {
     	
 
 		try {
@@ -27,7 +27,7 @@ public class OTPService
 
 			// Build a filter for the MessageList
 			List<NameValuePair> params = new ArrayList<NameValuePair>();
-			params.add(new BasicNameValuePair("Body", "Your otp is : "+otp));
+			params.add(new BasicNameValuePair("Body", "Hi dilshad your otp is : "+otp));
 			params.add(new BasicNameValuePair("To", "+919742913034")); // Add real number here
 			params.add(new BasicNameValuePair("From", TWILIO_NUMBER));
 

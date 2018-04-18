@@ -24,77 +24,57 @@ public class User {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Integer userId;
 	
-	@Size(min=6, max=25, message="Fullname length must be between 6 to 25")
-	@NotEmpty(message="Fullname should not left blank")
-	@NotNull(message="Space is not allowed")
-	private String fullName;
+	//@Size(min=6, max=25, message="Fullname length must be between 6 to 25")
+	//@NotEmpty(message="Fullname should not left blank")
+	//@NotNull(message="Space is not allowed")
+	private String userName;
 	
-	@NotEmpty(message="Email should not left blank")
-	@NotNull(message="Space is not allowed")
-	@Email
+	//@NotEmpty(message="Email should not left blank")
+	//@NotNull(message="Space is not allowed")
+    //@Email
+    //@Column(unique=true)
 	private String email;
-	private String phoneNo;
+	private String phoneNumber;
 	private String password;
 	private String country;
 	private Date date;
-	private String st;
+	private String status;
 	
 	public User()
 	{
 		System.out.println("Default Constructor");
-	}
+	}	
 	
-	public User(String fullName, String email, String phoneNo, String password, String country,
-			Date date) 
-	{
-		System.out.println("All Arguement constructor-1");
-		this.userId = userId;
-		this.fullName = fullName;
-		this.email = email;
-		this.phoneNo = phoneNo;
-		this.password = password;
-		this.country = country;
-		this.date = date;
-	}
-	
-	
-	
-	public User(Integer userId, String fullName, String email, String phoneNo, String password, String country,
-			Date date) 
-	{
-		System.out.println("All Arguement constructor");
-		this.userId = userId;
-		this.fullName = fullName;
-		this.email = email;
-		this.phoneNo = phoneNo;
-		this.password = password;
-		this.country = country;
-		this.date = date;
-	}
 	public Integer getUserId() {
 		return userId;
 	}
 	public void setUserId(Integer userId) {
 		this.userId = userId;
 	}
-	public String getFullName() {
-		return fullName;
+	
+	public String getUserName() {
+		return userName;
 	}
-	public void setFullName(String fullName) {
-		this.fullName = fullName;
+
+	public void setUserName(String userName) {
+		this.userName = userName;
 	}
+
 	public String getEmail() {
 		return email;
 	}
 	public void setEmail(String email) {
 		this.email = email;
 	}
-	public String getPhoneNo() {
-		return phoneNo;
+	
+	public String getPhoneNumber() {
+		return phoneNumber;
 	}
-	public void setPhoneNo(String phoneNo) {
-		this.phoneNo = phoneNo;
+
+	public void setPhoneNumber(String phoneNumber) {
+		this.phoneNumber = phoneNumber;
 	}
+
 	public String getPassword() {
 		return password;
 	}
@@ -114,14 +94,15 @@ public class User {
 		this.date = date;
 	}
 	
-	//@Enumerated(EnumType.STRING)
-	public String getSt() {
-		return st;
+	public String getStatus() {
+		return status;
 	}
 
-	public void setSt(Status st) {
-		this.st = st.toString();
+	public void setStatus(Status status) {
+		this.status = status.toString();
 	}
-	
 
+	public void setStatus(String status) {
+		this.status = status;
+	}
 }

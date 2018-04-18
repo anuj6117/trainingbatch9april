@@ -4,7 +4,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.example.demo.model.VerifyOtp;
 
-public interface VerifyOtpRepository extends JpaRepository<VerifyOtp , Long>
+public interface VerifyOtpRepository extends JpaRepository<VerifyOtp , Integer>
 {
-	VerifyOtp findOneByUserNameAndTokenOtp(String userName, int tokenOtp);
+	public VerifyOtp findByEmailId(String email);
+	
 }

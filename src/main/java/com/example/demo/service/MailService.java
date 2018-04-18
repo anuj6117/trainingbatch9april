@@ -14,7 +14,7 @@ public class MailService
 	@Autowired
 	private JavaMailSender sender;
 	
-	public String sendMail(int otp, String email) {
+	public String sendMail(Integer otp, String email) {
         MimeMessage message = sender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message);
         try {
