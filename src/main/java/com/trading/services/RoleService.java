@@ -16,10 +16,13 @@ public class RoleService {
 	private final Logger  logger = LoggerFactory.getLogger(this.getClass());
 		
 	public String insertDetails(Role role) throws Exception {
-		if(!(rolerepo.save(role)== null)) {
-			logger.info("jssjds");
-			rolerepo.save(role);
+		if(rolerepo.findByRoleType(role.getRoleType())== null) {
 			
+			
+		
+		if(!(rolerepo.save(role)== null)) {
+			rolerepo.save(role);
+			logger.info("Success");
 			
 			return "Success";
 		}
@@ -27,8 +30,18 @@ public class RoleService {
 			{
 			return "Failure";
 			}
+		}
+		else
+		{
+			return "Role Type Already Exist";
+		}
 		
 	}
+	public Role updateDetails(Role role)
+	{
+		return rolerepo.save(role);
+	}
+
 
 	}
 

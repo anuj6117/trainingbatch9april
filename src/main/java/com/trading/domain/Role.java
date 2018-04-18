@@ -4,6 +4,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -16,9 +17,26 @@ import javax.validation.constraints.NotNull;
 public class Role {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	private long id;
+	private long userId;
 	@NotNull
-	private String type;
+	@Column(unique = true)
+	private String roleType;
+
+	public long getUserId() {
+		return userId;
+	}
+
+	public void setUserId(long userId) {
+		this.userId = userId;
+	}
+
+	public String getRoleType() {
+		return roleType;
+	}
+
+	public void setRoleType(String roleType) {
+		this.roleType = roleType;
+	}
 
 	@ManyToMany(fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST, CascadeType.MERGE }, mappedBy = "role")
 private Set<User> user = new HashSet<>();
@@ -31,20 +49,5 @@ private Set<User> user = new HashSet<>();
 		this.user = user;
 	}
 
-	public long getId() {
-		return id;
-	}
-
-	public void setId(long id) {
-		this.id = id;
-	}
-
-	public String getType() {
-		return type;
-	}
-
-	public void setType(String type) {
-		this.type = type;
-	}
-
+	
 }
