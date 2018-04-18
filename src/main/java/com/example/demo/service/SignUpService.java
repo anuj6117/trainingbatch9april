@@ -39,6 +39,10 @@ public class SignUpService
 	
 	public String addUser(User user)
 	{
+		//boolean b=userRepository.existUserByEmail(user.getEmail());
+		//if(b == false) 
+		//{
+		
 		Random randomNumber=new Random();
 		otp=randomNumber.nextInt(10000);
 		Date date=new Date();
@@ -65,6 +69,7 @@ public class SignUpService
 		{
 			return "Failure";
 		}
+			
 	}
 	
 	
@@ -85,6 +90,10 @@ public class SignUpService
 				{
 					System.out.println(t_otp+" otp is successfully verified"+t_otp);
 				}
+				
+				User user =userRepository.findByEmail(emailId);
+				System.out.println(userRepository.findByEmail(emailId));
+				user.setStatus(Status.ACTIVE);
 				verifyOtpRepository.delete(verifyOtp);	
 				System.out.println("otpVerification table deleted.");
 		}

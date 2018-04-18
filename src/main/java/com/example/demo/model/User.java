@@ -38,7 +38,8 @@ public class User {
 	private String password;
 	private String country;
 	private Date date;
-	private String status;
+	@Enumerated(EnumType.STRING)
+	private Status status;
 	
 	public User()
 	{
@@ -93,16 +94,12 @@ public class User {
 	public void setDate(Date date) {
 		this.date = date;
 	}
-	
-	public String getStatus() {
+
+	public Status getStatus() {
 		return status;
 	}
 
 	public void setStatus(Status status) {
-		this.status = status.toString();
-	}
-
-	public void setStatus(String status) {
 		this.status = status;
-	}
+	}	
 }

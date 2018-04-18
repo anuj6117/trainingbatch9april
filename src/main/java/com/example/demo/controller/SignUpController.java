@@ -20,7 +20,6 @@ public class SignUpController
 	@Autowired
 	private SignUpService signUpService;
 	
-	
 	@RequestMapping(value="/signup", method=RequestMethod.POST)
 	public String insertUser(@RequestBody User user)
 	{
@@ -85,6 +84,5 @@ public class SignUpController
 			return "success";
 		}
 		return "fail";	
-	}
-	
+	}	
 }
