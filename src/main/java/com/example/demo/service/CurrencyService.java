@@ -14,6 +14,7 @@ public class CurrencyService {
 	
 	@Autowired 
 	private CurrencyRepository currencyRepository;
+
 	private CurrencyModel currencyModel;
 
 	public CurrencyModel addCurrency(CurrencyModel currency) {
@@ -29,13 +30,14 @@ public class CurrencyService {
 
 	public CurrencyModel updateCurrency(CurrencyModel currency) {
 		
-		if((currencyModel=currencyRepository.findOneByCoinId(currency.getCoinId()))!=null) {
+		if((currencyModel=currencyRepository.findOneByCoinId(currency.getCoinId()))!=null){
 			currencyModel.setCoinName(currency.getCoinName());
 			currencyModel.setSymbol(currency.getSymbol());
 			currencyModel.setPrice(currency.getPrice());
 			currencyModel.setInitialSupply(currency.getInitialSupply());
 			return currencyRepository.save(currency);
 		}
+
 		else 
 			return null;
 	}
@@ -45,8 +47,10 @@ public class CurrencyService {
 			currencyRepository.deleteById(id);
 			return true;
 		}
+
 		else		
-		return false;
+			return false;
+
 	}
 
 }

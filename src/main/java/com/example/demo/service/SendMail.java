@@ -10,10 +10,8 @@ import org.springframework.stereotype.Service;
 @Service
 public class SendMail  {
 
-
 	@Autowired
 	private  JavaMailSender sender;
-
 	
 	public String sendEmail(String msg, String email) throws Exception{		
 		MimeMessage message = sender.createMimeMessage();

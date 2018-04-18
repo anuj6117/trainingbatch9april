@@ -20,26 +20,33 @@ import com.example.demo.enums.StatusEnum;
 @Entity
 @Table(name="Trading")
 public class User {
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Integer id;
+
 	@Column(name="name")
 	@NotNull
 	private String userName;
+
 	@Email
 	@Column(name="Email", unique=true, nullable=false)
 	private String email;
+
 	@Column(name="phoneNumber", unique=true, nullable=false)
 	private String phoneNumber;
+
 	@NotNull
 	private String country;
+
 	@NotNull
 	private String password;
+
 	@Enumerated(EnumType.STRING)
 	@Column(name="status")
 	private StatusEnum status;
-	private String date;
-	
+
+	private String date;	
 	
 	
 	public Integer getId() {
@@ -53,8 +60,7 @@ public class User {
 	
 	public void setDate(String date) {
 		this.date = date;
-	}
-	
+	}	
 	
 	public StatusEnum getStatus() {
 		return status;
@@ -65,8 +71,7 @@ public class User {
 	}
 	
 	public User() {}
-	
-	
+		
 	public User(StatusEnum status , String date) {
 		this.status=status;
 		this.date=date;
@@ -83,18 +88,15 @@ public class User {
 		this.password = password;
 		this.date = new Date().toString();
 		this.status = status;
-	}
-	
+	}	
 	
 	public String getUserName() {
 		return userName;
-	}
-	
+	}	
 	
 	public void setUserName(String userName) {
 		this.userName = userName;
-	}
-	
+	}	
 	
 	public String getEmail() {
 		return email;

@@ -17,34 +17,41 @@ import com.example.demo.utility.OtpGenerator;
 public class UserService {
 	@Autowired
 	private UserRepository userRepository;
+
 	@Autowired
 	private SendOtpMobile sendOtpMobile;
+
 	@Autowired
 	private SendMail send;
 	
 	private UserOtp userOtp;
-	//private StatusEnum status;
+	
 	@Autowired
 	private UserOtpRepository userOtpRepository;
+
 	private User user;
-	
 		
 	
 	public String insertData(User user) {
 		this.user=user;
 		if((userRepository.findByEmail(user.getEmail()))!=null)
 			return "user already exist";
-		else
-			{
+
+		else{
 			String otp = new String(OtpGenerator.generateOtp(4));
 			try {
 					send.sendEmail(otp,user.getEmail());
 				}
-			catch(Exception e) {System.out.println("mail not sent\t"+e);}
+			catch(Exception e) {
+				System.out.println("mail not sent\t"+e);
+			}
+
 			try {
 					sendOtpMobile.sendSMS(otp,user.getPhoneNumber());
 			}
-			catch(Exception e) {System.out.println("sms not sent\t"+e);}
+			catch(Exception e) {
+				System.out.println("sms not sent\t"+e);
+			}
 			
 			if((userRepository.save(user))!=null){
 				if(userOtpRepository.save(new UserOtp(user.getEmail(),otp,user.getStatus().toString()))!=null)
@@ -113,4 +120,5 @@ public class UserService {
 		else
 			return "User not Exist";
 	}
+
 }

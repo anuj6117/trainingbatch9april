@@ -16,15 +16,19 @@ public class RoleService {
 	
 	@Autowired
 	private RoleRepository roleRepository;
+
 	@Autowired
 	private UserRepository userRepository;
+
 	private Set<User> user;
 
 	public Role createRole(Role role) {
 		if(roleRepository.findOneByRoleType(role.getRoleType())==null)
 			return roleRepository.save(role);
+
 		else
 			return null;
+
 	}
 
 	public Object assignRole(Role role) {

@@ -18,10 +18,11 @@ import com.example.demo.service.UserService;
 @RestController
 @RequestMapping("/trading")
 public class UserController {
-	User user;
-//	private User u = new User(StatusEnum.INACTIVE,new Date().toString());
+	private User user;
+
 	@Autowired
 	private UserService userService;
+
 	@RequestMapping(value=("/signup") ,method = RequestMethod.POST)
 	public String signUp(@RequestBody User user) {
 	
