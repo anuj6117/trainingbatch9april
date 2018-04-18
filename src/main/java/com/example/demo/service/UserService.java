@@ -1,4 +1,5 @@
 package com.example.demo.service;
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -98,8 +99,15 @@ public class UserService {
 	}
 
 	public String updateUser(User user) {
-		if(userRepository.findById(user.getId())!=null) {
-			userRepository.save(user);
+		User duser=null;
+		if((duser=userRepository.findOneById(user.getId()))!=null) {
+			duser.setCountry(user.getCountry());
+			duser.setDate(new Date().toString());
+			duser.setEmail(user.getEmail());
+			duser.setPassword(user.getPassword());
+			duser.setPhoneNumber(user.getPhoneNumber());
+			duser.setUserName(user.getUserName());
+			userRepository.save(duser);
 			return "User Updated Successfully";
 		}
 		else
