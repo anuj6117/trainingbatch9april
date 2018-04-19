@@ -6,22 +6,18 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.trading.domain.Role;
-import com.trading.services.RoleService;
+import com.trading.domain.Wallet;
+import com.trading.services.WalletService;
 
 @RestController
-public class RoleController {
+public class WalletController {
+
 	
 	@Autowired
-	private	RoleService roleservice;
-		
-		@RequestMapping(value = "/createrole", method = RequestMethod.POST)
-		public String roledetails(@RequestBody Role role) throws Exception
-		{
-			return roleservice.insertDetails(role);
-		}
-	
-		
+private	WalletService walletservice;
+	@RequestMapping(value = "/addwallet", method = RequestMethod.POST)
+	public String addWallet(@RequestBody Wallet wallet)
+	{
+		return walletservice.insertWallet(wallet);
+	}
 }
-
-

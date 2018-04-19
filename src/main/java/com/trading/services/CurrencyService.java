@@ -12,43 +12,47 @@ public class CurrencyService {
 	
 	
 @Autowired
-private CurrencyRepo currencyrepo;
+private CurrencyRepo coinmanagementrepo;
 
 
 
-public String insertDetails(Currency currency)
+public String insertDetails(Currency coinmanagement)
 {
+	if(coinmanagement.getCoinName()==null)
+	{
+		return "Coin Name Cant be Null";
+	}
 	
-	if(currencyrepo.findBycoinName(currency.getCoinName())==null) {
+	if(coinmanagementrepo.findBycoinName(coinmanagement.getCoinName())==null) {
 		
 	
-	if(currencyrepo.save(currency)!= null) {
-		return "Succesfully added new currency";
+	if(coinmanagementrepo.save(coinmanagement)!= null) {
+		return "Your coin has been added";
 		
 	}
 	else {
-		return "Failed to add currency";
+		return "Failed to add coinmanagement";
 	}}
 	else {
-		return "Currency Type Already Exists";
+		return "coinmanagement Type Already Exists";
 	}
 }
 
 public Iterable <Currency> getDetails(){
 	
-	return currencyrepo.findAll();
+	return coinmanagementrepo.findAll();
 }
 
 
-public Currency updateDetails(Currency currency)
+public Currency updateDetails(Currency coinmanagement)
 {
 	
-	return currencyrepo.save(currency);
+	return coinmanagementrepo.save(coinmanagement);
 }
 
 public String deleteById(long coinId)
 {
-	currencyrepo.deleteById(coinId);
+	coinmanagementrepo.deleteById(coinId);
 	return "Deleted";
 }
 }

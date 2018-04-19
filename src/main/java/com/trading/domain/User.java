@@ -1,11 +1,12 @@
 package com.trading.domain;
+import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -14,6 +15,8 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
+import javax.validation.constraints.Digits;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -27,10 +30,10 @@ public class User {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private long userId;
 	@NotNull
-	@Size(max=25)
+	@Size(max=25, message = "Name can have maximum 25 characters")
 	private String userName;
 	@NotNull
-	@Email
+	@Email(message = "Incorrect Format")
 	@Column(unique = true)
 	private String email;
 	@NotNull
@@ -47,9 +50,11 @@ public class User {
 	private String country;
 	@NotNull
 	@Column(unique = true)
+	@Digits(fraction = 0, integer = 10)
+	
 	private long phoneNumber;
 	private Date date;
-	@Enumerated
+	@Enumerated(EnumType.STRING)
 	private StatusType status;
 	
 	
@@ -60,17 +65,23 @@ public class User {
                 CascadeType.MERGE
             })
 	 @JoinTable(name = "user_role",
-     joinColumns = { @JoinColumn(name = "user_id") },
-     inverseJoinColumns = { @JoinColumn(name = "role_id") })
-    private Set<Role> role = new HashSet<>();
+     joinColumns = { @JoinColumn(name = "user_Id", referencedColumnName="userId") },
+     inverseJoinColumns = { @JoinColumn(name = "role_Id", referencedColumnName="roleId")})
+    private List<Role> role = new ArrayList<>();
+	@OneToMany(cascade = CascadeType.ALL,
+            fetch = FetchType.LAZY,
+            mappedBy = "user")
+    private List<Wallet> wallet = new ArrayList<>();
 	
-	
-	public Set<Role> getRole() {
+	public List<Role> getRole() {
 		return role;
 	}
-	public void setRole(Set<Role> role) {
+	public void setRole(List<Role> role) {
 		this.role = role; 
-	}
+		}
+	
+	
+
 	public StatusType getStatus() {
 		return status;
 	}

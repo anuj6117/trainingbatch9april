@@ -33,8 +33,8 @@ public class CurrencyController {
 		
 		
 		@RequestMapping(value = "/updatecurrency", method = RequestMethod.POST)
-		public Currency updateCurrency(@RequestBody Currency obj) {
-			return currencyservice.updateDetails(obj);
+		public Currency updateCurrency(@RequestBody Currency Currency) {
+			return currencyservice.updateDetails(currency);
 		}
 		
 		@RequestMapping(value = "/deletecurrency", method = RequestMethod.GET)

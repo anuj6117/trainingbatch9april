@@ -11,13 +11,14 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.trading.domain.User;
 import com.trading.domain.UserOtp;
+import com.trading.dto.UserRoleDto;
 import com.trading.services.UserOtpService;
 import com.trading.services.UserService;
 
 @RestController
 public class UserController {
 
-	@Autowired
+	@Autowired 
 private	UserService userservice;
 	
 	@Autowired
@@ -59,4 +60,12 @@ private	UserService userservice;
 	{
 		return userservice.deleteById(userId);
 	}
+	
+@RequestMapping(value = "/assignrole", method = RequestMethod.POST)
+	
+		public String assignRole(UserRoleDto userroledto)
+		{
+			return userservice.assignNewRole(userroledto);
+		} 
+	
 }

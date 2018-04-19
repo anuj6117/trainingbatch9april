@@ -4,13 +4,15 @@ import java.util.Date;
 import java.util.Optional;
 import java.util.Random;
 
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.trading.Enum.StatusType;
+import com.trading.domain.Role;
 import com.trading.domain.User;
 import com.trading.domain.UserOtp;
+import com.trading.dto.UserRoleDto;
+import com.trading.repository.RoleRepo;
 import com.trading.repository.UserOtpRepo;
 import com.trading.repository.UserRepo;
 
@@ -19,6 +21,8 @@ public class UserService {
 	
 	@Autowired
 private	UserRepo userrepo;
+	@Autowired
+private RoleRepo rolerepo;
 	@Autowired
 	private OtpService otpservice;
 	
@@ -61,8 +65,6 @@ public String insertDetails(User user) throws Exception {
 	if(user.getPassword().equals(user.getConfirmpassword()))
 	{
 		
-		
-	
 	System.out.println(userrepo.save(user)!= null);
 	
 	if(userrepo.save(user)!= null) {
@@ -77,6 +79,7 @@ public String insertDetails(User user) throws Exception {
 	 userotp.setEmail(email);
 	 userotprepo.save(userotp);
 	 
+	 
 	
 		return "Success";
 	}
@@ -85,7 +88,8 @@ public String insertDetails(User user) throws Exception {
 		return "Failure";
 		}
 	}
-	else {
+	else 
+	{
 		return "Please re-enter your password";
 	}
 }
@@ -103,16 +107,19 @@ public Optional<User> getById(long userId)
 
 User us;
 public User updateDetails(User user) {
-if(userrepo.findById(user.getUserId())!= null)
+	User userdb = null;
+	userdb = userrepo.findOneByUserId(user.getUserId());
+	System.out.println(userdb);
+if(userdb!= null)
 {
-	user.setUserName(user.getUserName());
-	user.setCountry(user.getCountry());
-	user.setDate(new Date());
-	user.setStatus(StatusType.Active);
-	user.setEmail(user.getEmail());
-	user.setPassword(user.getPassword());
-	user.setPhoneNumber(user.getPhoneNumber());
-	return userrepo.save(user);
+	userdb.setUserName(user.getUserName());
+	userdb.setCountry(user.getCountry());
+	//userdb.setDate(new Date());
+	//userdb.setStatus(StatusType.Active);
+	userdb.setEmail(user.getEmail());
+	userdb.setPassword(user.getPassword());
+	userdb.setPhoneNumber(user.getPhoneNumber());
+	 return userrepo.save(userdb);
 
 }
 
@@ -122,5 +129,26 @@ public String deleteById(long userId)
 {
 	userrepo.deleteById(userId);
 	return "Deleted";
+}
+
+public String assignNewRole(UserRoleDto userroledto)
+{
+	
+	System.out.println(userroledto.getUserid()+"hi how r u  "+ userroledto.getRoleType());
+	User userdb = null;
+	userdb = userrepo.findByUserId(userroledto.getUserid());
+	System.out.println("hi vanshika" +userdb);
+	Role role = rolerepo.findByRoleType(userroledto.getRoleType());
+	System.out.println("........................." +role);
+	userdb.getRole().add(role);
+	
+	
+	
+	
+	
+	
+	
+	userrepo.save(userdb);
+return "success";
 }
 }

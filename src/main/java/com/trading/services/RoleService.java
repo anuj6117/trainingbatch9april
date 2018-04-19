@@ -24,11 +24,11 @@ public class RoleService {
 			rolerepo.save(role);
 			logger.info("Success");
 			
-			return "Success";
+			return "New role has been created";
 		}
 		else 
 			{
-			return "Failure";
+			return "Not able to add new role";
 			}
 		}
 		else
@@ -37,10 +37,7 @@ public class RoleService {
 		}
 		
 	}
-	public Role updateDetails(Role role)
-	{
-		return rolerepo.save(role);
-	}
+	
 
 
 	}

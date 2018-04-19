@@ -1,7 +1,7 @@
 package com.trading.domain;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -13,21 +13,25 @@ import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.validation.constraints.NotNull;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 public class Role {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	private long userId;
+	private long roleId;
 	@NotNull
 	@Column(unique = true)
 	private String roleType;
 
-	public long getUserId() {
-		return userId;
+	
+
+	public long getRoleId() {
+		return roleId;
 	}
 
-	public void setUserId(long userId) {
-		this.userId = userId;
+	public void setRoleId(long roleId) {
+		this.roleId = roleId;
 	}
 
 	public String getRoleType() {
@@ -39,13 +43,14 @@ public class Role {
 	}
 
 	@ManyToMany(fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST, CascadeType.MERGE }, mappedBy = "role")
-private Set<User> user = new HashSet<>();
+private List<User> user = new ArrayList<>();
 
-	public Set<User> getUser() {
+	@JsonIgnore
+	public List<User> getUser() {
 		return user;
 	}
 
-	public void setUser(Set<User> user) {
+	public void setUser(List<User> user) {
 		this.user = user;
 	}
 

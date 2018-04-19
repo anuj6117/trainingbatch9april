@@ -1,37 +1,58 @@
 package com.trading.domain;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.validation.constraints.NotNull;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+
+import com.trading.Enum.WalletType;
 
 @Entity
 public class Wallet {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	private long userId;
-	@NotNull
-	@Column(unique = true)
-	private String walletType;
-    private long amount;
-	public long getUserId() {
-		return userId;
+	private long walletId;
+	@Enumerated(EnumType.STRING)
+	private WalletType walletType;
+	long balance;
+	long shadowBalance;
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", referencedColumnName="userId")
+    private User user;
+	
+	
+	public long getWalletId() {
+		return walletId;
 	}
-	public void setUserId(long userId) {
-		this.userId = userId;
+	public void setWalletId(long walletId) {
+		this.walletId = walletId;
 	}
-	public String getWalletType() {
+	public WalletType getWalletType() {
 		return walletType;
 	}
-	public void setWalletType(String walletType) {
+	public void setWalletType(WalletType walletType) {
 		this.walletType = walletType;
 	}
-	public long getAmount() {
-		return amount;
+	public long getBalance() {
+		return balance;
 	}
-	public void setAmount(long amount) {
-		this.amount = amount;
+	public void setBalance(long balance) {
+		this.balance = balance;
 	}
-}
+	public long getShadowBalance() {
+		return shadowBalance;
+	}
+	public void setShadowBalance(long shadowBalance) {
+		this.shadowBalance = shadowBalance;
+	}
+	
+	}
+	
+	
+	
