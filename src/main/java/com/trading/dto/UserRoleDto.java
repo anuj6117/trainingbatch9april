@@ -3,12 +3,12 @@ package com.trading.dto;
 
 	
 	public class UserRoleDto {
-		private Long userId;
+		private long userId;
 		private String roleType;
-		public Long getUserid() {
+		public long getuserId() {
 			return userId;
 		}
-		public void setUserid(Long userId) {
+		public void setuserId(long userId) {
 			this.userId = userId;
 		}
 		public String getRoleType() {

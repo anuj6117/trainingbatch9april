@@ -63,9 +63,8 @@ private	UserService userservice;
 	
 @RequestMapping(value = "/assignrole", method = RequestMethod.POST)
 	
-		public String assignRole(UserRoleDto userroledto)
-		{
-			return userservice.assignNewRole(userroledto);
+		public String assignRole(@RequestBody UserRoleDto userroledto)
+		{		return userservice.assignNewRole(userroledto);
 		} 
 	
 }

@@ -105,17 +105,14 @@ public Optional<User> getById(long userId)
 	return userrepo.findById(userId);
 }
 
-User us;
 public User updateDetails(User user) {
 	User userdb = null;
-	userdb = userrepo.findOneByUserId(user.getUserId());
-	System.out.println(userdb);
+	userdb = userrepo.findOneByUserId(user.getuserId());
+	System.out.println("hi how r u vanshika madan" + userdb);
 if(userdb!= null)
 {
 	userdb.setUserName(user.getUserName());
 	userdb.setCountry(user.getCountry());
-	//userdb.setDate(new Date());
-	//userdb.setStatus(StatusType.Active);
 	userdb.setEmail(user.getEmail());
 	userdb.setPassword(user.getPassword());
 	userdb.setPhoneNumber(user.getPhoneNumber());
@@ -134,21 +131,12 @@ public String deleteById(long userId)
 public String assignNewRole(UserRoleDto userroledto)
 {
 	
-	System.out.println(userroledto.getUserid()+"hi how r u  "+ userroledto.getRoleType());
 	User userdb = null;
-	userdb = userrepo.findByUserId(userroledto.getUserid());
-	System.out.println("hi vanshika" +userdb);
+	userdb = userrepo.findOneByUserId(userroledto.getuserId());
 	Role role = rolerepo.findByRoleType(userroledto.getRoleType());
-	System.out.println("........................." +role);
 	userdb.getRole().add(role);
-	
-	
-	
-	
-	
-	
-	
 	userrepo.save(userdb);
 return "success";
-}
+} 
+
 }

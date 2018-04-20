@@ -94,10 +94,10 @@ public class User {
 	public void setDate(Date date) {
 		this.date = date;
 	}
-	public long getUserId() {
+	public long getuserId() {
 		return userId;
 	}
-	public void setUserId(long userId) {
+	public void setuserId(long userId) {
 		this.userId = userId;
 	}
 	public String getUserName() {
