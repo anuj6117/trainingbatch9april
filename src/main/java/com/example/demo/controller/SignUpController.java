@@ -26,11 +26,11 @@ public class SignUpController
 		String u=signUpService.addUser(user);
 		if(u != null)
 		{
-			return "success";
+			return u;
 		}
 		else
 		{
-			return "failure";
+			return "Null user details not accepted";
 		}
 	}
 	
@@ -50,7 +50,7 @@ public class SignUpController
 		}
 	}
 	
-	@RequestMapping(value="/getAllUsers", method=RequestMethod.GET)
+	@RequestMapping(value="/getallusers", method=RequestMethod.GET)
 	public List<User> getAllUsers()
 	{
 		List<User> list=signUpService.getAllUsers();
@@ -58,7 +58,7 @@ public class SignUpController
 	}
 	
 	
-	@RequestMapping(value = "/getbyuserid", method = RequestMethod.GET)
+	@RequestMapping(value = "/getuserbyid", method = RequestMethod.GET)
 	public Optional<User> getUserById(@RequestParam("userId") Integer id) {
 		Optional<User> obj = null;
 		try {
@@ -69,7 +69,7 @@ public class SignUpController
 		return obj;
 	}
 	
-	@RequestMapping(value="/updateUserById", method=RequestMethod.POST)
+	@RequestMapping(value="/updateuserbyid", method=RequestMethod.POST)
 	public User updateUserById(@RequestBody User user)
 	{
 		return signUpService.update(user);

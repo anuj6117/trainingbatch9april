@@ -29,6 +29,29 @@ public class CoinManagementService {
 	public List<CoinManagement> getCurrencies() {
 		return coinManagementRepository.findAll();
 	}
+
+	public String update(CoinManagement data) {
+		CoinManagement coinManagementData=null;
+		
+		coinManagementData=coinManagementRepository.findOneByCoinId(data.getCoinId());
+		coinManagementData.setCoinName(data.getCoinName());
+		//coinManagementData.setSymbol(data.getSymbol());
+		coinManagementData.setInitialSupply(data.getInitialSupply());
+		coinManagementData.setPrice(data.getPrice());
+		
+		
+		coinManagementData=coinManagementRepository.save(coinManagementData);
+		if(coinManagementData != null)
+		{
+			return "coin updated";
+		}
+		return "Coin not updated";
+	}
+
+	public void delete(Integer id) {
+		
+		 coinManagementRepository.deleteById(id.longValue());
+	}
 	
 	
 

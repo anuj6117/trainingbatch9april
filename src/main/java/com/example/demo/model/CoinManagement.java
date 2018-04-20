@@ -10,7 +10,7 @@ public class CoinManagement {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	private long coinId;
+	private Long coinId;
 	private String coinName;
 	private String symbol;
 	private Double initialSupply;

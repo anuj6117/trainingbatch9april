@@ -38,41 +38,38 @@ public class SignUpService
 	private Integer otp;
 	
 	public String addUser(User user)
-	{
-		//boolean b=userRepository.existUserByEmail(user.getEmail());
-		//if(b == false) 
-		//{
-		
-		Random randomNumber=new Random();
-		otp=randomNumber.nextInt(10000);
-		Date date=new Date();
-		user.setDate(date);
-		user.setStatus(Status.INACTIVE);
-		//user.setOtp(otp);userRepository
-		
-		if( (userRepository.save(user)!= null))
+	{		
+		if((userRepository.findByEmail(user.getEmail()) == null ))
 		{
-			otpService.sendSms(otp);
-			mailService.sendMail(otp,user.getEmail());
+			Random randomNumber=new Random();
+			otp=randomNumber.nextInt(10000);
+			Date date=new Date();
+			user.setDate(date);
+			user.setStatus(Status.INACTIVE);
+			if((userRepository.save(user) != null))
+			{
+				otpService.sendSms(otp);
+				mailService.sendMail(otp,user.getEmail());
+				verifyOtp.setId(user.getUserId());
+				verifyOtp.setTokenOtp(otp);
+				verifyOtp.setEmailId(user.getEmail());
+				verifyOtp.getEmailId();
+				verifyOtp.setDate(date);
 			
-			verifyOtp.setId(user.getUserId());
-			verifyOtp.setTokenOtp(otp);
-			verifyOtp.setEmailId(user.getEmail());
-			verifyOtp.getEmailId();
-			verifyOtp.setDate(date);
+				verifyOtpRepository.save(verifyOtp);
 			
-			verifyOtpRepository.save(verifyOtp);
-			
-			return "Successfully sent";
+				return "Successfully sent";
+			}
+			else
+			{
+				return "Failure";
+			}
 		}
 		else
 		{
-			return "Failure";
+			return "Already existing user";
 		}
-			
 	}
-	
-	
 	
 	public void verifyUserWithOtp(String emailId,Integer otp)
 	{
@@ -103,31 +100,6 @@ public class SignUpService
 		}
 	}	
 		
-		
-		/*String v_email=verifyOtp.getEmailId();
-		int  v_otp=Integer.parseInt(verifyOtp.getTokenOtp());
-		System.out.println(v_email);
-		System.out.println(v_otp);
-		
-		VerifyOtp v = verifyOtpRepository.findByEmailId(emailId);
-		String email = v.getEmailId();
-		int otp1 = Integer.parseInt(v.getTokenOtp());
-		System.out.println(email+"\t"+otp1);
-		System.out.println(v+"++++++++++++++++++++++"+v.getEmailId());
-		System.out.println(v.getEmailId().equals(emailId)+"\t"+(v.getTokenOtp().equals(otp)));
-		if(emailId.equals(email)&&otp1==v_otp)
-		{
-			User user123 = userRepository.findByEmail(emailId);
-			user123.setStatus(Status.ACTIVE.toString());
-			verifyOtpRepository.deleteById(v.getId());
-				return "user otp verified";			
-		}
-		else
-		{
-			return "Email and Otp verification is failed.";
-		}*/
-		
-	
 	public Optional<User> getuserById(Integer id) {
 		
 		Optional<User> usrid = userRepository.findById(id);
@@ -145,10 +117,16 @@ public class SignUpService
 	
 	public User update(User user){
 		
-		return userRepository.save(user);
+		User userdb =null;
+		userdb=userRepository.findOneByUserId(user.getUserId());
+		userdb.setUserName(user.getUserName());
+		//userdb.setEmail(user.getEmail());
+		//userdb.setPhoneNumber(user.getPhoneNumber());
+		userdb.setCountry(user.getCountry());
+		//userdb.setPassword(user.getPassword());
+		
+		return userRepository.save(userdb);
 	}
-
-
 
 	public void delete(Integer id) {
 		
