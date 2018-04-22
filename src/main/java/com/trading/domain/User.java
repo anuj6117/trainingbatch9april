@@ -21,10 +21,12 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.trading.Enum.StatusType;
 
-
 @Entity
+
 public class User {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
@@ -53,6 +55,8 @@ public class User {
 	@Digits(fraction = 0, integer = 10)
 	
 	private long phoneNumber;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+
 	private Date date;
 	@Enumerated(EnumType.STRING)
 	private StatusType status;
@@ -68,11 +72,10 @@ public class User {
      joinColumns = { @JoinColumn(name = "user_Id", referencedColumnName="userId") },
      inverseJoinColumns = { @JoinColumn(name = "role_Id", referencedColumnName="roleId")})
     private List<Role> role = new ArrayList<>();
-	@OneToMany(cascade = CascadeType.ALL,
-            fetch = FetchType.LAZY,
-            mappedBy = "user")
-    private List<Wallet> wallet = new ArrayList<>();
 	
+	@JsonIgnore
+	@OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+		private List<Wallet> wallet = new ArrayList<>();
 	public List<Role> getRole() {
 		return role;
 	}
@@ -81,7 +84,18 @@ public class User {
 		}
 	
 	
-
+	public long getUserId() {
+		return userId;
+	}
+	public void setUserId(long userId) {
+		this.userId = userId;
+	}
+	public List<Wallet> getWallet() {
+		return wallet;
+	}
+	public void setWallet(List<Wallet> wallet) {
+		this.wallet = wallet;
+	}
 	public StatusType getStatus() {
 		return status;
 	}
@@ -94,12 +108,7 @@ public class User {
 	public void setDate(Date date) {
 		this.date = date;
 	}
-	public long getuserId() {
-		return userId;
-	}
-	public void setuserId(long userId) {
-		this.userId = userId;
-	}
+	
 	public String getUserName() {
 		return userName;
 	}

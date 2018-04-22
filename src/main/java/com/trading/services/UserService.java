@@ -8,21 +8,23 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.trading.Enum.StatusType;
+import com.trading.Enum.WalletType;
 import com.trading.domain.Role;
 import com.trading.domain.User;
 import com.trading.domain.UserOtp;
+import com.trading.domain.Wallet;
 import com.trading.dto.UserRoleDto;
-import com.trading.repository.RoleRepo;
-import com.trading.repository.UserOtpRepo;
-import com.trading.repository.UserRepo;
+import com.trading.repository.RoleRepository;
+import com.trading.repository.UserOtpRepository;
+import com.trading.repository.UserRepository;
 
 @Service
 public class UserService {
 	
 	@Autowired
-private	UserRepo userrepo;
+private	UserRepository userrepository;
 	@Autowired
-private RoleRepo rolerepo;
+private RoleRepository rolerepository;
 	@Autowired
 	private OtpService otpservice;
 	
@@ -41,7 +43,7 @@ private EmailService emailservice;
 
 
 @Autowired
-private UserOtpRepo userotprepo;
+private UserOtpRepository userotprepository;
 //logger.info("jjjjjjjjjjjj"+otp);
 
 private UserOtp userotp = new UserOtp();
@@ -54,32 +56,36 @@ public String insertDetails(User user) throws Exception {
 	{
 		return "User name cannot be null";
 	}
-	if(userrepo.findByEmail(user.getEmail()) != null) {
+	if(userrepository.findByEmail(user.getEmail()) != null) {
 		return "Oopss, this email is already registered";
 
 	}
-	if(userrepo.findByphoneNumber(user.getPhoneNumber())!= null)
+	if(userrepository.findByphoneNumber(user.getPhoneNumber())!= null)
 	{
 		return "Oopss, this number is already registered";
 	}
 	if(user.getPassword().equals(user.getConfirmpassword()))
 	{
 		
-	System.out.println(userrepo.save(user)!= null);
+	System.out.println(userrepository.save(user)!= null);
 	
-	if(userrepo.save(user)!= null) {
+	if(userrepository.save(user)!= null) {
 		
 	 user.setDate(new Date());
-		user.setStatus(StatusType.INACTIVE);
-		userrepo.save(user);
-		String email = user.getEmail();
-	 otpservice.sendSMS(otp);
-	 emailservice.sendEmail(otp);
-	 userotp.settokenOTP(otp);
-	 userotp.setEmail(email);
-	 userotprepo.save(userotp);
-	 
-	 
+	user.setStatus(StatusType.INACTIVE);
+	//userrepository.save(user);
+	//String email = user.getEmail();
+	// otpservice.sendSMS(otp);
+	// emailservice.sendEmail(otp);
+	 //userotp.settokenOTP(otp);
+	 //userotp.setEmail(email);
+	 //userotprepository.save(userotp);
+	Wallet wallet = new Wallet();
+	wallet.setwalletType(WalletType.FIATE);
+	wallet.setuser(user);
+	user.getWallet().add(wallet);
+	userrepository.save(user);
+
 	
 		return "Success";
 	}
@@ -95,19 +101,19 @@ public String insertDetails(User user) throws Exception {
 }
 public Iterable <User> getDetails(){
 	
-	return userrepo.findAll();
+	return userrepository.findAll();
 }
 
 public Optional<User> getById(long userId)
 
 { 
 	
-	return userrepo.findById(userId);
+	return userrepository.findById(userId);
 }
 
 public User updateDetails(User user) {
 	User userdb = null;
-	userdb = userrepo.findOneByUserId(user.getuserId());
+	userdb = userrepository.findOneByUserId(user.getUserId());
 	System.out.println("hi how r u vanshika madan" + userdb);
 if(userdb!= null)
 {
@@ -116,7 +122,7 @@ if(userdb!= null)
 	userdb.setEmail(user.getEmail());
 	userdb.setPassword(user.getPassword());
 	userdb.setPhoneNumber(user.getPhoneNumber());
-	 return userrepo.save(userdb);
+	 return userrepository.save(userdb);
 
 }
 
@@ -124,7 +130,7 @@ return null;}
 
 public String deleteById(long userId)
 {
-	userrepo.deleteById(userId);
+	userrepository.deleteById(userId);
 	return "Deleted";
 }
 
@@ -132,11 +138,21 @@ public String assignNewRole(UserRoleDto userroledto)
 {
 	
 	User userdb = null;
-	userdb = userrepo.findOneByUserId(userroledto.getuserId());
-	Role role = rolerepo.findByRoleType(userroledto.getRoleType());
+	userdb = userrepository.findOneByUserId(userroledto.getuserId());
+	Role roledb = rolerepository.findByRoleType(userroledto.getRoleType());
+	if(roledb == null)
+	{
+		Role role = new Role();
+	role.setRoleType(userroledto.getRoleType());
 	userdb.getRole().add(role);
-	userrepo.save(userdb);
-return "success";
+	userrepository.save(userdb);
+return "New Role has  been added and assigned";
 } 
+	else 
+	{
+		userdb.getRole().add(roledb);
+		userrepository.save(userdb);
+	return "Existing role has been assigned";
+	}
 
-}
+}}

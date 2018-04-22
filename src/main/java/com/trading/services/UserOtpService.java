@@ -5,28 +5,28 @@ import org.springframework.stereotype.Service;
 import com.trading.Enum.StatusType;
 import com.trading.domain.User;
 import com.trading.domain.UserOtp;
-import com.trading.repository.UserOtpRepo;
-import com.trading.repository.UserRepo;
+import com.trading.repository.UserOtpRepository;
+import com.trading.repository.UserRepository;
 
 
 
 @Service
 public class UserOtpService {
 	@Autowired
-	private UserOtpRepo userotprepo;
+	private UserOtpRepository userotprepository;
 	@Autowired
-private UserRepo userrepo;
+private UserRepository userrepository;
 	
 
 UserOtp userotpdb;
 	public String verifyDetails(UserOtp userotp) throws Exception {
-		userotpdb=userotprepo.findByTokenOTP(userotp.gettokenOTP());
-		User user = userrepo.findByEmail(userotp.getEmail());
+		userotpdb=userotprepository.findByTokenOTP(userotp.gettokenOTP());
+		User user = userrepository.findByEmail(userotp.getEmail());
 		if(userotpdb!=null){
 			if(userotpdb.getEmail().equals(userotp.getEmail())) {
-               userotprepo.deleteAll();
+               userotprepository.deleteAll();
                user.setStatus(StatusType.Active);
-       		userrepo.save(user);               
+       		userrepository.save(user);               
        		return "Success";
 	
 		}

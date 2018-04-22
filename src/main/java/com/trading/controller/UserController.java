@@ -66,5 +66,6 @@ private	UserService userservice;
 		public String assignRole(@RequestBody UserRoleDto userroledto)
 		{		return userservice.assignNewRole(userroledto);
 		} 
+
 	
 }

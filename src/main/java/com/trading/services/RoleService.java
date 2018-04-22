@@ -6,22 +6,22 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.trading.domain.Role;
-import com.trading.repository.RoleRepo;
+import com.trading.repository.RoleRepository;
 
 @Service
 public class RoleService {
 
 	@Autowired
-	private	RoleRepo rolerepo;
+	private	RoleRepository rolerepository;
 	private final Logger  logger = LoggerFactory.getLogger(this.getClass());
 		
 	public String insertDetails(Role role) throws Exception {
-		if(rolerepo.findByRoleType(role.getRoleType())== null) {
+		if(rolerepository.findByRoleType(role.getRoleType())== null) {
 			
 			
 		
-		if(!(rolerepo.save(role)== null)) {
-			rolerepo.save(role);
+		if(!(rolerepository.save(role)== null)) {
+			rolerepository.save(role);
 			logger.info("Success");
 			
 			return "New role has been created";

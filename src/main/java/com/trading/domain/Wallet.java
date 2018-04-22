@@ -1,9 +1,9 @@
 package com.trading.domain;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -22,9 +22,9 @@ public class Wallet {
 	long balance;
 	long shadowBalance;
 	
-	@ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", referencedColumnName="userId")
-    private User user;
+	@ManyToOne(cascade = CascadeType.ALL)
+   @JoinColumn(name = "userId", referencedColumnName="userId")
+	private User user;
 	
 	
 	public long getWalletId() {
@@ -33,10 +33,16 @@ public class Wallet {
 	public void setWalletId(long walletId) {
 		this.walletId = walletId;
 	}
-	public WalletType getWalletType() {
+	public User getuser() {
+		return user;
+	}
+	public void setuser(User user) {
+		this.user = user;
+	}
+	public WalletType getwalletType() {
 		return walletType;
 	}
-	public void setWalletType(WalletType walletType) {
+	public void setwalletType(WalletType walletType) {
 		this.walletType = walletType;
 	}
 	public long getBalance() {

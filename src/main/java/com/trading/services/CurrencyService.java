@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.trading.domain.Currency;
-import com.trading.repository.CurrencyRepo;
+import com.trading.repository.CurrencyRepository;
 
 @Service
 public class CurrencyService {
@@ -12,7 +12,7 @@ public class CurrencyService {
 	
 	
 @Autowired
-private CurrencyRepo coinmanagementrepo;
+private CurrencyRepository coinmanagementrepository;
 
 
 
@@ -23,10 +23,10 @@ public String insertDetails(Currency coinmanagement)
 		return "Coin Name Cant be Null";
 	}
 	
-	if(coinmanagementrepo.findBycoinName(coinmanagement.getCoinName())==null) {
+	if(coinmanagementrepository.findBycoinName(coinmanagement.getCoinName())==null) {
 		
 	
-	if(coinmanagementrepo.save(coinmanagement)!= null) {
+	if(coinmanagementrepository.save(coinmanagement)!= null) {
 		return "Your coin has been added";
 		
 	}
@@ -40,19 +40,19 @@ public String insertDetails(Currency coinmanagement)
 
 public Iterable <Currency> getDetails(){
 	
-	return coinmanagementrepo.findAll();
+	return coinmanagementrepository.findAll();
 }
 
 
 public Currency updateDetails(Currency coinmanagement)
 {
 	
-	return coinmanagementrepo.save(coinmanagement);
+	return coinmanagementrepository.save(coinmanagement);
 }
 
 public String deleteById(long coinId)
 {
-	coinmanagementrepo.deleteById(coinId);
+	coinmanagementrepository.deleteById(coinId);
 	return "Deleted";
 }
 }
