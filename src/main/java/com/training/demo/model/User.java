@@ -1,11 +1,23 @@
 package com.training.demo.model;
-import java.util.Date;
 
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
+
 import com.training.demo.enums.UserStatus;
 
 @Entity
@@ -21,16 +33,25 @@ public class User
 	private String password;
 	private String country;
 	private Date date;
-	private String status;
+	@Enumerated(EnumType.STRING)
+	private UserStatus userStatus;
+
+	@ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+	@JoinTable(name = "user_role", 
+	joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "userId"), 
+	inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "roleId"))
+	private Set<Role> roles;
+	
+
+	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+	private Set<Wallet> wallets = new HashSet<Wallet>();
 	
 	public User()
 	{	super();
-		date = new Date();
 		System.out.println("Default Constructor");
 	}
 	
-	public User(Integer userId, String fullName, String email, String phoneNo, String password, String country,
-			Date date) {
+	public User(Integer userId, String fullName, String email, String phoneNo, String password, String country) {
 		super();
 		this.userId = userId;
 		this.fullName = fullName;
@@ -38,9 +59,7 @@ public class User
 		this.phoneNo = phoneNo;
 		this.password = password;
 		this.country = country;
-		this.date = date;
 	}
-
 
 	public Integer getUserId() {
 		return userId;
@@ -81,18 +100,35 @@ public class User
 	public Date getDate() {
 		return date;
 	}
-	public void setDate(Date d) {
+	public void setDate(Date date) {
 		this.date = date;
 	}
-	public String getUserStatus() {
-		return status;
+	public UserStatus getUserStatus() {
+		return userStatus;
 	}
-	public void setStatus(UserStatus status) {
-		this.status = status.toString();
+	public void setUserStatus(UserStatus userStatus) {
+		this.userStatus = userStatus;
 	}
+	
+	public Set<Role> getRoles() {
+		return roles;
+	}
+
+	public void setRoles(Set<Role> roles) {
+		this.roles = roles;
+	}
+
+	public Set<Wallet> getWallet() {
+		return wallets;
+	}
+
+	public void setWallets(Set<Wallet> wallets) {
+		this.wallets= wallets;
+	}
+
 	public String toString()
 	{
-		System.out.println("/////////////////////////////////////////");
-		return userId+", \t"+fullName+", \t"+email+", \t"+country;
-	}
+				return userId+", \t"+fullName+", \t"+email+", \t"+country;
+	}	
+	
 }
