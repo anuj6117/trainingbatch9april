@@ -24,7 +24,7 @@ public class OTPService
     public static final String TWILIO_NUMBER = "+16022231950";
     
     public void sendSms(int otp) {
-    	System.out.println("the number is 9540263680");
+    
 
 		try {
 			TwilioRestClient client = new TwilioRestClient(ACCOUNT_SID, AUTH_TOKEN);

@@ -1,17 +1,23 @@
 package com.example.model;
 
+import java.util.HashSet;
+import java.util.Set;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import com.example.enums.UserStatus;
-
-
-
 
 @Entity	
 @Table(name="UserTable")
@@ -29,6 +35,33 @@ public class User
 	private String country;
 	private String date;
 	
+	@ManyToMany(cascade = CascadeType.ALL,fetch=FetchType.EAGER)
+	@JoinTable(name="user_role",
+	joinColumns= @JoinColumn(name="userid",referencedColumnName="userId"),
+	inverseJoinColumns= @JoinColumn(name="roleid",referencedColumnName="roleId"))
+	private Set<Role> roles;
+	
+	public Set<Role> getRoles() {
+		return roles;
+	}
+
+
+	public void setRoles(Set<Role> roles) {
+		this.roles = roles;
+	}
+	
+	@OneToMany(mappedBy="user")
+	private Set<Wallet> wallet = new HashSet<>();
+	
+	public Set<Wallet> getWallet() {
+		return wallet;
+	}
+
+
+	public void setWallet(Set<Wallet> wallet) {
+		this.wallet = wallet;
+	}
+
 	@Enumerated(EnumType.STRING)
 	private UserStatus status;
 
@@ -101,8 +134,4 @@ public class User
 	public void setDate(String date) {
 		this.date = date;
 	}
-	
-	
-
 }
-

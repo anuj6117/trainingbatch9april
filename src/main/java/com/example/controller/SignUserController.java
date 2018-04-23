@@ -16,7 +16,7 @@ import com.example.enums.UserStatus;
 import com.example.model.User;
 import com.example.model.UserOtpTable;
 import com.example.repository.OTPjpaRepository;
-import com.example.repository.jpaRepository;
+import com.example.repository.UserRepository;
 import com.example.service.SignUpService;
 
 @RestController
@@ -25,7 +25,7 @@ public class SignUserController
 	@Autowired
 	private SignUpService signupservice;
 	@Autowired
-	private jpaRepository jRepository;
+	private UserRepository userrepository;
 	
 	@Autowired
 	private OTPjpaRepository otpjparepository;
@@ -45,11 +45,11 @@ public class SignUserController
 		}
 		else
 		{
-			return "failure";
+			return "user alrady exist";
 		}
 	}
 	
-	@RequestMapping(value="/validate")
+	@RequestMapping(value="/verifyuser")
 	public void validateUser(@RequestParam("Mail") String email,@RequestParam("otp") String otp)
 	{
 		
@@ -59,11 +59,11 @@ public class SignUserController
 		
 		if(userotptable.getEmailId().equals(email)   )
 		{
-			user = jRepository.findOneByemail(email);
+			user = userrepository.findOneByemail(email);
 		
 			user.setStatus((UserStatus.ACTIVE));
 		
-			jRepository.save(user);
+			userrepository.save(user);
 			otpjparepository.delete(userotptable);
 		}
 		else
@@ -78,25 +78,34 @@ public class SignUserController
 	@GetMapping("/getallusers")
 	public List<User> getAllNotes() 
 	{
-	    return jRepository.findAll();
+	    return userrepository.findAll();
 	}
 	
 	@GetMapping("/getbyuserid/{id}")
 	public User getbyuserid(@PathVariable("id") Integer id) 
 	{
-	    return jRepository.findByUserId(id);
+	    return userrepository.findByUserId(id);
 	}
 	
-	@PostMapping("/updateuser/{id}")
-	public String updateuser(@PathVariable("id") Integer id) 
+	@RequestMapping(value="/updateuser",method=RequestMethod.POST)
+	public String updateuser(@RequestBody User user) 
 	{
-	    String s=signupservice.updateuser(id);
+	    String s=signupservice.updateuser(user);
 	    if(s!=null)
 	    {
 	    	return "updated";
 	    }
 	    else
-	    	return "null s object";
+	    	return "null";
+	}
+	
+	@GetMapping("/deleteuser/{id}")
+	public String deleteUser(@PathVariable("id") Integer id) 
+	{
+		user=userrepository.findByUserId(id);
+		System.out.println("here......user........has......"+user);
+		signupservice.deleteUser(user);
+	    return "account deleted";
 	}
 	
 	
