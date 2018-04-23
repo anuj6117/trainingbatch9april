@@ -16,7 +16,7 @@ public class WalletService {
 
 	public void addWallet(Wallet wallet) {
 		// TODO Auto-generated method stub
-		
+		walletRepository.save(wallet);
 	}
 
 	public List<Wallet> getAllWallet() {

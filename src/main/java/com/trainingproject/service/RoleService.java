@@ -14,9 +14,10 @@ public class RoleService {
 	@Autowired
 	private RoleRepository roleRepository;
 
-	public void addRole(Role role) {
+	public Role addRole(Role role) {
 		// TODO Auto-generated method stub
-		roleRepository.save(role);
+		Role roleCreated = roleRepository.save(role);
+		return roleCreated;
 	}
 
 	public List<Role> getAllRole() {
@@ -41,8 +42,4 @@ public class RoleService {
 		// TODO Auto-generated method stub
 		roleRepository.deleteById(roleId);
 	}
-	
-	
-	
-
 }

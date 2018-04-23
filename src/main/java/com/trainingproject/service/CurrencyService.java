@@ -14,9 +14,10 @@ public class CurrencyService {
 
 	@Autowired
 	private CurrencyRepository currencyRepository;
-	public void addCurrency(Currency currency) {
+	public Currency addCurrency(Currency currency) {
 		// TODO Auto-generated method stub
-		currencyRepository.save(currency);
+		Currency addedCurrency = currencyRepository.save(currency);
+		return addedCurrency;
 	}
 
 	public List<Currency> getAllCurrency() {

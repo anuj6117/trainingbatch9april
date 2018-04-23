@@ -19,6 +19,11 @@ public class Currency {
 	private Long fees;
 	private Long profit;
 	private Long coinInINR;
+	private Currency() {
+		fees = 2l;
+		profit = 0l;
+		coinInINR = 0l;
+	}
 	public Integer getCoinId() {
 		return coinId;
 	}

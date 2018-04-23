@@ -32,29 +32,15 @@ public class UserOTPService {
 	 //public static final String AUTH_TOKEN = "154809d683e2eafe73909cf0201bc84a"; //test
 	 public static final String AUTH_TOKEN = "a9e72dacc44a2af36079544e013079e6";
 	 public static final String TWILIO_NUMBER = "+15136571810";
-	 /*@Autowired
-	 Mail mail;*/
 	 @Autowired
 	 JavaMailSender sender;
 	
-	 //public static final String TWILIO_NUMBER = "+919717562586";+15105647903 (513) 657-4064 
-	 /*
-	 public void getphone(){
-	 Twilio.init(ACCOUNT_SID, AUTH_TOKEN);
-
-	 IncomingPhoneNumber number = IncomingPhoneNumber
-	 .creator(new PhoneNumber("+15005550006"))
-	 .setVoiceUrl("http://demo.twilio.com/docs/voice.xml")
-	 .create();
-
-	 System.out.println(number.getSid());
-	 }
-	 */
+	 
 	 static Integer otp;
 	 public Integer sendSMS() {
 	 try {
-		 Random rnd=new Random();
-			otp=rnd.nextInt(10000);
+		 Random rnd = new Random();
+			otp = rnd.nextInt(10000);
 		
 	 TwilioRestClient client = new TwilioRestClient(ACCOUNT_SID, AUTH_TOKEN);
 	 
@@ -74,12 +60,12 @@ public class UserOTPService {
 	 }
 	 return otp;
 	 }
-	 public void sendMail() {
+	 public void sendMail(String email) {
 		 //JavaMailSender sender;
 		 MimeMessage message = sender.createMimeMessage();
 		 MimeMessageHelper helper = new MimeMessageHelper(message);
 		 try {
-		 helper.setTo("amit.patel@oodlestechnologies.com");
+		 helper.setTo(email);//
 		 helper.setText("Your OTP is "+otp);
 		 helper.setSubject("Mail From Spring Boot");
 		 } catch (MessagingException e) {

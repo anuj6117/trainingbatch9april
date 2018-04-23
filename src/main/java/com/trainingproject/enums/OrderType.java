@@ -1,12 +1,12 @@
 package com.trainingproject.enums;
 
-public enum Status {
-	
-	INACTIVE("inactive"),ACTIVE("active");
-	private String value;
+public enum OrderType {
 
-	private Status(String value) {
-	this.value = value;
+	Buy("buyer"),Sell("seller");
+	private String value;
+	
+	private OrderType(String value) {
+		this.value = value;
 	}
 
 	public String getValue() {
@@ -16,8 +16,6 @@ public enum Status {
 	public void setValue(String value) {
 		this.value = value;
 	}
-
 	
 	
-
 }

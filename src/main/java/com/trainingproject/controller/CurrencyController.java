@@ -16,40 +16,42 @@ public class CurrencyController {
 	@Autowired
 	private CurrencyService currencyService;
 	
-	/*@RequestMapping(value="createcurrency",method=RequestMethod.POST)
+	@RequestMapping(value = "/addcurrency",method = RequestMethod.POST)
 	   public String func(@RequestBody Currency currency) {
-		 Currency currencyCreated=currencyService.addCurrency(currency);
-		if(currencyCreated!=null) {
+		 Currency addedCurrency = currencyService.addCurrency(currency);
+		if(addedCurrency != null) {
 			return "success";
 		}
 			else
 				return "Failure";
 
-		}*/
+		}
 	
-	@RequestMapping(value="createcurrency",method=RequestMethod.POST)
+	/*@RequestMapping(value = "/addcurrency",method = RequestMethod.POST)
 	public void addCurrency(@RequestBody Currency currency) {
 		
 		currencyService.addCurrency(currency);
-	}
+	}*/
 	
-	@RequestMapping(value="/getallcurrency")
-	public List<Currency> getAllCurrency(){
+	@RequestMapping(value = "/getallcurrency")
+	public List<Currency> getAllCurrency() {
 		return currencyService.getAllCurrency();
 	}
 	
-	@RequestMapping(value="/getbycurrencyid",method=RequestMethod.GET)
-	public Optional<Currency> getById(Integer coinId){
+	@RequestMapping(value = "/getcurrencybyid",method = RequestMethod.GET)
+	public Optional<Currency> getById(Integer coinId) {
 		return currencyService.getById(coinId);
 	}
-	@RequestMapping(value="/updatecurrency",method=RequestMethod.POST)
-	public void updateCurrency(@RequestBody Currency currency){
+	@RequestMapping(value  ="/updatecurrency",method = RequestMethod.POST)
+	public String updateCurrency(@RequestBody Currency currency) {
 		currencyService.updateCurrency(currency);
+		return "success";
 	}
 
-	@RequestMapping(value="/deletecurrency",method=RequestMethod.GET)
-	public void deleteCurrency(Integer coinId){
+	@RequestMapping(value = "/deletecurrency",method = RequestMethod.GET)
+	public String deleteCurrency(Integer coinId) {
 		currencyService.deleteCurrency(coinId);
+		return "success";
 	}
 	
 
