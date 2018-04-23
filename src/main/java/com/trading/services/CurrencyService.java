@@ -57,7 +57,7 @@ public String deleteById(long coinId)
 }
 public Currency getCurrencyById(long coinId)
 {
-	return currencyrepository.findOneById(coinId);
+	return currencyrepository.findOneByCoinId(coinId);
 }
 }
 
