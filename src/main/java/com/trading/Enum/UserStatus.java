@@ -1,6 +1,6 @@
 package com.trading.Enum;
 
-public enum StatusType {
+public enum UserStatus {
 	
 		INACTIVE("inactive"),Active("active");
 		
@@ -10,7 +10,7 @@ public enum StatusType {
 			return value;
 		}
 
-		private StatusType(String value) {
+		private UserStatus(String value) {
 			this.value = value;
 		}
 		

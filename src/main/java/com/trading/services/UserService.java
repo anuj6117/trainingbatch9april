@@ -7,7 +7,7 @@ import java.util.Random;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.trading.Enum.StatusType;
+import com.trading.Enum.UserStatus;
 import com.trading.Enum.WalletType;
 import com.trading.domain.Role;
 import com.trading.domain.User;
@@ -58,7 +58,6 @@ public String insertDetails(User user) throws Exception {
 	}
 	if(userrepository.findByEmail(user.getEmail()) != null) {
 		return "Oopss, this email is already registered";
-
 	}
 	if(userrepository.findByphoneNumber(user.getPhoneNumber())!= null)
 	{
@@ -72,7 +71,7 @@ public String insertDetails(User user) throws Exception {
 	if(userrepository.save(user)!= null) {
 		
 	 user.setDate(new Date());
-	user.setStatus(StatusType.INACTIVE);
+	user.setStatus(UserStatus.INACTIVE);
 	//userrepository.save(user);
 	//String email = user.getEmail();
 	// otpservice.sendSMS(otp);

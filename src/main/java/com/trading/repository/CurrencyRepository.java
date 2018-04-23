@@ -8,4 +8,6 @@ public interface CurrencyRepository extends CrudRepository<Currency, Long> {
 	
 	public Currency findBycoinName(String coinName);
 
+	public Currency findOneById(long coinId);
+
 }

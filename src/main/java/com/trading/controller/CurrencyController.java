@@ -43,6 +43,12 @@ public class CurrencyController {
 			return currencyservice.deleteById(coinId);
 		}
 		
+		@RequestMapping(value = "/getcurrencybyid", method = RequestMethod.POST)
+		public Currency getDetailsById(@RequestParam("coinId") long coinId)
+		{
+			return currencyservice.getCurrencyById(coinId);
+		}
+		
 	}
 
 

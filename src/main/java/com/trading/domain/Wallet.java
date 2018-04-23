@@ -10,6 +10,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.trading.Enum.WalletType;
 
 @Entity
@@ -21,7 +22,7 @@ public class Wallet {
 	private WalletType walletType;
 	long balance;
 	long shadowBalance;
-	
+	@JsonIgnore
 	@ManyToOne(cascade = CascadeType.ALL)
    @JoinColumn(name = "userId", referencedColumnName="userId")
 	private User user;

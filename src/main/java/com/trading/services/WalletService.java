@@ -56,8 +56,9 @@ if(wallet !=null)	{
 	}
 } 
 public String withdrawAmount(UserWalletDto userwalletdto)
-{ Wallet wallet = new Wallet();
-User user = userrepository.findOneByUserId(userwalletdto.getUserId());
+{ 
+	Wallet wallet = new Wallet();
+	User user = userrepository.findOneByUserId(userwalletdto.getUserId());
 	wallet = walletrepository.findByWalletTypeAndUser(userwalletdto.getwalletType(), user);
 	System.out.println("hi vanshivnahsibnn" +wallet);
 	if(wallet.getBalance()== 0)

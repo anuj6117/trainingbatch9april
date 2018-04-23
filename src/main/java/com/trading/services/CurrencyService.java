@@ -12,48 +12,52 @@ public class CurrencyService {
 	
 	
 @Autowired
-private CurrencyRepository coinmanagementrepository;
+private CurrencyRepository currencyrepository;
 
 
 
-public String insertDetails(Currency coinmanagement)
+public String insertDetails(Currency currency)
 {
-	if(coinmanagement.getCoinName()==null)
+	if(currency.getCoinName()==null)
 	{
 		return "Coin Name Cant be Null";
 	}
 	
-	if(coinmanagementrepository.findBycoinName(coinmanagement.getCoinName())==null) {
+	if(currencyrepository.findBycoinName(currency.getCoinName())==null) {
 		
 	
-	if(coinmanagementrepository.save(coinmanagement)!= null) {
+	if(currencyrepository.save(currency)!= null) {
 		return "Your coin has been added";
 		
 	}
 	else {
-		return "Failed to add coinmanagement";
+		return "Failed to add currency";
 	}}
 	else {
-		return "coinmanagement Type Already Exists";
+		return "currency Type Already Exists";
 	}
 }
 
 public Iterable <Currency> getDetails(){
 	
-	return coinmanagementrepository.findAll();
+	return currencyrepository.findAll();
 }
 
 
-public Currency updateDetails(Currency coinmanagement)
+public Currency updateDetails(Currency currency)
 {
 	
-	return coinmanagementrepository.save(coinmanagement);
+	return currencyrepository.save(currency);
 }
 
 public String deleteById(long coinId)
 {
-	coinmanagementrepository.deleteById(coinId);
+	currencyrepository.deleteById(coinId);
 	return "Deleted";
+}
+public Currency getCurrencyById(long coinId)
+{
+	return currencyrepository.findOneById(coinId);
 }
 }
 

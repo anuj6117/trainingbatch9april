@@ -22,8 +22,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.trading.Enum.StatusType;
+import com.trading.Enum.UserStatus;
 
 @Entity
 
@@ -59,7 +58,7 @@ public class User {
 
 	private Date date;
 	@Enumerated(EnumType.STRING)
-	private StatusType status;
+	private UserStatus status;
 	
 	
 	
@@ -73,9 +72,18 @@ public class User {
      inverseJoinColumns = { @JoinColumn(name = "role_Id", referencedColumnName="roleId")})
     private List<Role> role = new ArrayList<>();
 	
-	@JsonIgnore
 	@OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 		private List<Wallet> wallet = new ArrayList<>();
+	
+	@OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	private List<UserOrder> userOrder = new ArrayList<>();
+	
+	public List<UserOrder> getUserOrder() {
+		return userOrder;
+	}
+	public void setUserOrder(List<UserOrder> userOrder) {
+		this.userOrder = userOrder;
+	}
 	public List<Role> getRole() {
 		return role;
 	}
@@ -96,10 +104,10 @@ public class User {
 	public void setWallet(List<Wallet> wallet) {
 		this.wallet = wallet;
 	}
-	public StatusType getStatus() {
+	public UserStatus getStatus() {
 		return status;
 	}
-	public void setStatus(StatusType status) {
+	public void setStatus(UserStatus status) {
 		this.status = status;
 	}
 	public Date getDate() {
