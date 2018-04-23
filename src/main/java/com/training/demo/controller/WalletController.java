@@ -39,4 +39,17 @@ public class WalletController {
 			return "failure";
 		}
 	}		
+	
+	@RequestMapping(value="/withdrawamount", method = RequestMethod.POST)
+	public String toWithdrawAmount(@RequestBody UserTransactionDto utd) {
+		System.out.println(utd.getUserId()+"/t"+utd.getWalletType()+"/t"+utd.getAmount());
+			if(utd != null)
+			{
+				return walletService.toWithdrawn(utd);
+			}
+			else
+			{
+				throw new NullPointerException("Please provide complete details");
+			}
+	}
 }

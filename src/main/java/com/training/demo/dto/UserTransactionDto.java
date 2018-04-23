@@ -26,6 +26,4 @@ public class UserTransactionDto {
 	public void setAmount(Double amount) {
 		this.amount = amount;
 	}
-	
-	
 }

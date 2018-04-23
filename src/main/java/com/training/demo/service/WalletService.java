@@ -38,16 +38,52 @@ public class WalletService {
 		Integer userId = utd.getUserId();
 		String walletType = utd.getWalletType();
 		Double amount = utd.getAmount();
+		
 		User user = userRepository.findByUserId(userId);
-		Set<Wallet> wallet = user.getWallet();
+		Set<Wallet> wallet = user.getWallets();
 		Iterator itr = wallet.iterator();
 		while(itr.hasNext()) {
 			Wallet tempWallet = (Wallet)itr.next();
-			System.out.println("itr.hasNext() :::::::: "+tempWallet);
-			if( tempWallet == walletRepository.findByWalletType(WalletType.valueOf(walletType))) {
-				tempWallet.setBalance(utd.getAmount());
+
+			 if( tempWallet == walletRepository.findByWalletType(WalletType.valueOf(walletType))) {
+				Double totalAmount = tempWallet.getBalance()+amount;
+				 tempWallet.setBalance(totalAmount);
 				userRepository.save(user);
 			}
+
+		/*	System.out.println("Hellooooooooooooooooooooooooooooooooooooooooooooooo");
+			if(tempWallet.getWalletType().equals(WalletType.valueOf(walletType))){
+			amount = tempWallet.getBalance()+amount;
+			tempWallet.setBalance(amount);
+			userRepository.save(user);
+		}*/
 		}
-	}
+	}	
+	public String toWithdrawn(UserTransactionDto utd ) {
+		 Integer userId = utd.getUserId();
+		 String walletType = utd.getWalletType();
+		 Double amount = utd.getAmount();		 
+
+		 User user = userRepository.findByUserId(userId);
+		 Set<Wallet> wallet = user.getWallets();
+		 Iterator itr = wallet.iterator();
+		 while(itr.hasNext()) {
+			Wallet tempWallet = (Wallet) itr.next();
+			 if(tempWallet == walletRepository.findByWalletType(WalletType.valueOf(walletType))) {
+				 Double availBalance = tempWallet.getBalance();
+				 
+				 if(amount <= availBalance)
+				 {
+					 Double totalAmount = tempWallet.getBalance() - amount;
+					 tempWallet.setBalance(totalAmount);
+					 userRepository.save(user);					
+				 }
+				 else
+				 {
+					 return "Sorry insufficient balance.";
+				 }
+			 }
+		 }
+		 return "Successfully withdrawn.";
+	 }
 }

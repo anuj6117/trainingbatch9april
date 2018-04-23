@@ -118,7 +118,7 @@ public class User
 		this.roles = roles;
 	}
 
-	public Set<Wallet> getWallet() {
+	public Set<Wallet> getWallets() {
 		return wallets;
 	}
 
