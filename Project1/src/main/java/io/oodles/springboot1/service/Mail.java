@@ -12,11 +12,11 @@ public class Mail {
 	@Autowired
 	private JavaMailSender sender;
 	
-	public void sendMail(int otp1) {
+	public void sendMail(int otp1,String email) {
  MimeMessage message = sender.createMimeMessage();
  MimeMessageHelper helper = new MimeMessageHelper(message);
  try {
- helper.setTo("manu.mishra@oodlestechnologies.com");
+ helper.setTo(email);
  helper.setText("Your OTP is "+otp1);
  helper.setSubject("Mail From Spring Boot");
  } catch (MessagingException e) {

@@ -3,19 +3,9 @@ package io.oodles.springboot1.repository;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import io.oodles.springboot1.model.Role;
+import io.oodles.springboot1.model.Currency;
 
 @Repository
-public interface RoleRepository extends JpaRepository<Role, Integer>{
-
-	Role findByRoletype(String roletype);
-
-	
-	
-
-	
-	
-
-	
+public interface CurrencyRepository extends JpaRepository<Currency, Integer> {
 
 }

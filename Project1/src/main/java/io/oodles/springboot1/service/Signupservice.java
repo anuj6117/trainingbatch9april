@@ -2,25 +2,35 @@ package io.oodles.springboot1.service;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.Iterator;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import io.oodles.springboot1.enums.Status;
+import io.oodles.springboot1.enums.WalletType;
+import io.oodles.springboot1.model.AssignRole;
+import io.oodles.springboot1.model.Role;
 import io.oodles.springboot1.model.StoreOTP;
 import io.oodles.springboot1.model.Users;
+import io.oodles.springboot1.model.Wallet;
+import io.oodles.springboot1.repository.RoleRepository;
 import io.oodles.springboot1.repository.StoreOTPRepository;
 import io.oodles.springboot1.repository.UsersRepository;
+import io.oodles.springboot1.repository.WalletRepository;
 
 @Service
 public class Signupservice {
 
 	@Autowired
 	public UsersRepository usersRepository;
+	
+	@Autowired
+	public RoleRepository rolerepository;
 
 	@Autowired
 	public Mail mail;
@@ -31,10 +41,16 @@ public class Signupservice {
 	@Autowired
 	OTPService otpService;
 	
+	WalletType wallettype;
+	
 	@Autowired
 	StoreOTPRepository storeOTPRepository;
+	@Autowired
+	WalletRepository walletRepository;
 	StoreOTP storeOTP=new StoreOTP();
 	Users users=new Users();
+	Role role=new Role();
+	Wallet wallet=new Wallet();
 
 	public void addUser(Users users) {
 
@@ -42,22 +58,37 @@ public class Signupservice {
 		Date date = new Date();
 		int otp1 = rnd.nextInt(10000);
 		
-		System.out.println("::::::::::::::::::users hit:::");
-		/*Users userDetails = new Users();
-		userDetails.setCountry(users.getCountry());
-		userDetails.setDate(users.getDate());
-		userDetails.setEmail_id(users.getEmail_id());
-		userDetails.setFullName(users.getFullName());
-		userDetails.setPassword(users.getPassword());
-		userDetails.setMobile_no(users.getMobile_no());*/
+		
         users.setDate(date);
         users.getDate();
         users.setStatus(Status.INACTIVE);
-        
+        Users user1=usersRepository.save(users);
+        Set<Wallet> wallet=new HashSet<Wallet>();
+        Wallet wallet1=new Wallet();
+        wallet1.setWallet(wallettype.FIATE);
+        wallet1.setUsers(user1);
+        wallet.add(wallet1);
+        walletRepository.save(wallet1);
+        users.setWallet(wallet);
+        List<Role> list=new ArrayList<Role>();
+		list.add(rolerepository.findByRoletype("USER"));
+	    users.setRoles(list);
+        usersRepository.save(user1);
 		
-		usersRepository.save(users);
+		
 			otpService.ValueMethod(users, otp1);
-			mail.sendMail(otp1);
+			String email=users.getEmailid();
+			
+			/*List<Role> list=new ArrayList<Role>();
+			list.add(rolerepository.findByRoletype("USER"));
+		    users.setRoles(list);*/
+		    
+		    
+		   
+		    usersRepository.save(users);
+		   
+		    
+			mail.sendMail(otp1,email);
 			otpgenerate.sendSMS(otp1);
 			
 			
@@ -111,6 +142,14 @@ public class Signupservice {
 	public void delete(int id) {
 		// TODO Auto-generated method stub
 		 usersRepository.deleteById(id);;
+	}
+
+	public Users assign(AssignRole assignrole) {
+		// TODO Auto-generated method stub
+		users=usersRepository.findByUserid(assignrole.getUserid());
+		role=rolerepository.findByRoletype(assignrole.getRoletype());
+		users.getRoles().add(role);
+		return usersRepository.save(users);
 	}
 	
 }	

@@ -7,12 +7,21 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import io.oodles.springboot1.model.Role;
+import io.oodles.springboot1.model.Users;
 import io.oodles.springboot1.repository.RoleRepository;
+import io.oodles.springboot1.repository.UsersRepository;
 
 @Service
 public class Role_Service {
 	@Autowired
 	RoleRepository roleRepository;
+	
+	@Autowired
+	UsersRepository usersRepository;
+	
+	
+	Users user=new Users();
+	Role role=new Role();
 
 	public List<Role> getallroles() {
 		// TODO Auto-generated method stub
@@ -26,7 +35,10 @@ public class Role_Service {
 
 	public Role update(Role role, int id) {
 		// TODO Auto-generated method stud
-		return roleRepository.save(role);
+		Role role1=roleRepository.getOne(id);
+		
+		role1.setRoletype(role.getRoletype());
+		return roleRepository.save(role1);
 	}
 	
 
@@ -40,5 +52,16 @@ public class Role_Service {
 		return roleRepository.save(role);
 	}
 	
+	    
+	  
+	       
+           
+		
+	
+		
+		
+		
+	}
+	
 
-}
+

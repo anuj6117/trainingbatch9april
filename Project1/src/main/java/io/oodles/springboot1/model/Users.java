@@ -1,13 +1,21 @@
 package io.oodles.springboot1.model;
 
 import java.util.Date;
+import java.util.List;
+import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 
 import io.oodles.springboot1.enums.Status;
 
@@ -15,7 +23,7 @@ import io.oodles.springboot1.enums.Status;
 public class Users {
 	
 	@Id @GeneratedValue(strategy=GenerationType.AUTO)
-	public Integer id;
+	public Integer userid;
 	public String fullName;
 	public String emailid;
 	public int mobileno;
@@ -24,8 +32,30 @@ public class Users {
 	Date date;
 	@Enumerated(EnumType.STRING)
 	public Status  status;
+	@ManyToMany(cascade=CascadeType.ALL,fetch=FetchType.EAGER)
+	@JoinTable(name="user_role",
+	joinColumns= {@JoinColumn(name="user_id",referencedColumnName="userid")},
+	inverseJoinColumns= {@JoinColumn(name="role_id",referencedColumnName="roleid")})
+	private List<Role> roles;
+	
+	@OneToMany(mappedBy="users")
+	private Set<Wallet> wallet;
+	
+	
     
     
+	public Set<Wallet> getWallet() {
+		return wallet;
+	}
+	public void setWallet(Set<Wallet> wallet) {
+		this.wallet = wallet;
+	}
+	public List<Role> getRoles() {
+		return roles;
+	}
+	public void setRoles(List<Role> roles) {
+		this.roles = roles;
+	}
 	public Status getStatus() {
 		return status;
 	}
@@ -33,11 +63,12 @@ public class Users {
 		this.status = status;
 	}
 	public Users(){}
-	public Integer getId() {
-		return id;
+	
+	public Integer getUserid() {
+		return userid;
 	}
-	public void setId(Integer id) {
-		this.id = id;
+	public void setUserid(Integer userid) {
+		this.userid = userid;
 	}
 	public String getFullName() {
 		return fullName;
