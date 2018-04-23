@@ -13,15 +13,13 @@ import com.trading.services.RoleService;
 public class RoleController {
 	
 	@Autowired
-	private	RoleService roleservice;
+	private	RoleService roleService;
 		
 		@RequestMapping(value = "/createrole", method = RequestMethod.POST)
 		public String roledetails(@RequestBody Role role) throws Exception
 		{
-			return roleservice.insertDetails(role);
-		}
-	
-		
+			return roleService.insertDetails(role);
+		}		
 }
 
 

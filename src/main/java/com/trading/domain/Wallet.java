@@ -15,18 +15,22 @@ import com.trading.Enum.WalletType;
 
 @Entity
 public class Wallet {
-	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
-	private long walletId;
-	@Enumerated(EnumType.STRING)
-	private WalletType walletType;
-	long balance;
-	long shadowBalance;
-	@JsonIgnore
-	@ManyToOne(cascade = CascadeType.ALL)
-   @JoinColumn(name = "userId", referencedColumnName="userId")
-	private User user;
 	
+@Id
+@GeneratedValue(strategy = GenerationType.AUTO)
+private long walletId;
+	
+@Enumerated(EnumType.STRING)
+private WalletType walletType;
+	
+long balance;
+long shadowBalance;
+
+@JsonIgnore
+@ManyToOne(cascade = CascadeType.ALL)
+@JoinColumn(name = "userId", referencedColumnName="userId")
+
+private User user;
 	
 	public long getWalletId() {
 		return walletId;
@@ -57,9 +61,8 @@ public class Wallet {
 	}
 	public void setShadowBalance(long shadowBalance) {
 		this.shadowBalance = shadowBalance;
-	}
-	
-	}
+	}	
+}
 	
 	
 	

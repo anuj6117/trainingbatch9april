@@ -17,18 +17,15 @@ public class RoleService {
 		
 	public String insertDetails(Role role) throws Exception {
 		if(rolerepository.findByRoleType(role.getRoleType())== null) {
-			
-			
-		
-		if(!(rolerepository.save(role)== null)) {
-			rolerepository.save(role);
-			logger.info("Success");
-			
-			return "New role has been created";
-		}
-		else 
+				
+			if(!(rolerepository.save(role)== null)) {
+				rolerepository.save(role);
+				logger.info("Success");
+				return "New role has been created";
+			}
+			else 
 			{
-			return "Not able to add new role";
+				return "Not able to add new role";
 			}
 		}
 		else
@@ -37,9 +34,6 @@ public class RoleService {
 		}
 		
 	}
-	
-
-
-	}
+}
 
 

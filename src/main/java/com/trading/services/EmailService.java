@@ -10,19 +10,16 @@ import org.springframework.stereotype.Service;
 @Service
 public class EmailService {
 	 
-	@Autowired
-	private JavaMailSender sender;
-	 
-
-	
-	    public void sendEmail(int otp) throws Exception{
-	        MimeMessage message = sender.createMimeMessage();
-	        MimeMessageHelper helper = new MimeMessageHelper(message);
-	         
-	        helper.setTo("vanshikamadan97@gmail.com");
-	        helper.setText("Your account has been succesfully created. Please verify it using OTP  " +otp);
-	        helper.setSubject("Verification");
-	         	        sender.send(message);
+@Autowired
+private JavaMailSender sender;
+	 	
+	public void sendEmail(int otp) throws Exception{
+		MimeMessage message = sender.createMimeMessage();
+	    MimeMessageHelper helper = new MimeMessageHelper(message);
+	    helper.setTo("vanshikamadan97@gmail.com");
+	    helper.setText("Your account has been succesfully created. Please verify it using OTP  " +otp);
+	    helper.setSubject("Verification");
+	    sender.send(message);
 	    }
 	}
 

@@ -13,33 +13,27 @@ import com.trading.services.OrderService;
 
 @RestController
 public class OrderController {
-	
-	
-		
-		@Autowired
-		private	OrderService orderService;
+			
+@Autowired
+private	OrderService orderService;
 			
 			@RequestMapping(value = "/createbuyorder", method = RequestMethod.POST)
 			public String buyOrder(@RequestBody UserOrderDto userOrderDto) throws Exception
 			{
 				return orderService.createBuyOrder(userOrderDto);		
-				}
+			}
 		
 			@RequestMapping(value = "/createsellorder", method = RequestMethod.POST)
 			public String sellOrder(@RequestBody UserOrderDto userOrderDto) throws Exception
 			{
 				return orderService.createSellOrder(userOrderDto);		
-				}
+			}
 			
-		
-			
-			
-		@RequestMapping(value = "/getorderbyuserid", method = RequestMethod.GET)
+		    @RequestMapping(value = "/getorderbyuserid", method = RequestMethod.GET)
 			public UserOrder getOrder(@RequestParam("userId") long userId) throws Exception
 			{
 				return orderService.getOrderByUserId(userId);		
-				}
-			
+				}		
 	}
 
 

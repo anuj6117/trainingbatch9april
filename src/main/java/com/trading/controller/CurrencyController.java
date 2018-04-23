@@ -14,41 +14,38 @@ import com.trading.services.CurrencyService;
 @RestController
 public class CurrencyController {
 	
-	@Autowired
-	private	CurrencyService currencyservice;
+@Autowired
+	private	CurrencyService currencyService;
 		
 		@RequestMapping(value = "/addcurrency", method = RequestMethod.POST)
 		public String addCurrency(@RequestBody Currency currency) throws Exception
 		{
-			return currencyservice.insertDetails(currency);
+			return currencyService.insertDetails(currency);
 		}
 		
 		@RequestMapping(value = "/getallcurrency", method = RequestMethod.GET)
 		public Iterable <Currency> getAllCurrency() throws Exception
 		{
-			return currencyservice.getDetails();
+			return currencyService.getDetails();
 		}
-		
-		
 		
 		
 		@RequestMapping(value = "/updatecurrency", method = RequestMethod.POST)
 		public Currency updateCurrency(@RequestBody Currency currency) {
-			return currencyservice.updateDetails(currency);
+			return currencyService.updateDetails(currency);
 		}
 		
 		@RequestMapping(value = "/deletecurrency", method = RequestMethod.GET)
 		public String deleteCurrency(@RequestParam("coinId") long coinId)
 		{
-			return currencyservice.deleteById(coinId);
+			return currencyService.deleteById(coinId);
 		}
 		
 		@RequestMapping(value = "/getcurrencybyid", method = RequestMethod.POST)
 		public Currency getDetailsById(@RequestParam("coinId") long coinId)
 		{
-			return currencyservice.getCurrencyById(coinId);
-		}
-		
+			return currencyService.getCurrencyById(coinId);
+		}	
 	}
 
 

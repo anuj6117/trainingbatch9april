@@ -10,15 +10,17 @@ import javax.validation.constraints.NotNull;
 
 @Entity
 public class UserOtp {
-	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
-	private long userId;
-	@NotNull
-	private int tokenOTP;
-	@NotNull
-	@Column(unique= true)
-	@Email
-	private String email;
+@Id
+@GeneratedValue(strategy = GenerationType.AUTO)
+private long userId;
+
+@NotNull
+private int tokenOTP;
+	
+@NotNull
+@Column(unique= true)
+@Email
+private String email;
 	
 	public String getEmail() {
 		return email;

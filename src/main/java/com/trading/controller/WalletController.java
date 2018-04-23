@@ -13,25 +13,24 @@ import com.trading.services.WalletService;
 public class WalletController {
 
 	
-	@Autowired
-private	WalletService walletservice;
+@Autowired
+private	WalletService walletService;
 	@RequestMapping(value = "/addwallet", method = RequestMethod.POST)
 	public String addWallet(@RequestBody UserWalletDto userwalletdto)
 	{
-		return walletservice.insertWallet(userwalletdto);
+		return walletService.insertWallet(userwalletdto);
 	}
 
 	@RequestMapping(value = "/deposit", method = RequestMethod.POST)
 	public String deposit(@RequestBody UserWalletDto userwalletdto)
 	{
-		return walletservice.depositAmount(userwalletdto);
+		return walletService.depositAmount(userwalletdto);
 	}
-
 
 	@RequestMapping(value = "/withdraw", method = RequestMethod.POST)
 	public String withdraw(@RequestBody UserWalletDto userwalletdto)
 	{
-		return walletservice.withdrawAmount(userwalletdto);
+		return walletService.withdrawAmount(userwalletdto);
 	}
 }
 
