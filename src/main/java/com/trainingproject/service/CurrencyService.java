@@ -15,6 +15,7 @@ public class CurrencyService {
 	CurrencyRepository currencyRepository;
 	
 	
+	
 	public Currency addCurrency(Currency cur) {
 		Currency currency=currencyRepository.save(cur);
 		return currency;
@@ -32,5 +33,10 @@ public class CurrencyService {
 
 	public void deleteCurrency(Integer id) {
 		currencyRepository.deleteById(id);
+	}
+
+	public List<Currency> getCurrencyById(Integer coinId) {
+		currencyRepository.findById(coinId);
+		return null;
 	}
 }

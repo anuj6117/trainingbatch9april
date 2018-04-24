@@ -15,6 +15,8 @@ import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.Email;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 @Entity
 @Table(name="user")
@@ -24,20 +26,17 @@ public class User {
     @GeneratedValue(strategy=GenerationType.AUTO)
 	private Integer userId;
     
-    //@NotNull(message="name cannot be null")
-    //@Size(max=25,message="name cannot be greater than 25 length")
 	private String userName;
     
    @Email
 	private String email;
     private String country;
     
-  // @Size(min=10,max=10,message="please enter a valid mobile numbers")
+ 
     private Long phoneNumber;
     private String password;
     private Date createdOn;
-  //  private String userWallet;
-    
+
     
     @ManyToMany(fetch = FetchType.EAGER,cascade = {CascadeType.PERSIST,CascadeType.MERGE})
     @JoinTable(name="user_role",joinColumns = {@JoinColumn(name = "user_id123", referencedColumnName="userId")},
@@ -46,13 +45,23 @@ public class User {
     
     
     @OneToMany(mappedBy="user")
-    private List<Wallet> walletType;
+    private List<Wallet> userWallet;
     
     @OneToMany(mappedBy="user")
     private List<UserOrder> userOrder;
     
 
-    public Date getCreatedOn() {
+    public List<UserOrder> getUserOrder() {
+		return userOrder;
+	}
+
+
+	public void setUserOrder(List<UserOrder> userOrder) {
+		this.userOrder = userOrder;
+	}
+
+
+	public Date getCreatedOn() {
 		return createdOn;
 	}
 
@@ -77,14 +86,14 @@ public class User {
 	}
 
 	
-	public List<Wallet> getWalletType() {
-		return walletType;
+	public List<Wallet> getUserWallet() {
+		return userWallet;
 	}
 
 
 
-	public void setWalletType(List<Wallet> walletType) {
-		this.walletType = walletType;
+	public void setUserWallet(List<Wallet> walletType) {
+		this.userWallet = walletType;
 		
 	}
 

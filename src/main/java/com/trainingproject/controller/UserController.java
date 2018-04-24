@@ -4,17 +4,21 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.trainingproject.domain.User;
+import com.trainingproject.domain.UserOrder;
 import com.trainingproject.dto.AssignRoleBean;
 import com.trainingproject.dto.AssignWalletBean;
-import com.trainingproject.dto.BuySellBean;
 import com.trainingproject.dto.WithdrawDepositBean;
 import com.trainingproject.service.UserService;
 
@@ -27,11 +31,8 @@ public class UserController{
 	
 	@RequestMapping(value="signUp",method=RequestMethod.POST)
 	public String addUser(@RequestBody User user) {
-		User userCreated=userservice.createUser(user);
-		if(userCreated!=null)
-		return "Success";
-		else
-			return "fail";
+		return userservice.createUser(user);
+		
 		
 	}
 	
@@ -58,10 +59,10 @@ public class UserController{
 	}
 	
 	
-	@RequestMapping(value="update",method=RequestMethod.POST)
-	public User update(@RequestBody User user){
-		User updateduser=userservice.update(user);
-		return updateduser;
+	@RequestMapping(value="updateuser",method=RequestMethod.POST)
+	public String update(@RequestBody User user){
+		return userservice.update(user);
+		
 	}
 	
 	@RequestMapping(value="delete",method=RequestMethod.GET)
@@ -97,15 +98,20 @@ public class UserController{
 		
 	}
 	
-	@RequestMapping(value="createbuyorder",method=RequestMethod.POST)
-	public String createBuyOrder(@RequestBody BuySellBean bsb) {
-		return userservice.createBuyOrder(bsb);
+	@RequestMapping(value="getorderbyuserid",method=RequestMethod.GET)
+	public List<UserOrder> getAllOrderByUserId(@RequestParam Integer userId) {
+		
+		 return  userservice.getAllOrdersByUserId(userId);
 	}
 	
-	@RequestMapping(value="/createsellorder",method=RequestMethod.POST)
-	public String createSellOrder(@RequestBody BuySellBean bsb) {
-		return userservice.createSellOrder(bsb);
-		
-	}
+//	  @ResponseStatus(value = HttpStatus.BAD_REQUEST, reason = "please enter valid data")
+//	   @ExceptionHandler(HttpMessageNotReadableException.class)
+//	   public void handleException() {
+//	        //Handle Exception Here...
+//		  
+//	    }
+	
+
+
 	}
 

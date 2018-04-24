@@ -10,7 +10,9 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.trainingproject.enums.OrderType;
+import com.trainingproject.enums.UserOrderStatus;
 
 @Entity
 @Table(name="userorder")
@@ -22,19 +24,42 @@ public class UserOrder {
  @Enumerated(EnumType.STRING)
  private OrderType orderType;
  private String coinName;
- private long quantity;
+ @Enumerated(EnumType.STRING)
+ private UserOrderStatus orderStatus;
+
  private long price;
+ private long grossAmount;
  private Integer coinQuantity;
  private Date date;
-
+ private Long fee=2l;
+ private Integer userId;
  
- @ManyToOne
+
+
+ public long getGrossAmount() {
+	return grossAmount;
+}
+
+public void setGrossAmount(long grossAmount) {
+	this.grossAmount = grossAmount;
+}
+@ManyToOne
+ @JsonIgnore
  private User user;
  
  
- public Integer getCoinQuantity() {
+ public UserOrderStatus getOrderStatus() {
+	return orderStatus;
+}
+
+public void setOrderStatus(UserOrderStatus orderStatus) {
+	this.orderStatus = orderStatus;
+}
+
+public Integer getCoinQuantity() {
 	return coinQuantity;
 }
+ 
 public void setCoinQuantity(Integer coinQuantity) {
 	this.coinQuantity = coinQuantity;
 }
@@ -45,6 +70,23 @@ public User getUser() {
 public void setUser(User user) {
 	this.user = user;
 }
+
+public Integer getUserId() {
+	return userId;
+}
+
+public void setUserId(Integer userId) {
+	this.userId = userId;
+}
+
+public Long getFee() {
+	return fee;
+}
+
+public void setFee(Long fee) {
+	this.fee = fee;
+}
+
 public Integer getUserorderId() {
 	return userorderId;
 }
@@ -63,12 +105,7 @@ public String getCoinName() {
 public void setCoinName(String coinName) {
 	this.coinName = coinName;
 }
-public long getQuantity() {
-	return quantity;
-}
-public void setQuantity(long quantity) {
-	this.quantity = quantity;
-}
+
 public long getPrice() {
 	return price;
 }

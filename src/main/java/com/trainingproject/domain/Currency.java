@@ -15,7 +15,7 @@ public class Currency {
     
 	private String coinName;
 	private String symbol;
-	private Integer initialsupply;
+	private Integer initialSupply;
 	private Integer price; 
 	private Integer fees; 
 	private Integer profit; 
@@ -27,11 +27,11 @@ public class Currency {
 	public void setCoinId(Integer coinId) {
 		this.coinId = coinId;
 	}
-	public Integer getInitialsupply() {
-		return initialsupply;
+	public Integer getInitialSupply() {
+		return initialSupply;
 	}
-	public void setInitialsupply(Integer initialsupply) {
-		this.initialsupply = initialsupply;
+	public void setInitialSupply(Integer initialsupply) {
+		this.initialSupply = initialsupply;
 	}
 	public Integer getFees() {
 		return fees;
@@ -58,10 +58,10 @@ public class Currency {
 		this.coinId = id;
 	}
 	public Integer getSupply() {
-		return initialsupply;
+		return initialSupply;
 	}
 	public void setSupply(Integer supply) {
-		this.initialsupply = supply;
+		this.initialSupply = supply;
 	}
 	public Integer getPrice() {
 		return price;

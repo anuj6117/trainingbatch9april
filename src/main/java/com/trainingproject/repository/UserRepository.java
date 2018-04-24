@@ -8,4 +8,7 @@ import com.trainingproject.domain.User;
 @Repository
 public interface UserRepository extends JpaRepository<User,Integer>{
 
+	User findByEmail(String email);
+	
+	User findByphoneNumber(long phoneNumber);
 }

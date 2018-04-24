@@ -1,10 +1,11 @@
 package com.trainingproject.service;
 
 import java.util.ArrayList;
-
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,6 +19,7 @@ import com.trainingproject.dto.AssignWalletBean;
 import com.trainingproject.dto.BuySellBean;
 import com.trainingproject.dto.WithdrawDepositBean;
 import com.trainingproject.enums.OrderType;
+import com.trainingproject.enums.UserOrderStatus;
 import com.trainingproject.enums.WalletType;
 import com.trainingproject.repository.RoleRepository;
 import com.trainingproject.repository.UserOrderRepository;
@@ -42,7 +44,31 @@ public class UserService {
 	@Autowired
 	RoleRepository roleService;
 	
-	public User createUser(User user) {
+	public String createUser(User user) {
+		
+		Pattern p = Pattern.compile("[^a-z0-9 ]", Pattern.CASE_INSENSITIVE);
+		Matcher m = p.matcher(user.getUserName());
+	     if(m.find())
+	    	 return "your name cannot have a special character";
+		if(user.getUserName().length()==0)
+			return "name cannot be empty";
+		else if(user.getUserName().length()>25)
+			return "Maximum characters allowed for this field is 25";
+		
+		if(userRepository.findByEmail(user.getEmail())!=null)
+			return "oops this email id is already registered";
+		
+		if(userRepository.findByphoneNumber(user.getPhoneNumber())!=null)
+			return "oops this phone number is already registered";
+		
+		if(user.getPhoneNumber().toString().length()!=10)
+			return "please enter a valid phone number";
+		
+		if(user.getPassword().length()<8)
+			return "please enter password with minimum 8 characters";
+		
+		if(user.getPassword().length()>32)
+			return "Maximum characters allowed for this field is 32";
 		
 		user.setCreatedOn(new Date());
 		
@@ -53,7 +79,7 @@ public class UserService {
 		wallet.setUser(user);
 		walletSet.add(wallet);
 		walletRepository.save(wallet);
-		user.setWalletType(walletSet);
+		user.setUserWallet(walletSet);
 		
 		List<Role> roleList=new ArrayList<Role>();
 		Role role=new Role();
@@ -63,7 +89,7 @@ public class UserService {
 		user.setRoleType(roleList);
 		
 	     userRepository.save(user);
-		return user;
+		   return "success";
 	}
 	
 	
@@ -82,9 +108,37 @@ public class UserService {
 	}
 
 
-	public User update(User user) {
+	public String update(User user) {
 	
-		return userRepository.save(user);
+		if(!userRepository.existsById(user.getUserId()))
+			return "this user do not exist";
+		
+		Pattern p = Pattern.compile("[^a-z0-9 ]", Pattern.CASE_INSENSITIVE);
+		Matcher m = p.matcher(user.getUserName());
+	     if(m.find())
+	    	 return "your name cannot have a special character";
+		if(user.getUserName().length()==0)
+			return "name cannot be empty";
+		else if(user.getUserName().length()>25)
+			return "Maximum characters allowed for this field is 25";
+		
+		if(userRepository.findByEmail(user.getEmail())!=null)
+			return "oops this email id is already registered";
+		
+		if(userRepository.findByphoneNumber(user.getPhoneNumber())!=null)
+			return "oops this phone number is already registered";
+		
+		if(user.getPhoneNumber().toString().length()!=10)
+			return "please enter a valid phone number";
+		
+		if(user.getPassword().length()<8)
+			return "please enter password with minimum 8 characters";
+		
+		if(user.getPassword().length()>32)
+			return "Maximum characters allowed for this field is 32";
+		user.setCreatedOn(new Date());
+		 userRepository.save(user);
+		 return "success";
 	}
 
 	public void deleteData(Integer id)
@@ -133,7 +187,7 @@ public class UserService {
 		
 		 List<Wallet> walletSet=new ArrayList<Wallet>();
 		 walletSet.add(cwallet);
-		user.setWalletType(walletSet);
+		user.setUserWallet(walletSet);
 		
 		userRepository.save(user);
 		
@@ -149,55 +203,81 @@ public class UserService {
 	public String withdrawAmount(WithdrawDepositBean wb) {
      
 		User user=getUserById(wb.getUserId()).get();
-		List <Wallet> walletsList=user.getWalletType();
 		
-		Wallet wallet=null;
-		boolean b=false;
-		for(int i=0;i<walletsList.size();i++) {
+        UserOrder userorder=new UserOrder();
 		
-			if(walletsList.get(i).getWalletType().equals(wb.getWalletType())) {
-				
-				b=true;
-				wallet=walletsList.get(i);
-				break;
-			}
-		}
+		userorder.setDate(new Date());
+		userorder.setOrderType(OrderType.WITHDRAW);
+		userorder.setOrderStatus(UserOrderStatus.PENDING);
+		userorder.setUser(user);
+		userorder.setUserId(user.getUserId());
+		userorder.setPrice(wb.getAmount());
+		userorder.setGrossAmount(wb.getAmount());
+		userorderRepository.save(userorder);
 		
-		if(b) {
-		wallet.setBalance(wallet.getBalance()-wb.getAmount());
-		walletRepository.save(wallet);
 		return "success";
-		}
-		else {
-			return "failure";
-		}
+//		List <Wallet> walletsList=user.getUserWallet();
+//		
+//		Wallet wallet=null;
+//		boolean b=false;
+//		for(int i=0;i<walletsList.size();i++) {
+//		
+//			if(walletsList.get(i).getWalletType().equals(wb.getWalletType())) {
+//				
+//				b=true;
+//				wallet=walletsList.get(i);
+//				break;
+//			}
+//		}
+//		
+//		if(b) {
+//		wallet.setBalance(wallet.getBalance()-wb.getAmount());
+//		walletRepository.save(wallet);
+//		return "success";
+//		}
+//		else {
+//			return "failure";
+//		}
+		
+		
 	}
 
 
 
 	public String depositAmount(WithdrawDepositBean wdb) {
 	   
-		User user=getUserById(wdb.getUserId()).get();
-		List <Wallet> walletsList=user.getWalletType();
-		Wallet wallet=null;
-		boolean b=false;
-		for(int i=0;i<walletsList.size();i++) {
+//		User user=getUserById(wdb.getUserId()).get();
+//		List <Wallet> walletsList=user.getUserWallet();
+//		Wallet wallet=null;
+//		boolean b=false;
+//		
+//		wallet=walletRepository.findBywalletType(WalletType.FIAT);
+//		if(wallet!=null)
+//			b=true;
+//		
+//		if(b)
+//		{
+//		wallet.setBalance(wallet.getBalance()+wdb.getAmount());
+//		walletRepository.save(wallet);
+//		return "success";
+//		}
+//		else return "you dont have this account";
 		
-			if(walletsList.get(i).getWalletType().equals(wdb.getWalletType())) {
-				
-				b=true;
-				wallet=walletsList.get(i);
-				break;
-			}
-		}
+		User user =getUserById(wdb.getUserId()).get();
 		
-		if(b)
-		{
-		wallet.setBalance(wallet.getBalance()+wdb.getAmount());
-		walletRepository.save(wallet);
+		UserOrder userorder=new UserOrder();
+		
+		userorder.setDate(new Date());
+		userorder.setOrderType(OrderType.DEPOSIT);
+		userorder.setOrderStatus(UserOrderStatus.PENDING);
+		userorder.setUser(user);
+		userorder.setUserId(user.getUserId());
+		userorder.setPrice(wdb.getAmount());
+		userorder.setGrossAmount(wdb.getAmount());
+		userorderRepository.save(userorder);
+		
 		return "success";
-		}
-		else return "you dont have this account";
+		
 	}
 
 
@@ -212,6 +292,7 @@ public class UserService {
 		userorder.setOrderType(OrderType.BUY);
 		userorder.setUser(user);
 		userorder.setPrice(bsb.getPrice());
+		userorder.setUserId(user.getUserId());
 		userorderRepository.save(userorder);
 		
 		return "success";
@@ -221,7 +302,6 @@ public class UserService {
 
 	public String createSellOrder(BuySellBean bsb) {
 	
-		
      User user =getUserById(bsb.getUserId()).get();
 		
 		UserOrder userorder=new UserOrder();
@@ -231,12 +311,19 @@ public class UserService {
 		userorder.setOrderType(OrderType.SELL);
 		userorder.setUser(user);
 		userorder.setPrice(bsb.getPrice());
+		userorder.setUserId(user.getUserId());
 		userorderRepository.save(userorder);
 		
 		return "success";
 	}
 	
-	
+	public List<UserOrder> getAllOrdersByUserId(Integer userId) {
+		
+		User user=getUserById(userId).get();
+		
+		return user.getUserOrder();
+		
+	}
 	
 	
 	

@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.trainingproject.domain.Wallet;
+import com.trainingproject.dto.ApproveWalletBean;
 import com.trainingproject.service.WalletService;
 
 @RestController
@@ -23,4 +24,8 @@ public class WalletController {
 		else return "success";
 	}
 	
+	@RequestMapping(value="approvewallet",method=RequestMethod.POST)
+	public String approveWallet(@RequestBody ApproveWalletBean awb) {
+		return walletService.approveWallet(awb);
+	}
 }

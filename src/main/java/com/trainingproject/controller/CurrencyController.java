@@ -29,6 +29,11 @@ public class CurrencyController {
 		return currencyService.getAllCurrency();
 	}
 	
+	@RequestMapping(value="/getcurrencybyid",method=RequestMethod.GET)
+	public List<Currency> getCurrencyById(@RequestParam Integer coinId) {
+		return currencyService.getCurrencyById(coinId);
+	}
+	
 	@RequestMapping(value="/updatecurrency",method=RequestMethod.POST)
 	public Currency updateCurrency(@RequestBody Currency cur) {
 		Currency currn=currencyService.updateCurrency(cur);
@@ -40,4 +45,5 @@ public class CurrencyController {
 		currencyService.deleteCurrency(id);
 		return "success";
 	}
+	
 }
