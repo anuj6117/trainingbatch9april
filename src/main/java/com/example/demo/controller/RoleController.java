@@ -1,5 +1,7 @@
 package com.example.demo.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -13,19 +15,16 @@ import com.example.demo.service.RoleService;
 public class RoleController {
 	
 	@Autowired
-	private RoleService roleService;
-	
+	private RoleService roleService;	
 	
 	@RequestMapping(value="/createrole", method=RequestMethod.POST)
 	public String createRole(@RequestBody Role role) {
-		return (roleService.createRole(role)!=null)?"success":"role not created";
-	}
-	
-	@RequestMapping(value="/assignrole", method=RequestMethod.POST)
-	public String assignRole(@RequestBody Role role) {
-		return (roleService.assignRole(role)!=null)?"success":"role not created";
-	}
-
-	
+		return (roleService.createRole(role.getRoleType())!=null)?"success":"role not created";
+	}	
+		
+	@RequestMapping("/getrole")
+	public List<Role> getRoles() {
+		return roleService.getRoles();		
+	}	
 	
 }

@@ -10,6 +10,8 @@ import com.example.demo.model.CurrencyModel;
 public interface CurrencyRepository extends JpaRepository<CurrencyModel, Integer>{
 
 	public CurrencyModel findOneByCoinName(String currency);
-	public CurrencyModel findOneByCoinId(Integer coinId);
+	public CurrencyModel findOneByCoinId(Integer currency);
+	public CurrencyModel findOneBySymbol(String symbol);
+	
 
 }

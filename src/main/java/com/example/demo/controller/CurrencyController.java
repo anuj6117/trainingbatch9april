@@ -20,10 +20,7 @@ public class CurrencyController {
 	
 	@RequestMapping(value="/addcurrency", method=RequestMethod.POST)
 	public String addCurrency(@RequestBody CurrencyModel currency) {
-		if((currencyService.addCurrency(currency))!=null)
-			return "success";
-		else
-			return "currency already exist";
+		return (currencyService.addCurrency(currency)!=null)?"success":"currency already exist";			
 	}
 	
 	@RequestMapping("/getallcurrnecy")
@@ -31,17 +28,19 @@ public class CurrencyController {
 		return currencyService.getAllCurrency();
 	}
 	
+	@RequestMapping("/getcurrnecybyid")
+	public CurrencyModel getCurrencyById(@RequestParam("id")Integer id) {
+		return currencyService.getCurrencyById(id);
+	}
+	
 	@RequestMapping(name="/updatecurrnecy", method=RequestMethod.POST)
 	public String updateCurrency(@RequestBody CurrencyModel currency) {
-		if(currencyService.updateCurrency(currency)!=null)
-		return "success";
-		else
-			return "currency not found";
+		return (currencyService.updateCurrency(currency)!=null)?"success":"currency not found";		
 	}
 	
 	@RequestMapping(name="/deletecurrnecy", method=RequestMethod.GET)
 	public String deleteCurrency(@RequestParam("id")Integer id) {
-		return currencyService.deleteCurrency(id)?"success":"failure";
+		return currencyService.deleteCurrency(id);
 	}
 	
 	
