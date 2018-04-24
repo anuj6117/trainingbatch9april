@@ -1,7 +1,7 @@
 package com.trainingproject.enums;
 
 public enum UserOrderStatus {
-	PENDING("pending"),COMPLETE("complete"),MODERATE("moderate");
+	pending("pending"),complete("complete"),moderate("moderate");
 
 private String value;
 	

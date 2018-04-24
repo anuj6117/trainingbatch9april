@@ -3,26 +3,53 @@ package com.trainingproject.domain;
 import java.util.Date;
 
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-import com.trainingproject.enums.UserOrderStatus;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.trainingproject.enums.OrderType;
+import com.trainingproject.enums.Status;
 
 @Entity
-@Table(name = "userrder")
+@Table(name = "userorder")
 public class UserOrder {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Integer userOrderId;
+	@Enumerated(EnumType.STRING)
+	private OrderType orderType;
     private String coinName;
     private Long coinQuantity;
-    private Long quote;
-    private Date createdOn;
-    private UserOrderStatus userOrderStatus;
-    private Long fees;
+    private Long price;
+    private Date orderCreatedOn;
+    @Enumerated(EnumType.STRING)
+    private Status status;
+    private Long fee;
+    @ManyToOne
+    @JoinColumn(name = "userId")
+	@JsonIgnore
+	private User user;
+    
+    
+	public OrderType getOrderType() {
+		return orderType;
+	}
+	public void setOrderType(OrderType orderType) {
+		this.orderType = orderType;
+	}
+	public User getUser() {
+		return user;
+	}
+	public void setUser(User user) {
+		this.user = user;
+	}
 	public Integer getUserOrderId() {
 		return userOrderId;
 	}
@@ -42,29 +69,33 @@ public class UserOrder {
 	public void setCoinQuantity(Long coinQuantity) {
 		this.coinQuantity = coinQuantity;
 	}
-	public Long getQuote() {
-		return quote;
+	
+	public Long getPrice() {
+		return price;
 	}
-	public void setQuote(Long quote) {
-		this.quote = quote;
+	public void setPrice(Long price) {
+		this.price = price;
 	}
-	public Date getCreatedOn() {
-		return createdOn;
+	
+	public Date getOrderCreatedOn() {
+		return orderCreatedOn;
 	}
-	public void setCreatedOn(Date createdOn) {
-		this.createdOn = createdOn;
+	public void setOrderCreatedOn(Date orderCreatedOn) {
+		this.orderCreatedOn = orderCreatedOn;
 	}
-	public UserOrderStatus getUserOrderStatus() {
-		return userOrderStatus;
+	
+	public Status getStatus() {
+		return status;
 	}
-	public void setUserOrderStatus(UserOrderStatus userOrderStatus) {
-		this.userOrderStatus = userOrderStatus;
+	public void setStatus(Status status) {
+		this.status = status;
 	}
-	public Long getFees() {
-		return fees;
+	public Long getFee() {
+		return fee;
 	}
-	public void setFees(Long fees) {
-		this.fees = fees;
+	public void setFee(Long fee) {
+		this.fee = fee;
 	}
+	
     
 }

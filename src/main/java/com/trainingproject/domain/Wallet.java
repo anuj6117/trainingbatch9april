@@ -6,6 +6,7 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
@@ -23,6 +24,7 @@ public class Wallet {
 	private Long balance;
 	private Long shadowBalance;
 	@ManyToOne
+	@JoinColumn(name = "userId")
 	@JsonIgnore
 	private User user;
 	

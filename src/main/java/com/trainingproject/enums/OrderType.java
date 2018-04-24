@@ -2,7 +2,7 @@ package com.trainingproject.enums;
 
 public enum OrderType {
 
-	Buy("buyer"),Sell("seller");
+	buyer("buyer"),seller("seller");
 	private String value;
 	
 	private OrderType(String value) {

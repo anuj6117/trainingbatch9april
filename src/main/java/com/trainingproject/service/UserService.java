@@ -47,11 +47,13 @@ public class UserService {
 	
 	
 	public User addUsers(User user) {
+		
 	    user.setCreatedOn(new Date());
 		user.setStatus(Status.INACTIVE);
 		List<Role> list = new ArrayList<Role>();
 		list.add(roleRepository.findByRoleType("user"));
 		User userCreated = userRepository.save(user);
+		
 		Set<Wallet> walletSet = new HashSet<Wallet>();
 		Wallet wallet = new Wallet();
 		wallet.setWalletType(WalletType.FIAT);
@@ -64,14 +66,14 @@ public class UserService {
 		
 		String str = user.getEmail();
 		
-		/*if(!(userRepository.save(user) == null)) {
+		if(!(userRepository.save(user) == null)) {
 			otp1 = userOTPService.sendSMS();
 			userOTPService.sendMail(str);
 			otp.setDate(new Date());
 			otp.setEmail(str);
 			otp.setTokenOTP(otp1);
 			userOTPRepository.save(otp);
-		}*/
+		}
 	return userCreated;
 }
 
@@ -116,11 +118,11 @@ public class UserService {
 				User tempUser = userRepository.save(user);
 				return tempUser;
 				} 	else {
-					throw new NullPointerException("User role doesn't exist");
+					  throw new NullPointerException("User role doesn't exist");
 					}
 			} 	else {
-			throw new NullPointerException("User id does not exist.");
-		}
+			      throw new NullPointerException("User id does not exist.");
+		        }
 	}
 
 	
@@ -132,7 +134,7 @@ public class UserService {
 		user = userRepository.findByEmail(userOtp.getEmail());
 		if(userOTP != null) {
 			if(userOTP.getEmail().equals(userOtp.getEmail())) {
-				userOTPRepository.deleteAll();
+				userOTPRepository.delete(userOTP);//deleteAll();
 				user.setStatus(Status.ACTIVE);
 				userRepository.save(user);
 				return "success";
@@ -200,6 +202,7 @@ public class UserService {
 		if(user != null) {
 			if(wallet != null ) {
 				longBalance = wallet.getBalance();
+				if(longBalance >= userWalletDto.getAmount()) {
 				longBalance = longBalance - userWalletDto.getAmount();
 				Set<Wallet> walletSet = new HashSet<Wallet>();
 				wallet.setBalance(longBalance);
@@ -208,10 +211,12 @@ public class UserService {
 				walletRepository.save(wallet);
 				user.setUserWallet(walletSet);
 				userRepository.save(user);
-			}
+			  }
+				else
+					return "You can't withdraw amount, your account balance is "+longBalance;
+			}		
 		}
 		return "Withdraw amount successfully";
 	}
 	
-
 }

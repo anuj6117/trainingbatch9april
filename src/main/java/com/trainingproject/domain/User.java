@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -18,8 +19,10 @@ import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
 import com.trainingproject.enums.Status;
@@ -30,11 +33,13 @@ public class User {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Integer userId;
-	@Size(min = 4, max = 25, message = "Fullname length must be between 6 to 25")
+	@Size(min = 4, max = 25, message = "Fullname length must be between 4 to 25")
+	@NotBlank(message = "ignoring leading and trailing whitespaces")
 	@NotEmpty(message = "Fullname should not left blank")
 	@NotNull(message = "Space is not allowed")
 	private String userName;
 	
+	@Column(unique = true)
 	@NotEmpty(message = "Email should not left blank")
 	@NotNull(message = "Blank or Space is not allowed")
 	@Email
@@ -44,15 +49,30 @@ public class User {
 	private Date createdOn;
 	@Enumerated(EnumType.STRING)
 	private Status status;
-	private Long phoneNumber;
+	@Pattern(regexp="(^$|[0-9]{10})")
+	private String phoneNumber;
 	
 	@OneToMany(mappedBy = "user")
 	private Set<Wallet> userWallet;
+	
 	@ManyToMany(cascade = CascadeType.ALL,fetch = FetchType.EAGER)
 	@JoinTable(name = "user_role",joinColumns = @JoinColumn(name = "user_id",referencedColumnName = "userId"),
 	inverseJoinColumns = @JoinColumn(name = "role_id",referencedColumnName = "roleId"))
 	private List<Role> roleType;
 	
+	@OneToMany(mappedBy = "user")
+	private List<UserOrder> orderType;
+	
+	
+	
+	public List<UserOrder> getOrderType() {
+		return orderType;
+	}
+
+	public void setOrderType(List<UserOrder> orderType) {
+		this.orderType = orderType;
+	}
+
 	public Set<Wallet> getUserWallet() {
 		return userWallet;
 	}
@@ -116,11 +136,14 @@ public class User {
 	public void setStatus(Status status) {
 		this.status = status;
 	}
-	public Long getPhoneNumber() {
+
+	public String getPhoneNumber() {
 		return phoneNumber;
 	}
-	public void setPhoneNumber(Long phoneNumber) {
+
+	public void setPhoneNumber(String phoneNumber) {
 		this.phoneNumber = phoneNumber;
 	}
+	
 }
 
