@@ -53,6 +53,7 @@ public class SignUpService {
 		boolean flag = userRepository.existsByEmail(user.getEmail());
 		if (flag == false) {
 			String email = user.getEmail();
+		   String phoneNo=user.getPhoneNo();
 			System.out.println(email);
 
 			System.out.println("service hit");
@@ -80,7 +81,7 @@ public class SignUpService {
 			if (existingUser != null) {
 
 				System.out.println("service hit inside if.");
-				otpService.sendSms(otp);
+				otpService.sendSms(otp,phoneNo);
 				emailService.home(email, otp);
 
 				otpVerification = new OtpVerification();
@@ -121,15 +122,15 @@ public class SignUpService {
 			t_user.setUserStatus(UserStatus.ACTIVE);
 			userRepository.save(t_user);
 			System.out.println("otpVerification table deleted.");
-			return"";
+			return "suceess";
 		} else {
 			System.out.println("Sorry, invalid username or otp");
-			return"";
+			return "otp is not valid";
 		}
 	}
 	catch(Exception e)
 		{
-		return "" +e.toString();
+		return " email does not match" +e.toString();
 		}
 	}
 	
@@ -137,12 +138,6 @@ public class SignUpService {
 	public List<User> getAllUsers() {
 		List<User> l = new ArrayList<User>();
 		l = userRepository.findAll();
-		ListIterator iterator = l.listIterator();
-		while (iterator.hasNext()) {
-			User use = (User) iterator.next();
-			System.out.println(use);
-
-		}
 		return l;
 	}
 

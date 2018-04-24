@@ -24,7 +24,7 @@ class OTPService {
 	public static final String AUTH_TOKEN = "5f43f85db0a85d9f4b549940d6915d80";
 	public static final String TWILIO_NUMBER = "+16022231950";
 
-	public void sendSms(int otp) {
+	public void sendSms(int otp, String PhoneNo) {
 		try {
 			System.out.println("sendsms::::::::::::::::::::::::::::");
 			TwilioRestClient client = new TwilioRestClient(ACCOUNT_SID, AUTH_TOKEN);
@@ -33,7 +33,7 @@ class OTPService {
 			List<NameValuePair> params = new ArrayList<NameValuePair>();
 
 			params.add(new BasicNameValuePair("Body", "your Otp Is= " + otp + " ,Sent by Mukul singhal"));
-			params.add(new BasicNameValuePair("To", "+919742913034")); // Add real number here
+			params.add(new BasicNameValuePair("To", PhoneNo)); // Add real number here
 			params.add(new BasicNameValuePair("From", TWILIO_NUMBER));
 			MessageFactory messageFactory = client.getAccount().getMessageFactory();
 			Message message = messageFactory.create(params);
