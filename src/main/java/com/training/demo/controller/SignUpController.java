@@ -39,16 +39,15 @@ public class SignUpController
 	 }
 	
 	@RequestMapping(value = "/verify", method = RequestMethod.POST)
-	public void userVerification(@RequestBody OtpVerification otpVerification)
+	public String userVerification(@RequestBody OtpVerification otpVerification)
 	{
 		if((otpVerification.getEmail()==null)||(otpVerification.getOtp()==null))
 		{
-			System.out.println("Inside Controller first if.");
-			System.out.println("Email and otp is null");
+				return "email or otp cannot be empty.";
 		}
 		else
 		{
-			signUpService.verifyUserWithOtp(otpVerification.getEmail(),otpVerification.getOtp());
+			return signUpService.verifyUserWithOtp(otpVerification.getEmail(),otpVerification.getOtp());
 			
 		}
 	 }

@@ -46,6 +46,7 @@ public class User
 	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
 	private Set<Wallet> wallets = new HashSet<Wallet>();
 	
+	
 	public User()
 	{	super();
 		System.out.println("Default Constructor");

@@ -24,21 +24,20 @@ import com.twilio.sdk.resource.instance.Message;
 	    public static final String TWILIO_NUMBER = "+16022231950";
 	    
 	    
-	    public void sendSms(int otp) {
+	    public void sendSms(int otp, String phoneNo) {
 			try {
-				System.out.println("sendsms::::::::::::::::::::::::::::");
+					
 				TwilioRestClient client = new TwilioRestClient(ACCOUNT_SID, AUTH_TOKEN);
 
 				// Build a filter for the MessageList
 				List<NameValuePair> params = new ArrayList<NameValuePair>();
-
-				params.add(new BasicNameValuePair("Body", "your Otp Is= "+otp+" ,Sent by Rohit Godara."));
-				params.add(new BasicNameValuePair("To", "+919742913034")); // Add real number here
+				
+				params.add(new BasicNameValuePair("Body", "your Otp is = "+otp+" ,Sent by Rohit Godara."));
+				params.add(new BasicNameValuePair("To", "+91"+phoneNo)); // Add real number here
 				params.add(new BasicNameValuePair("From", TWILIO_NUMBER));				
 				MessageFactory messageFactory = client.getAccount().getMessageFactory();
 				Message message = messageFactory.create(params);
-				System.out.println("sendsms::::::::::::::::::::::::::::last");
-				
+								
 			} catch (TwilioRestException e) {
 				System.out.println(e.getErrorMessage());
 			}

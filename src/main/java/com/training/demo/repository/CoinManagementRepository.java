@@ -8,5 +8,7 @@ import com.training.demo.model.User;
 public interface CoinManagementRepository extends JpaRepository<CoinManagement,Long> {
 	
 	public CoinManagement findOneByCoinId(Long coinId);
+	
+	public CoinManagement findOneByCoinName(String coinName);
 
 }

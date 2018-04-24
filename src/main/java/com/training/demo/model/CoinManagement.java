@@ -12,9 +12,10 @@ public class CoinManagement {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long coinId;
 	private String coinName;
+	private Integer coinQuantity;
 	private String symbol;
 	private Double initialSupply;
-	private Integer price;
+	private Double price;
 	
 	public Long getCoinId() {
 		return coinId;
@@ -40,10 +41,18 @@ public class CoinManagement {
 	public void setInitialSupply(Double initialSupply) {
 		this.initialSupply = initialSupply;
 	}
-	public Integer getPrice() {
+	public Double getPrice() {
 		return price;
 	}
-	public void setPrice(Integer price) {
+	public void setPrice(Double price) {
 		this.price = price;
 	}
+	public Integer getCoinQuantity() {
+		return coinQuantity;
+	}	
+	public void setCoinQuantity(Integer coinQuantity) {
+		this.coinQuantity = coinQuantity;
+	}
+	
+	
 }

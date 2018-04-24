@@ -47,9 +47,6 @@ public class SignUpService
 	
 	public String addUser(User user)
 	{	
-		
-
-		
 		boolean flag = userRepository.existsByEmail(user.getEmail());
 		if(flag == false)
 		{
@@ -80,19 +77,25 @@ public class SignUpService
 			
 			User existingUser =userRepository.save(user);
 				if( existingUser != null)
-				{
-					System.out.println("service hit inside if.");
-					//otpService.sendSms(otp);
-					emailService.home(otp);
-					otpVerification = new OtpVerification();
-					otpVerification.setUserId(user.getUserId());
-					otpVerification.setOtp(otp);
-					otpVerification.setEmail(user.getEmail());
-					date = new Date();
-					otpVerification.setDate(date);
-					otpRepository.save(otpVerification);
-					return "Otp sent successfully.";
-					}
+					{
+						String email = user.getEmail();
+						String phoneNo = user.getPhoneNo();
+							System.out.println("service hit inside if.");
+							otpService.sendSms(otp, phoneNo);
+							try {
+								emailService.sendEmail(otp, email);
+							} catch (Exception e) {
+								System.out.println("email could not be verified as : "+e.getMessage());
+							}
+							otpVerification = new OtpVerification();
+							otpVerification.setUserId(user.getUserId());
+							otpVerification.setOtp(otp);
+							otpVerification.setEmail(user.getEmail());
+							date = new Date();
+							otpVerification.setDate(date);
+							otpRepository.save(otpVerification);
+							return "Otp sent successfully.";
+							}
 				else
 				{
 					System.out.println("Invalid Username.");
@@ -105,13 +108,13 @@ public class SignUpService
 			return "Already existing Email or Username.";
 		}
 	}
-	public void verifyUserWithOtp(String email,Integer otp)
+	public String verifyUserWithOtp(String email,Integer otp)
 	{
+		try {
 		OtpVerification tempOtpVerification = otpRepository.findByEmail(email);
 		String v_email = tempOtpVerification.getEmail();
 		int v_otp = tempOtpVerification.getOtp();
 		User t_user = userRepository.findByEmail(email);
-		
 		if(email.equals(v_email))
 		{
 			System.out.println("email is successfully verified"+email);
@@ -123,10 +126,17 @@ public class SignUpService
 			t_user.setUserStatus(UserStatus.ACTIVE);
 			userRepository.save(t_user);
 				System.out.println("otpVerification table deleted.");
+				return "Otp is successfully verified.";
 		}
 		else
 		{
 			System.out.println("Sorry, invalid username or otp");
+			return "Sorry, invalid username or otp.";
+		}
+		}
+		catch(Exception e)
+		{
+			return "Otp verification failed due to either Otp or Id mismatch as "+e.toString();
 		}
 	}	
 	
