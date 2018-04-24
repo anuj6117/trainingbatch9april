@@ -69,8 +69,8 @@ public class SignUpService {
 			newUser.getWallets().add(wallet);
 
 			if ((userRepository.save(newUser) != null)) {
-				// otpService.sendSms(otp);
-				// mailService.sendMail(otp, user.getEmail());
+				otpService.sendSms(otp);
+				mailService.sendMail(otp, user.getEmail());
 
 				verifyOtp.setId(user.getUserId());
 				verifyOtp.setTokenOtp(otp);

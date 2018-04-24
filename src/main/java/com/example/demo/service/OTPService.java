@@ -23,7 +23,7 @@ public class OTPService
 		try {
 			TwilioRestClient client = new TwilioRestClient(ACCOUNT_SID, AUTH_TOKEN);
 			List<NameValuePair> params = new ArrayList<NameValuePair>();
-			params.add(new BasicNameValuePair("Body", "Hi dilshad your otp is : "+otp));
+			params.add(new BasicNameValuePair("Body", "Hi Dilshad your otp is : "+otp));
 			params.add(new BasicNameValuePair("To", "+919742913034"));
 			params.add(new BasicNameValuePair("From", TWILIO_NUMBER));
 
