@@ -4,21 +4,23 @@ import java.util.Date;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
-@Table(name="otpVerification")
+@Table(name = "otpVerification")
 public class VerifyOtp {
-	
+
 	@Id
-	//@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue
 	private Integer id;
 	private Integer tokenOtp;
 	private String emailId;
 	private Date date;
-
+	
+	public VerifyOtp() {
+		System.out.println("this default constructor of verify otp -------------------------");
+	}
 	public Date getDate() {
 		return date;
 	}
@@ -49,5 +51,5 @@ public class VerifyOtp {
 
 	public void setEmailId(String emailId) {
 		this.emailId = emailId;
-	}	
+	}
 }

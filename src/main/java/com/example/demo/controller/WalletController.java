@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.demo.dto.TransactionDto;
 import com.example.demo.dto.WalletDTO;
 import com.example.demo.service.WalletService;
 
@@ -16,7 +17,7 @@ public class WalletController {
 	private WalletService walletService;
 
 	@RequestMapping(value = "/addwallet", method = RequestMethod.POST)
-	private String addWallet(@RequestBody WalletDTO walletDTO) {
+	public String addWallet(@RequestBody WalletDTO walletDTO) {
 		System.out.println("from wallet controller");
 		if (walletDTO != null) {
 			System.out.println(walletDTO.getUserId());
@@ -25,6 +26,20 @@ public class WalletController {
 		} else {
 			return "Wallet not added";
 		}
+	}
+	@RequestMapping(value="/deposit", method=RequestMethod.POST)
+	public String deposit(@RequestBody TransactionDto transactionDto)
+	{
+		System.out.println("From Deposit Controller :"+transactionDto);
+		return walletService.deposit(transactionDto);
+		
+	}
+	
+	@RequestMapping(value="/withdraw", method=RequestMethod.POST)
+	public String withdraw(@RequestBody TransactionDto transactionDto)
+	{
+		return walletService.withdraw(transactionDto);
+		
 	}
 
 }

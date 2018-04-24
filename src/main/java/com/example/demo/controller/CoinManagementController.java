@@ -14,55 +14,44 @@ import com.example.demo.service.CoinManagementService;
 
 @RestController
 public class CoinManagementController {
-	
+
 	@Autowired
 	private CoinManagementService coinManagementService;
-	
-	@RequestMapping(value="/addcurrency", method=RequestMethod.POST)
-	public String addCoin(@RequestBody CoinManagement data)
-	{
-		String result=coinManagementService.addAllCoin(data);
-		
-		if(result != null)
-		{
+
+	@RequestMapping(value = "/addcurrency", method = RequestMethod.POST)
+	public String addCoin(@RequestBody CoinManagement data) {
+		String result = coinManagementService.addAllCoin(data);
+
+		if (result != null) {
 			return "From controller coin added";
-		}
-		else
-		{
+		} else {
 			return "From controller coin not added";
 		}
 	}
-	
-	@RequestMapping(value="getallcurrency", method=RequestMethod.GET)
-	public List<CoinManagement> getAllCurrency()
-	{
-		List<CoinManagement> list=coinManagementService.getCurrencies();
+
+	@RequestMapping(value = "getallcurrency", method = RequestMethod.GET)
+	public List<CoinManagement> getAllCurrency() {
+		List<CoinManagement> list = coinManagementService.getCurrencies();
 		return list;
 	}
-	
-	@RequestMapping(value="/updatecurrency", method=RequestMethod.POST)
-	public String updateCurrency(@RequestBody CoinManagement data)
-	{
-		String result=coinManagementService.update(data);
-		if(result != null)
-		{
+
+	@RequestMapping(value = "/updatecurrency", method = RequestMethod.POST)
+	public String updateCurrency(@RequestBody CoinManagement data) {
+		String result = coinManagementService.update(data);
+		if (result != null) {
 			return "Coin Updated";
-		}
-		else
-		{
+		} else {
 			return "Coin not updated";
 		}
 	}
-	
-	@RequestMapping(value="/deletecurrency", method=RequestMethod.GET)
-	public String delete(@RequestParam("coinId") Integer id)
-	{
-		if(id != null)
-		{
+
+	@RequestMapping(value = "/deletecurrency", method = RequestMethod.GET)
+	public String delete(@RequestParam("coinId") Integer id) {
+		if (id != null) {
 			coinManagementService.delete(id);
 			return "success";
 		}
-		return "fail";	
+		return "fail";
 	}
 
 }

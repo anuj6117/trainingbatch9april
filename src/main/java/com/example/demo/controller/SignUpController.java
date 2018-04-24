@@ -15,49 +15,38 @@ import com.example.demo.model.VerifyOtp;
 import com.example.demo.service.SignUpService;
 
 @RestController
-public class SignUpController 
-{
+public class SignUpController {
 	@Autowired
 	private SignUpService signUpService;
-	
-	@RequestMapping(value="/signup", method=RequestMethod.POST)
-	public String insertUser(@RequestBody User user)
-	{
-		String u=signUpService.addUser(user);
-		if(u != null)
-		{
+
+	@RequestMapping(value = "/signup", method = RequestMethod.POST)
+	public String insertUser(@RequestBody User user) {
+		String u = signUpService.addUser(user);
+		if (u != null) {
 			return u;
-		}
-		else
-		{
+		} else {
 			return "Null user details not accepted";
 		}
 	}
-	
-	@RequestMapping(value="/verifyuser", method=RequestMethod.POST)
-	public void verifyUser(@RequestBody VerifyOtp obj) 
-	{
-		if( ((obj.getEmailId() != null) && (obj.getTokenOtp() != null)) )
-		{
-			System.out.println("from controller "+obj.getEmailId()+"\t"+obj.getTokenOtp());
-			signUpService.verifyUserWithOtp(obj.getEmailId(),obj.getTokenOtp());
-			
-		}
-		else
-		{
-			System.out.println("from else block of controller "+obj.getEmailId()+"\t"+obj.getTokenOtp());
+
+	@RequestMapping(value = "/verifyuser", method = RequestMethod.POST)
+	public void verifyUser(@RequestBody VerifyOtp obj) {
+		if (((obj.getEmailId() != null) && (obj.getTokenOtp() != null))) {
+			System.out.println("from controller " + obj.getEmailId() + "\t" + obj.getTokenOtp());
+			signUpService.verifyUserWithOtp(obj.getEmailId(), obj.getTokenOtp());
+
+		} else {
+			System.out.println("from else block of controller " + obj.getEmailId() + "\t" + obj.getTokenOtp());
 			System.out.println("email and otp is null.");
 		}
 	}
-	
-	@RequestMapping(value="/getallusers", method=RequestMethod.GET)
-	public List<User> getAllUsers()
-	{
-		List<User> list=signUpService.getAllUsers();
+
+	@RequestMapping(value = "/getallusers", method = RequestMethod.GET)
+	public List<User> getAllUsers() {
+		List<User> list = signUpService.getAllUsers();
 		return list;
 	}
-	
-	
+
 	@RequestMapping(value = "/getuserbyid", method = RequestMethod.GET)
 	public Optional<User> getUserById(@RequestParam("userId") Integer id) {
 		Optional<User> obj = null;
@@ -68,21 +57,20 @@ public class SignUpController
 		}
 		return obj;
 	}
-	
-	@RequestMapping(value="/updateuserbyid", method=RequestMethod.POST)
-	public User updateUserById(@RequestBody User user)
-	{
+
+	@RequestMapping(value = "/updateuserbyid", method = RequestMethod.POST)
+	public User updateUserById(@RequestBody User user) {
 		return signUpService.update(user);
 	}
-	
-	@RequestMapping(value="/delete", method=RequestMethod.GET)
-	public String delete(@RequestParam("userId") Integer id)
-	{
-		if(id != null)
-		{
+
+	@RequestMapping(value = "/delete", method = RequestMethod.GET)
+	public String delete(@RequestParam("userId") Integer id) {
+		if (id != null) {
 			signUpService.delete(id);
 			return "success";
 		}
-		return "fail";	
-	}	
+		return "fail";
+	}
+	
+	
 }
