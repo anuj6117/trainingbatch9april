@@ -11,6 +11,7 @@ public class CurrencyService
 {
     @Autowired
 	private CurrencyRepository currencyrepository;
+    
 	public String addCurrency(Currency currency)
 	{
 	  if(!(currencyrepository.save(currency)==null))

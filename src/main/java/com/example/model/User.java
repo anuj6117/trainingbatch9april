@@ -16,6 +16,7 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 
 import com.example.enums.UserStatus;
 
@@ -27,6 +28,7 @@ public class User
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Integer userId;
 
+	@NotNull
 	private String fullName;
 	
 	private String email;
@@ -52,6 +54,10 @@ public class User
 	
 	@OneToMany(mappedBy="user")
 	private Set<Wallet> wallet = new HashSet<>();
+	
+	
+	@OneToMany(mappedBy="user")
+	private Set<Order> order = new HashSet<>();
 	
 	public Set<Wallet> getWallet() {
 		return wallet;

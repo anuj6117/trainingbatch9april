@@ -74,10 +74,10 @@ public class SignUpService
 		 if( !(userrepository.save(user) == null))
 		{
 			
-			//otps.sendSms(otpNum);
+			otps.sendSms(otpNum,user.getPhoneNo());
 			mailController.getMailOtp(otpval);
 			otptableservice.valuemethod(user,otpval);
-			mailController.home();
+			mailController.home(user.getEmail());
 			 
 			return "Sent Successfully ";
 		}

@@ -38,14 +38,22 @@ public class SignUserController
 	@RequestMapping(value="/signup", method=RequestMethod.POST)
 	public String insertUser(@RequestBody User user)
 	{
-		String u=signupservice.addUser(user);
-		if(u != null)
+		if(user.getPassword()!=null)
 		{
-			return "success";
+			 String u=signupservice.addUser(user);
+			   if(u != null)
+			   {
+				return "success";
+		       }
+			   else
+			   {
+				return "use different email";
+			   }
+			
 		}
 		else
 		{
-			return "user alrady exist";
+			return "enter valid password";
 		}
 	}
 	
@@ -67,7 +75,9 @@ public class SignUserController
 			otpjparepository.delete(userotptable);
 		}
 		else
-		{}
+		{
+			
+		}
        }
        catch(NullPointerException e)
        {

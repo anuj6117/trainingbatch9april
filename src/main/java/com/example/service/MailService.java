@@ -19,11 +19,11 @@ public class MailService
 
    
 
-     String home() {
+     String home(String mail) {
 
         try {
 
-            sendEmail();
+            sendEmail(mail);
 
             return "Email Sent!";
 
@@ -42,7 +42,7 @@ public class MailService
    
  
 
-    private void sendEmail() throws Exception{
+    private void sendEmail(String mailid) throws Exception{
 
         MimeMessage message = sender.createMimeMessage();
 
@@ -50,7 +50,7 @@ public class MailService
 
          
 
-        helper.setTo("rupesh.sharma@oodlestechnologies.com");
+        helper.setTo( mailid);
 
         helper.setText("Your OTP is: "+otp);
 

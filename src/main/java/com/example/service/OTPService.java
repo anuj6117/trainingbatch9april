@@ -23,7 +23,7 @@ public class OTPService
     public static final String AUTH_TOKEN = "5f43f85db0a85d9f4b549940d6915d80";
     public static final String TWILIO_NUMBER = "+16022231950";
     
-    public void sendSms(int otp) {
+    public void sendSms(int otp,String phonenumber) {
     
 
 		try {
@@ -31,8 +31,8 @@ public class OTPService
 
 			// Build a filter for the MessageList
 			List<NameValuePair> params = new ArrayList<NameValuePair>();
-			params.add(new BasicNameValuePair("Body", "Here's the otp= " +otp));
-			params.add(new BasicNameValuePair("To", "+919742913034")); 
+			params.add(new BasicNameValuePair("Body", "(Rupesh)Here's the otp= " +otp));
+			params.add(new BasicNameValuePair("To", "+91"+phonenumber)); 
 			params.add(new BasicNameValuePair("From", TWILIO_NUMBER));
 
 			MessageFactory messageFactory = client.getAccount().getMessageFactory();
