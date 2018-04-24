@@ -17,18 +17,31 @@ public class StoreOTP {
     @GeneratedValue(strategy=GenerationType.AUTO)
     private Integer id;
 	private Integer userotp;
-	private String UserEmail;
+	private String emailid;
 	private Date date;
+	
+	
+	
+
+	
+
+	
+	public Integer getId() {
+		return id;
+	}
+
+	public void setId(Integer id) {
+		this.id = id;
+	}
+
+	
+
+	
 
 	public StoreOTP() {
 	}
 
-	public StoreOTP(Integer userotp, String userEmail, Date date) {
-		super();
-		this.userotp = userotp;
-		UserEmail = userEmail;
-		this.date = date;
-	}
+	
 
 	public Integer getUserotp() {
 		return userotp;
@@ -38,12 +51,21 @@ public class StoreOTP {
 		this.userotp = userotp;
 	}
 
-	public String getUserEmail() {
-		return UserEmail;
+	
+
+	public StoreOTP(Integer userotp, String emailid, Date date) {
+		super();
+		this.userotp = userotp;
+		this.emailid = emailid;
+		this.date = date;
 	}
 
-	public void setUserEmail(String userEmail) {
-		UserEmail = userEmail;
+	public String getEmailid() {
+		return emailid;
+	}
+
+	public void setEmailid(String emailid) {
+		this.emailid = emailid;
 	}
 
 	public Date getDate() {

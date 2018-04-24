@@ -27,8 +27,8 @@ public class SignUp {
 	}
 	
 	@PostMapping("/verify")
-	public void verify(@RequestBody StoreOTP otp) {
-		signupservice.auth(otp);
+	public String verify(@RequestBody StoreOTP otp) {
+		return signupservice.auth(otp);
 		
 		
 		}

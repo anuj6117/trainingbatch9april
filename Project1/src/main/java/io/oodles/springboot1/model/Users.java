@@ -16,17 +16,44 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
+import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
+import javax.validation.constraints.Pattern;
 
 import io.oodles.springboot1.enums.Status;
 
 @Entity
+@Table(name = "user", 
+uniqueConstraints = @UniqueConstraint(name = "email_user_uc"
+                                      ,columnNames = {"emailid","phoneNumber"}))
 public class Users {
 	
 	@Id @GeneratedValue(strategy=GenerationType.AUTO)
 	public Integer userid;
-	public String fullName;
-	public String emailid;
-	public int mobileno;
+	public String userName;
+	
+	public String email;
+	
+	@Pattern(regexp="(^$|[0-9]{10})")
+	public String phoneNumber;
+	public String getUserName() {
+		return userName;
+	}
+	public void setUserName(String userName) {
+		this.userName = userName;
+	}
+	public String getEmail() {
+		return email;
+	}
+	public void setEmail(String email) {
+		this.email = email;
+	}
+	public String getPhoneNumber() {
+		return phoneNumber;
+	}
+	public void setPhoneNumber(String phoneNumber) {
+		this.phoneNumber = phoneNumber;
+	}
 	public String country;
 	public String password;
 	Date date;
@@ -41,9 +68,22 @@ public class Users {
 	@OneToMany(mappedBy="users")
 	private Set<Wallet> wallet;
 	
+	@OneToMany(mappedBy="usersorder")
+	private Set<UserOrder> userOrder;
+	
+	
+	
+	
 	
     
     
+	public Set<UserOrder> getUserOrder() {
+		return userOrder;
+	}
+	public void setUserOrder(Set<UserOrder> userOrder) {
+		this.userOrder = userOrder;
+	}
+	
 	public Set<Wallet> getWallet() {
 		return wallet;
 	}
@@ -70,24 +110,7 @@ public class Users {
 	public void setUserid(Integer userid) {
 		this.userid = userid;
 	}
-	public String getFullName() {
-		return fullName;
-	}
-	public void setFullName(String fullName) {
-		this.fullName = fullName;
-	}
-	public String getEmailid() {
-		return emailid;
-	}
-	public void setEmailid(String emailid) {
-		this.emailid = emailid;
-	}
-	public int getMobileno() {
-		return mobileno;
-	}
-	public void setMobileno(int mobileno) {
-		this.mobileno = mobileno;
-	}
+	
 	public String getCountry() {
 		return country;
 	}

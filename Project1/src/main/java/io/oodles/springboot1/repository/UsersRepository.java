@@ -7,9 +7,15 @@ import io.oodles.springboot1.model.Users;
 @Repository
 public interface UsersRepository extends JpaRepository<Users, Integer> {
 
-	Users findByUserid(Integer userid);
+	public Users findByUserid(Integer userid);
 
-	//public Users findByEmailid(String emailid);
+	public Users findByEmailid(String emailid);
+
+	
+
+	
+
+	
 
 	
 	

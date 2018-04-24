@@ -19,7 +19,7 @@ public class OTPService {
 	public void ValueMethod(Users users,Integer otp )
 	{
 		this.OTPValue=otp;
-		this.EmailValue=users.getEmailid();
+		this.EmailValue=users.getEmail();
 		
 		StoreOTP storeotp=new StoreOTP(OTPValue, EmailValue, new Date());
 		storeOTPRepository.save(storeotp);

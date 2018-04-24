@@ -14,5 +14,7 @@ public interface StoreOTPRepository extends JpaRepository<StoreOTP,Integer > {
 
 	public StoreOTP findByUserotp(Integer userotp);
 
+	//public void deleteByUserotp(Integer userotp);
+
 	
 }

@@ -47,10 +47,11 @@ public class Signupservice {
 	StoreOTPRepository storeOTPRepository;
 	@Autowired
 	WalletRepository walletRepository;
-	StoreOTP storeOTP=new StoreOTP();
-	Users users=new Users();
+	
+	Users users;
 	Role role=new Role();
 	Wallet wallet=new Wallet();
+	StoreOTP storeOTP;
 
 	public void addUser(Users users) {
 
@@ -77,11 +78,8 @@ public class Signupservice {
 		
 		
 			otpService.ValueMethod(users, otp1);
-			String email=users.getEmailid();
+			String email=users.getEmail();
 			
-			/*List<Role> list=new ArrayList<Role>();
-			list.add(rolerepository.findByRoletype("USER"));
-		    users.setRoles(list);*/
 		    
 		    
 		   
@@ -102,18 +100,12 @@ public class Signupservice {
 	}
 
 	public String auth(StoreOTP storeotp1) {
-		/*storeOTP=storeOTPRepository.findOnebyOtp(otp);
-		if(storeOTP.getUser_Email().equals(email)) {
-			System.out.println("success");
-		}
-		else
-			System.out.println("failure");
-		*/
-		//storeOTP=storeOTPRepository.findByOtp(storeotp1.getUser_otp());
-		//users=usersRepository.findByEmailid(storeotp1.getUser_Email());
+		storeOTP=storeOTPRepository.findByUserotp(storeotp1.getUserotp());
+		users=usersRepository.findByEmailid(storeotp1.getEmailid());
 		if(storeOTP!=null) {
-			if(storeotp1.getUserEmail().equals(storeotp1.getUserEmail())) {
-				storeOTPRepository.deleteAll();
+			if(storeOTP.getEmailid().equals(storeotp1.getEmailid())){
+				
+				storeOTPRepository.delete(storeOTP);
 				users.setStatus(Status.ACTIVE);
 				usersRepository.save(users);
 				return "Success";
@@ -121,7 +113,9 @@ public class Signupservice {
 			else
 				return "Failure";
 		}
-		else return "Not found";
+		else
+			return "Try Again";
+	
 		
 		
 		
