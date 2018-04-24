@@ -1,67 +1,126 @@
 package com.trading.controller;
 
+import java.util.Map;
 import java.util.Optional;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
 import com.trading.domain.User;
-import com.trading.domain.UserOtp;
+import com.trading.dto.UserOtpDto;
 import com.trading.dto.UserRoleDto;
+import com.trading.handler.ResponseHandler;
 import com.trading.services.UserOtpService;
 import com.trading.services.UserService;
 
 @RestController
 public class UserController {
 
-@Autowired 
-private	UserService userService;
-	
-@Autowired
-private UserOtpService userotpService;
-	
+	@Autowired
+	private UserService userService;
+
+	@Autowired
+	private UserOtpService userotpService;
+
 	@RequestMapping(value = "/signup", method = RequestMethod.POST)
-	public String signupdetails(@RequestBody User obj) throws Exception
-	{
-		return userService.insertDetails(obj);
+	public ResponseEntity<Object> signup(@Valid @RequestBody User user) throws Exception {
+		Map<String, Object> result = null;
+
+		try {
+			result = userService.signup(user);
+			if (result.get("isSuccess").equals(true)) {
+				return ResponseHandler.generateResponse(HttpStatus.OK, true, result.get("message").toString(), result);
+			} else {
+				return ResponseHandler.generateResponse(HttpStatus.OK, false, result.get("message").toString(), result);
+			}
+		} catch (Exception e) {
+			return ResponseHandler.generateResponse(HttpStatus.BAD_REQUEST, false, e.getMessage(), result);
+		}
 	}
 
-	@RequestMapping(value = "/userverification", method = RequestMethod.POST)
-	public String userverification(@RequestBody UserOtp obj ) throws Exception
-	{
-		return userotpService.verifyDetails(obj);
+	@RequestMapping(value = "/verifyuser", method = RequestMethod.POST)
+	public ResponseEntity<Object> userverification(@Valid @RequestBody UserOtpDto userOtpDto) throws Exception {
+		Map<String, Object> result = null;
+
+		try {
+			result = userotpService.verifyDetails(userOtpDto);
+			if (result.get("isSuccess").equals(true)) {
+				return ResponseHandler.generateResponse(HttpStatus.OK, true, result.get("message").toString(), result);
+			} else {
+				return ResponseHandler.generateResponse(HttpStatus.OK, false, result.get("message").toString(), result);
+			}
+		} catch (Exception e) {
+			return ResponseHandler.generateResponse(HttpStatus.BAD_REQUEST, false, e.getMessage(), result);
+		}
 	}
-	
+
 	@RequestMapping(value = "/getalluser", method = RequestMethod.GET)
-	public Iterable <User> getAllUser() throws Exception
-	{
+	public Iterable<User> getAllUser() throws Exception {
 		return userService.getDetails();
 	}
-	
+
 	@RequestMapping(value = "/getbyuserid", method = RequestMethod.GET)
-	public Optional<User> getByUserId(@RequestParam("userId") long userId) throws Exception
-	{
+	public Optional<User> getByUserId(@Valid @RequestParam("userId") long userId) throws Exception {
 		return userService.getById(userId);
 	}
-		
+
 	@RequestMapping(value = "/updateuser", method = RequestMethod.POST)
-	public User updateUser(@RequestBody User obj) {
-		return userService.updateDetails(obj);
+	public ResponseEntity<Object> updateUser(@Valid @RequestBody User user) {
+		Map<String, Object> result = null;
+
+		try {
+			result = userService.updateDetails(user);
+			if (result.get("isSuccess").equals(true)) {
+				return ResponseHandler.generateResponse(HttpStatus.OK, true, result.get("message").toString(), result);
+			} else {
+				return ResponseHandler.generateResponse(HttpStatus.OK, false, result.get("message").toString(), result);
+			}
+		} catch (Exception e) {
+			return ResponseHandler.generateResponse(HttpStatus.BAD_REQUEST, false, e.getMessage(), result);
+		}
+
 	}
-	
+
 	@RequestMapping(value = "/deleteuser", method = RequestMethod.GET)
-	public String deleteUser(@RequestParam("userId") long userId)
-	{
-		return userService.deleteById(userId);
+	public ResponseEntity<Object> deleteUser(@Valid @RequestParam("userId") long userId) {
+		Map<String, Object> result = null;
+
+		try {
+			result = userService.deleteById(userId);
+			if (result.get("isSuccess").equals(true)) {
+				return ResponseHandler.generateResponse(HttpStatus.OK, true, result.get("message").toString(), result);
+			} else {
+				return ResponseHandler.generateResponse(HttpStatus.OK, false, result.get("message").toString(), result);
+			}
+		} catch (Exception e) {
+			return ResponseHandler.generateResponse(HttpStatus.BAD_REQUEST, false, e.getMessage(), result);
+		}
+
 	}
-	
+
 	@RequestMapping(value = "/assignrole", method = RequestMethod.POST)
-	
-	public String assignRole(@RequestBody UserRoleDto userroledto)
-	{		
-		return userService.assignNewRole(userroledto);
-	} 	
+
+	public ResponseEntity<Object> assignRole(@Valid @RequestBody UserRoleDto userroledto) {
+		Map<String, Object> result = null;
+
+		try {
+			result = userService.assignNewRole(userroledto);
+			if (result.get("isSuccess").equals(true)) {
+				return ResponseHandler.generateResponse(HttpStatus.OK, true, result.get("message").toString(), result);
+			} else {
+				return ResponseHandler.generateResponse(HttpStatus.OK, false, result.get("message").toString(), result);
+			}
+		} catch (Exception e) {
+			return ResponseHandler.generateResponse(HttpStatus.BAD_REQUEST, false, e.getMessage(), result);
+		}
+
+	}
 }

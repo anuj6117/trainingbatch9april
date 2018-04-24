@@ -1,12 +1,15 @@
 package com.trading.services;
 
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Random;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.trading.Enum.RoleType;
 import com.trading.Enum.UserStatus;
 import com.trading.Enum.WalletType;
 import com.trading.domain.Role;
@@ -21,118 +24,165 @@ import com.trading.repository.UserRepository;
 @Service
 public class UserService {
 
-@Autowired
-private	UserRepository userrepository;
+	@Autowired
+	private UserRepository userRepository;
 
-@Autowired
-private RoleRepository rolerepository;
+	@Autowired
+	private RoleRepository roleRepository;
 
-@Autowired
-private OtpService otpservice;
+	@Autowired
+	private OtpService otpservice;
 
-@Autowired
-private EmailService emailservice;
+	@Autowired
+	private EmailService emailservice;
 
-@Autowired
-private UserOtpRepository userotprepository;
+	@Autowired
+	private UserOtpRepository userotpRepository;
 
-Random rnd=new Random();
-int otp=rnd.nextInt(10000);
-		
+	Random rnd = new Random();
+	int otp = rnd.nextInt(10000);
+
 	public int getOtp() {
-			return otp;
+		return otp;
+	}
+
+	private UserOtp userotp = new UserOtp();
+
+	public Map<String, Object> signup(User user) throws Exception {
+		Map<String, Object> result = new HashMap<String, Object>();
+		if (user.getPassword() == "" || user.getPassword() == null) {
+			result.put("isSuccess", false);
+			result.put("message", "Password cannot be null");
+			return result;
+		}
+		if (user.getUserName() == null || user.getUserName() == "") {
+			result.put("isSuccess", false);
+			result.put("message", "Username can not be null");
+			return result;
+		}
+		if (userRepository.findByEmail(user.getEmail()) != null) {
+			result.put("isSuccess", false);
+			result.put("message", "Oopss, this email is already registered");
+			return result;
+		}
+		if (user.getEmail() == null || user.getEmail() == "") {
+			result.put("isSuccess", false);
+			result.put("message", "Email cannot be null");
+			return result;
 		}
 
-private UserOtp userotp = new UserOtp();
-
-	public String insertDetails(User user) throws Exception {
-		if(user.getPassword()== "")
-		{
-			return "Please enter a valid password";
+		if (userRepository.findByphoneNumber(user.getPhoneNumber()) != null) {
+			result.put("isSuccess", false);
+			result.put("message", "Oopss, this phoneNumber is already registered");
+			return result;
 		}
-		if(user.getUserName()==null)
-		{
-			return "User name cannot be null";
+		if (user.getPhoneNumber() == 0L) {
+			result.put("isSuccess", false);
+			result.put("message", "Phone number cannot be null");
+			return result;
 		}
-		if(userrepository.findByEmail(user.getEmail()) != null) {
-			return "Oopss, this email is already registered";
-		}
-		if(userrepository.findByphoneNumber(user.getPhoneNumber())!= null)
-		{
-		return "Oopss, this number is already registered";
-		}
-		if(user.getPassword().equals(user.getConfirmpassword()))
-		{
-			if(userrepository.save(user)!= null) {
+		if (user.getPassword().equals(user.getConfirmpassword())) {
+			if (userRepository.save(user) != null) {
 				user.setDate(new Date());
 				user.setStatus(UserStatus.INACTIVE);
-				//String email = user.getEmail();
-				// otpservice.sendSMS(otp);
-				// emailservice.sendEmail(otp);
-				//userotp.settokenOTP(otp);
-				//userotp.setEmail(email);
-				//userotprepository.save(userotp);
+				String email = user.getEmail();
+				otpservice.sendSMS(otp);
+				emailservice.sendEmail(otp);
+				userotp.settokenOTP(otp);
+				userotp.setEmail(email);
+				userotpRepository.save(userotp);
 				Wallet wallet = new Wallet();
-				wallet.setwalletType(WalletType.FIATE);
+				wallet.setwalletType(WalletType.FIAT);
 				wallet.setuser(user);
 				user.getWallet().add(wallet);
-				userrepository.save(user);
-				return "Success";
+				Role role = new Role();
+				role.setRoleType(RoleType.USER);
+				user.getRole().add(role);
+
+				userRepository.save(user);
+				result.put("isSuccess", true);
+				result.put("message", "Your account has been created, please verify your account");
+				return result;
+			} else {
+				result.put("isSuccess", false);
+				result.put("message", "Failed to create new account");
+				return result;
+			}
+		} else {
+			result.put("isSuccess", false);
+			result.put("message", "Please re-enter your password");
+			return result;
 		}
-		else 
-		{
-			return "Failure";
-		}
 	}
-	else 
-	{
-		return "Please re-enter your password";
+
+	public Iterable<User> getDetails() {
+		return userRepository.findAll();
 	}
-}
-	public Iterable <User> getDetails(){
-		return userrepository.findAll();
-}
-	public Optional<User> getById(long userId)
-	{ 
-		return userrepository.findById(userId);
+
+	public Optional<User> getById(long userId) {
+		return userRepository.findById(userId);
 	}
-	public User updateDetails(User user) {
+
+	public Map<String, Object> updateDetails(User user) {
+		Map<String, Object> result = new HashMap<String, Object>();
+
 		User userdb = null;
-		userdb = userrepository.findOneByUserId(user.getUserId());
-		if(userdb!= null)
-		{
+		userdb = userRepository.findOneByUserId(user.getUserId());
+		if (userdb != null) {
 			userdb.setUserName(user.getUserName());
 			userdb.setCountry(user.getCountry());
 			userdb.setEmail(user.getEmail());
 			userdb.setPassword(user.getPassword());
 			userdb.setPhoneNumber(user.getPhoneNumber());
-			return userrepository.save(userdb);
+			userRepository.save(userdb);
+			result.put("isSuccess", true);
+			result.put("message", "Succesfully updated details");
+			return result;
+		} else {
+
+			result.put("isSuccess", false);
+			result.put("message", "User Id does not exist");
+			return result;
 		}
-	return null;
 	}
-	public String deleteById(long userId)
-	{
-		userrepository.deleteById(userId);
-		return "Deleted";
+
+	public Map<String, Object> deleteById(long userId) {
+		Map<String, Object> result = new HashMap<String, Object>();
+
+		User user = userRepository.findOneByUserId(userId);
+		if (user != null) {
+
+			userRepository.deleteById(userId);
+			result.put("isSuccess", true);
+			result.put("message", "User Deleted");
+			return result;
+		} else {
+			result.put("isSuccess", false);
+			result.put("message", "User Id does not exist");
+			return result;
+		}
 	}
-	public String assignNewRole(UserRoleDto userroledto)
-	{
+
+	public Map<String, Object> assignNewRole(UserRoleDto userroledto) {
+		Map<String, Object> result = new HashMap<String, Object>();
+
 		User userdb = null;
-		userdb = userrepository.findOneByUserId(userroledto.getuserId());
-		Role roledb = rolerepository.findByRoleType(userroledto.getRoleType());
-		if(roledb == null)
-		{
+		userdb = userRepository.findOneByUserId(userroledto.getuserId());
+		Role roledb = roleRepository.findByRoleType(userroledto.getRoleType());
+		if (roledb == null) {
 			Role role = new Role();
 			role.setRoleType(userroledto.getRoleType());
 			userdb.getRole().add(role);
-			userrepository.save(userdb);
-			return "New Role has  been added and assigned";
-		} 
-		else 
-		{
+			userRepository.save(userdb);
+			result.put("isSuccess", true);
+			result.put("message", "New role has been added and assigned");
+			return result;
+		} else {
 			userdb.getRole().add(roledb);
-			userrepository.save(userdb);
-			return "Existing role has been assigned";
+			userRepository.save(userdb);
+			result.put("isSuccess", false);
+			result.put("message", "Existing role has been assigned");
+			return result;
 		}
 	}
 }

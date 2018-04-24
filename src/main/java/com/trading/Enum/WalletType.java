@@ -1,8 +1,8 @@
 package com.trading.Enum;
 
 public enum WalletType {
-	FIATE("fiate"), BITCOIN("bitcoin"), ETHEREUM("ethereum");
-	
+	FIAT("fiat"), BITCOIN("bitcoin"), ETHEREUM("ethereum");
+
 	private String value;
 
 	public String getValue() {
@@ -12,6 +12,5 @@ public enum WalletType {
 	WalletType(String value) {
 		this.value = value;
 	}
-	
 
 }

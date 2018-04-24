@@ -1,8 +1,8 @@
 package com.trading.Enum;
 
-public enum OrderType {
+public enum RoleType {
 
-	BUYER("buyer"), SELLER("seller"), DEPOSIT("deposit");
+	ADMIN("admin"), USER("user");
 
 	private String value;
 
@@ -10,7 +10,7 @@ public enum OrderType {
 		return value;
 	}
 
-	private OrderType(String value) {
+	private RoleType(String value) {
 		this.value = value;
 	}
 

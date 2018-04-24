@@ -10,29 +10,33 @@ import javax.validation.constraints.NotNull;
 
 @Entity
 public class UserOtp {
-@Id
-@GeneratedValue(strategy = GenerationType.AUTO)
-private long userId;
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	private long Id;
 
-@NotNull
-private int tokenOTP;
 	
-@NotNull
-@Column(unique= true)
-@Email
-private String email;
-	
+	@NotNull
+	private int tokenOTP;
+
+	@NotNull
+	@Column(unique = true)
+	@Email
+	private String email;
+
 	public String getEmail() {
 		return email;
 	}
+
 	public void setEmail(String email) {
 		this.email = email;
 	}
+
 	public int gettokenOTP() {
 		return tokenOTP;
 	}
+
 	public void settokenOTP(int tokenOTP) {
 		this.tokenOTP = tokenOTP;
 	}
-	
+
 }
