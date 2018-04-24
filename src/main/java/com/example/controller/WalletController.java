@@ -30,4 +30,11 @@ public class WalletController
 	  	return walletservice.depositamount(userwalletdto) ;
 	}
     
+    @RequestMapping(value="/withdrawamount",method=RequestMethod.POST)
+	public String withdrawamount(@RequestBody UserWalletDto userwalletdto)
+	{
+    	
+	  	return walletservice.withdrawamount(userwalletdto) ;
+	}
+    
 }

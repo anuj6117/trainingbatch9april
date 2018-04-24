@@ -1,9 +1,14 @@
 package com.example.service;
 
+import java.util.HashSet;
+import java.util.ListIterator;
+import java.util.Set;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.example.dto.UserWalletDto;
+import com.example.enums.WalletType;
 import com.example.model.User;
 import com.example.model.Wallet;
 import com.example.repository.UserRepository;
@@ -29,15 +34,64 @@ public class WalletService
  }
  public String depositamount(UserWalletDto userwalletdto)
  {
+	 
 	 user=userrepository.findByUserId(userwalletdto.getUserId());
-	(!(userrepository.findByWalletType(userwalletdto.getWalletType())==null) )
-			{
-		
-			}
-	 /* (walletrepository.findByWalletType(userwalletdto.getWalletType())!=null)
+	 
+	 if(user!=null)
+{
+	 if(walletrepository.findByWalletType(userwalletdto.getWalletType())!=null)
 	 {
+		 int val=userwalletdto.getAmount();
+		 Wallet wallet=walletrepository.findByWalletType(userwalletdto.getWalletType());
+		 wallet.setBalance(val);
+		 walletrepository.save(wallet);
+		 return "amount deposited";
 		 
-	 }*/
-	 return "";
+	 }
+	 else
+		 return "wallettype doesnot available";
+	 
+	 
+}
+else
+	return "user doesnot exist";
+	 
+	
+	 
+ }
+ 
+ public String withdrawamount(UserWalletDto userwalletdto)
+ {
+	 
+	 user=userrepository.findByUserId(userwalletdto.getUserId());
+	
+	 if(user!=null )
+  {
+	 if(walletrepository.findByWalletType(userwalletdto.getWalletType())!=null) 
+	 {
+		 int amount=userwalletdto.getAmount();
+		 Wallet wallet=walletrepository.findByWalletType(userwalletdto.getWalletType());
+		 int walletBalance=wallet.getBalance();
+		 if(walletBalance>=amount)
+		 {
+		 wallet.setBalance(walletBalance-amount);
+		 walletrepository.save(wallet);
+		 return "amount withdrawl";
+		 }
+		 else
+			 return "balance too low";
+	 }
+	 else
+		 return "wallettype doesnot available";
+	 
+	 
+  }
+  else
+	 return "user doesnot exist";
+	 
+	
+	 
  }
 }
+
+
