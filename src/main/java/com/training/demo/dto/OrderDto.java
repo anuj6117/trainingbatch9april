@@ -4,20 +4,21 @@ public class OrderDto {
 
 	private Integer userId;
 	private Integer coinQuantity;
-	private Double price;
+	private Double amount;
 	private String coinName;
 	
 	public OrderDto() {
 		super();
 	}
 
-	public OrderDto(Integer userId, Integer coinQuantity, Double price, String coinName) {
+	public OrderDto(Integer userId, Integer coinQuantity, Double amount, String coinName) {
 		super();
 		this.userId = userId;
 		this.coinQuantity = coinQuantity;
-		this.price = price;
+		this.amount = amount;
 		this.coinName = coinName;
 	}
+
 	public Integer getUserId() {
 		return userId;
 	}
@@ -34,12 +35,12 @@ public class OrderDto {
 		this.coinQuantity = coinQuantity;
 	}
 
-	public Double getPrice() {
-		return price;
+	public Double getAmount() {
+		return amount;
 	}
 
-	public void setPrice(Double price) {
-		this.price = price;
+	public void setAmount(Double amount) {
+		this.amount = amount;
 	}
 
 	public String getCoinName() {
@@ -49,5 +50,7 @@ public class OrderDto {
 	public void setCoinName(String coinName) {
 		this.coinName = coinName;
 	}
+
+
 	
 }

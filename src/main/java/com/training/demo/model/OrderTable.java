@@ -2,9 +2,9 @@ package com.training.demo.model;
 
 import java.util.Date;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -15,7 +15,6 @@ import javax.persistence.Table;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.training.demo.enums.OrderStatus;
 import com.training.demo.enums.OrderType;
-import com.training.demo.enums.WalletType;
 
 	@Entity
 	@Table(name = "orderTable")
@@ -26,7 +25,7 @@ import com.training.demo.enums.WalletType;
 		private Integer orderId;
 		
 		//@NotNull(message = "Amount can't be null")
-		private Double amount;
+		private Double netAmount;
 		
 		private Double fee;
 		
@@ -35,23 +34,25 @@ import com.training.demo.enums.WalletType;
 		
 		private Date orderCreatedOn;
 		
+		@Enumerated(EnumType.STRING)
 		private OrderType orderType;
 		
 		//@NotNull(message = "Coin name can't be null")
 		//@NotBlank(message = "Coin name can't be null")
-		private WalletType coinName;
+		private String coinName;
 		
 		private Double grossAmount;
 		
+		@Enumerated(EnumType.STRING)
 		private OrderStatus orderStatus;
 		
-		private Integer coinQuantity;
+		private Double coinQuantity;
 		
-		@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-		@JoinColumn(name = "user_order_fk")
+		@ManyToOne
+		@JoinColumn(name="fk_user_id", referencedColumnName="userId")
 		@JsonIgnore
 		private User user;
-		
+				
 		public Integer getOrderId() {
 			return orderId;
 		}
@@ -61,11 +62,11 @@ import com.training.demo.enums.WalletType;
 		}
 
 		public Double getAmount() {
-			return amount;
+			return netAmount;
 		}
 
 		public void setAmount(Double amount) {
-			this.amount = amount;
+			this.netAmount = amount;
 		}
 
 		public Double getFee() {
@@ -108,11 +109,11 @@ import com.training.demo.enums.WalletType;
 			this.orderCreatedOn = orderCreatedOn;
 		}
 
-		public WalletType getCoinName() {
+		public String getCoinName() {
 			return coinName;
 		}
 
-		public void setCoinName(WalletType coinName) {
+		public void setCoinName(String coinName) {
 			this.coinName = coinName;
 		}
 
@@ -120,7 +121,7 @@ import com.training.demo.enums.WalletType;
 			return user;
 		}
 
-		public void setUser(User use) {
+		public void setUser(User user) {
 			this.user = user;
 		}
 
@@ -132,14 +133,13 @@ import com.training.demo.enums.WalletType;
 			this.orderStatus = orderStatus;
 		}
 
-		public void setCoinQuantity(Integer coinQuantity) {
+		public void setCoinQuantity(Double coinQuantity) {
 			this.coinQuantity = coinQuantity;
 			
 		}
 
-		public Integer getCoinQuantity() {
+		public Double getCoinQuantity() {
 			return coinQuantity;
 		}	
-		
 		
 }	

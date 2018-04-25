@@ -5,7 +5,6 @@ import java.util.Date;
 import com.training.demo.enums.OrderStatus;
 import com.training.demo.enums.OrderType;
 import com.training.demo.enums.WalletType;
-import com.training.demo.model.User;
 
 public class UserOrder {
 
@@ -50,12 +49,7 @@ public class UserOrder {
 		return orderStatus;
 	}
 	public void setOrderStatus(OrderStatus orderStatus) {
-		orderStatus = orderStatus;
+		this.orderStatus = orderStatus;
 	}
 	
-	public void setUser(User user) {
-		// TODO Auto-generated method stub
-		
-	}	
-
 }

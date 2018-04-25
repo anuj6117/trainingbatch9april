@@ -6,8 +6,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.training.demo.dto.OrderDto;
 import com.training.demo.dto.WalletDto;
-import com.training.demo.model.OrderTable;
 import com.training.demo.service.WalletService;
 
 @RestController
@@ -20,19 +20,16 @@ public class WalletController {
 	public String addWallet(@RequestBody WalletDto walletDto) {
 		System.out.println("from wallet controller");
 		if (walletDto != null) {
-			System.out.println(walletDto.getUserId());
-			System.out.println(walletDto.getWalletType());
-			walletService.addWalletToUser(walletDto);
-			return "Successfully Added";
+			return walletService.addWallet(walletDto);
 		} else {
-			return "Wallet not added";
+			return "Insufficient information to create wallet.";
 		}
 	}
 	
 	@RequestMapping(value="/depositamount", method = RequestMethod.POST)
-	public String toDepositAmount(@RequestBody OrderTable orderTable){
-		if(orderTable != null) {
-			return walletService.depositAmount(orderTable);
+	public String toDepositAmount(@RequestBody OrderDto orderDto){
+		if(orderDto != null) {
+			return walletService.depositAmount(orderDto);
 		}
 		else {
 			throw new NullPointerException("Insufficient information....");

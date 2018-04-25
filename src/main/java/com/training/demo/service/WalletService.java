@@ -6,10 +6,12 @@ import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.training.demo.dto.OrderDto;
 import com.training.demo.dto.UserTransactionDto;
 import com.training.demo.dto.WalletDto;
 import com.training.demo.enums.OrderStatus;
 import com.training.demo.enums.OrderType;
+import com.training.demo.enums.UserStatus;
 import com.training.demo.enums.WalletType;
 import com.training.demo.model.OrderTable;
 import com.training.demo.model.User;
@@ -30,32 +32,55 @@ public class WalletService {
 	@Autowired
 	private OrderRepository orderRepository;
 	
-	public String addWalletToUser(WalletDto walletDto) {
-		
+	public String addWallet(WalletDto walletDto) {
+		boolean flag = false;
 		User user = userRepository.findByUserId(walletDto.getUserId());
-		Wallet wallet = new Wallet();
-		wallet.setWalletType(WalletType.valueOf(walletDto.getWalletType()));
-		wallet.setUser(user);
-		wallet.setBalance(0.0);
-		wallet.setShadowBalance(0.0);
-		wallet.setCoinName(walletDto.getCoinName());
-		walletRepository.save(wallet);
-		return "success";
-	}
-	
-	public String depositAmount(OrderTable orderTable) {
-		User user = orderTable.getUser();
-		OrderTable tempOrderTable = new OrderTable();
-		tempOrderTable.setOrderType(OrderType.DEPOSIT);
-		tempOrderTable.setCoinName(WalletType.FIAT);
-		tempOrderTable.setPrice(orderTable.getPrice());
-		tempOrderTable.setOrderCreatedOn(new Date());
-		tempOrderTable.setOrderStatus(OrderStatus.PENDING);
-		tempOrderTable.setUser(user);
-		orderRepository.save(tempOrderTable); 
-		
-		return "deposit request is successfully processed, kindly wait for the admin approval.";
+		Set walletSet = user.getWallets();
+		Iterator walletIterator = walletSet.iterator();
+		while(walletIterator.hasNext())
+		{
+			Wallet tempwallet = (Wallet)walletIterator.next();
+			if(tempwallet.getWalletType().equals(walletDto.getWalletType()) && tempwallet.getCoinName().equals(walletDto.getCoinName()))
+			{
+				flag = true;
+			}
 		}
+		if(!flag)
+		{		
+			Wallet wallet = new Wallet();
+			wallet.setWalletType(WalletType.valueOf(walletDto.getWalletType()));
+			wallet.setUser(user);
+			wallet.setBalance(0.0);
+			wallet.setShadowBalance(0.0);
+			wallet.setCoinName(walletDto.getCoinName());
+			walletRepository.save(wallet);
+			return "Wallet is successfully created.";
+		}
+		else {
+			return "Existing wallet type for the given coin name.";
+		}
+	}
+	public String depositAmount(OrderDto orderDto) {
+		User user = userRepository.findByUserId(orderDto.getUserId());
+		if(user.getUserStatus().equals(UserStatus.ACTIVE))
+		{
+			OrderTable tempOrderTable = new OrderTable();
+			tempOrderTable.setOrderType(OrderType.DEPOSIT);
+			tempOrderTable.setCoinName(orderDto.getCoinName());
+			tempOrderTable.setAmount(orderDto.getAmount());
+			tempOrderTable.setCoinQuantity(orderDto.getAmount());
+			tempOrderTable.setGrossAmount(orderDto.getAmount());
+			tempOrderTable.setOrderCreatedOn(new Date());
+			tempOrderTable.setOrderStatus(OrderStatus.PENDING);
+			tempOrderTable.setUser(user);
+			orderRepository.save(tempOrderTable); 
+			return "deposit request is successfully processed, kindly wait for the admin approval.";
+		}
+		else
+		{
+			return "User can not deposit until his/her status is not active.";
+		}
+	}
 			
 	public String toWithdrawn(UserTransactionDto utd ) {
 		 Integer userId = utd.getUserId();

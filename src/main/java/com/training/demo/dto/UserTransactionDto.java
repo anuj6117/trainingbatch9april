@@ -1,7 +1,5 @@
 package com.training.demo.dto;
 
-import com.training.demo.enums.WalletType;
-
 public class UserTransactionDto {
 	
 	private Integer userId;

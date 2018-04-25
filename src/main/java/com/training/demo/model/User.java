@@ -1,10 +1,9 @@
 package com.training.demo.model;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -19,6 +18,7 @@ import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.training.demo.enums.UserStatus;
 
 @Entity
@@ -47,7 +47,8 @@ public class User
 	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
 	private Set<Wallet> wallets = new HashSet<Wallet>();
 		
-	@OneToMany(fetch=FetchType.EAGER, cascade = CascadeType.ALL, mappedBy = "user")
+	@OneToMany(mappedBy = "user")
+	@JsonIgnore
 	private Set<OrderTable> orderTable = new HashSet<>();
 	
 	public User()
