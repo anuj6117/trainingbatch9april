@@ -2,8 +2,8 @@ package com.training.demo.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.training.demo.model.Order;
+import com.training.demo.model.OrderTable;
 
-public interface OrderRepository extends JpaRepository<Order,Integer>{
+public interface OrderRepository extends JpaRepository<OrderTable,Integer>{
 
 }

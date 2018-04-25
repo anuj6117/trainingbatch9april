@@ -14,6 +14,21 @@ public class OrderController {
 	@Autowired
 	private OrderService orderService;
 	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	/*
 	@RequestMapping(value="/createbuyorder", method = RequestMethod.POST)
 	public String createBuyOrder(OrderDto orderDto){
 		return orderService.createBuyOrder(orderDto);
@@ -23,5 +38,8 @@ public class OrderController {
 	public String createSellOrder(OrderDto orderDto) {
 		return orderService.createSellOrder(orderDto);
 	}
-
+*/
+	
+	
+	
 }
