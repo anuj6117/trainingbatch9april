@@ -18,7 +18,7 @@ public class RoleController {
 	@Autowired
 	RoleService roleService;
 	
-	@RequestMapping(value="/addRole",method=RequestMethod.POST)
+	@RequestMapping(value="/createrole",method=RequestMethod.POST)
 	public String createRoll(@RequestBody Role role) {
 		Role rolec=roleService.createRoll(role);
 		if(rolec==null)

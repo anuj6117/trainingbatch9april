@@ -35,7 +35,6 @@ public class UserOrder {
  private Integer userId;
  
 
-
  public long getGrossAmount() {
 	return grossAmount;
 }
@@ -43,7 +42,7 @@ public class UserOrder {
 public void setGrossAmount(long grossAmount) {
 	this.grossAmount = grossAmount;
 }
-@ManyToOne
+ @ManyToOne
  @JsonIgnore
  private User user;
  

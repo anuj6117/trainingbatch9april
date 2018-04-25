@@ -10,7 +10,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 import com.trainingproject.enums.TransactionStatus;
-import com.trainingproject.enums.WalletType;
+import com.trainingproject.enums.CoinType;
 
 @Entity
 @Table(name="transaction")
@@ -20,7 +20,7 @@ public class Transaction {
 	@GeneratedValue
 	private Integer transactionId;
 	private long amount;
-	private WalletType walletType;
+	private CoinType coinType;
 	private long fee;
 	private long exchangeRate;
 	private long grossAmount;
@@ -41,11 +41,11 @@ public class Transaction {
 	public void setAmount(long amount) {
 		this.amount = amount;
 	}
-	public WalletType getWalletType() {
-		return walletType;
+	public CoinType getWalletType() {
+		return coinType;
 	}
-	public void setWalletType(WalletType walletType) {
-		this.walletType = walletType;
+	public void setWalletType(CoinType coinType) {
+		this.coinType = coinType;
 	}
 	public long getFee() {
 		return fee;

@@ -10,7 +10,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.trainingproject.enums.WalletType;
+import com.trainingproject.enums.CoinType;
 
 @Entity
 @Table(name="wallet")
@@ -21,14 +21,24 @@ public class Wallet {
 	private Integer walletId;
     
      @Enumerated(EnumType.STRING)
-	private WalletType walletType;
+	private CoinType coinType;
+     private String coinName;
 	private long balance;
 	private long shadowBal;
 	//private Long amount;
 	
+
 	@ManyToOne
 	@JsonIgnore
 	private User user;
+	
+	public String getCoinName() {
+		return coinName;
+	}
+
+	public void setCoinName(String coinName) {
+		this.coinName = coinName;
+	}
 	
 	public Integer getWalletId() {
 		return walletId;
@@ -58,12 +68,12 @@ public class Wallet {
 		this.walletId = id;
 	}
 //
-	public WalletType getWalletType() {
-		return walletType;
+	public CoinType getCoinType() {
+		return coinType;
 	}
-	public void setWalletType(WalletType walletType) {
+	public void setCoinType(CoinType coinType) {
 		
-		this.walletType = walletType;
+		this.coinType = coinType;
 	}
 	public long getBalance() {
 		return balance;

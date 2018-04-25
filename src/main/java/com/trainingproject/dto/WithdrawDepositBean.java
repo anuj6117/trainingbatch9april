@@ -1,11 +1,11 @@
 package com.trainingproject.dto;
 
-import com.trainingproject.enums.WalletType;
+import com.trainingproject.enums.CoinType;
 
 public class WithdrawDepositBean {
 
 	Integer userId;
-	WalletType walletType;
+	CoinType coinType;
 	long amount;
 	
 	public long getAmount() {
@@ -20,11 +20,11 @@ public class WithdrawDepositBean {
 	public void setUserId(Integer userId) {
 		this.userId = userId;
 	}
-	public WalletType getWalletType() {
-		return walletType;
+	public CoinType getWalletType() {
+		return coinType;
 	}
-	public void setWalletType(WalletType walletType) {
-		this.walletType = walletType;
+	public void setWalletType(CoinType coinType) {
+		this.coinType = coinType;
 	}
 	
 }

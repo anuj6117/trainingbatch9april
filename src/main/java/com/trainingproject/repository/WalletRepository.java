@@ -5,12 +5,14 @@ import org.springframework.stereotype.Repository;
 
 import com.trainingproject.domain.User;
 import com.trainingproject.domain.Wallet;
-import com.trainingproject.enums.WalletType;
+import com.trainingproject.enums.CoinType;
 
 @Repository
 public interface WalletRepository extends JpaRepository<Wallet,Integer> {
 
-	Wallet findBywalletType(WalletType walletType);
+	Wallet findBycoinType(CoinType coinType);
 
 	Wallet findByuser(User user);
+	
+	Wallet findBycoinTypeAndUser(CoinType coinType,User user);
 }

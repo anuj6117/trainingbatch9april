@@ -20,7 +20,7 @@ import com.trainingproject.dto.BuySellBean;
 import com.trainingproject.dto.WithdrawDepositBean;
 import com.trainingproject.enums.OrderType;
 import com.trainingproject.enums.UserOrderStatus;
-import com.trainingproject.enums.WalletType;
+import com.trainingproject.enums.CoinType;
 import com.trainingproject.repository.RoleRepository;
 import com.trainingproject.repository.UserOrderRepository;
 import com.trainingproject.repository.UserRepository;
@@ -75,7 +75,7 @@ public class UserService {
 		User createduser=userRepository.save(user);
 		List<Wallet> walletSet=new ArrayList<Wallet>();
 		Wallet wallet=new Wallet();
-		wallet.setWalletType(WalletType.FIAT);
+		wallet.setCoinType(CoinType.FIAT);
 		wallet.setUser(user);
 		walletSet.add(wallet);
 		walletRepository.save(wallet);
@@ -181,7 +181,7 @@ public class UserService {
 		
 		User user=getUserById(awb.getUserId()).get();
 		Wallet cwallet=new Wallet();
-		cwallet.setWalletType(awb.getWalletType());
+		cwallet.setCoinType(awb.getWalletType());
 		cwallet.setUser(user);
 		walletRepository.save(cwallet);
 		
@@ -215,7 +215,7 @@ public class UserService {
 		userorder.setGrossAmount(wb.getAmount());
 		userorderRepository.save(userorder);
 		
-		return "success";
+		return "successoo";
 //		List <Wallet> walletsList=user.getUserWallet();
 //		
 //		Wallet wallet=null;

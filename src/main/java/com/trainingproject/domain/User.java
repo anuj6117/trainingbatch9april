@@ -15,8 +15,8 @@ import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.Email;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name="user")
@@ -46,7 +46,7 @@ public class User {
     
     @OneToMany(mappedBy="user")
     private List<Wallet> userWallet;
-    
+    @JsonIgnore
     @OneToMany(mappedBy="user")
     private List<UserOrder> userOrder;
     
@@ -91,13 +91,10 @@ public class User {
 	}
 
 
-
 	public void setUserWallet(List<Wallet> walletType) {
 		this.userWallet = walletType;
 		
 	}
-
-
 
 	public void setUserId(Integer userId) {
 		this.userId = userId;

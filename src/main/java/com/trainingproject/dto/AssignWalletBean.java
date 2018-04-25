@@ -1,24 +1,24 @@
 package com.trainingproject.dto;
 
-import com.trainingproject.enums.WalletType;
+import com.trainingproject.enums.CoinType;
 
 public class AssignWalletBean {
 
 	private Integer userId;
-	private WalletType walletType;
+	private CoinType coinType;
 	public Integer getUserId() {
 		return userId;
 	}
 	public void setUserId(Integer userId) {
 		this.userId = userId;
 	}
-	public WalletType getWalletType() {
+	public CoinType getWalletType() {
 		
-		return walletType;
+		return coinType;
 	}
-	public void setWalletType(WalletType walletType) {
+	public void setWalletType(CoinType coinType) {
 	
-		this.walletType = walletType;
+		this.coinType = coinType;
 	}
 	
 }

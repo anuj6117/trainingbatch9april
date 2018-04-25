@@ -29,11 +29,10 @@ public class UserController{
 	@Autowired
 	UserService userservice;
 	
-	@RequestMapping(value="signUp",method=RequestMethod.POST)
+	@RequestMapping(value="signup",method=RequestMethod.POST)
 	public String addUser(@RequestBody User user) {
 		return userservice.createUser(user);
-		
-		
+			
 	}
 	
 	
@@ -47,16 +46,16 @@ public class UserController{
 		return userservice.getAllUsers();
 	}
 	
-	@RequestMapping(value="getById",method=RequestMethod.GET)
-	public Optional<User> getById(Integer id){
+	@RequestMapping(value="getbyuserid",method=RequestMethod.GET)
+	public Optional<User> getById(@RequestParam Integer id){
 		return userservice.getUserById(id);
 	}
 	
 	
-	@RequestMapping(value="/getById2",method=RequestMethod.GET)
-	public Optional<User> getById2(@RequestParam Integer id){
-		return userservice.getUserById(id);
-	}
+//	@RequestMapping(value="/getById2",method=RequestMethod.GET)
+//	public Optional<User> getById2(@RequestParam Integer id){
+//		return userservice.getUserById(id);
+//	}
 	
 	
 	@RequestMapping(value="updateuser",method=RequestMethod.POST)
@@ -65,7 +64,7 @@ public class UserController{
 		
 	}
 	
-	@RequestMapping(value="delete",method=RequestMethod.GET)
+	@RequestMapping(value="deleteuser",method=RequestMethod.GET)
 	public String deleteData(Integer id)
 	{
 		userservice.deleteData(id);
