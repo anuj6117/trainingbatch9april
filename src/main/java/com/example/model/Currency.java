@@ -5,6 +5,9 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
+
+import com.example.enums.WalletType;
 
 @Entity
 @Table(name="currency")
@@ -13,10 +16,14 @@ public class Currency
 	@Id
   @GeneratedValue(strategy = GenerationType.AUTO)
   private Integer coinId;
+  @NotNull
   private String coinName;
-
+  private WalletType coinType;
+  @NotNull
   private String symbol;
+  @NotNull
   private Long initialSupply;
+  @NotNull
   private Long price;
   private Integer fees;
   private Integer profit;

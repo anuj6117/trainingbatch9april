@@ -50,7 +50,7 @@ public class SignUpService
 	@Autowired
 	private OrderRepository orderRepository;
 	
-    static int value=0;
+   
 	
 	
 	public String addUser(User user)
@@ -63,9 +63,15 @@ public class SignUpService
 		{	
 		 String date=new Date()+"";
 		 Random random=new Random();
-		 otpNum=random.nextInt(8999)+1000;
+		 otpNum=random.nextInt(899000)+1000;
 		 String otpval=""+otpNum;
 		 //user.se(date);
+		 //String newpassword=user.getPassword().trim();
+		 String newpassword=user.getPassword().replaceAll("\\s+",""); 
+		 user.setPassword(newpassword);
+		 String name=user.getUserName();
+		 user.setUserName(name.trim());
+		 System.out.println(user.getUserName()+"..............");
 		 user.setCreatedOn(date);
 		 user.setStatus((UserStatus.INACTIVE));
 		 userrepository.save(user);
@@ -131,8 +137,8 @@ public class SignUpService
 		  
 		 userorder.setStatusType(StatusType.PENDING);
 		 userorder.setCoinName(WalletType.FIAT.toString());
-		 value+=userwalletdto.getAmount();
-		 userorder.setPrice(value);
+		
+		 userorder.setPrice(userwalletdto.getAmount());
 		 userorder.setOrderType(OrderType.DEPOSIT);
 		 userorder.setOrderCcreatedOn(date);
 		 user=userrepository.findByUserId(userwalletdto.getUserId());

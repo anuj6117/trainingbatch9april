@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.dto.UserWalletDto;
@@ -36,19 +37,21 @@ public class SignUserController
 	 
 	@RequestMapping(value="/signup", method=RequestMethod.POST)
 	public String insertUser(@RequestBody User user)
-	{  
+	{  System.out.println("......................1111111111");
 		String passwordvalue=user.getPassword().trim();
 		String username=user.getUserName().trim();
 	    int passwordLength=passwordvalue.length();
 	    int usernameLength=username.length();
 	    if(passwordLength!=0)
 		{
+	    	 System.out.println("......................111111111122222");
 	    	if(usernameLength!=0)
 	    	{
+	    		 System.out.println("......................1111111111333333");
 			 String u=signupservice.addUser(user);
 			   if(u != null)
 			   {
-				return "success";
+				return "Your account has been successfully created. Please, verify it by using OTP ";
 		       }
 			   else
 			   {
@@ -80,10 +83,10 @@ public class SignUserController
 				
 				userrepository.save(user);
 				otpjparepository.delete(userotptable);
-				return "otp and email matched";
+				return "Your account is verified successfully";
 			}
 			else
-				return "otp not matched";
+				return "Invalid OTP";
 		}
 		else
 			return "email not matched";
@@ -96,8 +99,8 @@ public class SignUserController
 	    return userrepository.findAll();
 	}
 	
-	@GetMapping("/getbyuserid/{id}")
-	public User getbyuserid(@PathVariable("id") Integer id) 
+	@GetMapping("/getbyuserid")
+	public User getbyuserid(@RequestParam("userId") Integer id) 
 	{
 	    return userrepository.findByUserId(id);
 	}
@@ -114,8 +117,8 @@ public class SignUserController
 	    	return "null";
 	}
 	
-	@GetMapping("/deleteuser/{id}")
-	public String deleteUser(@PathVariable("id") Integer id) 
+	@GetMapping("/deleteuser")
+	public String deleteUser(@RequestParam("userId") Integer id) 
 	{
 		user=userrepository.findByUserId(id);
 		System.out.println("here......user........has......"+user);

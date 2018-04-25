@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.dto.UserWalletDto;
+import com.example.dto.WalletApprovalDto;
 import com.example.model.User;
 import com.example.service.WalletService;
 
@@ -46,4 +47,9 @@ public class WalletController
 	  	return walletservice.withdrawamount(userwalletdto) ;
 	}
     
+    @RequestMapping(value="/walletapproval",method=RequestMethod.POST)
+    public String walletApprovalStatus(@RequestBody WalletApprovalDto walletApprovalDto)
+    {
+    	return "";
+    }
 }

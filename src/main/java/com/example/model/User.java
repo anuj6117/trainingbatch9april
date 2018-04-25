@@ -4,6 +4,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -16,7 +17,9 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 import com.example.enums.UserStatus;
 
@@ -29,10 +32,14 @@ public class User
 	private Integer userId;
 
 	@NotNull
+	@Size(min=1,max=25)
 	private String userName;
-	
+	@Email
 	private String email;
+	@Column(unique=true)
+	@Size(min=10,max=10)
 	private String phoneNumber;
+	@Size(min=8,max=32)
 	private String password;
 	private String country;
 	private String createdOn;

@@ -2,7 +2,7 @@ package com.example.enums;
 
 public enum StatusType
 {
- PENDING("Pending"),COMPLETED("Completed"),MODERATE("Moderate");
+ PENDING("Pending"),APPROVED("Approved"),REJECTED("Rejected"),FAILED("Failed");
 	 String value;
 
 	public String getValue() {
