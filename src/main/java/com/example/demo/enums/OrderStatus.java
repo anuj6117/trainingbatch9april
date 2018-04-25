@@ -1,11 +1,11 @@
 package com.example.demo.enums;
 
-public enum OrderStatusEnum {
+public enum OrderStatus {
 	PENDING("Pending"), MODERATE("Moderate"),COMPLETE("Complete");
 	
 	private String value;
 	
-	private OrderStatusEnum(String value)
+	private OrderStatus(String value)
 	{
 		this.value = value;
 	}

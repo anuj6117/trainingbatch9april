@@ -35,9 +35,12 @@ public class CoinManagementService {
 		
 		coinManagementData=coinManagementRepository.findOneByCoinId(data.getCoinId());
 		coinManagementData.setCoinName(data.getCoinName());
-		//coinManagementData.setSymbol(data.getSymbol());
+		coinManagementData.setSymbol(data.getSymbol());
 		coinManagementData.setInitialSupply(data.getInitialSupply());
 		coinManagementData.setPrice(data.getPrice());
+		coinManagementData.setFee(data.getFee());
+		coinManagementData.setProfit(data.getProfit());
+		coinManagementData.setCoinInInr(data.getCoinInInr());
 		
 		
 		coinManagementData=coinManagementRepository.save(coinManagementData);

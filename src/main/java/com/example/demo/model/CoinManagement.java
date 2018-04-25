@@ -15,6 +15,9 @@ public class CoinManagement {
 	private String symbol;
 	private Double initialSupply;
 	private Integer price;
+	private Double coinInInr;
+	private Double profit;
+	private Double fee;
 
 	public Long getCoinId() {
 		return coinId;
@@ -55,5 +58,31 @@ public class CoinManagement {
 	public void setPrice(Integer price) {
 		this.price = price;
 	}
+
+	public Double getCoinInInr() {
+		return coinInInr;
+	}
+
+	public void setCoinInInr(Double coinInInr) {
+		this.coinInInr = coinInInr;
+	}
+
+	public Double getProfit() {
+		return profit;
+	}
+
+	public void setProfit(Double profit) {
+		this.profit = profit;
+	}
+
+	public Double getFee() {
+		return fee;
+	}
+
+	public void setFee(Double fee) {
+		this.fee = fee;
+	}
+	
+	
 
 }

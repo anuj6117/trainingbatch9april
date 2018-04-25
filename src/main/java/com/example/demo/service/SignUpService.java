@@ -9,8 +9,8 @@ import java.util.Random;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.example.demo.enums.Status;
-import com.example.demo.enums.WalletEnum;
+import com.example.demo.enums.UserStatus;
+import com.example.demo.enums.WalletType;
 import com.example.demo.model.Role;
 import com.example.demo.model.User;
 import com.example.demo.model.VerifyOtp;
@@ -58,10 +58,10 @@ public class SignUpService {
 			
 			User newUser = new User(user);
 			newUser.getRoles().add(role);
-			newUser.setStatus(Status.INACTIVE);
+			newUser.setStatus(UserStatus.INACTIVE);
 			System.out.println(newUser.getRoles());
 			Wallet wallet=new Wallet();
-			wallet.setWalletType(WalletEnum.FIAT);
+			wallet.setWalletType(WalletType.FIAT);
 			wallet.setUser(user);
 			wallet.setBalance(0.0);
 			wallet.setShadowBalance(0.0);
@@ -80,7 +80,7 @@ public class SignUpService {
 
 				verifyOtpRepository.save(verifyOtp);
 
-				return "Successfully sent";
+				return "Successfully sent otp.";
 			} else {
 				return "Failure";
 			}
@@ -105,7 +105,7 @@ public class SignUpService {
 
 			User user = userRepository.findByEmail(emailId);
 			// System.out.println(userRepository.findByEmail(emailId));
-			user.setStatus(Status.ACTIVE);
+			user.setStatus(UserStatus.ACTIVE);
 			// verifyOtpRepository.delete(verifyOtp);
 			verifyOtpRepository.deleteById(vOtp.getId());
 			System.out.println("otpVerification table deleted.");
@@ -135,10 +135,10 @@ public class SignUpService {
 		User userdb = null;
 		userdb = userRepository.findOneByUserId(user.getUserId());
 		userdb.setUserName(user.getUserName());
-		// userdb.setEmail(user.getEmail());
-		// userdb.setPhoneNumber(user.getPhoneNumber());
+		userdb.setEmail(user.getEmail());
+		userdb.setPhoneNumber(user.getPhoneNumber());
 		userdb.setCountry(user.getCountry());
-		// userdb.setPassword(user.getPassword());
+		userdb.setPassword(user.getPassword());
 
 		return userRepository.save(userdb);
 	}

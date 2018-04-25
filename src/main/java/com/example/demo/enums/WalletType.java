@@ -1,6 +1,6 @@
 package com.example.demo.enums;
 
-public enum WalletEnum {
+public enum WalletType {
 
 	FIAT, BITCOIN, ETHEREUM;
 	

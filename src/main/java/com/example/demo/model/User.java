@@ -25,7 +25,7 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
-import com.example.demo.enums.Status;
+import com.example.demo.enums.UserStatus;
 
 
 @Entity
@@ -51,7 +51,7 @@ public class User {
 	private Date date;
 
 	@Enumerated(EnumType.STRING)
-	private Status status;
+	private UserStatus status;
 
 	@ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
 	@JoinTable(name = "User_Role", joinColumns = @JoinColumn(name = "userid", referencedColumnName = "userId"), inverseJoinColumns = @JoinColumn(name = "roleid", referencedColumnName = "roleId"))
@@ -59,6 +59,9 @@ public class User {
 	
 	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
 	private List<Wallet> wallets = new ArrayList<>();
+	
+	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+	private List<UserOrder> userOrders=new ArrayList<>();
 
 	public User() {
 		System.out.println("Default Constructor");
@@ -129,11 +132,11 @@ public class User {
 		this.date = date;
 	}
 
-	public Status getStatus() {
+	public UserStatus getStatus() {
 		return status;
 	}
 
-	public void setStatus(Status status) {
+	public void setStatus(UserStatus status) {
 		this.status = status;
 	}
 

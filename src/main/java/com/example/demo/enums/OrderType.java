@@ -1,11 +1,11 @@
 package com.example.demo.enums;
 
-public enum OrderEnum {
-	BUYER("Buyer"),SELLER("Seller");
+public enum OrderType {
+	DEPOSIT("Deposit"), WITHDRAW("Withdraw");
 	
 	private String value;
 	
-	private OrderEnum(String value)
+	private OrderType(String value)
 	{
 		this.value = value;
 	}

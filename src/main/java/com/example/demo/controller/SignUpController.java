@@ -63,7 +63,7 @@ public class SignUpController {
 		return signUpService.update(user);
 	}
 
-	@RequestMapping(value = "/delete", method = RequestMethod.GET)
+	@RequestMapping(value = "/deleteuser", method = RequestMethod.GET)
 	public String delete(@RequestParam("userId") Integer id) {
 		if (id != null) {
 			signUpService.delete(id);

@@ -1,9 +1,12 @@
 package com.example.demo.dto;
 
-public class TransactionDto {
+import com.example.demo.enums.OrderType;
+
+public class TransactionDTO {
 	private Integer userId;
 	private String walletType;
 	private Double amount;
+	private OrderType orderType;
 
 	public Integer getUserId() {
 		return userId;
@@ -28,5 +31,15 @@ public class TransactionDto {
 	public void setAmount(Double amount) {
 		this.amount = amount;
 	}
+
+	public OrderType getOrderType() {
+		return orderType;
+	}
+
+	public void setOrderType(OrderType orderType) {
+		this.orderType = orderType;
+	}
+	
+	
 
 }

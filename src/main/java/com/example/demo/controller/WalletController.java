@@ -6,8 +6,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.demo.dto.TransactionDto;
+import com.example.demo.dto.TransactionDTO;
 import com.example.demo.dto.WalletDTO;
+import com.example.demo.model.UserOrder;
 import com.example.demo.service.WalletService;
 
 @RestController
@@ -28,15 +29,15 @@ public class WalletController {
 		}
 	}
 	@RequestMapping(value="/deposit", method=RequestMethod.POST)
-	public String deposit(@RequestBody TransactionDto transactionDto)
+	public String deposit(@RequestBody UserOrder userOrder)
 	{
-		System.out.println("From Deposit Controller :"+transactionDto);
-		return walletService.deposit(transactionDto);
+		System.out.println("From Deposit Controller :"+userOrder);
+		return walletService.deposit(userOrder);
 		
 	}
 	
 	@RequestMapping(value="/withdraw", method=RequestMethod.POST)
-	public String withdraw(@RequestBody TransactionDto transactionDto)
+	public String withdraw(@RequestBody TransactionDTO transactionDto)
 	{
 		return walletService.withdraw(transactionDto);
 		

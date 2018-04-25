@@ -24,15 +24,23 @@ public class RoleService {
 	}
 
 	public String assignRole(RoleDTO roleDTO) {
-
-		User user = userRepository.findOneByUserId(roleDTO.getUserId());
-		Role role = roleRepository.findByRoleType(roleDTO.getRoleType());
-		//Role roledb = new Role();
-		//roledb = roledb.setRoleType(roleDTO.getRoleType());
-		user.getRoles().add(role);
+		if(userRepository.findOneByUserId(roleDTO.getUserId()) != null) 
+		{
+			User user = userRepository.findOneByUserId(roleDTO.getUserId());
+			if(roleRepository.findByRoleType(roleDTO.getRoleType()) != null) 
+			{
+				Role role = roleRepository.findByRoleType(roleDTO.getRoleType());
 		
-		userRepository.save(user);
-		return "assign role";
+				user.getRoles().add(role);
+		
+				userRepository.save(user);
+				return "assign role";
+			}
+			return "Role Assigned Successfully.";
+		}
+		else
+		{
+			return "User does not exist.";
+		}
 	}
-
 }

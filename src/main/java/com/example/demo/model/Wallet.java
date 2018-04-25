@@ -10,7 +10,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-import com.example.demo.enums.WalletEnum;
+import com.example.demo.enums.WalletType;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
@@ -25,7 +25,7 @@ public class Wallet {
 	//@NotEmpty(message = "walletType  must not be empty")
     //@NotBlank(message = "Space Not Accepted")
 	@Enumerated(EnumType.STRING)
-	private WalletEnum walletType;
+	private WalletType walletType;
 	
 	@ManyToOne
 	@JoinColumn(name = "userId", referencedColumnName = "userId")
@@ -56,11 +56,11 @@ public class Wallet {
 		this.shadowBalance = shadowBalance;
 	}
 
-		public WalletEnum getWalletType() {
+		public WalletType getWalletType() {
 		return walletType;
 	}
 
-	public void setWalletType(WalletEnum walletType) {
+	public void setWalletType(WalletType walletType) {
 		this.walletType = walletType;
 	}
 

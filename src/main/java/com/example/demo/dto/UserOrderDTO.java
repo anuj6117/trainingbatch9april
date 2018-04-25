@@ -4,9 +4,9 @@ public class UserOrderDTO {
 
 	private Integer userId;
 	private String coinName;
-	private Integer price;
+	private Double price;
 	private Integer coinQuantity;
-	private String orderType;
+	private String orderType;	
 
 	public Integer getUserId() {
 		return userId;
@@ -24,11 +24,11 @@ public class UserOrderDTO {
 		this.coinName = coinName;
 	}
 
-	public Integer getPrice() {
+	public Double getPrice() {
 		return price;
 	}
 
-	public void setPrice(Integer price) {
+	public void setPrice(Double price) {
 		this.price = price;
 	}
 

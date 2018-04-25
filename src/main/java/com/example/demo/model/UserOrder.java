@@ -2,18 +2,22 @@ package com.example.demo.model;
 
 import java.util.Date;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import com.example.demo.dto.UserOrderDTO;
-import com.example.demo.enums.OrderEnum;
-import com.example.demo.enums.OrderStatusEnum;
+import com.example.demo.enums.OrderType;
+import com.example.demo.enums.WalletType;
+import com.example.demo.enums.OrderStatus;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
@@ -24,19 +28,34 @@ public class UserOrder {
 	private Integer orderId;
 	
 	@Enumerated(EnumType.STRING)
-	private OrderEnum orderType;
+	private OrderType orderType;
 
 	@Enumerated(EnumType.STRING)
-	private OrderStatusEnum orderStatusEnum;
+	private OrderStatus orderStatus;
 
 	private Integer coinQuantity;
-	private Integer price;
+	private Double price;
 	private Date dateCreated;
 	private String coinName;
-
-	@JsonIgnore
+	private Double netAmount;
+	private Integer fee;
+	private Integer grossAmount;
+	private WalletType coinType;
+	
 	@ManyToOne
+	@JoinColumn(name = "userId", referencedColumnName = "userId")
+	@JsonIgnore
 	private User user;
+
+	public WalletType getCoinType() {
+		return coinType;
+	}
+
+	public void setCoinType(WalletType coinType) {
+		this.coinType = coinType;
+	}
+
+	private Integer userId;
 
 	public UserOrder() {
 
@@ -56,20 +75,22 @@ public class UserOrder {
 		this.orderId = orderId;
 	}
 
-	public OrderEnum getOrderType() {
+	public OrderType getOrderType() {
 		return orderType;
 	}
 
-	public void setOrderType(OrderEnum orderType) {
+	public void setOrderType(OrderType orderType) {
 		this.orderType = orderType;
 	}
 
-	public OrderStatusEnum getOrderStatusEnum() {
-		return orderStatusEnum;
+	
+
+	public OrderStatus getOrderStatus() {
+		return orderStatus;
 	}
 
-	public void setOrderStatusEnum(OrderStatusEnum orderStatusEnum) {
-		this.orderStatusEnum = orderStatusEnum;
+	public void setOrderStatus(OrderStatus orderStatus) {
+		this.orderStatus = orderStatus;
 	}
 
 	public Integer getCoinQuantity() {
@@ -80,11 +101,11 @@ public class UserOrder {
 		this.coinQuantity = coinQuantity;
 	}
 
-	public Integer getPrice() {
+	public Double getPrice() {
 		return price;
 	}
 
-	public void setPrice(Integer price) {
+	public void setPrice(Double price) {
 		this.price = price;
 	}
 
@@ -111,7 +132,38 @@ public class UserOrder {
 	public void setUser(User user) {
 		this.user = user;
 	}
-	
-	
 
+	public Double getNetAmount() {
+		return netAmount;
+	}
+
+	public void setNetAmount(Double netAmount) {
+		this.netAmount = netAmount;
+	}
+
+	public Integer getFee() {
+		return fee;
+	}
+
+	public void setFee(Integer fee) {
+		this.fee = fee;
+	}
+
+	public Integer getUserId() {
+		return userId;
+	}
+
+	public void setUserId(Integer userId) {
+		this.userId = userId;
+	}
+
+	public Integer getGrossAmount() {
+		return grossAmount;
+	}
+
+	public void setGrossAmount(Integer grossAmount) {
+		this.grossAmount = grossAmount;
+	}
+	
+	
 }

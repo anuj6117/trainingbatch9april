@@ -8,8 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.example.demo.dto.UserOrderDTO;
-import com.example.demo.enums.OrderEnum;
-import com.example.demo.enums.OrderStatusEnum;
+import com.example.demo.enums.OrderType;
+import com.example.demo.enums.OrderStatus;
 import com.example.demo.model.User;
 import com.example.demo.model.UserOrder;
 import com.example.demo.repository.OrderRepository;
@@ -33,8 +33,8 @@ public class OrderService {
 			UserOrder userOrder=new UserOrder();
 			userOrder.setUser(user);
 			userOrder.setCoinName(userOrderDTO.getCoinName());
-			userOrder.setOrderStatusEnum(OrderStatusEnum.PENDING);
-			userOrder.setOrderType(OrderEnum.BUYER);
+			userOrder.setOrderStatus(OrderStatus.PENDING);
+			//userOrder.setOrderType(OrderType.BUYER);
 			userOrder.setCoinQuantity(userOrderDTO.getCoinQuantity());
 			userOrder.setPrice(userOrderDTO.getPrice());
 			userOrder.setDateCreated(new Date());
