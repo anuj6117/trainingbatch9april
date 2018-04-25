@@ -2,10 +2,10 @@ package com.training.demo.dto;
 
 public class OrderDto {
 
-	Integer userId;
-	Integer coinQuantity;
-	Double price;
-	String coinName;
+	private Integer userId;
+	private Integer coinQuantity;
+	private Double price;
+	private String coinName;
 	
 	public OrderDto() {
 		super();

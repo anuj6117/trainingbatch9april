@@ -6,8 +6,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.training.demo.dto.UserTransactionDto;
 import com.training.demo.dto.WalletDto;
+import com.training.demo.model.OrderTable;
 import com.training.demo.service.WalletService;
 
 @RestController
@@ -30,18 +30,19 @@ public class WalletController {
 	}
 	
 	@RequestMapping(value="/depositamount", method = RequestMethod.POST)
-	public String toDepositAmount(@RequestBody UserTransactionDto utd){
-		if(utd != null) {
-			walletService.toDepositAmount(utd);
-			return "success";
+	public String toDepositAmount(@RequestBody OrderTable orderTable){
+		if(orderTable != null) {
+			return walletService.depositAmount(orderTable);
 		}
 		else {
-			return "failure";
+			throw new NullPointerException("Insufficient information....");
 		}
 	}		
 	
+	/*
 	@RequestMapping(value="/withdrawamount", method = RequestMethod.POST)
-	public String toWithdrawAmount(@RequestBody UserTransactionDto utd) {
+	public String toWithdrawAmount(@RequestBody UserTransactionDto utd) 
+	{
 		System.out.println(utd.getUserId()+"/t"+utd.getWalletType()+"/t"+utd.getAmount());
 			if(utd != null)
 			{
@@ -51,5 +52,5 @@ public class WalletController {
 			{
 				throw new NullPointerException("Please provide complete details");
 			}
-	}
+	}*/
 }

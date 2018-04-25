@@ -28,7 +28,8 @@ public class Wallet {
 	
 	private Double balance;
 	private Double shadowBalance;
-
+	private String coinName;
+	
 	@ManyToOne
 	@JoinColumn(name = "userId", referencedColumnName = "userId")
 	@JsonIgnore
@@ -79,6 +80,14 @@ public class Wallet {
 	
 	public Double getShadowBalance() {
 		return shadowBalance;
+	}
+	
+	public String getCoinName() {
+		return coinName;
+	}
+
+	public void setCoinName(String coinName) {
+		this.coinName = coinName;
 	}
 
 	public void setUser(User user) {

@@ -2,6 +2,7 @@ package com.training.demo.model;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import javax.persistence.CascadeType;
@@ -44,9 +45,11 @@ public class User
 	
 
 	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-	private List<Wallet> wallets = new ArrayList<Wallet>();
+	private Set<Wallet> wallets = new HashSet<Wallet>();
+		
+	@OneToMany(fetch=FetchType.EAGER, cascade = CascadeType.ALL, mappedBy = "user")
+	private Set<OrderTable> orderTable = new HashSet<>();
 	
-	private List<OrderTable> orderTable;
 	public User()
 	{	super();
 		System.out.println("Default Constructor");
@@ -119,19 +122,19 @@ public class User
 		this.roles = roles;
 	}
 
-	public List<Wallet> getWallets() {
+	public Set<Wallet> getWallets() {
 		return wallets;
 	}
 
-	public void setWallets(List<Wallet> wallets) {
+	public void setWallets(Set<Wallet> wallets) {
 		this.wallets= wallets;
 	}
 
-	public List<OrderTable> getOrderTable() {
+	public Set<OrderTable> getOrderTable() {
 		return orderTable;
 	}
 
-	public void setOrderTable(List<OrderTable> orderTable) {
+	public void setOrderTable(Set<OrderTable> orderTable) {
 		this.orderTable = orderTable;
 	}	
 	

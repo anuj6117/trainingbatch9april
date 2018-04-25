@@ -6,4 +6,6 @@ import com.training.demo.model.OrderTable;
 
 public interface OrderRepository extends JpaRepository<OrderTable,Integer>{
 
+	OrderTable findByOrderId(Integer orderId);
+
 }

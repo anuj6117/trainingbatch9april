@@ -1,11 +1,12 @@
 package com.training.demo.service;
 
-import java.util.Date;
-import java.util.List;
+import java.util.Set;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import com.training.demo.dto.OrderApprovalDto;
+import com.training.demo.enums.OrderStatus;
 import com.training.demo.enums.WalletType;
-import com.training.demo.model.CoinManagement;
 import com.training.demo.model.OrderTable;
 import com.training.demo.model.User;
 import com.training.demo.model.Wallet;
@@ -25,33 +26,62 @@ public class OrderService {
 	
 	@Autowired
 	OrderRepository orderdata;
+	
 	@Autowired
 	UserRepository userData;
+	
 	@Autowired
 	CoinManagementRepository coindata;
-	@Autowired
-	WalletRepository walletRepo;
 	
+	@Autowired
+	WalletRepository walletRepository;
+	
+	@Autowired
+	OrderRepository orderRepository;
+		
 	public String approveOrder(OrderApprovalDto orderApprovalDto)
 	{       User user = userRepository.findByUserId(orderApprovalDto.getUserId());
-			UserOrder userOrder =  orderRepository.findByOrderId(orderApprovalDto.getOrderId());
-	        userOrder.setStatus(orderApprovalDto.getStatus());
-	        orderRepository.save(userOrder);
+			OrderTable orderTable =  orderRepository.findByOrderId(orderApprovalDto.getOrderId());
+	        orderTable.setOrderStatus(orderApprovalDto.getStatus());
+	        orderRepository.save(orderTable);
 	        Wallet wallet = walletRepository.findByWalletTypeAndUser(WalletType.FIAT, user);
-			if (wallet != null && userOrder.getStatus() == OrderStatus.COMPLETE) {
-				wallet.setBalance(userOrder.getPrice() + wallet.getBalance());
+			if (wallet != null && orderTable.getOrderStatus() == OrderStatus.APPROVED) {
+				wallet.setBalance(orderTable.getPrice() + wallet.getBalance());
 				walletRepository.save(wallet);
 			}
-	        
-	        return "Status Updated Succesfully";
-	        
-			}
-
+	     return "Status Updated Succesfully";
 	}
-	public List<OrderTable> showalldata(Integer userId) {
+	
+	public String createBuyOrder(OrderTable orderTable)
+	{ 
+			User user = orderTable.getUser();
+			OrderTable tempOrderTable = new OrderTable();
+			tempOrderTable.setUser(user);
+			tempOrderTable.setCoinName((orderTable.getCoinName()));
+			tempOrderTable.setCoinQuantity(orderTable.getCoinQuantity());
+			tempOrderTable.setOrderStatus(OrderStatus.PENDING);
+			tempOrderTable.setFee(orderTable.getFee());
+			orderRepository.save(tempOrderTable);
+
+	     return "Create buy order request is processed successfully and pending for approval.";
+	}
+	
+	public String createSellOrder(OrderTable orderTable)
+	{ 
+			User user = orderTable.getUser();
+			OrderTable tempOrderTable = new OrderTable();
+			tempOrderTable.setUser(user);
+			tempOrderTable.setCoinName((orderTable.getCoinName()));
+			tempOrderTable.setCoinQuantity(orderTable.getCoinQuantity());
+			tempOrderTable.setOrderStatus(OrderStatus.PENDING);
+
+	     return "Sell buy order request is processed successfully and pending for approval.";
+	}
+	
+	public Set<OrderTable> showalldata(Integer userId) {
 		User user = userData.findByUserId(userId);
-		List<OrderTable> result = user.getOrderTable();
-		return result;
+		Set<OrderTable> allOrders = user.getOrderTable();
+		return allOrders;
 	}
 
 }

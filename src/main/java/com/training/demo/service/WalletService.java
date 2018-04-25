@@ -1,7 +1,7 @@
 package com.training.demo.service;
 import java.util.Date;
 import java.util.Iterator;
-import java.util.List;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -11,8 +11,10 @@ import com.training.demo.dto.WalletDto;
 import com.training.demo.enums.OrderStatus;
 import com.training.demo.enums.OrderType;
 import com.training.demo.enums.WalletType;
+import com.training.demo.model.OrderTable;
 import com.training.demo.model.User;
 import com.training.demo.model.Wallet;
+import com.training.demo.repository.OrderRepository;
 import com.training.demo.repository.UserRepository;
 import com.training.demo.repository.WalletRepository;
 
@@ -24,7 +26,10 @@ public class WalletService {
 	
 	@Autowired
 	private WalletRepository walletRepository;
-
+	
+	@Autowired
+	private OrderRepository orderRepository;
+	
 	public String addWalletToUser(WalletDto walletDto) {
 		
 		User user = userRepository.findByUserId(walletDto.getUserId());
@@ -33,45 +38,23 @@ public class WalletService {
 		wallet.setUser(user);
 		wallet.setBalance(0.0);
 		wallet.setShadowBalance(0.0);
+		wallet.setCoinName(walletDto.getCoinName());
 		walletRepository.save(wallet);
 		return "success";
 	}
-	public String depositAmount(UserWalletDto userwalletdto) {
-		User user = userRepository.findOneByUserId(userwalletdto.getuserId());
-		UserOrder userOrder = new UserOrder();
-			
-		userOrder.setOrderType(OrderType.DEPOSIT);
-		userOrder.setCoinName(WalletType.FIAT);
-		userOrder.setPrice(userwalletdto.getamount());
-		userOrder.setOrderCreatedOn(new Date());
-		userOrder.setStatus(OrderStatus.PENDING);
-		userOrder.setUser(user);
-		orderRepository.save(userOrder); 
-		;
-		if (userOrder.getStatus() == OrderStatus.COMPLETE) {
-			
-			return "Amount added";
-		} else {
-			return "Status Pending";
-		}
-}
-	public void toDepositAmount(UserTransactionDto utd) {
-		Integer userId = utd.getUserId();
-		String walletType = utd.getWalletType();
-		Double amount = utd.getAmount();
+	
+	public String depositAmount(OrderTable orderTable) {
+		User user = orderTable.getUser();
+		OrderTable tempOrderTable = new OrderTable();
+		tempOrderTable.setOrderType(OrderType.DEPOSIT);
+		tempOrderTable.setCoinName(WalletType.FIAT);
+		tempOrderTable.setPrice(orderTable.getPrice());
+		tempOrderTable.setOrderCreatedOn(new Date());
+		tempOrderTable.setOrderStatus(OrderStatus.PENDING);
+		tempOrderTable.setUser(user);
+		orderRepository.save(tempOrderTable); 
 		
-		User user = userRepository.findByUserId(userId);
-		List<Wallet> wallet = user.getWallets();
-		Iterator itr = wallet.iterator();
-		while(itr.hasNext()) {
-			Wallet tempWallet = (Wallet)itr.next();
-
-			 if( tempWallet == walletRepository.findByWalletType(WalletType.valueOf(walletType))) {
-				Double totalAmount = tempWallet.getBalance()+amount;
-				 tempWallet.setBalance(totalAmount);
-				userRepository.save(user);
-			}
-		}
+		return "deposit request is successfully processed, kindly wait for the admin approval.";
 		}
 			
 	public String toWithdrawn(UserTransactionDto utd ) {
@@ -80,7 +63,7 @@ public class WalletService {
 		 Double amount = utd.getAmount();		 
 
 		 User user = userRepository.findByUserId(userId);
-		 List<Wallet> wallet = user.getWallets();
+		 Set<Wallet> wallet = user.getWallets();
 		 Iterator itr = wallet.iterator();
 		 while(itr.hasNext()) {
 			Wallet tempWallet = (Wallet) itr.next();

@@ -71,7 +71,7 @@ public class SignUpService
 			wallet.setUser(user);
 			wallet.setBalance(0.0);
 			wallet.setShadowBalance(0.0);
-			HashSet<Wallet> walletHashSet = new HashSet<Wallet>();
+			Set<Wallet> walletHashSet = new HashSet<Wallet>();
 			walletHashSet.add(wallet);
 			user.setWallets(walletHashSet);
 			

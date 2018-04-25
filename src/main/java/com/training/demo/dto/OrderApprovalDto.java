@@ -4,25 +4,25 @@ import com.training.demo.enums.OrderStatus;
 
 public class OrderApprovalDto {
 
-	private String orderId;
+	private Integer orderId;
 	private OrderStatus status;
-	private long userId;
+	private Integer userId;
 	
 	public OrderApprovalDto() {
 		super();
 	}
 	
-	public OrderApprovalDto(String orderId, OrderStatus status, long userId) {
+	public OrderApprovalDto(Integer orderId, OrderStatus status, Integer userId) {
 		super();
 		this.orderId = orderId;
 		this.status = status;
 		this.userId = userId;
 	}
 
-	public String getOrderId() {
+	public Integer getOrderId() {
 		return orderId;
 	}
-	public void setOrderId(String orderId) {
+	public void setOrderId(Integer orderId) {
 		this.orderId = orderId;
 	}
 	public OrderStatus getStatus() {
@@ -31,10 +31,10 @@ public class OrderApprovalDto {
 	public void setStatus(OrderStatus status) {
 		this.status = status;
 	}
-	public long getUserId() {
+	public Integer getUserId() {
 		return userId;
 	}
-	public void setUserId(long userId) {
+	public void setUserId(Integer userId) {
 		this.userId = userId;
 	}	
 }
