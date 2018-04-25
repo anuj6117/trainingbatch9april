@@ -52,6 +52,12 @@ public class User {
 
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
 	private Set<Wallet> Wallet;
+	
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+	private Set<Wallet> wallet;
+	
+	
+	
 
 	public User() {
 		super();

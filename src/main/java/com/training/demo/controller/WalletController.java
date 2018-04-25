@@ -37,8 +37,8 @@ public class WalletController {
 
 	@RequestMapping(value = "depositAmount", method = RequestMethod.POST)
 
-	public String deposit(@RequestBody UserDepositDto userdepositdto) {
-		return walletService.depositAmount(userdepositdto);
+	public String deposit(@RequestBody UserWalletDto userwalletdto) {
+		return walletService.depositAmount(userwalletdto);
 	}
 
 	@RequestMapping(value = "withdrawamount", method = RequestMethod.POST)

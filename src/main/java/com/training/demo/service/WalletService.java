@@ -1,13 +1,21 @@
 package com.training.demo.service;
 
+import java.util.Date;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.training.demo.dto.UserDepositDto;
 import com.training.demo.dto.UserWalletDto;
+import com.training.demo.dto.WalletApprovalDto;
+import com.training.demo.enums.OrderType;
+import com.training.demo.enums.UserOrderStatus;
 import com.training.demo.enums.WalletType;
 import com.training.demo.model.User;
+import com.training.demo.model.UserOrder;
 import com.training.demo.model.Wallet;
+import com.training.demo.repository.OrderRepository;
+import com.training.demo.repository.UserOrderRepository;
 import com.training.demo.repository.UserRepository;
 import com.training.demo.repository.WalletRepository;
 
@@ -21,6 +29,10 @@ public class WalletService {
 	private WalletService walletService;
 	@Autowired
 	private UserRepository userrepository;
+	@Autowired 
+	private OrderRepository orderrepository;
+	@Autowired
+	private UserOrderRepository userorderrepository;
 
 	public String addWallet(UserWalletDto userWalletdto) {
 		System.out.println(userWalletdto.getUserId());
@@ -38,21 +50,38 @@ public class WalletService {
 
 	}
 
-	public String depositAmount(UserDepositDto userdepositdto) {
-		Wallet wallet = new Wallet();
-		User user = userrepository.findByUserId(userdepositdto.getUserId());
-		wallet = walletRepository.findByWalletType(userdepositdto.getWalletType());
-		if (wallet != null) {
-			long moneyBalance = userdepositdto.getAmount() + wallet.getBalance();
-			wallet.setBalance(moneyBalance);
-			wallet.setShadowBalance(moneyBalance);
-			walletRepository.save(wallet);
-			return "sucess";
+	public String depositAmount(UserWalletDto userwalletdto) {
+		//Wallet wallet = new Wallet();
+		//UserOrder userorder=new UserOrder();
+		User user = userrepository.findByUserId(userwalletdto.getUserId());
+		//wallet = walletRepository.findByWalletType(userdepositdto.getWalletType());
+		UserOrder userorder=new UserOrder();
+		userorder.setOrderType(OrderType.DEPOSIT);
+		userorder.setCoinName(WalletType.FIAT);
+		userorder.setPrice(userwalletdto.getAmount());
+		userorder.setOrderCreatedOn(new Date());
+		userorder.setStatus(UserOrderStatus.PENDING);
+		userorder.setUser(user);
+		orderrepository.save(userorder); 
+		
+		if (userorder.getStatus() == UserOrderStatus.COMPLETE) {
+			
+			return "Amount added";
 		} else {
-			return "failue";
+			return "Status Pending";
 		}
+}
+		//if (wallet != null) {
+			//long moneyBalance = userdepositdto.getAmount() + wallet.getBalance();
+			//wallet.setBalance(moneyBalance);
+			//wallet.setShadowBalance(moneyBalance);
+			//walletRepository.save(wallet);
+			//return "sucess";
+		//} else {
+			//return "failue";
+		//}
 
-	}
+	
 
 	public String withDrawAmount(UserDepositDto userdepositdto) {
 		Wallet wallet = new Wallet();
@@ -70,5 +99,29 @@ public class WalletService {
 		}
 
 	}
+	
+	public String approve(WalletApprovalDto walletapprovaldto)
+	{
+		UserOrder userorder = userorderrepository.findByUserOrderId(walletapprovaldto.getUserId());
+				
+		{
+			
+		}
+		
+		
+		
+		return "null";
+	}
 
 }
+
+
+
+
+
+
+
+
+
+
+

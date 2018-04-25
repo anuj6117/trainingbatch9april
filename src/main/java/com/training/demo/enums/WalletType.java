@@ -1,7 +1,7 @@
 package com.training.demo.enums;
 
 public enum WalletType {
-	FIAT("ghjg"), BITCOIN("vnvn"), ETHERIUM("bhjg");
+	FIAT("sdfddsd") ,CRYPTO("njk") ;
 	private String value;
 
 	private WalletType(String value) {

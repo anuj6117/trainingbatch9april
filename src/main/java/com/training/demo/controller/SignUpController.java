@@ -27,11 +27,24 @@ public class SignUpController {
 	@RequestMapping(value = "/signup", method = RequestMethod.POST)
 	public String insertUser(@RequestBody User user) {
 		System.out.println("controller hit");
+		String password=user.getPassword().trim();
+		String username=user.getuserName();
+		int length=password.length();
+	    int unamelength=username.length();
+		if((length!=0)&&(unamelength!=0))
+		{
 		String newUser = signUpService.addUser(user);
 		if (newUser != null) {
 			return newUser;
 		} else {
 			return "failure";
+		}
+		}
+		
+		else
+		{
+			return "enter valid password or user name";
+			
 		}
 	}
 
