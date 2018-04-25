@@ -25,6 +25,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.trainingproject.enums.Status;
 
 @Entity
@@ -61,6 +62,7 @@ public class User {
 	private List<Role> roleType;
 	
 	@OneToMany(mappedBy = "user")
+	@JsonIgnore
 	private List<UserOrder> orderType;
 	
 	

@@ -1,9 +1,9 @@
 package com.trainingproject.enums;
 
 public enum TransactionStatus {
-Pending("Transaction pending"),
 Approved("Transaction approved"),
-Failed("Transaction failed");
+Failed("Transaction failed"),
+Rejected("Transaction rejected");
 	private String value;
 	private TransactionStatus(String value) {
 		this.value = value;

@@ -8,4 +8,6 @@ import com.trainingproject.domain.UserOrder;
 @Repository
 public interface UserOrderRepository extends JpaRepository<UserOrder, Integer> {
 
+	UserOrder findByOrderId(Integer orderId);
+
 }

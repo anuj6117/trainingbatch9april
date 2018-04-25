@@ -10,27 +10,14 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.trainingproject.domain.Wallet;
+import com.trainingproject.dto.UserWalletDto;
+import com.trainingproject.dto.WalletApprovalDto;
 import com.trainingproject.service.WalletService;
 @RestController
 public class WalletController {
 	@Autowired
 	private WalletService walletService;
-	/*@RequestMapping(value = "createcwallet",method = RequestMethod.POST)
-	   public String func(@RequestBody Wallet wallet) {
-		 Wallet walletCreated = walletService.addWallet(wallet);
-		if(walletCreated != null) {
-			return "success";
-		}
-			else
-				return "Failure";
-
-		}*/
 	
-	/*@RequestMapping(value = "createwallet",method = RequestMethod.POST)
-	public void addWallet(@RequestBody Wallet wallet) {
-		
-		walletService.addWallet(wallet);
-	}*/
 	
 	@RequestMapping(value = "/getallwallet")
 	public List<Wallet> getAllWallet(){
@@ -50,6 +37,14 @@ public class WalletController {
 	public void deleteWallet(Integer walletId){
 		walletService.deleteWallet(walletId);
 	}
-	
+	@RequestMapping(value = "/depositamount", method = RequestMethod.POST)
+	public String depositAmount(@RequestBody   UserWalletDto userWalletDto) {
+		return walletService.depositAmount(userWalletDto);
+		 
+	}
 
+	@RequestMapping(value = "/walletapproved", method = RequestMethod.POST)
+	public String walletApproved(@RequestBody  WalletApprovalDto walletApprovalDto) throws Exception {
+		return walletService.walletApproved(walletApprovalDto);
+	}
 }

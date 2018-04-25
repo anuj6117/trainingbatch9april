@@ -46,12 +46,12 @@ public class UserOrderService {
 		// TODO Auto-generated method stub
 		    User user = userRepository.findByUserId(userOrderBuySellDto.getUserId());
 			UserOrder  userOrder = new UserOrder();
-			userOrder.setOrderType(OrderType.buyer);
+			userOrder.setOrderType(OrderType.Buyer);
 			userOrder.setUser(user);
 			userOrder.setCoinQuantity(userOrderBuySellDto.getCoinQuantity());
 			userOrder.setPrice(userOrderBuySellDto.getPrice());
 			userOrder.setCoinName(userOrderBuySellDto.getCoinName());
-			userOrder.setStatus(Status.pending);
+			userOrder.setStatus(Status.PENDING);
 			userOrder.setOrderCreatedOn(new Date());
 			userOrderRepository.save(userOrder);
 		return "success";
@@ -61,12 +61,12 @@ public class UserOrderService {
 		// TODO Auto-generated method stub
 		User user = userRepository.findByUserId(userOrderBuySellDto.getUserId());
 		UserOrder  userOrder = new UserOrder();
-		userOrder.setOrderType(OrderType.seller);
+		userOrder.setOrderType(OrderType.Seller);
 		userOrder.setUser(user);
 		userOrder.setCoinQuantity(userOrderBuySellDto.getCoinQuantity());
 		userOrder.setPrice(userOrderBuySellDto.getPrice());
 		userOrder.setCoinName(userOrderBuySellDto.getCoinName());
-		userOrder.setStatus(Status.pending);
+		userOrder.setStatus(Status.PENDING);
 		userOrder.setOrderCreatedOn(new Date());
 		userOrderRepository.save(userOrder);
 		return "success";

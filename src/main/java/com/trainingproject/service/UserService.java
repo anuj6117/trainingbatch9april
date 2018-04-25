@@ -12,14 +12,20 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.trainingproject.domain.UserOTP;
+import com.trainingproject.domain.UserOrder;
+import com.trainingproject.dto.UserOrderBuySellDto;
 import com.trainingproject.dto.UserRoleDto;
 import com.trainingproject.dto.UserWalletDto;
+import com.trainingproject.dto.WalletApprovalDto;
 import com.trainingproject.domain.Role;
+import com.trainingproject.domain.Transaction;
 import com.trainingproject.domain.User;
 import com.trainingproject.domain.Wallet;
+import com.trainingproject.enums.OrderType;
 import com.trainingproject.enums.Status;
 import com.trainingproject.enums.WalletType;
 import com.trainingproject.repository.UserOTPRepository;
+import com.trainingproject.repository.UserOrderRepository;
 import com.trainingproject.repository.UserRepository;
 import com.trainingproject.repository.WalletRepository;
 import com.trainingproject.repository.RoleRepository;
@@ -38,16 +44,17 @@ public class UserService {
 	private RoleService roleService;
 	@Autowired
 	private WalletRepository walletRepository;
+	@Autowired
+	private UserOrderRepository userOrderRepository;
 	private UserOTP otp = new UserOTP();
 	private Role role = new Role();
 	static Integer otp1;
 	User user;
 	static Long longBalance;
-	
+	UserOrder  userOrder = new UserOrder();
 	
 	
 	public User addUsers(User user) {
-		
 	    user.setCreatedOn(new Date());
 		user.setStatus(Status.INACTIVE);
 		List<Role> list = new ArrayList<Role>();
@@ -172,29 +179,7 @@ public class UserService {
 	
 	
 	
-	public String depositAmount(UserWalletDto userWalletDto) {
-		User user = userRepository.findByUserId(userWalletDto.getUserId());
-		Wallet wallet = walletRepository.findByWalletType(userWalletDto.getWalletType());
-		if(user != null) {
-			if(wallet != null ) {
-				longBalance = wallet.getBalance();
-				longBalance = longBalance + userWalletDto.getAmount();
-				Set<Wallet> walletSet = new HashSet<Wallet>();
-				wallet.setBalance(longBalance);
-				wallet.setShadowBalance(longBalance);
-				walletSet.add(wallet);
-				walletRepository.save(wallet);
-				user.setUserWallet(walletSet);
-				userRepository.save(user);
-			}
-		}
-		return "Deposit amount successfully";
-	}
-
-
-
-
-
+		
 	public String withdrawAmount(UserWalletDto userWalletDto) {
 		// TODO Auto-generated method stub
 		User user = userRepository.findByUserId(userWalletDto.getUserId());
@@ -219,4 +204,82 @@ public class UserService {
 		return "Withdraw amount successfully";
 	}
 	
+	/*public String depositAmount(UserWalletDto userWalletDto) {
+		User user = userRepository.findByUserId(userWalletDto.getUserId());
+		Wallet wallet = walletRepository.findByWalletType(userWalletDto.getWalletType());
+		if(user != null) {
+			if(wallet != null ) {
+				longBalance = wallet.getBalance();
+				longBalance = longBalance + userWalletDto.getAmount();
+				Set<Wallet> walletSet = new HashSet<Wallet>();
+				wallet.setBalance(longBalance);
+				wallet.setShadowBalance(longBalance);
+				walletSet.add(wallet);
+				walletRepository.save(wallet);
+				user.setUserWallet(walletSet);
+				userRepository.save(user);
+			}
+		}
+		User user = userRepository.findByUserId(userWalletDto.getUserId());
+		Wallet wallet = walletRepository.findByWalletType(userWalletDto.getWalletType());
+		if(user != null && wallet != null ) {
+				//UserOrder  userOrder = new UserOrder();
+				userOrder.setUser(user);
+				userOrder.setCoinType(userWalletDto.getWalletType());
+				userOrder.setCoinName(userWalletDto.getCoinName());
+				userOrder.setOrderType(OrderType.dEPOSIT);
+				userOrder.setCoinQuantity(userWalletDto.getAmount());
+				userOrder.setNetAmount(userWalletDto.getAmount());
+				userOrder.setGrossAmount(userWalletDto.getAmount());
+				userOrder.setStatus(Status.PENDING);
+				userOrder.setOrderCreatedOn(new Date());
+				userOrderRepository.save(userOrder);
+				return "success";
+			}
+		else 
+		    return "User id does not exist.";
+	}
+
+
+	public String message;
+	public String walletApproved(WalletApprovalDto walletApprovalDto) {
+		// TODO Auto-generated method stub
+		 UserOrder  userOrder = userOrderRepository.findByOrderId(walletApprovalDto.getOrderId());
+		 if(userOrder.getStatus() == Status.PENDING) {
+			userOrder.setStatus(walletApprovalDto.getStatus()); 
+			}
+		 if(userOrder.getStatus() == Status.APPROVED) {
+			 message = "deposit approved";
+			 Transaction transaction = new  Transaction();
+			 transaction.setNetAmount(userOrder.getNetAmount());
+			 transaction.setWalletType(userOrder.getCoinType());
+			 transaction.setGrossAmount(userOrder.getGrossAmount());
+			 transaction.setCreatedOn(new Date());
+			 transaction.setStatus(walletApprovalDto.getStatus());
+			 transaction.setMessage(message);
+		 } 
+		 else if(userOrder.getStatus() == Status.FAILED) {
+			 message = "deposit failed";
+			 Transaction transaction = new  Transaction();
+			 transaction.setNetAmount(userOrder.getNetAmount());
+			 transaction.setWalletType(userOrder.getCoinType());
+			 transaction.setGrossAmount(userOrder.getGrossAmount());
+			 transaction.setCreatedOn(new Date());
+			 transaction.setStatus(walletApprovalDto.getStatus());
+			 transaction.setMessage(message);
+		 } 
+		 else if(userOrder.getStatus() == Status.REJECTED) {
+			 message = "deposit rejected";
+			 Transaction transaction = new  Transaction();
+			 transaction.setNetAmount(userOrder.getNetAmount());
+			 transaction.setWalletType(userOrder.getCoinType());
+			 transaction.setGrossAmount(userOrder.getGrossAmount());
+			 transaction.setCreatedOn(new Date());
+			 transaction.setStatus(walletApprovalDto.getStatus());
+			 transaction.setMessage(message);
+		 }
+			 
+		 
+		return null;
+	}*/
 }

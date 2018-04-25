@@ -2,7 +2,10 @@ package com.trainingproject.enums;
 
 public enum WalletType {
 	
-	FIAT("fiat coin"),BITCOIN("bit coin"),ETHEREUM("ethereum coin");
+	FIAT("fiat coin"),
+	CRYPTO("crypto coin");
+	//BITCOIN("bit coin"),
+	//ETHEREUM("ethereum coin");
 	private String value;
 
 	private WalletType(String value) {

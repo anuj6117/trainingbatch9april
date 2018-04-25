@@ -14,8 +14,11 @@ import org.springframework.web.bind.annotation.RestController;
 import com.trainingproject.domain.Role;
 import com.trainingproject.domain.User;
 import com.trainingproject.domain.UserOTP;
+import com.trainingproject.domain.UserOrder;
+import com.trainingproject.dto.UserOrderBuySellDto;
 import com.trainingproject.dto.UserRoleDto;
 import com.trainingproject.dto.UserWalletDto;
+import com.trainingproject.dto.WalletApprovalDto;
 import com.trainingproject.service.UserService;
 
 @RestController
@@ -83,13 +86,19 @@ public class UserController {
 		return userService.userVerification(userOTP);
 	}
 	
-	@RequestMapping(value = "/depositamount", method = RequestMethod.POST)
-	public String depositAmount(@RequestBody UserWalletDto  userWalletDto) throws Exception {
+/*	@RequestMapping(value = "/depositamount", method = RequestMethod.POST)
+	public String depositAmount(@RequestBody   UserWalletDto userWalletDto) {
 		return userService.depositAmount(userWalletDto);
-	}
+		 
+	}*/
 
 	@RequestMapping(value = "/withdrawamount", method = RequestMethod.POST)
 	public String withdrawAmount(@RequestBody UserWalletDto  userWalletDto) throws Exception {
 		return userService.withdrawAmount(userWalletDto);
 	}
+	
+	/*@RequestMapping(value = "/walletapproved", method = RequestMethod.POST)
+	public String walletApproved(@RequestBody  WalletApprovalDto walletApprovalDto) throws Exception {
+		return userService.walletApproved(walletApprovalDto);
+	}*/
 }

@@ -2,7 +2,13 @@ package com.trainingproject.enums;
 
 public enum Status {
 	
-	INACTIVE("inactive"),ACTIVE("active"),pending("pending"),complete("complete"),moderate("moderate");
+	INACTIVE("inactive"),
+	ACTIVE("active"),
+	PENDING("pending"),
+	MODERATE("moderate"),
+	FAILED("failed"),
+	APPROVED("approved"),
+	REJECTED("rejected");
 	private String value;
 
 	private Status(String value) {

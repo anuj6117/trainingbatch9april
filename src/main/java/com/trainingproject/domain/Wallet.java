@@ -20,7 +20,7 @@ public class Wallet {
 	@GeneratedValue(strategy = GenerationType.AUTO)
     private Integer walletId;
 	@Enumerated(EnumType.STRING)
-	private WalletType walletType;//=WalletType.FIAT;
+	private WalletType walletType;
 	private Long balance;
 	private Long shadowBalance;
 	@ManyToOne
@@ -51,9 +51,6 @@ public class Wallet {
 	public void setWalletType(WalletType walletType) {
 		this.walletType = walletType;
 	}
-
-	
-
 	public Long getBalance() {
 		return balance;
 	}

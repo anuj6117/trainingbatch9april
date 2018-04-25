@@ -6,12 +6,15 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import com.trainingproject.enums.WalletType;
+
 @Entity
 @Table(name="currency")
 public class Currency {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
     private Integer coinId;
+	private  WalletType coinType;
 	private String coinName;
 	private String symbol;
 	private Long initialSupply;
@@ -24,6 +27,15 @@ public class Currency {
 		profit = 0l;
 		coinInINR = 0l;
 	}
+	
+	public WalletType getCoinType() {
+		return coinType;
+	}
+
+	public void setCoinType(WalletType coinType) {
+		this.coinType = coinType;
+	}
+
 	public Integer getCoinId() {
 		return coinId;
 	}
