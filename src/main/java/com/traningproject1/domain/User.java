@@ -21,6 +21,7 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.traningproject1.enumsclass.UserStatus;
 
 @Entity
@@ -45,17 +46,18 @@ private String password;
 
 private String  country;
 
+@JsonIgnore
+@OneToMany(mappedBy="user")
+private List<UserOrder>userOrder;
 
-public void setUserorder(List<UserOrder> userorder) {
-	this.userorder = userorder;
-}
 private Date createdOn;
 
 private UserStatus status;
 
 @NotNull
 @Column(unique = true)
-private long phoneNumber;
+@Size(max=10,min=10)
+private String phoneNumber;
 
 
 @ManyToMany(cascade= { CascadeType.PERSIST,CascadeType.MERGE},fetch=FetchType.EAGER)
@@ -68,7 +70,7 @@ private List<Role> role;
 
 @OneToMany(mappedBy="user")
 private Set<Wallet> wallet;
-
+@JsonIgnore
 @OneToMany(mappedBy="user")
 private List<UserOrder>userorder;
 
@@ -84,8 +86,6 @@ public List<Role> getRole() {
 public void setRole(List<Role> role) {
 	this.role = role;
 }
-
-
 public String getUserName() {
 	return userName;
 }
@@ -123,10 +123,16 @@ public void setConfirmPassword(String confirmPassword) {
 
 
 
-public long getPhoneNumber() {
+public List<UserOrder> getUserOrder() {
+	return userOrder;
+}
+public void setUserOrder(List<UserOrder> userOrder) {
+	this.userOrder = userOrder;
+}
+public String getPhoneNumber() {
 	return phoneNumber;
 }
-public void setPhoneNumber(long phoneNumber) {
+public void setPhoneNumber(String phoneNumber) {
 	this.phoneNumber = phoneNumber;
 }
 
@@ -145,6 +151,9 @@ public void setStatus(UserStatus status) {
 }
 public List<UserOrder> getUserorder() {
 	return userorder;
+}
+public void setUserorder(List<UserOrder> userorder) {
+	this.userorder = userorder;
 }
 public Date getCreatedOn() {
 	return createdOn;

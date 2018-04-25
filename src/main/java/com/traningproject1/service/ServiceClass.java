@@ -15,10 +15,14 @@ import com.traningproject1.demo.dto.DepositAmountDTO;
 import com.traningproject1.demo.dto.WithdrawAmountDTO;
 import com.traningproject1.domain.Role;
 import com.traningproject1.domain.User;
+import com.traningproject1.domain.UserOrder;
 import com.traningproject1.domain.Wallet;
+import com.traningproject1.enumsclass.CoinType;
+import com.traningproject1.enumsclass.UserOrderStatus;
+import com.traningproject1.enumsclass.UserOrderType;
 import com.traningproject1.enumsclass.UserStatus;
-import com.traningproject1.enumsclass.WalletType;
 import com.traningproject1.repository.RoleRepository;
+import com.traningproject1.repository.UserOrderRepository;
 import com.traningproject1.repository.UserRepository;
 import com.traningproject1.repository.WalletRepository;
 @Service
@@ -34,6 +38,8 @@ private RoleRepository roleRepository;
 @Autowired
 private WalletRepository walletRepository;
 
+@Autowired
+private UserOrderRepository userOrderRepository;
 public User addUser(User user)
 	{
 	
@@ -57,7 +63,7 @@ public User addUser(User user)
 		Wallet wallet=new Wallet();
 		
 		
-		wallet.setWalletType(WalletType.FIATE);
+		wallet.setCoinType(CoinType.FIATE);
 		
 		wallet.setUser(user);
 		
@@ -156,13 +162,13 @@ public String assignWallet(AssignWalletDTO assignwalletDTO)
 	//System.out.println("Get Wallet Type is ++++++++"+walletType);
 	wallet1.setUser(user);
 	
-	wallet1.setWalletType(assignwalletDTO.getWalletType());
+	wallet1.setCoinType(assignwalletDTO.getCoinType());
 	
 	
 	//walletRepository.save(wallet1);
 	  
 	
-	System.out.println("New Wallet Object is++++++++++++++++++++"+wallet1.getWalletType());
+	//System.out.println("New Wallet Object is++++++++++++++++++++"+wallet1.getWalletType());
 	
 	
 	
@@ -186,7 +192,7 @@ public String assignWallet(AssignWalletDTO assignwalletDTO)
   public String withdrawAmount(WithdrawAmountDTO withdrawamountdto)
   {
 	  User user=userRepository.findByuserId(withdrawamountdto.getUserId());
-	  Wallet wallet=walletRepository.findByWalletType(withdrawamountdto.getWalletType());
+	  Wallet wallet=walletRepository.findByCoinType(withdrawamountdto.getCoinType());
 	  
 	  long amount=withdrawamountdto.getAmount();
 	  
@@ -200,20 +206,26 @@ public String assignWallet(AssignWalletDTO assignwalletDTO)
   public String depositAmount(DepositAmountDTO depositamountdto)
   {
 	  User user=userRepository.findByuserId(depositamountdto.getUserId());
-	  Wallet wallet=walletRepository.findByWalletType(depositamountdto.getWalletType());
+	  Wallet wallet=walletRepository.findByCoinType(depositamountdto.getCoinType());
+	  UserOrder userorder=new UserOrder();
+	  //userorder.setUserId(user.getUserId());
 	  
-	  //if()
-	  //{
-		  
-	  //}
+	  userorder.setUser(user);
+	  userorder.setCoinQuantity(depositamountdto.getAmount());
+	  userorder.setGrossAmount(depositamountdto.getAmount());
+	  userorder.setStatus(UserOrderStatus.PENDING);
+	  userorder.setOrderType(UserOrderType.DEPOSIT);
+	  userorder.setCoinName(depositamountdto.getCoinName());
+	  userorder.setDateCreated(new Date());
 	  
-	  long balance=depositamountdto.getAmount();
+	  userOrderRepository.save(userorder);  
+    // long balance=depositamountdto.getAmount();
 	 
-	  wallet.setBalance(balance+wallet.getBalance());
-	  wallet.setShadowBalance(wallet.getBalance());
-	  walletRepository.save(wallet);
+    // wallet.setBalance(balance+wallet.getBalance());
+    // wallet.setShadowBalance(wallet.getBalance());
+    // walletRepository.save(wallet);
 	  
-	  userRepository.save(user);
+	// userRepository.save(user);
 	 
 	  return "success";
   }

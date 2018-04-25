@@ -11,6 +11,7 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.traningproject1.enumsclass.UserOrderStatus;
 import com.traningproject1.enumsclass.UserOrderType;
 
@@ -21,10 +22,11 @@ public class UserOrder {
 	@GeneratedValue(strategy=GenerationType.AUTO)
 	private Integer userorderId;
 
-private Integer userId;
 
 @ManyToOne
+@JsonIgnore
 private User user;
+
 
 public User getUser() {
 	return user;
@@ -32,18 +34,7 @@ public User getUser() {
 public void setUser(User user) {
 	this.user = user;
 }
-public Integer getUserorderId() {
-	return userorderId;
-}
-public void setUserorderId(Integer userorderId) {
-	this.userorderId = userorderId;
-}
-public Integer getCoinQuantity() {
-	return coinQuantity;
-}
-public void setCoinQuantity(Integer coinQuantity) {
-	this.coinQuantity = coinQuantity;
-}
+
 @Enumerated(EnumType.STRING)
 private UserOrderType orderType;
 
@@ -52,27 +43,13 @@ private UserOrderStatus status;
 
 private String coinName;
 
-private long quote;
-
 private Integer coinQuantity; 
  
 private long price;
 
-public long getPrice() {
-	return price;
-}
-public void setPrice(long price) {
-	this.price = price;
-}
-private Date dateCreated;
-
+private Integer grossAmount;
 private long fees;
-public Integer getUserId() {
-	return userId;
-}
-public void setUserId(Integer userId) {
-	this.userId = userId;
-}
+private Date dateCreated;
 public UserOrderType getOrderType() {
 	return orderType;
 }
@@ -85,11 +62,14 @@ public String getCoinName() {
 public void setCoinName(String coinName) {
 	this.coinName = coinName;
 }
-public long getQuote() {
-	return quote;
+
+
+
+public Integer getGrossAmount() {
+	return grossAmount;
 }
-public void setQuote(long quote) {
-	this.quote = quote;
+public void setGrossAmount(Integer grossAmount) {
+	this.grossAmount = grossAmount;
 }
 public Date getDateCreated() {
 	return dateCreated;
@@ -108,5 +88,29 @@ public UserOrderStatus getStatus() {
 }
 public void setStatus(UserOrderStatus status) {
 	this.status = status;
+}
+//public User getUser() {
+//	return user;
+//}
+//public void setUser(User user) {
+//	this.user = user;
+//}
+public Integer getUserorderId() {
+	return userorderId;
+}
+public void setUserorderId(Integer userorderId) {
+	this.userorderId = userorderId;
+}
+public Integer getCoinQuantity() {
+	return coinQuantity;
+}
+public void setCoinQuantity(Integer coinQuantity) {
+	this.coinQuantity = coinQuantity;
+}
+public long getPrice() {
+	return price;
+}
+public void setPrice(long price) {
+	this.price = price;
 }
 }

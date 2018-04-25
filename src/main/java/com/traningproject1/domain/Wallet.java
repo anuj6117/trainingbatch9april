@@ -10,16 +10,21 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.traningproject1.enumsclass.WalletType;
+import com.traningproject1.enumsclass.CoinType;
 
 @Entity
 @Table(name="Wallet")
 public class Wallet {
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
-private Integer wId;  
+private Integer wId;
+	
 @Enumerated(EnumType.STRING)
-private WalletType walletType;
+private CoinType coinType;
+
+private String coinName;
+//@Enumerated(EnumType.STRING)
+//private WalletType walletType;
 
 private long balance;
 private long shadowBalance;
@@ -46,16 +51,22 @@ public void setwId(Integer wId) {
 	this.wId = wId;
 }
  
-public WalletType getWalletType() {
-	return walletType;
-}
-public void setWalletType(WalletType walletType) {
-	this.walletType = walletType;
-}
+//public WalletType getWalletType() {
+//	return walletType;
+//}
+//public void setWalletType(WalletType walletType) {
+//	this.walletType = walletType;
+//}
 
 
 public long getBalance() {
 	return balance;
+}
+public CoinType getCoinType() {
+	return coinType;
+}
+public void setCoinType(CoinType coinType) {
+	this.coinType = coinType;
 }
 public void setBalance(long balance) {
 	this.balance = balance;
@@ -65,5 +76,11 @@ public long getShadowBalance() {
 }
 public void setShadowBalance(long shadowBalance) {
 	this.shadowBalance = shadowBalance;
+}
+public String getCoinName() {
+	return coinName;
+}
+public void setCoinName(String coinName) {
+	this.coinName = coinName;
 }
 }

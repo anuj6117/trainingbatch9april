@@ -31,7 +31,7 @@ public class UserOrderService {
 //    	}
     	UserOrder userorder=new UserOrder();
     
-    	userorder.setUserId(user.getUserId());
+ 
     	userorder.setCoinName(buysellorderdto.getCoinName());
     	userorder.setCoinQuantity(buysellorderdto.getCoinQuantity());
     	userorder.setPrice(buysellorderdto.getPrice());
@@ -51,7 +51,7 @@ public class UserOrderService {
     		return "Invalid User";
     	}
     	UserOrder userorder=new UserOrder();
-    	userorder.setUserId(user.getUserId());
+    	//userorder.setUserId(user.getUserId());
     	userorder.setCoinName(buysellorderdto.getCoinName());
     	userorder.setCoinQuantity(buysellorderdto.getCoinQuantity());
     	userorder.setPrice(buysellorderdto.getPrice());
@@ -62,4 +62,5 @@ public class UserOrderService {
     	userorderRepository.save(userorder);
     	return null;
     }
+    
 }

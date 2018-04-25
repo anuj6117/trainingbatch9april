@@ -1,5 +1,5 @@
 package com.traningproject1.enumsclass;
 
 public enum UserOrderType {
-  BUYER,SELLER;
+  BUYER,SELLER,DEPOSIT,WITHDRAW
 }
