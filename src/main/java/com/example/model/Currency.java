@@ -14,6 +14,7 @@ public class Currency
   @GeneratedValue(strategy = GenerationType.AUTO)
   private Integer coinId;
   private String coinName;
+
   private String symbol;
   private Long initialSupply;
   private Long price;

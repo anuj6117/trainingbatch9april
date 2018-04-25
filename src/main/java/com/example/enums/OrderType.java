@@ -2,7 +2,7 @@ package com.example.enums;
 
 public enum OrderType
 {
-BUY("Buy"),SELL("Sell");
+BUY("Buy"),SELL("Sell"),DEPOSIT("Deposit");
 	String value;
 
 	public String getValue() {

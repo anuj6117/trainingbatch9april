@@ -23,13 +23,22 @@ public class WalletController
 	  	return walletservice.addWallet(userwalletdto) ;
 	}
     
-    @RequestMapping(value="/depositamount",method=RequestMethod.POST)
+   /* @RequestMapping(value="/depositamount",method=RequestMethod.POST)
 	public String depositamount(@RequestBody UserWalletDto userwalletdto)
 	{
+    	System.out.println("::::::::::::::::::::::::::::::::");
+    	if(userwalletdto==null)
+    	{
+    		System.out.println("::::::::::::::::::::::::::::::::111111111");
+    		return "null here::::::::::::::::::::::::::::::";
+    	}
     	
+    	else {
+    		System.out.println("::::::::::::::::::::::::::::::::222222222");
 	  	return walletservice.depositamount(userwalletdto) ;
 	}
-    
+	}
+    */
     @RequestMapping(value="/withdrawamount",method=RequestMethod.POST)
 	public String withdrawamount(@RequestBody UserWalletDto userwalletdto)
 	{

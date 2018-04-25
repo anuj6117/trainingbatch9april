@@ -8,8 +8,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.dto.UserOrderDto;
-import com.example.model.Order;
 import com.example.model.User;
+import com.example.model.UserOrder;
 import com.example.repository.UserRepository;
 import com.example.service.OrderService;
 
@@ -17,7 +17,7 @@ import com.example.service.OrderService;
 public class OrderController
 {
  private User user;
- private Order order;
+ private UserOrder userorder;
  @Autowired
  private UserRepository userRepository;
  @Autowired
@@ -29,11 +29,12 @@ public class OrderController
 		user=userRepository.findByUserId(userOrderDto.getUserId());
 		if(user!=null)
 		{
-		  order.setId(userOrderDto.getUserId());
+		  userorder.setId(userOrderDto.getUserId());
 		  orderService.createBuyOrder(userOrderDto);	
 		}
 		return "";
 	}
+   
    
    @RequestMapping(value="/createSellorder",method=RequestMethod.POST)
 	public String createSellOrder(@RequestBody UserOrderDto userOrderDto )
@@ -41,7 +42,7 @@ public class OrderController
 		user=userRepository.findByUserId(userOrderDto.getUserId());
 		if(user!=null)
 		{
-		  order.setId(userOrderDto.getUserId());
+		  userorder.setId(userOrderDto.getUserId());
 		  orderService.createSellOrder(userOrderDto);	
 		}
 		return "user is null..........";

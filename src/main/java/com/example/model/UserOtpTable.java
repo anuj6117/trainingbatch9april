@@ -20,10 +20,11 @@ private String otp;
 private String email;
 private String date;
 
-public String getEmailId() {
+
+public String getEmail() {
 	return email;
 }
-public void setEmailId(String email) {
+public void setEmail(String email) {
 	this.email = email;
 }
 public String getDateCreated() {

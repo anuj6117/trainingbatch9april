@@ -29,19 +29,35 @@ public class User
 	private Integer userId;
 
 	@NotNull
-	private String fullName;
+	private String userName;
 	
 	private String email;
-	private String phoneNo;
+	private String phoneNumber;
 	private String password;
 	private String country;
-	private String date;
+	private String createdOn;
 	
+	public String getCreatedOn() {
+		return createdOn;
+	}
+
+
+	public void setCreatedOn(String createdOn) {
+		this.createdOn = createdOn;
+	}
+
 	@ManyToMany(cascade = CascadeType.ALL,fetch=FetchType.EAGER)
 	@JoinTable(name="user_role",
 	joinColumns= @JoinColumn(name="userid",referencedColumnName="userId"),
 	inverseJoinColumns= @JoinColumn(name="roleid",referencedColumnName="roleId"))
 	private Set<Role> roles;
+
+	@OneToMany(mappedBy="user")
+	private Set<Wallet> wallet = new HashSet<>();
+	
+	
+	@OneToMany(mappedBy="user")
+	private Set<UserOrder> userorder = new HashSet<>();
 	
 	public Set<Role> getRoles() {
 		return roles;
@@ -52,13 +68,43 @@ public class User
 		this.roles = roles;
 	}
 	
-	@OneToMany(mappedBy="user")
-	private Set<Wallet> wallet = new HashSet<>();
 	
 	
-	@OneToMany(mappedBy="user")
-	private Set<Order> order = new HashSet<>();
 	
+	
+	public String getUserName() {
+		return userName;
+	}
+
+
+	public void setUserName(String userName) {
+		this.userName = userName;
+	}
+
+
+	public String getPhoneNumber() {
+		return phoneNumber;
+	}
+
+
+	public void setPhoneNumber(String phoneNumber) {
+		this.phoneNumber = phoneNumber;
+	}
+
+
+     
+
+
+	public Set<UserOrder> getUserorder() {
+		return userorder;
+	}
+
+
+	public void setUserorder(Set<UserOrder> userorder) {
+		this.userorder = userorder;
+	}
+
+
 	public Set<Wallet> getWallet() {
 		return wallet;
 	}
@@ -87,41 +133,35 @@ public class User
 	}
 	
 	
-	public User( String fullName, String email, String phoneNo, String password, String country ,UserStatus status,String date) 
-	{
-		this.fullName = fullName;
+	
+	
+	public User(Integer userId, @NotNull String userName, String email, String phoneNumber, String password,
+			String country, UserStatus status) {
+		super();
+		this.userId = userId;
+		this.userName = userName;
 		this.email = email;
-		this.phoneNo = phoneNo;
+		this.phoneNumber = phoneNumber;
 		this.password = password;
 		this.country = country;
-		this.status=status;
-	
-		
+		this.status = status;
 	}
+
+
 	public Integer getUserId() {
 		return userId;
 	}
 	public void setUserId(Integer userId) {
 		this.userId = userId;
 	}
-	public String getFullName() {
-		return fullName;
-	}
-	public void setFullName(String fullName) {
-		this.fullName = fullName;
-	}
+	
 	public String getEmail() {
 		return email;
 	}
 	public void setEmail(String email) {
 		this.email = email;
 	}
-	public String getPhoneNo() {
-		return phoneNo;
-	}
-	public void setPhoneNo(String phoneNo) {
-		this.phoneNo = phoneNo;
-	}
+	
 	public String getPassword() {
 		return password;
 	}
@@ -134,10 +174,5 @@ public class User
 	public void setCountry(String country) {
 		this.country = country;
 	}
-	public String getDate() {
-		return date;
-	}
-	public void setDate(String date) {
-		this.date = date;
-	}
+	
 }

@@ -3,19 +3,19 @@ package com.example.service;
 import org.springframework.stereotype.Service;
 
 import com.example.dto.UserOrderDto;
-import com.example.model.Order;
+import com.example.model.UserOrder;
 
 @Service
 public class OrderService
 {
-	private Order order;
+	private UserOrder userorder;
  public String createBuyOrder(UserOrderDto userOrderDto)
  {
     try
     {
-	 order.setCoinName(userOrderDto.getCoinName());
-	 order.setPrice(userOrderDto.getPrice());
-	 order.setCoinQuantity(userOrderDto.getCoinQuantity());
+	 userorder.setCoinName(userOrderDto.getCoinName());
+	 userorder.setPrice(userOrderDto.getPrice());
+	 userorder.setCoinQuantity(userOrderDto.getCoinQuantity());
 	 return "Details in order table is inserted";
     }
     catch(NullPointerException e)
@@ -29,9 +29,9 @@ public class OrderService
  {
     try
     {
-	 order.setCoinName(userOrderDto.getCoinName());
-	 order.setPrice(userOrderDto.getPrice());
-	 order.setCoinQuantity(userOrderDto.getCoinQuantity());
+	 userorder.setCoinName(userOrderDto.getCoinName());
+	 userorder.setPrice(userOrderDto.getPrice());
+	 userorder.setCoinQuantity(userOrderDto.getCoinQuantity());
 	 return "Details in order table is inserted";
     }
     catch(NullPointerException e)

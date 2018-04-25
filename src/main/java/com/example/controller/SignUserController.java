@@ -5,13 +5,12 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.dto.UserWalletDto;
 import com.example.enums.UserStatus;
 import com.example.model.User;
 import com.example.model.UserOtpTable;
@@ -30,16 +29,22 @@ public class SignUserController
 	@Autowired
 	private OTPjpaRepository otpjparepository;
 	//@Autowired
-	 private UserOtpTable userotptable;
+	 private UserOtpTable userotptable1;
 	
 	 private User user;
 	 
 	 
 	@RequestMapping(value="/signup", method=RequestMethod.POST)
 	public String insertUser(@RequestBody User user)
-	{
-		if(user.getPassword()!=null)
+	{  
+		String passwordvalue=user.getPassword().trim();
+		String username=user.getUserName().trim();
+	    int passwordLength=passwordvalue.length();
+	    int usernameLength=username.length();
+	    if(passwordLength!=0)
 		{
+	    	if(usernameLength!=0)
+	    	{
 			 String u=signupservice.addUser(user);
 			   if(u != null)
 			   {
@@ -49,7 +54,9 @@ public class SignUserController
 			   {
 				return "use different email";
 			   }
-			
+	    	}
+	    	else
+	    		return "username can't be null";
 		}
 		else
 		{
@@ -57,32 +64,30 @@ public class SignUserController
 		}
 	}
 	
-	@RequestMapping(value="/verifyuser")
-	public void validateUser(@RequestParam("Mail") String email,@RequestParam("otp") String otp)
+	@RequestMapping(value="/verifyuser",method=RequestMethod.POST)
+	public String validateUser(@RequestBody UserOtpTable userotptable)
 	{
 		
-		try {
-			userotptable=otpjparepository.findOneByOtp(otp);
-			System.out.println("object may be null "+userotptable);
 		
-		if(userotptable.getEmailId().equals(email)   )
+		user=userrepository.findByEmail(userotptable.getEmail());
+		
+		if(user!=null)
 		{
-			user = userrepository.findOneByemail(email);
-		
-			user.setStatus((UserStatus.ACTIVE));
-		
-			userrepository.save(user);
-			otpjparepository.delete(userotptable);
+			userotptable1=otpjparepository.findByEmail(user.getEmail());
+			if(userotptable1.getOtp().equals(userotptable.getOtp()))
+			{
+				user.setStatus((UserStatus.ACTIVE));
+				
+				userrepository.save(user);
+				otpjparepository.delete(userotptable);
+				return "otp and email matched";
+			}
+			else
+				return "otp not matched";
 		}
 		else
-		{
-			
-		}
-       }
-       catch(NullPointerException e)
-       {
-    	   System.out.println("otp not available");
-       }
+			return "email not matched";
+		
 	
 	}
 	@GetMapping("/getallusers")
@@ -116,6 +121,13 @@ public class SignUserController
 		System.out.println("here......user........has......"+user);
 		signupservice.deleteUser(user);
 	    return "account deleted";
+	}
+	
+	@RequestMapping(value="/depositamount",method=RequestMethod.POST)
+	public String depositamount(@RequestBody UserWalletDto userwalletdto )
+	{
+		
+		return signupservice.depositamount(userwalletdto);
 	}
 	
 	

@@ -11,6 +11,7 @@ public interface OTPjpaRepository extends JpaRepository<UserOtpTable,String> {
 	
 	public UserOtpTable findOneByOtp(String otp);
 	public UserOtpTable findByOtp(String otp);
+	public UserOtpTable findByEmail(String email);
 	
 }
 
