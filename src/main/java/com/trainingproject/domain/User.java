@@ -34,10 +34,11 @@ public class User {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Integer userId;
+	
 	@Size(min = 4, max = 25, message = "Fullname length must be between 4 to 25")
 	@NotBlank(message = "ignoring leading and trailing whitespaces")
 	@NotEmpty(message = "Fullname should not left blank")
-	@NotNull(message = "Space is not allowed")
+	@NotNull(message = "Name not null")
 	private String userName;
 	
 	@Column(unique = true)
@@ -45,11 +46,17 @@ public class User {
 	@NotNull(message = "Blank or Space is not allowed")
 	@Email
 	private String email;
+	
+	@Size(min = 8, max = 32, message = "Please enter password with minimum 8 characters")
+	@NotBlank(message = "ignoring leading and trailing whitespaces")
+	@NotEmpty(message = "password should not left blank")
+	@NotNull(message = "Space is not allowed")
 	private String password;
 	private String country;
 	private Date createdOn;
 	@Enumerated(EnumType.STRING)
 	private Status status;
+	@Column(unique = true)
 	@Pattern(regexp="(^$|[0-9]{10})")
 	private String phoneNumber;
 	

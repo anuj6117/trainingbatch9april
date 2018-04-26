@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.trainingproject.domain.Currency;
 import com.trainingproject.domain.User;
 import com.trainingproject.domain.UserOrder;
 import com.trainingproject.dto.UserOrderBuySellDto;
@@ -20,7 +21,10 @@ public class UserOrderService {
 	private UserOrderRepository userOrderRepository;
 	@Autowired
 	private UserRepository userRepository;
-
+	Currency currency;
+	Long netAmount;
+	Long grossAmount;
+	
 	
 	public List<UserOrder> getAllOrders() {
 
@@ -44,16 +48,23 @@ public class UserOrderService {
 
 	public String createBuyOrder(UserOrderBuySellDto userOrderBuySellDto) {
 		// TODO Auto-generated method stub
-		    User user = userRepository.findByUserId(userOrderBuySellDto.getUserId());
-			UserOrder  userOrder = new UserOrder();
-			userOrder.setOrderType(OrderType.Buyer);
-			userOrder.setUser(user);
-			userOrder.setCoinQuantity(userOrderBuySellDto.getCoinQuantity());
-			userOrder.setPrice(userOrderBuySellDto.getPrice());
-			userOrder.setCoinName(userOrderBuySellDto.getCoinName());
-			userOrder.setStatus(Status.PENDING);
-			userOrder.setOrderCreatedOn(new Date());
-			userOrderRepository.save(userOrder);
+			//Currency currency = new Currency();
+		User user = userRepository.findByUserId(userOrderBuySellDto.getUserId());
+		UserOrder  userOrder = new UserOrder();
+		userOrder.setOrderType(OrderType.Buyer);
+		userOrder.setCoinName(userOrderBuySellDto.getCoinName());
+		userOrder.setCoinQuantity(userOrderBuySellDto.getCoinQuantity());
+		userOrder.setFee(currency.getFees());
+		userOrder.setPrice(userOrderBuySellDto.getPrice());
+		netAmount = (userOrderBuySellDto.getCoinQuantity() * userOrderBuySellDto.getPrice());
+		userOrder.setNetAmount(netAmount);
+		grossAmount = netAmount + (((userOrderBuySellDto.getCoinQuantity() * 
+				userOrderBuySellDto.getPrice())*currency.getFees())/100);
+		userOrder.setGrossAmount(grossAmount);
+		userOrder.setOrderCreatedOn(new Date());
+		userOrder.setStatus(Status.PENDING);
+		userOrder.setUser(user);
+		userOrderRepository.save(userOrder);
 		return "success";
 	}
 
@@ -61,13 +72,16 @@ public class UserOrderService {
 		// TODO Auto-generated method stub
 		User user = userRepository.findByUserId(userOrderBuySellDto.getUserId());
 		UserOrder  userOrder = new UserOrder();
-		userOrder.setOrderType(OrderType.Seller);
-		userOrder.setUser(user);
+		userOrder.setOrderType(OrderType.Buyer);
+		userOrder.setCoinName(userOrderBuySellDto.getCoinName());
 		userOrder.setCoinQuantity(userOrderBuySellDto.getCoinQuantity());
 		userOrder.setPrice(userOrderBuySellDto.getPrice());
-		userOrder.setCoinName(userOrderBuySellDto.getCoinName());
-		userOrder.setStatus(Status.PENDING);
+		Long netAmount = (userOrderBuySellDto.getCoinQuantity() * userOrderBuySellDto.getPrice());
+		userOrder.setNetAmount(netAmount);
+		userOrder.setGrossAmount(netAmount);
 		userOrder.setOrderCreatedOn(new Date());
+		userOrder.setStatus(Status.PENDING);
+		userOrder.setUser(user);
 		userOrderRepository.save(userOrder);
 		return "success";
 	}

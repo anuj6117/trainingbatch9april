@@ -18,6 +18,8 @@ import com.trainingproject.dto.UserWalletDto;
 import com.trainingproject.dto.WalletApprovalDto;
 import com.trainingproject.enums.OrderType;
 import com.trainingproject.enums.Status;
+import com.trainingproject.enums.WalletType;
+import com.trainingproject.repository.TransactionRepository;
 import com.trainingproject.repository.UserOrderRepository;
 import com.trainingproject.repository.UserRepository;
 import com.trainingproject.repository.WalletRepository;
@@ -29,7 +31,10 @@ public class WalletService {
 	private UserRepository userRepository;
 	@Autowired
 	private UserOrderRepository userOrderRepository; 
+	@Autowired
+	private TransactionRepository transactionRepository;
 	UserOrder  userOrder = new UserOrder();
+	WalletType walletType;
 	
 	User user;
 	Wallet wallet;
@@ -65,25 +70,10 @@ public class WalletService {
 
 	
 	public String depositAmount(UserWalletDto userWalletDto) {
-		/*User user = userRepository.findByUserId(userWalletDto.getUserId());
-		Wallet wallet = walletRepository.findByWalletType(userWalletDto.getWalletType());
-		if(user != null) {
-			if(wallet != null ) {
-				longBalance = wallet.getBalance();
-				longBalance = longBalance + userWalletDto.getAmount();
-				Set<Wallet> walletSet = new HashSet<Wallet>();
-				wallet.setBalance(longBalance);
-				wallet.setShadowBalance(longBalance);
-				walletSet.add(wallet);
-				walletRepository.save(wallet);
-				user.setUserWallet(walletSet);
-				userRepository.save(user);
-			}
-		}*/
+		//user = userRepository.getOne(userWalletDto.getUserId());
 		user = userRepository.findByUserId(userWalletDto.getUserId());
-		wallet = walletRepository.findByWalletType(userWalletDto.getWalletType());
-		if(user != null && wallet != null ) {
-				//UserOrder  userOrder = new UserOrder();
+		walletType = userWalletDto.getWalletType();
+		if(user != null  && user.getStatus() == Status.ACTIVE ) {
 				userOrder.setUser(user);
 				userOrder.setCoinType(userWalletDto.getWalletType());
 				userOrder.setCoinName(userWalletDto.getCoinName());
@@ -97,7 +87,7 @@ public class WalletService {
 				return "success";
 			}
 		else 
-		    return "User id does not exist.";
+		    return "User id does not exist or user is not ACTIVE";
 	}
 
 
@@ -105,9 +95,12 @@ public class WalletService {
 	public String walletApproved(WalletApprovalDto walletApprovalDto) {
 		// TODO Auto-generated method stub
 		 UserOrder  userOrder = userOrderRepository.findByOrderId(walletApprovalDto.getOrderId());
+		 wallet = walletRepository.findByWalletTypeAndUser(walletType, user);
 		 if(userOrder.getStatus() == Status.PENDING) {
 			userOrder.setStatus(walletApprovalDto.getStatus()); 
 			}
+		 else
+			 return "User Status is INACTIVE";
 		 if(userOrder.getStatus() == Status.APPROVED) {
 			 message = "deposit approved";
 			 Transaction transaction = new  Transaction();
@@ -117,6 +110,7 @@ public class WalletService {
 			 transaction.setCreatedOn(new Date());
 			 transaction.setStatus(walletApprovalDto.getStatus());
 			 transaction.setMessage(message);
+			 transactionRepository.save(transaction);
 			 
 			 longBalance = wallet.getBalance();
 				longBalance = longBalance + userOrder.getNetAmount();
@@ -125,8 +119,8 @@ public class WalletService {
 				wallet.setShadowBalance(longBalance);
 				walletSet.add(wallet);
 				walletRepository.save(wallet);
-				user.setUserWallet(walletSet);
-				userRepository.save(user);
+				//user.setUserWallet(walletSet);
+				//userRepository.save(user);
 		 } 
 		 else if(userOrder.getStatus() == Status.FAILED) {
 			 message = "deposit failed";
@@ -137,6 +131,7 @@ public class WalletService {
 			 transaction.setCreatedOn(new Date());
 			 transaction.setStatus(walletApprovalDto.getStatus());
 			 transaction.setMessage(message);
+			 transactionRepository.save(transaction);
 		 } 
 		 else if(userOrder.getStatus() == Status.REJECTED) {
 			 message = "deposit rejected";
@@ -147,6 +142,7 @@ public class WalletService {
 			 transaction.setCreatedOn(new Date());
 			 transaction.setStatus(walletApprovalDto.getStatus());
 			 transaction.setMessage(message);
+			 transactionRepository.save(transaction);
 		 }
 			 
 		return "success";

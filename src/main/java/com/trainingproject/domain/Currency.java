@@ -1,10 +1,14 @@
 package com.trainingproject.domain;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 
 import com.trainingproject.enums.WalletType;
 
@@ -14,16 +18,28 @@ public class Currency {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
     private Integer coinId;
+	@Enumerated(EnumType.STRING)
 	private  WalletType coinType;
+	
+	@Column(unique = true)
+	@NotNull(message = "coinName not null")
 	private String coinName;
+	
+	@Column(unique = true)
+	@NotNull(message = "symbol not null")
 	private String symbol;
+	
+	@NotNull(message = "initialSupply not null")
 	private Long initialSupply;
+	
+	@NotNull(message = "price not null")
 	private Long price;
 	private Long fees;
 	private Long profit;
 	private Long coinInINR;
+	
 	private Currency() {
-		fees = 2l;
+		fees = 0l;
 		profit = 0l;
 		coinInINR = 0l;
 	}

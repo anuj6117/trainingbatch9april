@@ -3,6 +3,8 @@ package com.trainingproject.domain;
 import java.util.Date;
 
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -19,6 +21,7 @@ public class Transaction {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Integer transactionId;
 	private Long netAmount;
+	@Enumerated(EnumType.STRING)
 	private WalletType walletType;
 	private Long fees;
 	private Long exchangeRate;

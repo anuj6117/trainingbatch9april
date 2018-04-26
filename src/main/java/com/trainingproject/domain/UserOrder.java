@@ -26,16 +26,18 @@ public class UserOrder {
 	private Integer orderId;
 	@Enumerated(EnumType.STRING)
 	private OrderType orderType;
+	@Enumerated(EnumType.STRING)
 	private WalletType coinType;
     private String coinName;
     private Long coinQuantity;
+    private Long fee;
     private Long price;
     private Long netAmount;
     private Long grossAmount;
     private Date orderCreatedOn;
     @Enumerated(EnumType.STRING)
     private Status status;
-    private Long fee;
+    
     @ManyToOne
     @JoinColumn(name = "userId")
 	@JsonIgnore
