@@ -1,10 +1,10 @@
 package com.trading.dto;
 
-import com.trading.Enum.OrderStatus;
+import com.trading.Enum.TransactionOrderStatus;
 
 public class OrderApprovalDto {
 	private long orderId;
-	private OrderStatus status;
+	private TransactionOrderStatus status;
 	private long userId;
 	
 	public long getUserId() {
@@ -19,10 +19,10 @@ public class OrderApprovalDto {
 	public void setOrderId(long orderId) {
 		this.orderId = orderId;
 	}
-	public OrderStatus getStatus() {
+	public TransactionOrderStatus getStatus() {
 		return status;
 	}
-	public void setStatus(OrderStatus status) {
+	public void setStatus(TransactionOrderStatus status) {
 		this.status = status;
 	}
 

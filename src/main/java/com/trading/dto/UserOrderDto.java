@@ -1,13 +1,21 @@
 package com.trading.dto;
 
-import com.trading.Enum.WalletType;
-
 public class UserOrderDto {
 
 	private long userId;
 	private long coinQuantity;
 	private long price;
-	private WalletType coinName;
+	private String coinName;
+	private long fee;
+	
+
+	public long getFee() {
+		return fee;
+	}
+
+	public void setFee(long fee) {
+		this.fee = fee;
+	}
 
 	public long getUserId() {
 		return userId;
@@ -33,11 +41,11 @@ public class UserOrderDto {
 		this.price = price;
 	}
 
-	public WalletType getCoinName() {
+	public String getCoinName() {
 		return coinName;
 	}
 
-	public void setCoinName(WalletType coinName) {
+	public void setCoinName(String coinName) {
 		this.coinName = coinName;
 	}
 

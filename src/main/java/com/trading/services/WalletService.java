@@ -7,8 +7,8 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.trading.Enum.OrderStatus;
 import com.trading.Enum.OrderType;
+import com.trading.Enum.TransactionOrderStatus;
 import com.trading.Enum.WalletType;
 import com.trading.domain.User;
 import com.trading.domain.UserOrder;
@@ -35,7 +35,13 @@ public class WalletService {
 
 		User user = userRepository.findOneByUserId(userwalletdto.getuserId());
 		Wallet walletdb = walletRepository.findByWalletTypeAndUser(userwalletdto.getwalletType(), user);
-		if (user != null && walletdb == null) {
+		if(user ==null)
+		{
+			result.put("isSuccess", true);
+			result.put("message", "User does not exist");
+			return result;
+		}
+		if (walletdb == null) {
 			Wallet wallet = new Wallet();
 			wallet.setwalletType(userwalletdto.getwalletType());
 			wallet.setuser(user);
@@ -47,7 +53,7 @@ public class WalletService {
 
 		else {
 			result.put("isSuccess", false);
-			result.put("message", "Failed to add new wallet");
+			result.put("message", "WalletType already exist");
 			return result;
 		}
 	}
@@ -59,14 +65,14 @@ public class WalletService {
 		UserOrder userOrder = new UserOrder();
 
 		userOrder.setOrderType(OrderType.DEPOSIT);
-		userOrder.setCoinName(WalletType.FIAT);
+		userOrder.setCoinType(WalletType.FIAT);
 		userOrder.setPrice(userwalletdto.getamount());
 		userOrder.setOrderCreatedOn(new Date());
-		userOrder.setStatus(OrderStatus.PENDING);
+		userOrder.setStatus(TransactionOrderStatus.PENDING);
 		userOrder.setUser(user);
 		orderRepository.save(userOrder);
 		;
-		if (userOrder.getStatus() == OrderStatus.COMPLETE) {
+		if (userOrder.getStatus() == TransactionOrderStatus.APPROVED) {
 
 			result.put("isSuccess", true);
 			result.put("message", "Amount added to wallet balance");
@@ -88,22 +94,15 @@ public class WalletService {
 			result.put("message", "No balance in wallet");
 			return result;
 		}
-		if (wallet != null) {
-
-			if (userwalletdto.getamount() >= wallet.getBalance()) {
-				wallet.setBalance(userwalletdto.getamount() - wallet.getBalance());
-				walletRepository.save(wallet);
-			} else {
-				wallet.setBalance(wallet.getBalance() - userwalletdto.getamount());
-				walletRepository.save(wallet);
-			}
-			result.put("isSuccess", true);
-			result.put("message", "Sucsess");
-			return result;
+		if (userwalletdto.getamount() >= wallet.getBalance()) {
+			wallet.setBalance(userwalletdto.getamount() - wallet.getBalance());
+			walletRepository.save(wallet);
 		} else {
-			result.put("isSuccess", false);
-			result.put("message", "Failed");
-			return result;
+			wallet.setBalance(wallet.getBalance() - userwalletdto.getamount());
+			walletRepository.save(wallet);
 		}
+		result.put("isSuccess", true);
+		result.put("message", "Success");
+		return result;
 	}
 }

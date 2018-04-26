@@ -62,7 +62,7 @@ public class UserController {
 		}
 	}
 
-	@RequestMapping(value = "/getalluser", method = RequestMethod.GET)
+	@RequestMapping(value = "/getallusers", method = RequestMethod.GET)
 	public Iterable<User> getAllUser() throws Exception {
 		return userService.getDetails();
 	}

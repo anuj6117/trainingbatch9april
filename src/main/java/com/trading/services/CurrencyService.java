@@ -23,26 +23,23 @@ public class CurrencyService {
 			result.put("message", "Coin Name cannot be null");
 			return result;
 		}
-		
-		if(currencyrepository.findBySymbol(currency.getSymbol())!= null)
-		{
+
+		if (currencyrepository.findBySymbol(currency.getSymbol()) != null) {
 			result.put("isSuccess", false);
 			result.put("message", "Symbol already exists");
 			return result;
 		}
-		if(currency.getInitialSupply() == 0L)
-		{
+		if (currency.getInitialSupply() == 0L) {
 			result.put("isSuccess", false);
 			result.put("message", "Initial supply can not be null");
 			return result;
 		}
-		if(currency.getPrice() == 0L)
-		{
+		if (currency.getPrice() == 0L) {
 			result.put("isSuccess", false);
 			result.put("message", "Price can not be null");
 			return result;
 		}
-		
+
 		if (currencyrepository.findBycoinName(currency.getCoinName()) == null) {
 			if (currencyrepository.save(currency) != null) {
 				result.put("isSuccess", true);
@@ -64,8 +61,46 @@ public class CurrencyService {
 		return currencyrepository.findAll();
 	}
 
-	public Currency updateDetails(Currency currency) {
-		return currencyrepository.save(currency);
+	public Map<String, Object> updateDetails(Currency currency) {
+		Map<String, Object> result = new HashMap<String, Object>();
+		if (currency.getCoinName() == null || currency.getCoinName() == "") {
+			result.put("isSuccess", false);
+			result.put("message", "Coin Name cannot be null");
+			return result;
+		}
+
+		if (currencyrepository.findBySymbol(currency.getSymbol()) != null) {
+			result.put("isSuccess", false);
+			result.put("message", "Symbol already exists");
+			return result;
+		}
+		if (currency.getInitialSupply() == 0L) {
+			result.put("isSuccess", false);
+			result.put("message", "Initial supply can not be null");
+			return result;
+		}
+		if (currency.getPrice() == 0L) {
+			result.put("isSuccess", false);
+			result.put("message", "Price can not be null");
+			return result;
+		}
+		if (currencyrepository.findBycoinName(currency.getCoinName()) != null) {
+			result.put("isSuccess", false);
+			result.put("message", "Coin Name exists");
+			return result;
+		}
+
+		if (currencyrepository.findOneByCoinId(currency.getCoinId()) != null) {
+			currencyrepository.save(currency);
+			result.put("isSuccess", true);
+			result.put("message", "Successfully updated");
+			return result;
+		} else {
+			result.put("isSuccess", false);
+			result.put("message", "Coin Id does not exist");
+			return result;
+		}
+
 	}
 
 	public Map<String, Object> deleteById(long coinId) {
@@ -83,6 +118,11 @@ public class CurrencyService {
 	}
 
 	public Currency getCurrencyById(long coinId) {
-		return currencyrepository.findOneByCoinId(coinId);
+		if (currencyrepository.findOneByCoinId(coinId) != null) {
+			return currencyrepository.findOneByCoinId(coinId);
+		} else {
+			return null;
+		}
+
 	}
 }

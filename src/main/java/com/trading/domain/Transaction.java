@@ -3,12 +3,14 @@ package com.trading.domain;
 import java.util.Date;
 
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.trading.Enum.TransactionStatus;
+import com.trading.Enum.TransactionOrderStatus;
 import com.trading.Enum.WalletType;
 
 @Entity
@@ -17,18 +19,37 @@ public class Transaction {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private long transactionId;
-	private long grossAmount;
+
+	@Enumerated(EnumType.STRING)
+	private WalletType coinType;
+	
+	private String coinName;
+
+	@Enumerated(EnumType.STRING)
+	private TransactionOrderStatus status;
 
 	private long transactionFee;
-	private WalletType walletType;
+
+	private long netAmount;
+
+	private long exchangeRate;
+
 	private long buyerId;
+
+	public long getExchangeRate() {
+		return exchangeRate;
+	}
+
+	public void setExchangeRate(long exchangeRate) {
+		this.exchangeRate = exchangeRate;
+	}
+
 	private long sellerId;
-	private TransactionStatus status;
+
+	private long grossAmount;
 
 	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
 	private Date transactionCreatedOn;
-
-	private long netAmount;
 
 	public long getTransactionId() {
 		return transactionId;
@@ -62,12 +83,21 @@ public class Transaction {
 		this.transactionFee = transactionFee;
 	}
 
-	public WalletType getWalletType() {
-		return walletType;
+	
+	public WalletType getCoinType() {
+		return coinType;
 	}
 
-	public void setWalletType(WalletType walletType) {
-		this.walletType = walletType;
+	public void setCoinType(WalletType coinType) {
+		this.coinType = coinType;
+	}
+
+	public String getCoinName() {
+		return coinName;
+	}
+
+	public void setCoinName(String coinName) {
+		this.coinName = coinName;
 	}
 
 	public long getBuyerId() {
@@ -86,11 +116,11 @@ public class Transaction {
 		this.sellerId = sellerId;
 	}
 
-	public TransactionStatus getStatus() {
+	public TransactionOrderStatus getStatus() {
 		return status;
 	}
 
-	public void setStatus(TransactionStatus status) {
+	public void setStatus(TransactionOrderStatus status) {
 		this.status = status;
 	}
 

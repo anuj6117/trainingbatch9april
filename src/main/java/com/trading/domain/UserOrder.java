@@ -15,8 +15,8 @@ import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.trading.Enum.OrderStatus;
 import com.trading.Enum.OrderType;
+import com.trading.Enum.TransactionOrderStatus;
 import com.trading.Enum.WalletType;
 
 @Entity
@@ -31,7 +31,21 @@ public class UserOrder {
 
 	@NotNull
 	@Enumerated(EnumType.STRING)
-	private WalletType coinName;
+	private WalletType coinType;
+
+	private String coinName;
+
+	public WalletType getCoinType() {
+		return coinType;
+	}
+
+	public void setCoinType(WalletType coinType) {
+		this.coinType = coinType;
+	}
+
+	public void setCoinName(String coinName) {
+		this.coinName = coinName;
+	}
 
 	@NotNull
 	private long coinQuantity;
@@ -43,7 +57,7 @@ public class UserOrder {
 	private Date orderCreatedOn;
 
 	@Enumerated(EnumType.STRING)
-	private OrderStatus status;
+	private TransactionOrderStatus status;
 
 	private long fee;
 
@@ -84,16 +98,12 @@ public class UserOrder {
 		this.orderType = orderType;
 	}
 
-	public WalletType getCoinName() {
-		return coinName;
-	}
-
-	public void setCoinName(WalletType coinName) {
-		this.coinName = coinName;
-	}
-
 	public long getCoinQuantity() {
 		return coinQuantity;
+	}
+
+	public String getCoinName() {
+		return coinName;
 	}
 
 	public void setCoinQuantity(long coinQuantity) {
@@ -116,11 +126,11 @@ public class UserOrder {
 		this.orderCreatedOn = orderCreatedOn;
 	}
 
-	public OrderStatus getStatus() {
+	public TransactionOrderStatus getStatus() {
 		return status;
 	}
 
-	public void setStatus(OrderStatus status) {
+	public void setStatus(TransactionOrderStatus status) {
 		this.status = status;
 	}
 }

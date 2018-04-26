@@ -20,6 +20,9 @@ import com.trading.dto.UserRoleDto;
 import com.trading.repository.RoleRepository;
 import com.trading.repository.UserOtpRepository;
 import com.trading.repository.UserRepository;
+import com.trading.utilities.EmailValidator;
+import com.trading.utilities.NameValidator;
+import com.trading.utilities.PasswordValidator;
 
 @Service
 public class UserService {
@@ -76,51 +79,78 @@ public class UserService {
 			result.put("message", "Oopss, this phoneNumber is already registered");
 			return result;
 		}
-		if (user.getPhoneNumber() == 0L) {
+		String phoneNumber = user.getPhoneNumber()+"";
+		if (phoneNumber.trim().length()!= 10 ) {
 			result.put("isSuccess", false);
-			result.put("message", "Phone number cannot be null");
+			result.put("message", "Enter valid phone Number");
 			return result;
 		}
-		if (user.getPassword().equals(user.getConfirmpassword())) {
-			if (userRepository.save(user) != null) {
-				user.setDate(new Date());
-				user.setStatus(UserStatus.INACTIVE);
-				String email = user.getEmail();
-				otpservice.sendSMS(otp);
-				emailservice.sendEmail(otp);
-				userotp.settokenOTP(otp);
-				userotp.setEmail(email);
-				userotpRepository.save(userotp);
-				Wallet wallet = new Wallet();
-				wallet.setwalletType(WalletType.FIAT);
-				wallet.setuser(user);
-				user.getWallet().add(wallet);
-				Role role = new Role();
-				role.setRoleType(RoleType.USER);
-				user.getRole().add(role);
+		
+				
+	if(NameValidator.isValid(user.getUserName())  && user.getUserName().trim().length() <= 25) 
+		{
+		if (EmailValidator.isValidEmailAddress(user.getEmail())) {
+			if (PasswordValidator.isValid(user.getPassword())) {
 
-				userRepository.save(user);
-				result.put("isSuccess", true);
-				result.put("message", "Your account has been created, please verify your account");
-				return result;
-			} else {
+				if (userRepository.save(user) != null) {
+					user.setDate(new Date());
+					user.setStatus(UserStatus.INACTIVE);
+					String email = user.getEmail();
+					otpservice.sendSMS(otp);
+					emailservice.sendEmail(otp);
+					userotp.settokenOTP(otp);
+					userotp.setEmail(email);
+					userotpRepository.save(userotp);
+					Wallet wallet = new Wallet();
+					wallet.setwalletType(WalletType.FIAT);
+					wallet.setuser(user);
+					user.getWallet().add(wallet);
+					Role role = new Role();
+					role.setRoleType(RoleType.USER);
+					user.getRole().add(role);
+					userRepository.save(user);
+					result.put("isSuccess", true);
+					result.put("message", "Your account has been created, please verify your account");
+					return result;
+				} else {
+					result.put("isSuccess", false);
+					result.put("message", "Failed to create new account");
+					return result;
+				}}
+			else {
 				result.put("isSuccess", false);
-				result.put("message", "Failed to create new account");
+				result.put("message", "Please enter valid password");
 				return result;
-			}
-		} else {
+			}}
+		else {
+			
 			result.put("isSuccess", false);
-			result.put("message", "Please re-enter your password");
+			result.put("message", "Please enter valid email address");
 			return result;
 		}
-	}
+		}
+		
+		else
+		{
+			result.put("isSuccess", false);
+			result.put("message", "Please enter valid user name");
+			return result;
+		}
+		}
+		
+
+	
 
 	public Iterable<User> getDetails() {
 		return userRepository.findAll();
 	}
 
 	public Optional<User> getById(long userId) {
-		return userRepository.findById(userId);
+		if (userRepository.findOneByUserId(userId) != null) {
+			return userRepository.findById(userId);
+		} else {
+			return null;
+		}
 	}
 
 	public Map<String, Object> updateDetails(User user) {
@@ -128,6 +158,43 @@ public class UserService {
 
 		User userdb = null;
 		userdb = userRepository.findOneByUserId(user.getUserId());
+		if (user.getPassword() == "" || user.getPassword() == null) {
+			result.put("isSuccess", false);
+			result.put("message", "Password cannot be null");
+			return result;
+		}
+		if (user.getUserName() == null || user.getUserName() == "") {
+			result.put("isSuccess", false);
+			result.put("message", "Username can not be null");
+			return result;
+		}
+		if (userRepository.findByEmail(user.getEmail()) != null) {
+			result.put("isSuccess", false);
+			result.put("message", "Oopss, this email is already registered");
+			return result;
+		}
+		if (user.getEmail() == null || user.getEmail() == "") {
+			result.put("isSuccess", false);
+			result.put("message", "Email cannot be null");
+			return result;
+		}
+
+		if (userRepository.findByphoneNumber(user.getPhoneNumber()) != null) {
+			result.put("isSuccess", false);
+			result.put("message", "Oopss, this phoneNumber is already registered");
+			return result;
+		}
+		String phoneNumber = user.getPhoneNumber()+"";
+		if (phoneNumber.trim().length()!= 10 ) {
+			result.put("isSuccess", false);
+			result.put("message", "Enter valid phone Number");
+			return result;
+		}
+		
+	if(NameValidator.isValid(user.getUserName())  && user.getUserName().trim().length() <= 25) 
+		{
+		if (EmailValidator.isValidEmailAddress(user.getEmail())) {
+			if (PasswordValidator.isValid(user.getPassword())) {
 		if (userdb != null) {
 			userdb.setUserName(user.getUserName());
 			userdb.setCountry(user.getCountry());
@@ -142,6 +209,25 @@ public class UserService {
 
 			result.put("isSuccess", false);
 			result.put("message", "User Id does not exist");
+			return result;
+		}}
+			else {
+				result.put("isSuccess", false);
+				result.put("message", "Please enter valid password");
+				return result;
+			}}
+		else {
+			
+			result.put("isSuccess", false);
+			result.put("message", "Please enter valid email address");
+			return result;
+		}
+		}
+		
+		else
+		{
+			result.put("isSuccess", false);
+			result.put("message", "Please enter valid user name");
 			return result;
 		}
 	}
@@ -169,6 +255,11 @@ public class UserService {
 		User userdb = null;
 		userdb = userRepository.findOneByUserId(userroledto.getuserId());
 		Role roledb = roleRepository.findByRoleType(userroledto.getRoleType());
+		if (userdb == null) {
+			result.put("isSuccess", true);
+			result.put("message", "User does not exist");
+			return result;
+		}
 		if (roledb == null) {
 			Role role = new Role();
 			role.setRoleType(userroledto.getRoleType());

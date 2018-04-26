@@ -7,15 +7,19 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.trading.Enum.OrderStatus;
 import com.trading.Enum.OrderType;
+import com.trading.Enum.TransactionOrderStatus;
 import com.trading.Enum.WalletType;
+import com.trading.domain.Currency;
+import com.trading.domain.Transaction;
 import com.trading.domain.User;
 import com.trading.domain.UserOrder;
 import com.trading.domain.Wallet;
 import com.trading.dto.OrderApprovalDto;
 import com.trading.dto.UserOrderDto;
+import com.trading.repository.CurrencyRepository;
 import com.trading.repository.OrderRepository;
+import com.trading.repository.TransactionRepository;
 import com.trading.repository.UserRepository;
 import com.trading.repository.WalletRepository;
 
@@ -29,29 +33,40 @@ public class OrderService {
 	private UserRepository userRepository;
 
 	@Autowired
-	private WalletRepository walletRepository;
+	private WalletRepository walletRepository; 
+	
+	@Autowired
+	private CurrencyRepository currencyRepository;
+	
+	@Autowired
+	private TransactionRepository transactionRepository;
 
 	public Map<String, Object> createBuyOrder(UserOrderDto userOrderDto) {
 		Map<String, Object> result = new HashMap<String, Object>();
 
 		User user = userRepository.findOneByUserId(userOrderDto.getUserId());
 
+		Currency currency = new Currency();
+		currency = currencyRepository.findByCoinName(userOrderDto.getCoinName());
+		currency.setFee(userOrderDto.getFee());
+		
 		if (user != null && userOrderDto != null) {
 			UserOrder userOrder = new UserOrder();
 			userOrder.setOrderCreatedOn(new Date());
-			userOrder.setStatus(OrderStatus.PENDING);
+			userOrder.setStatus(TransactionOrderStatus.PENDING);
 			userOrder.setOrderType(OrderType.BUYER);
 			userOrder.setUser(user);
 			userOrder.setCoinQuantity(userOrderDto.getCoinQuantity());
+			userOrder.setCoinType(WalletType.CRYPTO);
 			userOrder.setCoinName(userOrderDto.getCoinName());
 			userOrder.setPrice(userOrderDto.getPrice());
 			orderRepository.save(userOrder);
 			result.put("isSuccess", true);
-			result.put("message", "Success");
+			result.put("message", "Order added succesfully");
 			return result;
 		} else {
 			result.put("isSuccess", false);
-			result.put("message", "Failed");
+			result.put("message", "Failed to add buy order");
 			return result;
 		}
 	}
@@ -63,7 +78,7 @@ public class OrderService {
 		if (user != null && userOrderDto != null) {
 			UserOrder userOrder = new UserOrder();
 			userOrder.setOrderCreatedOn(new Date());
-			userOrder.setStatus(OrderStatus.PENDING);
+			userOrder.setStatus(TransactionOrderStatus.PENDING);
 			userOrder.setOrderType(OrderType.SELLER);
 			userOrder.setUser(user);
 			userOrder.setCoinQuantity(userOrderDto.getCoinQuantity());
@@ -82,7 +97,11 @@ public class OrderService {
 
 	public UserOrder getOrderByUserId(long userId) {
 		User user = userRepository.findOneByUserId(userId);
-		return orderRepository.findOneByUser(user);
+		if (user != null) {
+			return orderRepository.findOneByUser(user);
+		} else {
+			return null;
+		}
 	}
 
 	public Map<String, Object> approveOrder(OrderApprovalDto orderApprovalDto) {
@@ -94,9 +113,13 @@ public class OrderService {
 			userOrder.setStatus(orderApprovalDto.getStatus());
 			orderRepository.save(userOrder);
 			Wallet wallet = walletRepository.findByWalletTypeAndUser(WalletType.FIAT, user);
-			if (wallet != null && userOrder.getStatus() == OrderStatus.COMPLETE) {
+			if (wallet != null && userOrder.getStatus() == TransactionOrderStatus.APPROVED) {
 				wallet.setBalance(userOrder.getPrice() + wallet.getBalance());
 				walletRepository.save(wallet);
+		        Transaction transaction = new Transaction();
+		        transaction.setCoinType(WalletType.FIAT);
+		        transaction.setStatus(TransactionOrderStatus.APPROVED);
+   		        transactionRepository.save(transaction);
 				result.put("isSuccess", true);
 				result.put("message", "Balance added succesfully");
 				return result;

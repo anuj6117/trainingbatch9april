@@ -17,11 +17,9 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
-import javax.validation.constraints.Digits;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -36,7 +34,6 @@ public class User {
   
 	@NotBlank
 	@NotNull
-	@Size(max = 25, message = "Name can have maximum 25 characters")
 	private String userName;
 	
 	@NotBlank
@@ -49,7 +46,6 @@ public class User {
 	@NotNull
 	private String password;
 
-	private String confirmpassword;
 	
 	@NotBlank
 	@NotNull
@@ -58,7 +54,7 @@ public class User {
 	
 	@NotNull
 	@Column(unique = true)
-	@Digits(fraction = 0, integer = 10)
+	
 	private long phoneNumber;
 
 	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
@@ -67,13 +63,7 @@ public class User {
 	@Enumerated(EnumType.STRING)
 	private UserStatus status;
 
-	public String getConfirmpassword() {
-		return confirmpassword;
-	}
 
-	public void setConfirmpassword(String confirmpassword) {
-		this.confirmpassword = confirmpassword;
-	}
 
 	@ManyToMany(fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST, CascadeType.MERGE })
 

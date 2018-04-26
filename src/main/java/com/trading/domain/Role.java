@@ -23,11 +23,11 @@ public class Role {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private long roleId;
-	
+
+	@Enumerated(EnumType.STRING)
 	@NotNull
 	private RoleType roleType;
 
-	@Enumerated(EnumType.STRING)
 	public RoleType getRoleType() {
 		return roleType;
 	}

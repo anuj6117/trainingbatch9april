@@ -44,8 +44,19 @@ public class CurrencyController {
 	}
 
 	@RequestMapping(value = "/updatecurrency", method = RequestMethod.POST)
-	public Currency updateCurrency(@Valid @RequestBody Currency currency) {
-		return currencyService.updateDetails(currency);
+	public ResponseEntity<Object>  updateCurrency(@Valid @RequestBody Currency currency) {
+		Map<String, Object> result = null;
+		try {
+			result = currencyService.updateDetails(currency);
+			if (result.get("isSuccess").equals(true)) {
+				return ResponseHandler.generateResponse(HttpStatus.OK, true, result.get("message").toString(), result);
+			} else {
+				return ResponseHandler.generateResponse(HttpStatus.OK, false, result.get("message").toString(), result);
+			}
+		} catch (Exception e) {
+			return ResponseHandler.generateResponse(HttpStatus.BAD_REQUEST, false, e.getMessage(), result);
+		}
+		 
 	}
 
 	@RequestMapping(value = "/deletecurrency", method = RequestMethod.GET)
@@ -63,7 +74,7 @@ public class CurrencyController {
 		}
 	}
 
-	@RequestMapping(value = "/getcurrencybyid", method = RequestMethod.POST)
+	@RequestMapping(value = "/getcurrencybyid", method = RequestMethod.GET)
 	public Currency getDetailsById(@Valid @RequestParam("coinId") long coinId) {
 		return currencyService.getCurrencyById(coinId);
 	}

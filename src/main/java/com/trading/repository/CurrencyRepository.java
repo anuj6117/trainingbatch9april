@@ -12,4 +12,9 @@ public interface CurrencyRepository extends CrudRepository<Currency, Long> {
 
 	public Currency findBySymbol(String symbol);
 
+
+	public Currency findByCoinName(String coinName);
+
+	public Currency findMinByPrice(long price);
+
 }
