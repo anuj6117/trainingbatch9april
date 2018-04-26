@@ -12,16 +12,9 @@ public class CoinManagementService {
 	@Autowired
 	private CoinManagementRepository coinManagementRepository;
 
-	public String addAllCoin(CoinManagement data) {
-		
-		if(coinManagementRepository.save(data) != null)
-		{
-			return "Coin Added Successfully";
-		}
-		else
-		{
-			return "Not Added Successfully";
-		}
+	public String addAllCoin(CoinManagement coinManagement) {
+			coinManagementRepository.save(coinManagement);
+			return "Your Coin Has Been Added Successfully.";
 	}
 
 	public List<CoinManagement> getCurrencies() {
@@ -29,23 +22,19 @@ public class CoinManagementService {
 	}
 
 	public String update(CoinManagement data) {
-		CoinManagement coinManagementData=null;
-		
+		CoinManagement coinManagementData=null;		
 		coinManagementData=coinManagementRepository.findOneByCoinId(data.getCoinId());
 		coinManagementData.setCoinName(data.getCoinName());
 		coinManagementData.setSymbol(data.getSymbol());
 		coinManagementData.setInitialSupply(data.getInitialSupply());
 		coinManagementData.setPrice(data.getPrice());	
 		coinManagementData=coinManagementRepository.save(coinManagementData);
-		if(coinManagementData != null)
-		{
-			return "coin updated";
-		}
-		return "Coin not updated";
+		return "Your Coin Has Been Updated Successfully.";
 	}
 
-	public void delete(Integer id) {
+	public String delete(Integer id) {
 		
-		 coinManagementRepository.deleteById(id.longValue());
+		 coinManagementRepository.deleteById(id);
+		 return "Your Coin Has Been Deleted Successfully.";
 	}
 }

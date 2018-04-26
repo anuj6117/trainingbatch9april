@@ -36,18 +36,17 @@ public class WalletController {
 		}
 	}		
 	
-	/*
 	@RequestMapping(value="/withdrawamount", method = RequestMethod.POST)
-	public String toWithdrawAmount(@RequestBody UserTransactionDto utd) 
+	public String toWithdrawAmount(@RequestBody OrderDto orderDto) 
 	{
-		System.out.println(utd.getUserId()+"/t"+utd.getWalletType()+"/t"+utd.getAmount());
-			if(utd != null)
+		System.out.println(orderDto.getUserId()+"/t"+orderDto.getWalletType()+"/t"+orderDto.getAmount());
+			if(orderDto != null)
 			{
-				return walletService.toWithdrawn(utd);
+				return walletService.toWithdrawn(orderDto);
 			}
 			else
 			{
 				throw new NullPointerException("Please provide complete details");
 			}
-	}*/
+	}
 }

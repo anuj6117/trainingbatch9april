@@ -67,14 +67,14 @@ public class WalletService {
 			OrderTable tempOrderTable = new OrderTable();
 			tempOrderTable.setOrderType(OrderType.DEPOSIT);
 			tempOrderTable.setCoinName(orderDto.getCoinName());
-			tempOrderTable.setAmount(orderDto.getAmount());
+			tempOrderTable.setNetAmount(orderDto.getAmount());
 			tempOrderTable.setCoinQuantity(orderDto.getAmount());
 			tempOrderTable.setGrossAmount(orderDto.getAmount());
 			tempOrderTable.setOrderCreatedOn(new Date());
 			tempOrderTable.setOrderStatus(OrderStatus.PENDING);
 			tempOrderTable.setUser(user);
 			orderRepository.save(tempOrderTable); 
-			return "deposit request is successfully processed, kindly wait for the admin approval.";
+			return "Your deposit request is generated. Please wait for approval";
 		}
 		else
 		{
@@ -82,10 +82,10 @@ public class WalletService {
 		}
 	}
 			
-	public String toWithdrawn(UserTransactionDto utd ) {
-		 Integer userId = utd.getUserId();
-		 String walletType = utd.getWalletType();
-		 Double amount = utd.getAmount();		 
+	public String toWithdrawn(OrderDto orderDto ) {
+		 Integer userId = orderDto.getUserId();
+		 String walletType = orderDto.getWalletType();
+		 Double amount = orderDto.getAmount();		 
 
 		 User user = userRepository.findByUserId(userId);
 		 Set<Wallet> wallet = user.getWallets();
@@ -99,6 +99,8 @@ public class WalletService {
 				 {
 					 Double totalAmount = tempWallet.getBalance() - amount;
 					 tempWallet.setBalance(totalAmount);
+					 Double shadowBalance = tempWallet.getShadowBalance() - amount;
+					 tempWallet.setShadowBalance(shadowBalance);
 					 userRepository.save(user);					
 				 }
 				 else

@@ -41,29 +41,28 @@ public class SignUpController
 	@RequestMapping(value = "/verify", method = RequestMethod.POST)
 	public String userVerification(@RequestBody OtpVerification otpVerification)
 	{
-		if((otpVerification.getEmail()==null)||(otpVerification.getOtp()==null))
+		if((otpVerification.getEmail()!=null)||(otpVerification.getOtp()!=null))
 		{
-				return "email or otp cannot be empty.";
+			return signUpService.verifyUserWithOtp(otpVerification.getEmail(),otpVerification.getOtp());		
 		}
 		else
 		{
-			return signUpService.verifyUserWithOtp(otpVerification.getEmail(),otpVerification.getOtp());
-			
+			throw new NullPointerException("insufficient information.");
 		}
 	 }
-	 @RequestMapping(value="/getAllUsers", method=RequestMethod.GET)
+	 @RequestMapping(value="/getallusers", method=RequestMethod.GET)
 	 public List<User> getAll()
 	 {
 			return signUpService.getAllUsers();
 	  }
 	
-	 @RequestMapping(value="/update", method=RequestMethod.POST)
+	 @RequestMapping(value="/updateuser", method=RequestMethod.POST)
 	 public String updateUser(@RequestBody User user)
 	 {
 	    return signUpService.updateUser(user);
 	  }
 
-	 @RequestMapping(value = "/getUser", method = RequestMethod.GET)
+	 @RequestMapping(value = "/getbyuserid", method = RequestMethod.GET)
 	 public Optional<User> getUserById(@RequestParam("userId") Integer userId) 
 	 {
 			Optional<User> obj = null;
@@ -75,7 +74,7 @@ public class SignUpController
 			return obj;
 	  }
 
-	 @RequestMapping(value="/delete", method=RequestMethod.GET)
+	 @RequestMapping(value="/deleteuser", method=RequestMethod.GET)
 	 public String deleteUser(@RequestParam("userId") Integer id)
 	 {
 		try {
@@ -89,7 +88,7 @@ public class SignUpController
 		}		
 	  }
 	 
-	@RequestMapping(value = "/assignRole", method = RequestMethod.POST)
+	@RequestMapping(value = "/assignrole", method = RequestMethod.POST)
 	public String assignRole(@RequestBody UserRoleDto userRoleDto) 
 	{
 		System.out.println("----------------Inside assignRole method of signupcontroller");

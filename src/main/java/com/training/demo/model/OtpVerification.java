@@ -10,10 +10,12 @@ import javax.persistence.Table;
 @Table(name = "OtpVerification")
 public class OtpVerification {
 	@Id
-	Integer userId;
-	String email;
-	Integer otp;
-	Date date;
+	private int id;
+	
+	private String email;
+	private Integer userId;
+	private Integer otp;
+	private Date date;
 	
 	public Integer getUserId() {
 		return userId;

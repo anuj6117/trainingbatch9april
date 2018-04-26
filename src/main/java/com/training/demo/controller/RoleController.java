@@ -26,7 +26,7 @@ public class RoleController {
 	@Autowired
 	private UserRepository userRepository;
 	
-	@RequestMapping(value="/addRole", method=RequestMethod.POST)
+	@RequestMapping(value="/addrole", method=RequestMethod.POST)
 	public String insertRole(@RequestBody Role role)
 	{ 
 		System.out.println("Role controller hit addRole api");
@@ -41,7 +41,7 @@ public class RoleController {
 		}
 	}	
 	
-	@RequestMapping(value="/deleteRole", method=RequestMethod.GET)
+	@RequestMapping(value="/deleterole", method=RequestMethod.GET)
 	public String deleteRole(@RequestParam("roleId") Integer roleId)
 	{ 
 		System.out.println("Role controller hit delete api.");
@@ -56,14 +56,14 @@ public class RoleController {
 		}
 	}
 
-	@RequestMapping(value="/getAllRole", method=RequestMethod.GET)
+	@RequestMapping(value="/getallrole", method=RequestMethod.GET)
 	public List<Role> getAllRole()
 	{ 	
 		System.out.println("Role controller hit getRole api.");
 			return roleService.getAllRole();
 	}
 
-	@RequestMapping(value="/getRoleById", method=RequestMethod.GET)
+	@RequestMapping(value="/getrolebyid", method=RequestMethod.GET)
 	public List<Role> getRoleById(@RequestParam("roleId") Integer roleId)
 	{ 	
 		System.out.println("Role controller hit getRoleById api.");

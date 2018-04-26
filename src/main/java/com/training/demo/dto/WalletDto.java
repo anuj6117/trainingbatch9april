@@ -6,8 +6,6 @@ public class WalletDto {
 	
 	private String walletType;
 	
-	private Double price;
-	
 	private String coinName;
 	
 	public WalletDto() {
@@ -30,13 +28,7 @@ public class WalletDto {
 	public void setWalletType(String walletType) {
 		this.walletType = walletType;
 	}
-	public void setPrice(Double price) {
-		this.price = price;
-	}
-	public Double getPrice() {
-		// TODO Auto-generated method stub
-		return price;
-	}
+
 	public String getCoinName() {
 		return coinName;
 	}

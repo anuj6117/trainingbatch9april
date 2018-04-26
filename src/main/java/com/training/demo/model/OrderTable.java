@@ -39,6 +39,7 @@ import com.training.demo.enums.OrderType;
 		
 		//@NotNull(message = "Coin name can't be null")
 		//@NotBlank(message = "Coin name can't be null")
+		
 		private String coinName;
 		
 		private Double grossAmount;
@@ -52,7 +53,28 @@ import com.training.demo.enums.OrderType;
 		@JoinColumn(name="fk_user_id", referencedColumnName="userId")
 		@JsonIgnore
 		private User user;
-				
+
+		public OrderTable() {
+			super();
+		}
+
+		public OrderTable(Integer orderId, Double netAmount, Double fee, Double price, Date orderCreatedOn,
+				OrderType orderType, String coinName, Double grossAmount, OrderStatus orderStatus, Double coinQuantity,
+				User user) {
+			super();
+			this.orderId = orderId;
+			this.netAmount = netAmount;
+			this.fee = fee;
+			this.price = price;
+			this.orderCreatedOn = orderCreatedOn;
+			this.orderType = orderType;
+			this.coinName = coinName;
+			this.grossAmount = grossAmount;
+			this.orderStatus = orderStatus;
+			this.coinQuantity = coinQuantity;
+			this.user = user;
+		}
+
 		public Integer getOrderId() {
 			return orderId;
 		}
@@ -61,12 +83,12 @@ import com.training.demo.enums.OrderType;
 			this.orderId = orderId;
 		}
 
-		public Double getAmount() {
+		public Double getNetAmount() {
 			return netAmount;
 		}
 
-		public void setAmount(Double amount) {
-			this.netAmount = amount;
+		public void setNetAmount(Double netAmount) {
+			this.netAmount = netAmount;
 		}
 
 		public Double getFee() {
@@ -85,12 +107,12 @@ import com.training.demo.enums.OrderType;
 			this.price = price;
 		}
 
-		public Double getGrossAmount() {
-			return grossAmount;
+		public Date getOrderCreatedOn() {
+			return orderCreatedOn;
 		}
 
-		public void setGrossAmount(Double grossAmount) {
-			this.grossAmount = grossAmount;
+		public void setOrderCreatedOn(Date orderCreatedOn) {
+			this.orderCreatedOn = orderCreatedOn;
 		}
 
 		public OrderType getOrderType() {
@@ -101,14 +123,6 @@ import com.training.demo.enums.OrderType;
 			this.orderType = orderType;
 		}
 
-		public Date getOrderCreatedOn() {
-			return orderCreatedOn;
-		}
-
-		public void setOrderCreatedOn(Date orderCreatedOn) {
-			this.orderCreatedOn = orderCreatedOn;
-		}
-
 		public String getCoinName() {
 			return coinName;
 		}
@@ -117,12 +131,12 @@ import com.training.demo.enums.OrderType;
 			this.coinName = coinName;
 		}
 
-		public User getUser() {
-			return user;
+		public Double getGrossAmount() {
+			return grossAmount;
 		}
 
-		public void setUser(User user) {
-			this.user = user;
+		public void setGrossAmount(Double grossAmount) {
+			this.grossAmount = grossAmount;
 		}
 
 		public OrderStatus getOrderStatus() {
@@ -133,13 +147,23 @@ import com.training.demo.enums.OrderType;
 			this.orderStatus = orderStatus;
 		}
 
-		public void setCoinQuantity(Double coinQuantity) {
-			this.coinQuantity = coinQuantity;
-			
-		}
-
 		public Double getCoinQuantity() {
 			return coinQuantity;
-		}	
+		}
+
+		public void setCoinQuantity(Double coinQuantity) {
+			this.coinQuantity = coinQuantity;
+		}
+
+		public User getUser() {
+			return user;
+		}
+
+		public void setUser(User user) {
+			this.user = user;
+		}
 		
-}	
+		
+		
+		
+	}

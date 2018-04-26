@@ -94,7 +94,7 @@ public class SignUpService
 							date = new Date();
 							otpVerification.setDate(date);
 							otpRepository.save(otpVerification);
-							return "Otp sent successfully.";
+							return "Your account has been successfully created. Please, verify it by using OTP.";
 							}
 				else
 				{

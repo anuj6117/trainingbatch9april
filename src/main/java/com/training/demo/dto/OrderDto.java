@@ -3,7 +3,7 @@ package com.training.demo.dto;
 public class OrderDto {
 
 	private Integer userId;
-	private Integer coinQuantity;
+	private String walletType;
 	private Double amount;
 	private String coinName;
 	
@@ -11,10 +11,10 @@ public class OrderDto {
 		super();
 	}
 
-	public OrderDto(Integer userId, Integer coinQuantity, Double amount, String coinName) {
+	public OrderDto(Integer userId, String walletType, Double amount, String coinName) {
 		super();
 		this.userId = userId;
-		this.coinQuantity = coinQuantity;
+		this.walletType = walletType;
 		this.amount = amount;
 		this.coinName = coinName;
 	}
@@ -27,12 +27,12 @@ public class OrderDto {
 		this.userId = userId;
 	}
 
-	public Integer getCoinQuantity() {
-		return coinQuantity;
+	public String getWalletType() {
+		return walletType;
 	}
 
-	public void setCoinQuantity(Integer coinQuantity) {
-		this.coinQuantity = coinQuantity;
+	public void setWalletType(String walletType) {
+		this.walletType = walletType;
 	}
 
 	public Double getAmount() {
@@ -51,6 +51,4 @@ public class OrderDto {
 		this.coinName = coinName;
 	}
 
-
-	
 }

@@ -19,17 +19,15 @@ public class CoinManagementController {
 	private CoinManagementService coinManagementService;
 	
 	@RequestMapping(value="/addcurrency", method=RequestMethod.POST)
-	public String addCoin(@RequestBody CoinManagement data)
-	{
-		String result=coinManagementService.addAllCoin(data);
-		
-		if(result != null)
+	public String addCoin(@RequestBody CoinManagement coinManagement)
+	{	
+		if(coinManagement != null)
 		{
-			return "From controller coin added";
+			return coinManagementService.addAllCoin(coinManagement);
 		}
 		else
 		{
-			return "From controller coin not added";
+			throw new NullPointerException("insufficient information.");
 		}
 	}
 	
@@ -46,22 +44,25 @@ public class CoinManagementController {
 		String result=coinManagementService.update(data);
 		if(result != null)
 		{
-			return "Coin Updated";
+			return "Your Coin Has Been Updated Successfully ";
 		}
 		else
 		{
-			return "Coin not updated";
+			throw new NullPointerException("insufficient information");
 		}
 	}
 	
 	@RequestMapping(value="/deletecurrency", method=RequestMethod.GET)
-	public String delete(@RequestParam("coinId") Integer id)
+	public String delete(@RequestParam("coinId") Integer coinId)
 	{
-		if(id != null)
+		if(coinId != null)
 		{
-			coinManagementService.delete(id);
-			return "success";
+			coinManagementService.delete(coinId);
+			return "Your Coin Has Been Deleted Successfully ";
 		}
-		return "fail";	
+		else
+		{
+			throw new NullPointerException("insufficient information");
+		}	
 	}
 }
