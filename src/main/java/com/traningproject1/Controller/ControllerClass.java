@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.traningproject1.demo.dto.AssignWalletDTO;
 import com.traningproject1.demo.dto.ClassDTO;
 import com.traningproject1.demo.dto.DepositAmountDTO;
-import com.traningproject1.demo.dto.WithdrawAmountDTO;
 import com.traningproject1.domain.User;
 import com.traningproject1.service.ServiceClass;
 import com.traningproject1.service.WalletService;
@@ -91,10 +90,10 @@ public String depositAmount(@RequestBody DepositAmountDTO depositamountdto)
   serviceClass.depositAmount(depositamountdto);
   return "Success";	
 }
-@RequestMapping(value="/withdrawamount",method=RequestMethod.POST)
-public String withdrawAmount(@RequestBody WithdrawAmountDTO withdrawamountdto)
-{ 
-  serviceClass.withdrawAmount(withdrawamountdto);
-  return "Success";	
-}
+//@RequestMapping(value="/withdrawamount",method=RequestMethod.POST)
+//public String withdrawAmount(@RequestBody WithdrawAmountDTO withdrawamountdto)
+//{ 
+//  serviceClass.withdrawAmount(withdrawamountdto);
+//  return "Success";	
+//}
 }

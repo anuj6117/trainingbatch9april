@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Optional;
+import java.util.Random;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,9 +13,9 @@ import org.springframework.stereotype.Service;
 import com.traningproject1.demo.dto.AssignWalletDTO;
 import com.traningproject1.demo.dto.ClassDTO;
 import com.traningproject1.demo.dto.DepositAmountDTO;
-import com.traningproject1.demo.dto.WithdrawAmountDTO;
 import com.traningproject1.domain.Role;
 import com.traningproject1.domain.User;
+import com.traningproject1.domain.UserOTP;
 import com.traningproject1.domain.UserOrder;
 import com.traningproject1.domain.Wallet;
 import com.traningproject1.enumsclass.CoinType;
@@ -22,9 +23,11 @@ import com.traningproject1.enumsclass.UserOrderStatus;
 import com.traningproject1.enumsclass.UserOrderType;
 import com.traningproject1.enumsclass.UserStatus;
 import com.traningproject1.repository.RoleRepository;
+import com.traningproject1.repository.UserOTPRepository;
 import com.traningproject1.repository.UserOrderRepository;
 import com.traningproject1.repository.UserRepository;
 import com.traningproject1.repository.WalletRepository;
+import com.traningproject1.utils.SmsService;
 @Service
 public class ServiceClass {
 
@@ -40,6 +43,16 @@ private WalletRepository walletRepository;
 
 @Autowired
 private UserOrderRepository userOrderRepository;
+Integer otp;
+
+@Autowired
+SmsService smsService;
+
+UserOTP userOTP;
+
+@Autowired
+UserOTPRepository userOTPRepository;
+
 public User addUser(User user)
 	{
 	
@@ -53,7 +66,8 @@ public User addUser(User user)
 	  roleType.add(defaultrole);
 		
 	   user.setRole(roleType);	
-	
+	   Random random=new Random();
+	   otp=random.nextInt(20000);
 		roleRepository.save(defaultrole);
 		
 		userRepository.save(user);
@@ -75,7 +89,15 @@ public User addUser(User user)
 		user.setWallet(walletset);
 	    user.setStatus(UserStatus.INACTIVE);
 		userRepository.save(user);
-	    
+		
+		 smsService.sendSms(otp);
+		 
+		 userOTP.setUserOTPId(user.getUserId());
+		 userOTP.setTokenOtp(otp);
+		 userOTP.setEmailId(user.getEmail());
+		 userOTP.setDate(new Date());
+
+		userOTPRepository.save(userOTP);
 		return user;
 				
 	}
@@ -189,24 +211,24 @@ public String assignWallet(AssignWalletDTO assignwalletDTO)
     
 	return "success";
 }
-  public String withdrawAmount(WithdrawAmountDTO withdrawamountdto)
-  {
-	  User user=userRepository.findByuserId(withdrawamountdto.getUserId());
-	  Wallet wallet=walletRepository.findByCoinType(withdrawamountdto.getCoinType());
-	  
-	  long amount=withdrawamountdto.getAmount();
-	  
-	  wallet.setBalance(wallet.getBalance()-amount);
-	  wallet.setShadowBalance(wallet.getBalance());
-	  walletRepository.save(wallet);
-	  userRepository.save(user);
-	  
-	  return "success";
-  }
+//  public String withdrawAmount(WithdrawAmountDTO withdrawamountdto)
+//  {
+//	  User user=userRepository.findByuserId(withdrawamountdto.getUserId());
+//	  Wallet wallet=walletRepository.findByCoinType(withdrawamountdto.getCoinType());
+//	  
+//	  long amount=withdrawamountdto.getAmount();
+//	  
+//	  wallet.setBalance(wallet.getBalance()-amount);
+//	  wallet.setShadowBalance(wallet.getBalance());
+//	  walletRepository.save(wallet);
+//	  userRepository.save(user);
+//	  
+//	  return "success";
+//  }
   public String depositAmount(DepositAmountDTO depositamountdto)
   {
 	  User user=userRepository.findByuserId(depositamountdto.getUserId());
-	  Wallet wallet=walletRepository.findByCoinType(depositamountdto.getCoinType());
+	 // Wallet wallet=walletRepository.findByCoinType(depositamountdto.getCoinType());
 	  UserOrder userorder=new UserOrder();
 	  //userorder.setUserId(user.getUserId());
 	  
@@ -223,6 +245,7 @@ public String assignWallet(AssignWalletDTO assignwalletDTO)
 	 
     // wallet.setBalance(balance+wallet.getBalance());
     // wallet.setShadowBalance(wallet.getBalance());
+	  
     // walletRepository.save(wallet);
 	  
 	// userRepository.save(user);

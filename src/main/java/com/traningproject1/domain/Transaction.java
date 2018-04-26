@@ -3,27 +3,31 @@ package com.traningproject1.domain;
 import java.util.Date;
 
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import com.traningproject1.enumsclass.CoinType;
 import com.traningproject1.enumsclass.TransactionStatus;
-import com.traningproject1.enumsclass.WalletType;
 @Entity
 @Table(name="Transaction")
 public class Transaction {
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
 private Integer tranId;
-private Integer amount;
-private WalletType walletType;
+private CoinType coinType;
 private long fees;
 private long exchangeRate;
 private long grossAmount;
-//private Buyer buyerId;
-//private Seller sellerId;
+private Integer buyerId;
+private Integer sellerId;
+
+@Enumerated(EnumType.STRING)
 private TransactionStatus status;
+private Integer netAmount;
 
 private  Date dateCreated;
 
@@ -35,20 +39,15 @@ public void setTranId(Integer tranId) {
 	this.tranId = tranId;
 }
 
-public Integer getAmount() {
-	return amount;
+
+
+
+public CoinType getCoinType() {
+	return coinType;
 }
 
-public void setAmount(Integer amount) {
-	this.amount = amount;
-}
-
-public WalletType getWalletType() {
-	return walletType;
-}
-
-public void setWalletType(WalletType walletType) {
-	this.walletType = walletType;
+public void setCoinType(CoinType coinType) {
+	this.coinType = coinType;
 }
 
 public long getFees() {
@@ -89,5 +88,27 @@ public Date getDateCreated() {
 
 public void setDateCreated(Date dateCreated) {
 	this.dateCreated = dateCreated;
-}  
+}
+public Integer getBuyerId() {
+	return buyerId;
+}
+
+public void setBuyerId(Integer buyerId) {
+	this.buyerId = buyerId;
+}
+
+public Integer getSellerId() {
+	return sellerId;
+}
+
+public void setSellerId(Integer sellerId) {
+	this.sellerId = sellerId;
+}
+public Integer getNetAmount() {
+	return netAmount;
+}
+
+public void setNetAmount(Integer netAmount) {
+	this.netAmount = netAmount;
+}
 }
