@@ -9,17 +9,17 @@ import javax.persistence.Table;
 public class UserOtpTable
 {
 	
+@Id
+private String otp;
+private String email;
+private String date;
+
 public String getOtp() {
 		return otp;
 	}
 	public void setOtp(String otp) {
 		this.otp = otp;
 	}
-@Id
-private String otp;
-private String email;
-private String date;
-
 
 public String getEmail() {
 	return email;

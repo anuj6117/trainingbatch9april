@@ -1,8 +1,6 @@
 
 package com.example.model;
 
-import java.sql.Date;
-
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -12,8 +10,10 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+
 import com.example.enums.OrderType;
 import com.example.enums.StatusType;
+import com.example.enums.WalletType;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
@@ -23,13 +23,17 @@ public class UserOrder
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	private Integer id;
+	private Integer orderId;
 	@Enumerated(EnumType.STRING)
 	private OrderType orderType;
 	private String coinName;
+	private WalletType coinType;
 	private Integer coinQuantity;
 	private Integer price;
-	private String orderCcreatedOn;
+	private Integer fees;
+	private Integer netAmount;
+	private Integer grossAmount;
+	private String orderCreatedOn;
 	@Enumerated(EnumType.STRING)
 	private StatusType statusType;
 	
@@ -46,12 +50,37 @@ public class UserOrder
   User user;
 
 	
-	public Integer getId() {
-		return id;
-	}
-	public void setId(Integer id) {
-		this.id = id;
-	}
+	public WalletType getCoinType() {
+	return coinType;
+}
+public void setCoinType(WalletType coinType) {
+	this.coinType = coinType;
+}
+public Integer getFees() {
+	return fees;
+}
+public void setFees(Integer fees) {
+	this.fees = fees;
+}
+public Integer getNetAmount() {
+	return netAmount;
+}
+public void setNetAmount(Integer netAmount) {
+	this.netAmount = netAmount;
+}
+public Integer getGrossAmount() {
+	return grossAmount;
+}
+public void setGrossAmount(Integer grossAmount) {
+	this.grossAmount = grossAmount;
+}
+	
+	public Integer getOrderId() {
+	return orderId;
+}
+public void setOrderId(Integer orderId) {
+	this.orderId = orderId;
+}
 	public OrderType getOrderType() {
 		return orderType;
 	}
@@ -72,11 +101,12 @@ public class UserOrder
 		this.coinQuantity = coinQuantity;
 	}
 	
-	public String getOrderCcreatedOn() {
-		return orderCcreatedOn;
+	
+	public String getOrderCreatedOn() {
+		return orderCreatedOn;
 	}
-	public void setOrderCcreatedOn(String orderCcreatedOn) {
-		this.orderCcreatedOn = orderCcreatedOn;
+	public void setOrderCreatedOn(String orderCreatedOn) {
+		this.orderCreatedOn = orderCreatedOn;
 	}
 	public Integer getPrice() {
 		return price;

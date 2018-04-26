@@ -29,7 +29,7 @@ public class OrderController
 		user=userRepository.findByUserId(userOrderDto.getUserId());
 		if(user!=null)
 		{
-		  userorder.setId(userOrderDto.getUserId());
+		  userorder.setOrderId(userOrderDto.getUserId());
 		  orderService.createBuyOrder(userOrderDto);	
 		}
 		return "";
@@ -42,7 +42,7 @@ public class OrderController
 		user=userRepository.findByUserId(userOrderDto.getUserId());
 		if(user!=null)
 		{
-		  userorder.setId(userOrderDto.getUserId());
+		  userorder.setOrderId(userOrderDto.getUserId());
 		  orderService.createSellOrder(userOrderDto);	
 		}
 		return "user is null..........";

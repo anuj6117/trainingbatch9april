@@ -8,4 +8,5 @@ import com.example.model.Wallet;
 public interface WalletRepository extends JpaRepository<Wallet,Integer>
 {
   Wallet findByWalletType(WalletType wallettype);
+ 
 }

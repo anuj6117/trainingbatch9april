@@ -40,16 +40,17 @@ public class WalletController
 	}
 	}
     */
-    @RequestMapping(value="/withdrawamount",method=RequestMethod.POST)
+   /* @RequestMapping(value="/withdrawamount",method=RequestMethod.POST)
 	public String withdrawamount(@RequestBody UserWalletDto userwalletdto)
 	{
     	
 	  	return walletservice.withdrawamount(userwalletdto) ;
-	}
+	}*/
     
     @RequestMapping(value="/walletapproval",method=RequestMethod.POST)
     public String walletApprovalStatus(@RequestBody WalletApprovalDto walletApprovalDto)
     {
-    	return "";
+    	System.out.println("wallllllllllllllllllllllllllllllllll");
+    	return walletservice.walletApprovalStatus(walletApprovalDto);
     }
 }

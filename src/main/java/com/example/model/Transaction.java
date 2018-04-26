@@ -1,26 +1,28 @@
 package com.example.model;
 
-import javax.annotation.Generated;
+import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Table;
 
 import com.example.enums.StatusType;
 import com.example.enums.WalletType;
-
+@Entity
+@Table(name="transaction")
 public class Transaction 
 {
 @Id
 @GeneratedValue(strategy = GenerationType.AUTO)
 private Integer transactionId;
 private Integer coinQuantity;
-private String name;
 @Enumerated(EnumType.STRING)
 private WalletType coinType;
 @Enumerated(EnumType.STRING)
 private StatusType status;
+private String coinName;
 private String transactionCreatedOn;
 private Integer netAmount;
 private Integer transactionFee;
@@ -29,6 +31,14 @@ private Integer grossAmount;
 private Integer buyerId;
 private Integer sellerId;
 private String description;
+
+
+public String getCoinName() {
+	return coinName;
+}
+public void setCoinName(String coinName) {
+	this.coinName = coinName;
+}
 public Integer getTransactionId() {
 	return transactionId;
 }
@@ -41,12 +51,7 @@ public Integer getCoinQuantity() {
 public void setCoinQuantity(Integer coinQuantity) {
 	this.coinQuantity = coinQuantity;
 }
-public String getName() {
-	return name;
-}
-public void setName(String name) {
-	this.name = name;
-}
+
 public WalletType getCoinType() {
 	return coinType;
 }

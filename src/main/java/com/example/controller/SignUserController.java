@@ -38,11 +38,13 @@ public class SignUserController
 	@RequestMapping(value="/signup", method=RequestMethod.POST)
 	public String insertUser(@RequestBody User user)
 	{  System.out.println("......................1111111111");
-		String passwordvalue=user.getPassword().trim();
+		String passwordvalue=user.getPassword();
+		int passwordLength1=passwordvalue.length();
 		String username=user.getUserName().trim();
-	    int passwordLength=passwordvalue.length();
+	    passwordvalue=passwordvalue.replaceAll("\\s+","");
+	    int passwordLength2=passwordvalue.length();
 	    int usernameLength=username.length();
-	    if(passwordLength!=0)
+	    if((passwordLength2!=0) && (passwordLength1==passwordLength2))
 		{
 	    	 System.out.println("......................111111111122222");
 	    	if(usernameLength!=0)

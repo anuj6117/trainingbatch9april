@@ -2,7 +2,6 @@ package com.example.enums;
 
 public enum WalletType
 {
-//BITCOIN("Bitcoin"),FIAT("Fiat"),ETHEREUM("Ethereum")	;
  FIAT("Fiat"),CRYPTOCURRENCY("CryptoCurrency");
 	private String value;
  

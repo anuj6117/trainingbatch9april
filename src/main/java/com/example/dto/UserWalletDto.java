@@ -5,9 +5,18 @@ import com.example.enums.WalletType;
 public class UserWalletDto
  {
   private Integer userId;
+  private String coinName;
   private WalletType walletType;
   private Integer amount;
   
+  
+  
+public String getCoinName() {
+	return coinName;
+}
+public void setCoinName(String coinName) {
+	this.coinName = coinName;
+}
 public Integer getAmount() {
 	return amount;
 }

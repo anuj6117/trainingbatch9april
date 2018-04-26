@@ -136,14 +136,15 @@ public class SignUpService
 		  String date=new Date()+"";
 		  
 		 userorder.setStatusType(StatusType.PENDING);
-		 userorder.setCoinName(WalletType.FIAT.toString());
-		
-		 userorder.setPrice(userwalletdto.getAmount());
+		 userorder.setCoinType(WalletType.FIAT);
+		 userorder.setCoinName(userwalletdto.getCoinName());
+		 userorder.setNetAmount(userwalletdto.getAmount());
+		 userorder.setGrossAmount(userwalletdto.getAmount());
 		 userorder.setOrderType(OrderType.DEPOSIT);
-		 userorder.setOrderCcreatedOn(date);
+		 userorder.setOrderCreatedOn(date);
 		 user=userrepository.findByUserId(userwalletdto.getUserId());
 		 userorder.setUser(user);
-		 userorder.setId(1);
+		 //userorder.setId(1);
 		 orderRepository.save(userorder);
 		 
 		 return "All value inserted";

@@ -1,17 +1,23 @@
 package com.example.service;
 
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.example.dto.UserWalletDto;
-import com.example.enums.OrderType;
+import com.example.dto.WalletApprovalDto;
 import com.example.enums.StatusType;
+import com.example.enums.UserStatus;
 import com.example.enums.WalletType;
+import com.example.model.Transaction;
 import com.example.model.User;
+import com.example.model.UserOrder;
 import com.example.model.Wallet;
 import com.example.repository.OrderRepository;
+import com.example.repository.TransactionRepository;
 import com.example.repository.UserRepository;
 import com.example.repository.WalletRepository;
 
@@ -21,10 +27,16 @@ public class WalletService
 	private UserRepository userrepository;
     @Autowired
     private OrderRepository orderrepository;
+    @Autowired
+    private TransactionRepository transactionRepository;
+    @Autowired
+    private WalletRepository walletRepository;
 	private User user;
-	
+	private UserOrder userorder;
+	private Transaction transaction=new Transaction();
 	@Autowired
 	private WalletRepository walletrepository;
+	//Wallet wallet;
 	static int value=0;
 	//private UserWalletDto userwalletdto;
 	
@@ -38,58 +50,70 @@ public class WalletService
 	 return "wallet added in service";
  }
  
-/* public String depositamount(UserWalletDto userwalletdto)
- {
-	 
-	 if(userwalletdto==null)
-   {return "userwalletdto is null::::::::::::::::::::::::::::::::::::::::::::";
-   }else
-   { System.out.println("::::::::::::::::::::::::::::::::date");
-	  String date=new Date()+"";
-	  System.out.println("::::::::::::::::::::::::::::::::pendingSt");
-	  
-	 order.setStatusType(StatusType.PENDING);
-	 System.out.println("::::::::::::::::::::::::::::::::enummmmmmmmmmmm");
-	 order.setCoinName(WalletType.FIAT.toString());
-	 System.out.println("::::::::::::::::::::::::::::::::minummmmmmmmmmmmmmm");
-	 value+=userwalletdto.getAmount();
-	 order.setPrice(value)
-	 order.setOrderType(OrderType.DEPOSIT);
-	 order.setOrderCcreatedOn(date);
-	 user=userrepository.findByUserId(userwalletdto.getUserId());
-	 order.setUser(user);
-	// order.setId(1);
-	 orderrepository.save(order);
-	 System.out.println(">>>>>>>>>>>>>>>>"+order.getStatusType());
-	 
-	 return "All value inserted";
-   }
-	 
-	 user=userrepository.findByUserId(userwalletdto.getUserId());
-	 
-	 if(user!=null)
-{
-	 if(walletrepository.findByWalletType(userwalletdto.getWalletType())!=null)
+ public String walletApprovalStatus(WalletApprovalDto walletApprovalDto)
+ {   User user1=userrepository.findByUserId(walletApprovalDto.getUserId());
+    
+     
+     Wallet wallet=null;
+	 String date=new Date()+"";
+
+	 userorder=orderrepository.findByOrderId(walletApprovalDto.getOrderId());
+	 user=userorder.getUser();
+
+	 if(user.getStatus()==UserStatus.ACTIVE)
 	 {
-		 int val=userwalletdto.getAmount();
-		 Wallet wallet=walletrepository.findByWalletType(userwalletdto.getWalletType());
-		 wallet.setBalance(val);
-		 walletrepository.save(wallet);
-		 return "amount deposited";
+		
+		 if(walletApprovalDto.getStatusType()==StatusType.APPROVED)
+		 {
+			 Set<Wallet> walletlist=user1.getWallet();
+		     for(Wallet s:walletlist)
+		     {
+		    	 
+		   
+		    	 if(s.getWalletType()==WalletType.FIAT)
+		    	 {
+		    		 wallet=s;
+		    		 s.setBalance(userorder.getGrossAmount());
+		    		 s.setShadowbalance(userorder.getGrossAmount()); 
+		    	 }
+		     }
+		     
+			 walletRepository.save(wallet);
+			 transaction.setCoinType(WalletType.FIAT);
+			 transaction.setCoinName(userorder.getCoinName());
+			 transaction.setTransactionCreatedOn(date);
+			 transaction.setStatus(StatusType.APPROVED);
+			 transaction.setDescription(walletApprovalDto.getDescription());
+			 transaction.setGrossAmount(userorder.getGrossAmount());
+			 transaction.setNetAmount(userorder.getNetAmount());
+			 transactionRepository.save(transaction);
+			 userorder.setStatusType(StatusType.APPROVED);
+			 orderrepository.save(userorder);
+		 }
+		 else if(walletApprovalDto.getStatusType()==StatusType.REJECTED)
+		  {
+			 transaction.setCoinType(WalletType.FIAT);
+			 transaction.setCoinName(userorder.getCoinName());
+			 transaction.setTransactionCreatedOn(date);
+			 transaction.setStatus(StatusType.REJECTED);
+			 transaction.setDescription(walletApprovalDto.getDescription());
+			 transaction.setGrossAmount(userorder.getGrossAmount());
+			 transaction.setNetAmount(userorder.getNetAmount());
+			 transactionRepository.save(transaction);
+			 userorder.setStatusType(StatusType.REJECTED);
+			 orderrepository.save(userorder);
+			 
+		  }
 		 
 	 }
-	 else
-		 return "wallettype doesnot available";
-	 
-	 
-}
-else
-	return "user doesnot exist";
-	 
-	
+	return "user is not active"; 
+ }
+ 
+ public  void addBalance()
+ {
 	 
  }
- */
+
  public String withdrawamount(UserWalletDto userwalletdto)
  {
 	 

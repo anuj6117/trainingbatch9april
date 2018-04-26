@@ -5,5 +5,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import com.example.model.UserOrder;
 
 public interface OrderRepository extends JpaRepository<UserOrder,Integer> {
+	UserOrder findByOrderId(Integer id);
 
 }
