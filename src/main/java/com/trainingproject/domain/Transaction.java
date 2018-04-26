@@ -20,7 +20,9 @@ public class Transaction {
 	@GeneratedValue
 	private Integer transactionId;
 	private long amount;
+	 @Enumerated(EnumType.STRING)
 	private CoinType coinType;
+	private String coinName;
 	private long fee;
 	private long exchangeRate;
 	private long grossAmount;
@@ -41,11 +43,17 @@ public class Transaction {
 	public void setAmount(long amount) {
 		this.amount = amount;
 	}
-	public CoinType getWalletType() {
+	public CoinType getCoinType() {
 		return coinType;
 	}
-	public void setWalletType(CoinType coinType) {
+	public void setCoinType(CoinType coinType) {
 		this.coinType = coinType;
+	}
+	public String getCoinName() {
+		return coinName;
+	}
+	public void setCoinName(String coinName) {
+		this.coinName = coinName;
 	}
 	public long getFee() {
 		return fee;

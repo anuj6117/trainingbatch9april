@@ -6,6 +6,7 @@ public class WithdrawDepositBean {
 
 	Integer userId;
 	CoinType coinType;
+	String coinName;
 	long amount;
 	
 	public long getAmount() {
@@ -14,16 +15,22 @@ public class WithdrawDepositBean {
 	public void setAmount(long amount) {
 		this.amount = amount;
 	}
+	public String getCoinName() {
+		return coinName;
+	}
+	public void setCoinName(String coinName) {
+		this.coinName = coinName;
+	}
 	public Integer getUserId() {
 		return userId;
 	}
 	public void setUserId(Integer userId) {
 		this.userId = userId;
 	}
-	public CoinType getWalletType() {
+	public CoinType getCoinType() {
 		return coinType;
 	}
-	public void setWalletType(CoinType coinType) {
+	public void setCoinType(CoinType coinType) {
 		this.coinType = coinType;
 	}
 	

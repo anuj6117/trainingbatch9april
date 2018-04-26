@@ -16,9 +16,23 @@ public class CurrencyService {
 	
 	
 	
-	public Currency addCurrency(Currency cur) {
-		Currency currency=currencyRepository.save(cur);
-		return currency;
+	public String addCurrency(Currency cur) {
+		if(cur.getCoinName()==null||cur.getCoinName().length()==0)
+			return "coin name cannot be null";
+		if(cur.getSymbol()==null)
+			return "symbol cannot be null";
+		if(cur.getInitialSupply()==null)
+			return "initial supply cannot be null";
+		if(cur.getPrice()==null)
+			return "price cannot be null";
+		if(currencyRepository.findBycoinName(cur.getCoinName())!=null)
+			return "coin name already exists!";
+		if(currencyRepository.findBysymbol(cur.getSymbol())!=null)
+			return "symbol already exists!";
+		cur.setFees(cur.getFees());
+		cur.setCoinInINR(cur.getCoinInINR());
+		currencyRepository.save(cur);
+		return "success";
 	}
 
 	public List<Currency> getAllCurrency() {

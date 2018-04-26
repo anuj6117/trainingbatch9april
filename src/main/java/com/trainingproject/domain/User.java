@@ -5,6 +5,8 @@ import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -17,6 +19,7 @@ import javax.persistence.Table;
 import javax.validation.constraints.Email;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.trainingproject.enums.UserStatus;
 
 @Entity
 @Table(name="user")
@@ -32,6 +35,8 @@ public class User {
 	private String email;
     private String country;
     
+    @Enumerated(EnumType.STRING)
+    private UserStatus status;
  
     private Long phoneNumber;
     private String password;
@@ -63,6 +68,16 @@ public class User {
 
 	public Date getCreatedOn() {
 		return createdOn;
+	}
+
+
+	public UserStatus getStatus() {
+		return status;
+	}
+
+
+	public void setStatus(UserStatus status) {
+		this.status = status;
 	}
 
 

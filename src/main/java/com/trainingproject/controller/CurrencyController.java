@@ -20,8 +20,8 @@ public class CurrencyController {
 	
 	@RequestMapping(value="/addcurrency",method=RequestMethod.POST)
 	public String addCurrency(@RequestBody Currency cur) {
-		Currency curr=currencyService.addCurrency(cur);
-		return curr==null?"failure":"success";
+		return currencyService.addCurrency(cur);
+		
 	}
 	
 	@RequestMapping(value="/getallcurrency",method=RequestMethod.GET)

@@ -1,6 +1,7 @@
 package com.trainingproject.controller;
 
 import java.util.List;
+
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.trainingproject.domain.SignUpOTP;
 import com.trainingproject.domain.User;
 import com.trainingproject.domain.UserOrder;
 import com.trainingproject.dto.AssignRoleBean;
@@ -36,9 +38,9 @@ public class UserController{
 	}
 	
 	
-	@RequestMapping("hello1")
-	public String hello() {
-		return "hello";
+	@RequestMapping(value="verifyuser",method=RequestMethod.POST)
+	public String verifyUser(@RequestBody SignUpOTP OTPobj) {
+		return userservice.verifyUser(OTPobj);
 	}
 	
 	@RequestMapping(value="getallusers",method=RequestMethod.GET)

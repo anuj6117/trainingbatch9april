@@ -17,8 +17,11 @@ public class RoleService {
 	@Autowired
 	RoleRepository roleRepository;
 
-	public Role createRoll(Role role) {
-		return roleRepository.save(role);
+	public String createRole(Role role) {
+		if(roleRepository.findByroleType(role.getRoleType())!=null)
+			return "this role already exists!";
+		 roleRepository.save(role);
+		 return "success";
 		
 	}
 

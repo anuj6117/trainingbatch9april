@@ -19,11 +19,9 @@ public class RoleController {
 	RoleService roleService;
 	
 	@RequestMapping(value="/createrole",method=RequestMethod.POST)
-	public String createRoll(@RequestBody Role role) {
-		Role rolec=roleService.createRoll(role);
-		if(rolec==null)
-			return "failure";
-		else return "success";
+	public String createRole(@RequestBody Role role) {
+		return roleService.createRole(role);
+		
 	}
 	
 	@RequestMapping(value="getAllRoles",method=RequestMethod.GET)

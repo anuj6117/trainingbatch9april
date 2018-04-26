@@ -16,8 +16,8 @@ public class WalletController {
 	@Autowired
 	WalletService walletService;
 	
-	@RequestMapping(value="/createWallet",method=RequestMethod.POST)
-	public String createRoll(@RequestBody Wallet wallet) {
+	@RequestMapping(value="/createwallet",method=RequestMethod.POST)
+	public String createWallet(@RequestBody Wallet wallet) {
 		Wallet cwallet=walletService.createWallet(wallet);
 		if(cwallet==null)
 			return "failure";

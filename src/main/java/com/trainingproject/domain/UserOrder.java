@@ -11,6 +11,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.trainingproject.enums.CoinType;
 import com.trainingproject.enums.OrderType;
 import com.trainingproject.enums.UserOrderStatus;
 
@@ -26,9 +27,10 @@ public class UserOrder {
  private String coinName;
  @Enumerated(EnumType.STRING)
  private UserOrderStatus orderStatus;
-
+  private CoinType coinType;
  private long price;
- private long grossAmount;
+
+private long grossAmount;
  private Integer coinQuantity;
  private Date date;
  private Long fee=2l;
@@ -47,6 +49,14 @@ public void setGrossAmount(long grossAmount) {
  private User user;
  
  
+ public CoinType getCoinType() {
+	return coinType;
+}
+
+public void setCoinType(CoinType coinType) {
+	this.coinType = coinType;
+}
+
  public UserOrderStatus getOrderStatus() {
 	return orderStatus;
 }

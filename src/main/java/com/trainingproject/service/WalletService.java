@@ -2,7 +2,6 @@ package com.trainingproject.service;
 
 import java.util.List;
 
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,8 +12,9 @@ import com.trainingproject.domain.Wallet;
 import com.trainingproject.dto.ApproveWalletBean;
 import com.trainingproject.enums.CoinType;
 import com.trainingproject.enums.OrderType;
+import com.trainingproject.enums.TransactionStatus;
 import com.trainingproject.enums.UserOrderStatus;
-
+import com.trainingproject.repository.TransactionRepository;
 import com.trainingproject.repository.UserOrderRepository;
 import com.trainingproject.repository.WalletRepository;
 
@@ -29,6 +29,8 @@ public class WalletService {
 	UserOrderRepository userorderRepository;
 	@Autowired
 	UserService userService;
+	@Autowired
+	TransactionRepository transactionRepository;
 	
 	
 	public Wallet createWallet(Wallet wallet) {
@@ -43,7 +45,7 @@ public class WalletService {
 		UserOrder userorder=userorderService.getUserOrderById(awb.getOrderId());
 		if(userorder.getOrderStatus()==UserOrderStatus.APPROVED)
 			return "already approved";
-		
+		//userorder.setOrderType(OrderType.DEPOSIT);
 		userorder.setOrderStatus(awb.getOrderStatus());
 		userorderRepository.save(userorder);
 		Integer userId=userorder.getUserId();
@@ -51,17 +53,28 @@ public class WalletService {
 	     List<Wallet>walletlist=user.getUserWallet();
 	     Wallet fiatWallet=walletRepository.findBycoinTypeAndUser(CoinType.FIAT, user);
 	     OrderType orderType=userorder.getOrderType();
+	     
 	     if(orderType==OrderType.DEPOSIT) {
 	    	 
 	    	  Transaction transaction=new Transaction();
 	 	     transaction.setBuyer(null);
 	 	     transaction.setAmount(userorder.getPrice());
 	 	     transaction.setFee(0);
-//	 	     transaction.setWalletType(CoinType.FIAT);
-//	 	    transaction.setDate(userorder.getDate());
-//	 	   transaction.setExchangeRate(0);
-//	 	   transaction.set
-	 	     
+	 	     transaction.setCoinType(CoinType.FIAT);
+	 	   
+	 	     transaction.setDate(userorder.getDate());
+	 	     transaction.setExchangeRate(0);
+	 	    transaction.setCoinName(userorder.getCoinName());
+	 	   transaction.setCoinType(userorder.getCoinType());
+	 	   
+	 	     if(awb.getOrderStatus().equals(UserOrderStatus.APPROVED))
+	 	     transaction.setStatus(TransactionStatus.APPROVED);
+	 	     else  if(awb.getOrderStatus().equals(UserOrderStatus.PENDING))
+	 	    	 transaction.setStatus(TransactionStatus.PENDING);
+	 	    else  if(awb.getOrderStatus().equals(UserOrderStatus.FAILED))
+	 	    	 transaction.setStatus(TransactionStatus.FAILED);
+             transactionRepository.save(transaction);
+	 	   
 	    	 if(awb.getOrderStatus()==UserOrderStatus.APPROVED)
 	    	 fiatWallet.setBalance(fiatWallet.getBalance()+userorder.getPrice());
 	    	 if(awb.getOrderStatus()!=UserOrderStatus.FAILED)
