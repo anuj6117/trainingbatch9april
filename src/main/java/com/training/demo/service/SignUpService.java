@@ -51,6 +51,7 @@ public class SignUpService {
 		HashSet<Role> hashSet = new HashSet();
 		boolean b = hashSet.add(roles);
 		boolean flag = userRepository.existsByEmail(user.getEmail());
+				//)&&(userRepository.existByPhoneNo(user.getPhoneNo())));
 		if (flag == false) {
 			String email = user.getEmail();
 		   String phoneNo=user.getPhoneNo();
@@ -69,7 +70,7 @@ public class SignUpService {
 			User existingUser = userRepository.save(user);
 			Set<Wallet> wallet = new HashSet<Wallet>();
 			Wallet userwallet = new Wallet();
-			userwallet.setWalletType(WalletType.FIAT);
+			userwallet.setCoinType(WalletType.FIAT);
 			userwallet.setUser(existingUser);
 			// userwallet.setUser(user);
 			wallet.add(userwallet);
@@ -97,7 +98,7 @@ public class SignUpService {
 				return "Registration Failure.";
 			}
 		} else {
-			System.out.println("Already existing Email or Username.");
+			System.out.println("Already existing Email or Phoneno");
 			return "Already existing Email or Username.";
 		}
 	}

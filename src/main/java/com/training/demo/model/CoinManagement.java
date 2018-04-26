@@ -5,12 +5,15 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
+import com.training.demo.enums.WalletType;
+
 @Entity
 public class CoinManagement {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long coinId;
+	private WalletType coinType;
 	private String coinName;
 	private String symbol;
 	private Double initialSupply;

@@ -9,6 +9,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 import com.training.demo.enums.TransactionStatus;
+import com.training.demo.enums.UserOrderStatus;
 import com.training.demo.enums.WalletType;
 
 @Entity
@@ -17,14 +18,30 @@ public class Transection {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Integer transactionId;
-	private Double netAmount;
+	private long netAmount;
 	private WalletType walletType;
-	private Long fees;
+	private Long fee;
+	public Long getFee() {
+		return fee;
+	}
+	public void setFee(Long fee) {
+		this.fee = fee;
+	}
 	private Long exchangeRate;
 	private Long grossAmount;
 	private String buyer;
 	private String seller;
-	private TransactionStatus transactionStatus;
+	private String message;
+	public String getMessage() {
+		return message;
+	}
+	public void setMessage(String message) {
+		this.message = message;
+	}
+	private UserOrderStatus transactionStatus;
+	public void setTransactionStatus(UserOrderStatus transactionStatus) {
+		this.transactionStatus = transactionStatus;
+	}
 	private Date createdOn;
 	public Integer getTransactionId() {
 		return transactionId;
@@ -32,10 +49,10 @@ public class Transection {
 	public void setTransactionId(Integer transactionId) {
 		this.transactionId = transactionId;
 	}
-	public Double getNetAmount() {
+	public long getNetAmount() {
 		return netAmount;
 	}
-	public void setNetAmount(Double netAmount) {
+	public void setNetAmount(long netAmount) {
 		this.netAmount = netAmount;
 	}
 	public WalletType getWalletType() {
@@ -44,12 +61,7 @@ public class Transection {
 	public void setWalletType(WalletType walletType) {
 		this.walletType = walletType;
 	}
-	public Long getFees() {
-		return fees;
-	}
-	public void setFees(Long fees) {
-		this.fees = fees;
-	}
+	
 	
 	public Long getExchangeRate() {
 		return exchangeRate;
@@ -75,12 +87,7 @@ public class Transection {
 	public void setSeller(String seller) {
 		this.seller = seller;
 	}
-	public TransactionStatus getTransactionStatus() {
-		return transactionStatus;
-	}
-	public void setTransactionStatus(TransactionStatus transactionStatus) {
-		this.transactionStatus = transactionStatus;
-	}
+	
 	public Date getCreatedOn() {
 		return createdOn;
 	}

@@ -23,8 +23,25 @@ public class Wallet {
 	private Integer walletId;
 
 	@Enumerated(EnumType.STRING)
-	private WalletType walletType;
+	private WalletType coinType;
+	private String coinName;
 	long balance;
+	public WalletType getCoinType() {
+		return coinType;
+	}
+
+	public void setCoinType(WalletType coinType) {
+		this.coinType = coinType;
+	}
+
+	public String getCoinName() {
+		return coinName;
+	}
+
+	public void setCoinName(String coinName) {
+		this.coinName = coinName;
+	}
+
 	long shadowBalance;
 
 	@ManyToOne(cascade = CascadeType.ALL)
@@ -60,10 +77,10 @@ public class Wallet {
 		super();
 	}
 
-	public Wallet(Integer walletId, WalletType walletType) {
+	public Wallet(Integer walletId, WalletType coinType) {
 		super();
 		this.walletId = walletId;
-		this.walletType = walletType;
+		this.coinType = coinType;
 	}
 
 	public Integer getWalletId() {
@@ -74,11 +91,5 @@ public class Wallet {
 		this.walletId = walletId;
 	}
 
-	public WalletType getWalletType() {
-		return walletType;
-	}
 
-	public void setWalletType(WalletType walletType) {
-		this.walletType = walletType;
-	}
 }

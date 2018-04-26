@@ -31,7 +31,7 @@ public class SignUpController {
 		String username=user.getuserName();
 		int length=password.length();
 	    int unamelength=username.length();
-		if((length!=0)&&(unamelength!=0))
+		if((length!=0)&&(unamelength!=0)&&(unamelength>=5&&unamelength<=25))
 		{
 		String newUser = signUpService.addUser(user);
 		if (newUser != null) {

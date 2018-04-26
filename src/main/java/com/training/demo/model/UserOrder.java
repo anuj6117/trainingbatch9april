@@ -29,12 +29,44 @@ public class UserOrder {
 	@Enumerated(EnumType.STRING)
 	private OrderType orderType;
 	@Enumerated(EnumType.STRING)
-	private WalletType coinName;
+	private WalletType coinType;
+	private String coinName;
 	private Long coinQuantity;
 	private Long price;
 	private Date orderCreatedOn;
+	private Long netAmmount;
+	private Long grossAmmount;
 	@Enumerated(EnumType.STRING)
 	private UserOrderStatus status;
+	
+	public WalletType getCoinType() {
+		return coinType;
+	}
+
+	public void setCoinType(WalletType coinType) {
+		this.coinType = coinType;
+	}
+
+	public Long getNetAmmount() {
+		return netAmmount;
+	}
+
+	public void setNetAmmount(Long netAmmount) {
+		this.netAmmount = netAmmount;
+	}
+
+	public Long getGrossAmmount() {
+		return grossAmmount;
+	}
+
+	public void setGrossAmmount(Long grossAmmount) {
+		this.grossAmmount = grossAmmount;
+	}
+
+	public void setCoinName(String coinName) {
+		this.coinName = coinName;
+	}
+
 	private Long fee;
 	 @ManyToOne
 	 @JoinColumn(name = "userId")
@@ -65,14 +97,7 @@ public class UserOrder {
 		this.userOrderId = userOrderId;
 	}
 
-	public WalletType getCoinName() {
-		return coinName;
-	}
-
-	public void setCoinName(WalletType coinName) {
-		this.coinName = coinName;
-	}
-
+	
 	public Long getCoinQuantity() {
 		return coinQuantity;
 	}

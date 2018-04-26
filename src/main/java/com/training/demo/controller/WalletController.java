@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.training.demo.dto.UserDepositDto;
 import com.training.demo.dto.UserWalletDto;
+import com.training.demo.dto.WalletApprovalDto;
 import com.training.demo.model.Wallet;
 import com.training.demo.repository.WalletRepository;
 import com.training.demo.service.WalletService;
@@ -45,4 +46,11 @@ public class WalletController {
 	public String withDraw(@RequestBody UserDepositDto userdepositdto) {
 		return walletService.withDrawAmount(userdepositdto);
 	}
+	@RequestMapping(value="walletapprove",method=RequestMethod.POST)
+	public String approve(@RequestBody WalletApprovalDto walletapprovaldto) throws Exception{
+	return walletService.deposit(walletapprovaldto);
+	
 }
+}
+
+
