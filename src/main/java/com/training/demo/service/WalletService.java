@@ -19,6 +19,7 @@ import com.training.demo.model.User;
 import com.training.demo.model.UserOrder;
 import com.training.demo.model.Wallet;
 import com.training.demo.repository.OrderRepository;
+import com.training.demo.repository.TransectionRepository;
 import com.training.demo.repository.UserOrderRepository;
 import com.training.demo.repository.UserRepository;
 import com.training.demo.repository.WalletRepository;
@@ -30,21 +31,23 @@ public class WalletService {
 	private WalletRepository walletRepository;
 
 	@Autowired
-	private WalletService walletService;
-	@Autowired
 	private UserRepository userrepository;
 	@Autowired
 	private OrderRepository orderrepository;
 	@Autowired
+	private TransectionRepository transectionrepo;
+	
+	@Autowired
 	private UserOrderRepository userorderrepository;
-	 Wallet wallet = new Wallet();
+	
+	private Wallet wallet;
 
 	public String addWallet(UserWalletDto userWalletdto) {
 		System.out.println(userWalletdto.getUserId());
 		User user = userrepository.findByUserId(userWalletdto.getUserId());
 		if (user != null) {
 			Wallet wallet = new Wallet();
-			wallet.setCoinType(userWalletdto.getWalletType());
+			wallet.setCoinType(userWalletdto.getCoinType());
 			wallet.setUser(user);
 			walletRepository.save(wallet);
 			return "wallet add sucees";
@@ -55,15 +58,32 @@ public class WalletService {
 
 	}
 
+	
+	public String withDrawAmount(UserDepositDto userdepositdto) {
+		Wallet wallet = new Wallet();
+		User user = userrepository.findByUserId(userdepositdto.getUserId());
+		wallet = walletRepository.findByCoinType(userdepositdto.getWalletType());
+		if ((wallet != null) && (userdepositdto.getAmount() < wallet.getBalance())) {
+			long moneyBalance = wallet.getBalance() - userdepositdto.getAmount();
+			wallet.setBalance(moneyBalance);
+			wallet.setShadowBalance(moneyBalance);
+			walletRepository.save(wallet);
+			return "sucess";
+		} else {
+			return "failue";
+		}
+
+	}
+
 	public String depositAmount(UserWalletDto userwalletdto) {
 		// Wallet wallet = new Wallet();
 		// UserOrder userorder=new UserOrder();
 		User user = userrepository.findByUserId(userwalletdto.getUserId());
-		// wallet = walletRepository.findByWalletType(userdepositdto.getWalletType());
+		wallet = walletRepository.findByCoinType(userwalletdto.getCoinType());
 		UserOrder userorder = new UserOrder();
 		userorder.setOrderType(OrderType.DEPOSIT);
 		userorder.setCoinName(userwalletdto.getCoinName());
-		userorder.setCoinType(userwalletdto.getWalletType());
+		userorder.setCoinType(userwalletdto.getCoinType());
 		userorder.setPrice(userwalletdto.getAmount());
 		userorder.setGrossAmmount(userwalletdto.getAmount());
 		userorder.setNetAmmount(userwalletdto.getAmount());
@@ -89,22 +109,7 @@ public class WalletService {
 	// return "failue";
 	// }
 
-	public String withDrawAmount(UserDepositDto userdepositdto) {
-		Wallet wallet = new Wallet();
-		User user = userrepository.findByUserId(userdepositdto.getUserId());
-		wallet = walletRepository.findByCoinType(userdepositdto.getWalletType());
-		if ((wallet != null) && (userdepositdto.getAmount() < wallet.getBalance())) {
-			long moneyBalance = wallet.getBalance() - userdepositdto.getAmount();
-			wallet.setBalance(moneyBalance);
-			wallet.setShadowBalance(moneyBalance);
-			walletRepository.save(wallet);
-			return "sucess";
-		} else {
-			return "failue";
-		}
-
-	}
-
+	
 	public String deposit(WalletApprovalDto walletapprovaldto) {
 		UserOrder userorder = userorderrepository.findByUserOrderId(walletapprovaldto.getOrderId());
 		User user = userrepository.findByUserId(walletapprovaldto.getUserId());
@@ -123,20 +128,64 @@ public class WalletService {
 			transection.setCreatedOn(new Date());
 			transection.setTransactionStatus(walletapprovaldto.getOrderstatus());
 			transection.setMessage(message);
+			transectionrepo.save(transection);
 
 			long longBalance = wallet.getBalance();
 					
 			longBalance = longBalance + userorder.getNetAmmount();
 			Set<Wallet> walletSet = new HashSet<Wallet>();
 			wallet.setBalance(longBalance);
+			//wallet.setUser(user);
+			//wallet.setCoinType(userorder.getCoinType());
+			//wallet.setCoinName(userorder.getCoinName());
 			wallet.setShadowBalance(longBalance);
 			walletSet.add(wallet);
 			walletRepository.save(wallet);
 			user.setWallet(walletSet);
-			userrepository.save(user);
+			//userrepository.save(user);
+		}
+		else if(userorder.getStatus()==UserOrderStatus.FAILED)
+		{
+			  String message = "deposit failed";
+				Transection transection = new Transection();
+				transection.setNetAmount(userorder.getNetAmmount());
+				transection.setWalletType(userorder.getCoinType());
+				transection.setGrossAmount(userorder.getGrossAmmount());
+				transection.setCreatedOn(new Date());
+				transection.setTransactionStatus(walletapprovaldto.getOrderstatus());
+				transection.setMessage(message);
+				transectionrepo.save(transection);
+
+			
+		}
+		else if(userorder.getStatus()==UserOrderStatus.REJECTED)
+		{
+			  String message = "deposit rejected";
+				Transection transection = new Transection();
+				transection.setNetAmount(userorder.getNetAmmount());
+				transection.setWalletType(userorder.getCoinType());
+				transection.setGrossAmount(userorder.getGrossAmmount());
+				transection.setCreatedOn(new Date());
+				transection.setTransactionStatus(walletapprovaldto.getOrderstatus());
+				transection.setMessage(message);
+				transectionrepo.save(transection);
+
+			
+		}
+		else
+		{
+			return "user is inactive";
 		}
 
-		return "null";
+		return "sucess";
 	}
 
 }
+  
+
+
+
+
+
+
+

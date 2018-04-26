@@ -7,10 +7,19 @@ public class UserWalletDto {
 	
 	private Integer userId;
 	//@Enumerated(EnumType.STRING)
-	private WalletType walletType;
+	private WalletType coinType;
 	private long amount;
 	private String coinName;
 
+	public WalletType getCoinType() {
+		return coinType;
+	}
+
+	public void setCoinType(WalletType coinType) {
+		this.coinType = coinType;
+	}
+
+	
 	
 	public String getCoinName() {
 		return coinName;
@@ -20,13 +29,7 @@ public class UserWalletDto {
 		this.coinName = coinName;
 	}
 
-	public WalletType getWalletType() {
-		return walletType;
-	}
-
-	public void setWalletType(WalletType walletType) {
-		this.walletType = walletType;
-	}
+	
 
 	public Integer getUserId() {
 		return userId;

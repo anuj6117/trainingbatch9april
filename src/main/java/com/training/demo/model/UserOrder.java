@@ -62,10 +62,16 @@ public class UserOrder {
 	public void setGrossAmmount(Long grossAmmount) {
 		this.grossAmmount = grossAmmount;
 	}
+	
+
+	public String getCoinName() {
+		return coinName;
+	}
 
 	public void setCoinName(String coinName) {
 		this.coinName = coinName;
 	}
+
 
 	private Long fee;
 	 @ManyToOne

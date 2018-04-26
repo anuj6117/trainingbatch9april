@@ -26,6 +26,16 @@ public class Wallet {
 	private WalletType coinType;
 	private String coinName;
 	long balance;
+	
+
+	long shadowBalance;
+
+	@ManyToOne(cascade = CascadeType.ALL)
+	@JoinColumn(name = "userId", referencedColumnName = "userId")
+	@JsonIgnore
+	private User user;
+
+	
 	public WalletType getCoinType() {
 		return coinType;
 	}
@@ -41,14 +51,6 @@ public class Wallet {
 	public void setCoinName(String coinName) {
 		this.coinName = coinName;
 	}
-
-	long shadowBalance;
-
-	@ManyToOne(cascade = CascadeType.ALL)
-	@JoinColumn(name = "userId", referencedColumnName = "userId")
-	@JsonIgnore
-	private User user;
-
 	public long getBalance() {
 		return balance;
 	}
