@@ -32,6 +32,7 @@ public class User {
 @NotNull
 private Integer userId;
 
+@NotEmpty(message="Not null")
 @NotNull(message="UserName can't be Null")
 @Size(max=25,message="Maximum allowed Characters for this field is 25")
 private String userName;

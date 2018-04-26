@@ -1,5 +1,6 @@
 package com.traningproject1.Controller;
 
+import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 
@@ -10,16 +11,30 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.traningproject1.domain.Role;
+import com.traningproject1.repository.RoleRepository;
 import com.traningproject1.service.RoleService;
 
 @RestController
 public class RoleController {
 	@Autowired
 private RoleService roleService;
+	@Autowired
+	private RoleRepository roleRepository;
 	@RequestMapping(value="/createrole",method=RequestMethod.POST)
-	public void addRole(@RequestBody Role role)
+	public String addRole(@RequestBody Role role)
 	{
+		List<Role>getassignrole=roleRepository.findAll();
+		Iterator<Role>itr=getassignrole.iterator();
+		   while(itr.hasNext())
+		   {
+			Role r=itr.next();
+			if(role.getRoleType().equalsIgnoreCase(r.getRoleType()))
+			{
+				return "Role Already Exist";
+			}
+		   }
 		roleService.addRole(role);
+		return "Creating a new role is Successfully";
 	}
 	@RequestMapping(value="/getallrole",method=RequestMethod.GET)
 	public List<Role> getAllRole()

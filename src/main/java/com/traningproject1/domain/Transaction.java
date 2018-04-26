@@ -12,6 +12,7 @@ import javax.persistence.Table;
 
 import com.traningproject1.enumsclass.CoinType;
 import com.traningproject1.enumsclass.TransactionStatus;
+import com.traningproject1.enumsclass.UserOrderType;
 @Entity
 @Table(name="Transaction")
 public class Transaction {
@@ -24,6 +25,9 @@ private long exchangeRate;
 private long grossAmount;
 private Integer buyerId;
 private Integer sellerId;
+private String message;
+@Enumerated(value=EnumType.STRING)
+private UserOrderType userOrderType;
 
 @Enumerated(EnumType.STRING)
 private TransactionStatus status;
@@ -93,6 +97,14 @@ public Integer getBuyerId() {
 	return buyerId;
 }
 
+public UserOrderType getUserOrderType() {
+	return userOrderType;
+}
+
+public void setUserOrderType(UserOrderType userOrderType) {
+	this.userOrderType = userOrderType;
+}
+
 public void setBuyerId(Integer buyerId) {
 	this.buyerId = buyerId;
 }
@@ -110,5 +122,12 @@ public Integer getNetAmount() {
 
 public void setNetAmount(Integer netAmount) {
 	this.netAmount = netAmount;
+}
+public String getMessage() {
+	return message;
+}
+
+public void setMessage(String message) {
+	this.message = message;
 }
 }

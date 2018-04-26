@@ -27,11 +27,29 @@ public class ControllerClass {
 	
 @RequestMapping(value="/signup",method=RequestMethod.POST)
 public String addUser(@RequestBody User user)
-{
-	User userCreated=serviceClass.addUser(user);
-	if(userCreated!=null)
-	return"success";
-	else
+{      //String passLength=user.getPassword();
+       if(user.getUserName().equalsIgnoreCase(" "))
+       {
+    	   return "Name cannot Be Null";
+       }
+       if(user.getUserName().length()>25)
+       {
+    	   return "Name cannot be greater than 25";
+       }
+       if(user.getPassword().length()<8||user.getPassword().length()>32)
+       {
+    	   return "Password Cannot be less Than 8 or Greater than 32";
+       }
+//       for(int i=0;i<passLength.length();i++)
+//       {
+//    	   char c=passLength.charAt(i);
+//       }
+       
+	  User userCreated=serviceClass.addUser(user);
+	  if(userCreated!=null)
+		 return"success";
+	
+	 else
 		return "fail";
 }
 
@@ -52,9 +70,10 @@ public Optional<User> getUserById( Integer id)
 
 
 @RequestMapping(value="/deleteuser",method=RequestMethod.GET)
-public void deleteUser(Integer userId)
+public String deleteUser(Integer userId)
 {
   serviceClass.deleteUser(userId);
+  return "Success";
 }
 
 

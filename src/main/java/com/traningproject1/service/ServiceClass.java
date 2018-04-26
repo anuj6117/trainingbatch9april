@@ -48,7 +48,7 @@ Integer otp;
 @Autowired
 SmsService smsService;
 
-UserOTP userOTP;
+//UserOTP userOTP;
 
 @Autowired
 UserOTPRepository userOTPRepository;
@@ -91,7 +91,7 @@ public User addUser(User user)
 		userRepository.save(user);
 		
 		 smsService.sendSms(otp);
-		 
+		UserOTP userOTP=new UserOTP(); 
 		 userOTP.setUserOTPId(user.getUserId());
 		 userOTP.setTokenOtp(otp);
 		 userOTP.setEmailId(user.getEmail());
@@ -185,7 +185,8 @@ public String assignWallet(AssignWalletDTO assignwalletDTO)
 	wallet1.setUser(user);
 	
 	wallet1.setCoinType(assignwalletDTO.getCoinType());
-	
+	wallet1.setCoinName(assignwalletDTO.getCoinName());
+	wallet1.setCoinType(CoinType.CRYPTO);
 	
 	//walletRepository.save(wallet1);
 	  

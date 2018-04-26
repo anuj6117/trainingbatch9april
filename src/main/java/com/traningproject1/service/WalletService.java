@@ -13,7 +13,6 @@ import com.traningproject1.domain.User;
 import com.traningproject1.domain.UserOrder;
 import com.traningproject1.domain.Wallet;
 import com.traningproject1.enumsclass.CoinType;
-import com.traningproject1.enumsclass.TransactionStatus;
 import com.traningproject1.enumsclass.UserOrderStatus;
 import com.traningproject1.repository.TransactionRepository;
 import com.traningproject1.repository.UserOrderRepository;
@@ -43,7 +42,9 @@ public class WalletService {
       
       Transaction transaction=new Transaction();
       transaction.setCoinType(CoinType.FIATE);
-      transaction.setStatus(TransactionStatus.APPROVED);
+      transaction.setStatus(walletapprovaldto.getTransactionStatus());
+      transaction.setMessage(walletapprovaldto.getMessage());
+      transaction.setUserOrderType(userorder.getOrderType());
       transaction.setNetAmount(userorder.getCoinQuantity());
       transaction.setDateCreated(new Date());
       //User user=userRepository.findByuserId(userorder.getUser().getUserId());
