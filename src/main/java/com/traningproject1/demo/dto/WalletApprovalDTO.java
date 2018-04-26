@@ -1,15 +1,12 @@
 package com.traningproject1.demo.dto;
 
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-
 import com.traningproject1.enumsclass.TransactionStatus;
 
 public class WalletApprovalDTO {
  private Integer userorderId;
  private String message;
  
- @Enumerated(value=EnumType.STRING) 
+// @Enumerated(value=EnumType.STRING) 
 private TransactionStatus transactionStatus;
 
  public Integer getUserorderId() {

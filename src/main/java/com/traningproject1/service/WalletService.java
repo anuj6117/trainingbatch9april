@@ -13,6 +13,7 @@ import com.traningproject1.domain.User;
 import com.traningproject1.domain.UserOrder;
 import com.traningproject1.domain.Wallet;
 import com.traningproject1.enumsclass.CoinType;
+import com.traningproject1.enumsclass.TransactionStatus;
 import com.traningproject1.enumsclass.UserOrderStatus;
 import com.traningproject1.repository.TransactionRepository;
 import com.traningproject1.repository.UserOrderRepository;
@@ -36,23 +37,18 @@ public class WalletService {
 	  UserOrder userorder=userOrderRepository.findByuserorderId(walletapprovaldto.getUserorderId());
     // if(UserOrderStatus.PENDING)
 	  User user=userorder.getUser();
-	 if(userorder.getStatus().equals(UserOrderStatus.PENDING))
-	 {
-	  userorder.setStatus(UserOrderStatus.APPROVED);
+	  Transaction transaction=new Transaction();
+	  if(walletapprovaldto.getTransactionStatus().equals(TransactionStatus.APPROVED))
+	  {
+	      userorder.setStatus(UserOrderStatus.APPROVED);
       
-      Transaction transaction=new Transaction();
-      transaction.setCoinType(CoinType.FIATE);
-      transaction.setStatus(walletapprovaldto.getTransactionStatus());
-      transaction.setMessage(walletapprovaldto.getMessage());
-      transaction.setUserOrderType(userorder.getOrderType());
-      transaction.setNetAmount(userorder.getCoinQuantity());
-      transaction.setDateCreated(new Date());
-      //User user=userRepository.findByuserId(userorder.getUser().getUserId());
+           transaction.setCoinType(CoinType.FIATE);
+                 //User user=userRepository.findByuserId(userorder.getUser().getUserId());
       
          Set<Wallet> walletlist=user.getWallet();
          Iterator <Wallet> itr=walletlist.iterator();
-       while(itr.hasNext())
-       {
+         while(itr.hasNext())
+          {
     	   Wallet wallet=itr.next();
     	   if(wallet.getCoinType().equals(CoinType.FIATE))
     	   {
@@ -64,11 +60,21 @@ public class WalletService {
     		   //System.out.println("+++++++++++++++++");
     		   walletRepository.save(wallet); 
     	   }
-//       }
-      
-	 }
+        }
+      }
+	  else
+	  {
+		  userorder.setStatus(UserOrderStatus.FAILED);
+	  }
+	  
+	  transaction.setStatus(walletapprovaldto.getTransactionStatus());
+      transaction.setMessage(walletapprovaldto.getMessage());
+      transaction.setUserOrderType(userorder.getOrderType());
+      transaction.setNetAmount(userorder.getCoinQuantity());
+      transaction.setDateCreated(new Date());
+
        transactionRepository.save(transaction);
-	}
+
 	  userOrderRepository.save(userorder);
 	  userRepository.save(user);
 	  

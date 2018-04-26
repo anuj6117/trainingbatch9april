@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import com.traningproject1.demo.dto.AssignWalletDTO;
 import com.traningproject1.demo.dto.ClassDTO;
 import com.traningproject1.demo.dto.DepositAmountDTO;
+import com.traningproject1.demo.dto.VerifyUserDTO;
 import com.traningproject1.domain.Role;
 import com.traningproject1.domain.User;
 import com.traningproject1.domain.UserOTP;
@@ -48,11 +49,10 @@ Integer otp;
 @Autowired
 SmsService smsService;
 
-//UserOTP userOTP;
+
 
 @Autowired
 UserOTPRepository userOTPRepository;
-
 public User addUser(User user)
 	{
 	
@@ -253,4 +253,20 @@ public String assignWallet(AssignWalletDTO assignwalletDTO)
 	 
 	  return "success";
   }
+  public String verifyOTP(VerifyUserDTO verifyuserdto)
+  {
+	  UserOTP userotp=userOTPRepository.findBytokenOtp(verifyuserdto.getTokenOTP());
+	  String email=userotp.getEmailId();
+	  User user=userRepository.findByemail(verifyuserdto.getEmailId());
+	  if(email.equals(user.getEmail()))
+	  {
+		  user.setStatus(UserStatus.ACTIVE);
+	  }
+	  else
+	  {
+		  return "User Not Verified";
+	  }
+	  userRepository.save(user);
+	  return "User Veified";
+   }
 }

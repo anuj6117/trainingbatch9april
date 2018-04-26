@@ -8,4 +8,8 @@ import com.traningproject1.domain.UserOTP;
 @Repository
 public interface UserOTPRepository extends JpaRepository<UserOTP,Integer> {
 
+
+
+	UserOTP findBytokenOtp(Integer tokenOTP);
+
 }

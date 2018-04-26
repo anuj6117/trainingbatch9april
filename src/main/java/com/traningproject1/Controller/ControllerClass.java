@@ -12,8 +12,10 @@ import org.springframework.web.bind.annotation.RestController;
 import com.traningproject1.demo.dto.AssignWalletDTO;
 import com.traningproject1.demo.dto.ClassDTO;
 import com.traningproject1.demo.dto.DepositAmountDTO;
+import com.traningproject1.demo.dto.VerifyUserDTO;
 import com.traningproject1.domain.User;
 import com.traningproject1.service.ServiceClass;
+import com.traningproject1.service.UserOTPService;
 import com.traningproject1.service.WalletService;
 
 @RestController
@@ -23,7 +25,8 @@ public class ControllerClass {
 	
 	@Autowired
 	WalletService walletService;
-	
+	@Autowired
+	UserOTPService userOTPService;
 	
 @RequestMapping(value="/signup",method=RequestMethod.POST)
 public String addUser(@RequestBody User user)
@@ -105,9 +108,22 @@ public String assignWallet(@RequestBody AssignWalletDTO assignwalletdto)
 }
 @RequestMapping(value="/depositamount",method=RequestMethod.POST)
 public String depositAmount(@RequestBody DepositAmountDTO depositamountdto)
-{ 
+{
+ if(depositamountdto.getAmount()==0)
+ {
+	 return "Please Enter Amount";
+ }
+ if(depositamountdto.getAmount()<0)
+ {
+	 return "Amount can't be Zero or less than zero";
+ }
   serviceClass.depositAmount(depositamountdto);
   return "Success";	
+}
+@RequestMapping(value="/verifyuser",method=RequestMethod.POST)
+public String verifyOTP(@RequestBody VerifyUserDTO verifyuserdto)
+{
+	return serviceClass.verifyOTP(verifyuserdto);
 }
 //@RequestMapping(value="/withdrawamount",method=RequestMethod.POST)
 //public String withdrawAmount(@RequestBody WithdrawAmountDTO withdrawamountdto)
