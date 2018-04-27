@@ -68,7 +68,8 @@ package com.trainingproject.util;
 		helper.setTo(email);//
 		helper.setText("Your OTP is "+otp);
 		helper.setSubject("Mail From Spring Boot");
-		} catch (MessagingException e) {
+		} 
+		catch (MessagingException e) {
 		e.printStackTrace();
 	
 		}

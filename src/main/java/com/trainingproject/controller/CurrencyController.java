@@ -35,14 +35,14 @@ public class CurrencyController {
 	}
 	
 	@RequestMapping(value="/updatecurrency",method=RequestMethod.POST)
-	public Currency updateCurrency(@RequestBody Currency cur) {
-		Currency currn=currencyService.updateCurrency(cur);
-		return currn;
+	public String updateCurrency(@RequestBody Currency cur) {
+		return currencyService.updateCurrency(cur);
+		
 	}
 	
 	@RequestMapping(value="/deletecurrency",method=RequestMethod.GET)
-	public String deleteCurrency(@RequestParam Integer id) {
-		currencyService.deleteCurrency(id);
+	public String deleteCurrency(@RequestParam Integer coinId) {
+		currencyService.deleteCurrency(coinId);
 		return "success";
 	}
 	

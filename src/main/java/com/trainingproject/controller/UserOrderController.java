@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.trainingproject.domain.UserOrder;
 import com.trainingproject.dto.BuySellBean;
+import com.trainingproject.repository.UserOrderRepository;
 import com.trainingproject.service.UserOrderService;
 
 @RestController
@@ -18,6 +19,9 @@ public class UserOrderController {
 
 	@Autowired
 	UserOrderService userorderservice;
+	
+	@Autowired
+	UserOrderRepository userorderRepository;
 	
 	@RequestMapping(value="createbuyorder",method=RequestMethod.POST)
 	public String createBuyOrder(@RequestBody BuySellBean bsb) {
@@ -32,6 +36,11 @@ public class UserOrderController {
 	@RequestMapping(value="/getuserorderbyorderid",method=RequestMethod.GET)
 	public UserOrder getUserOrderById(@RequestParam Integer orderId) {
 		return userorderservice.getUserOrderById(orderId);
+	}
+	
+	@RequestMapping(value="/showallorder",method=RequestMethod.GET)
+	public List<UserOrder> getAllOrders(){
+		return userorderRepository.findAll();
 	}
 //	@RequestMapping(value="getorderbyuserid",method=RequestMethod.GET)
 //	public List<UserOrder> getAllOrderByUserId(@RequestParam Integer userId) {

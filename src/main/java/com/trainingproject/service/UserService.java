@@ -59,11 +59,18 @@ public class UserService {
 		Matcher m = p.matcher(user.getUserName());
 		if(user.getUserName().contains(" "))
 			return "your name canot have spaces";
-		if(user.getPassword().contains(" "))
-			return "your password canot have spaces";
+		
 		
 	     if(m.find())
 	    	 return "your name cannot have a special character";
+	     
+	     p = Pattern.compile("(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\\S+$).{8,}");
+		 m = p.matcher(user.getPassword());
+    
+		 if(!m.find())
+	    	 return "your password should contain special characters and no spaces with one upper case character";
+		 
+         
 		if(user.getUserName().length()==0)
 			return "name cannot be empty";
 		else if(user.getUserName().length()>25)
@@ -83,6 +90,9 @@ public class UserService {
 		
 		if(user.getPassword().length()>32)
 			return "Maximum characters allowed for this field is 32";
+		
+		if(user.getCountry()==null||user.getCountry().length()==0)
+			return "county cannot be null";
 		
 		user.setCreatedOn(new Date());
 		
@@ -123,9 +133,9 @@ public class UserService {
 	
 	}
 	
-	public Optional<User> getUserById(Integer id) {
+	public Optional<User> getUserById(Integer userId) {
 
-		return userRepository.findById(id);
+		return userRepository.findById(userId);
 		
 	}
 
@@ -135,6 +145,9 @@ public class UserService {
 		if(!userRepository.existsById(user.getUserId()))
 			return "this user do not exist";
 		
+		if(user.getStatus()==null)
+			return "user is inactive";
+		
 		if(user.getStatus().equals(UserStatus.INACTIVE))
 			return "user is inactive";
 		
@@ -142,6 +155,14 @@ public class UserService {
 		Matcher m = p.matcher(user.getUserName());
 	     if(m.find())
 	    	 return "your name cannot have a special character";
+	     
+	     m = p.matcher(user.getPassword());
+	     if(!m.find())
+	    	 return "your password should have a special character";
+	     
+	 	if(user.getCountry()==null||user.getCountry().length()==0)
+			return "county cannot be null";
+	 	
 		if(user.getUserName().length()==0)
 			return "name cannot be empty";
 		else if(user.getUserName().length()>25)
@@ -166,15 +187,19 @@ public class UserService {
 		 return "success";
 	}
 
-	public void deleteData(Integer id)
+	public void deleteData(Integer userId)
 	{
-		userRepository.deleteById(id);
+		userRepository.deleteById(userId);
 	}
 
 
 	public String assignRole(AssignRoleBean arb) {
 		
 		User user=getUserById(arb.getUserId()).get();
+		
+		 if(user.getStatus()==null)
+				return "user is inactive";
+		 
 	      if(user.getStatus().equals(UserStatus.INACTIVE))
 		return "user is inactive";
 	      
@@ -197,6 +222,7 @@ public class UserService {
 		
 		if(user.getStatus().equals(UserStatus.INACTIVE))
 			return "user is inactive";
+		
 		
 		Wallet cwallet=new Wallet();
 		cwallet.setCoinType(awb.getWalletType());
@@ -253,6 +279,8 @@ public class UserService {
 		
 		User user =getUserById(wdb.getUserId()).get();
 		
+		
+		
 		if(user.getStatus().equals(UserStatus.INACTIVE))
 			return "user is inactive";
 		
@@ -276,46 +304,82 @@ public class UserService {
 
 
 
-	public String createBuyOrder(BuySellBean bsb) {
-		User user =getUserById(bsb.getUserId()).get();
-		
-		if(user.getStatus().equals(UserStatus.INACTIVE))
-			return "user is inactive";
-		
-		UserOrder userorder=new UserOrder();
-		userorder.setCoinName(bsb.getCoinName());
-		userorder.setCoinQuantity(bsb.getCoinQuantity());
-		userorder.setDate(new Date());
-		userorder.setOrderType(OrderType.BUY);
-		userorder.setUser(user);
-		userorder.setPrice(bsb.getPrice());
-		userorder.setUserId(user.getUserId());
-		userorderRepository.save(userorder);
-		
-		return "success";
-	}
-
-
-
-	public String createSellOrder(BuySellBean bsb) {
+//	public String createBuyOrder(BuySellBean bsb) {
+//		User user =getUserById(bsb.getUserId()).get();
+//		
+//		if(user==null)
+//			return "user is null";
+//		
+//		if(user.getStatus()==null)
+//			return "user is inactive";
+//		if(user.getStatus().equals(UserStatus.INACTIVE))
+//			return "user is inactive";
+//		if(bsb.getUserId()==null)
+//      return "userId cannot be null";
+//		
+//		if(bsb.getCoinName()==null||bsb.getCoinName().length()==0)
+//		      return "coin name cannot be null";
+//		
+//		if(bsb.getCoinQuantity()==null||bsb.getCoinQuantity()==0)
+//		      return "coin quantity cannot be null";
+//		
+//		if(bsb.getPrice()==null||bsb.getPrice()==0)
+//		      return "price cannot be null";
+//		
+//		UserOrder userorder=new UserOrder();
+//		userorder.setCoinName(bsb.getCoinName());
+//		userorder.setCoinQuantity(bsb.getCoinQuantity());
+//		userorder.setDate(new Date());
+//		userorder.setOrderType(OrderType.BUY);
+//		userorder.setUser(user);
+//		userorder.setPrice(bsb.getPrice());
+//		userorder.setUserId(user.getUserId());
+//		userorderRepository.save(userorder);
+//		
+//		return "your order has been placed successfully! wait for approval";
+//	}
+//
+//
+//
+//	public String createSellOrder(BuySellBean bsb) {
+//
+//	
+//     User user =getUserById(bsb.getUserId()).get();
+// 	
+//     if(user==null)
+//			return "user is null";
+//     
+//     if(user.getStatus()==null)
+//			return "user is inactive";
+//		if(user.getStatus().equals(UserStatus.INACTIVE))
+//			return "user is inactive";
+//		if(bsb.getUserId()==null)
+//         return "userId cannot be null";
+//		
+//		if(bsb.getCoinName()==null||bsb.getCoinName().length()==0)
+//		      return "coin name cannot be null";
+//		
+//		if(bsb.getCoinQuantity()==null||bsb.getCoinQuantity()==0)
+//		      return "coin quantity cannot be null";
+//		
+//		if(bsb.getPrice()==null||bsb.getPrice()==0)
+//		      return "price cannot be null";
+//		
+//     
+//		UserOrder userorder=new UserOrder();
+//		userorder.setCoinName(bsb.getCoinName());
+//		userorder.setCoinQuantity(bsb.getCoinQuantity());
+//		userorder.setDate(new Date());
+//		userorder.setOrderType(OrderType.SELL);
+//		userorder.setUser(user);
+//		userorder.setPrice(bsb.getPrice());
+//		userorder.setUserId(user.getUserId());
+//		userorderRepository.save(userorder);
+//		
+//		return "your order has been placed successfully! wait for approval";
+//	}
+//	
 	
-     User user =getUserById(bsb.getUserId()).get();
-		
-     if(user.getStatus().equals(UserStatus.INACTIVE))
- 		return "user is inactive";
-     
-		UserOrder userorder=new UserOrder();
-		userorder.setCoinName(bsb.getCoinName());
-		userorder.setCoinQuantity(bsb.getCoinQuantity());
-		userorder.setDate(new Date());
-		userorder.setOrderType(OrderType.SELL);
-		userorder.setUser(user);
-		userorder.setPrice(bsb.getPrice());
-		userorder.setUserId(user.getUserId());
-		userorderRepository.save(userorder);
-		
-		return "success";
-	}
 	
 	public List<UserOrder> getAllOrdersByUserId(Integer userId) {
 		

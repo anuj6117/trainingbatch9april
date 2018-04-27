@@ -49,8 +49,8 @@ public class UserController{
 	}
 	
 	@RequestMapping(value="getbyuserid",method=RequestMethod.GET)
-	public Optional<User> getById(@RequestParam Integer id){
-		return userservice.getUserById(id);
+	public Optional<User> getById(@RequestParam Integer userId){
+		return userservice.getUserById(userId);
 	}
 	
 	
@@ -67,9 +67,9 @@ public class UserController{
 	}
 	
 	@RequestMapping(value="deleteuser",method=RequestMethod.GET)
-	public String deleteData(Integer id)
+	public String deleteData(Integer userId)
 	{
-		userservice.deleteData(id);
+		userservice.deleteData(userId);
 		return "success";
 	}
 	

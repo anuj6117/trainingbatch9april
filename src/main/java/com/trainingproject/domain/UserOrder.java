@@ -27,6 +27,7 @@ public class UserOrder {
  private String coinName;
  @Enumerated(EnumType.STRING)
  private UserOrderStatus orderStatus;
+ @Enumerated(EnumType.STRING)
   private CoinType coinType;
  private long price;
 

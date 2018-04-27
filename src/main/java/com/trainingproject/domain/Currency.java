@@ -21,6 +21,12 @@ public class Currency {
 	private Integer profit; 
 	private Integer coinInINR; 
 	
+	public Currency () {
+		coinInINR=0;
+		profit=0;
+		fees=0;
+	}
+	
 	public Integer getCoinId() {
 		return coinId;
 	}
