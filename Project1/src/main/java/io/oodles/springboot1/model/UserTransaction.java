@@ -3,11 +3,13 @@ package io.oodles.springboot1.model;
 import java.util.Date;
 
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
-import io.oodles.springboot1.enums.TransactionStatus;
+import io.oodles.springboot1.enums.OrderStatus;
 import io.oodles.springboot1.enums.WalletType;
 
 @Entity
@@ -19,15 +21,24 @@ public class UserTransaction {
 	Integer fee;
 	Integer exchangeRate;
 	Integer grossAmount;
-	String buyer;
-	String seller;
-	TransactionStatus transactionstatus;
+	Integer buyer_id;
+	Integer seller_id;
+	@Enumerated(EnumType.STRING)
+	OrderStatus transactionstatus;
 	Date dateCreated;
+	String description;
 	public Integer getId() {
 		return id;
 	}
 	public void setId(Integer id) {
 		this.id = id;
+	}
+	
+	public String getDescription() {
+		return description;
+	}
+	public void setDescription(String description) {
+		this.description = description;
 	}
 	public Integer getNetBalance() {
 		return netBalance;
@@ -37,6 +48,13 @@ public class UserTransaction {
 	}
 	public WalletType getWalletType() {
 		return walletType;
+	}
+	
+	public OrderStatus getTransactionstatus() {
+		return transactionstatus;
+	}
+	public void setTransactionstatus(OrderStatus transactionstatus) {
+		this.transactionstatus = transactionstatus;
 	}
 	public void setWalletType(WalletType walletType) {
 		this.walletType = walletType;
@@ -59,23 +77,20 @@ public class UserTransaction {
 	public void setGrossAmount(Integer grossAmount) {
 		this.grossAmount = grossAmount;
 	}
-	public String getBuyer() {
-		return buyer;
+	
+	
+	
+	public Integer getBuyer_id() {
+		return buyer_id;
 	}
-	public void setBuyer(String buyer) {
-		this.buyer = buyer;
+	public void setBuyer_id(Integer buyer_id) {
+		this.buyer_id = buyer_id;
 	}
-	public String getSeller() {
-		return seller;
+	public Integer getSeller_id() {
+		return seller_id;
 	}
-	public void setSeller(String seller) {
-		this.seller = seller;
-	}
-	public TransactionStatus getTransactionstatus() {
-		return transactionstatus;
-	}
-	public void setTransactionstatus(TransactionStatus transactionstatus) {
-		this.transactionstatus = transactionstatus;
+	public void setSeller_id(Integer seller_id) {
+		this.seller_id = seller_id;
 	}
 	public Date getDateCreated() {
 		return dateCreated;

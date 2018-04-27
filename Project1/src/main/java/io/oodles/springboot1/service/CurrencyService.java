@@ -40,7 +40,7 @@ public class CurrencyService {
 	}
 	
 
-	public void delete(int id) {
+	public void delete(int id) {coinname
 		// TODO Auto-generated method stub
 		 roleRepository.deleteById(id);;
 	}
@@ -67,8 +67,8 @@ public class CurrencyService {
 
 	public Currency update(Currency currency) {
 		// TODO Auto-generated method stub
+		return currencyRepository.save(currency);
 		
-		return currencyRepository.save(currency) ;
 	}
 
 	public void delete(int id) {

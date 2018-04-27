@@ -53,7 +53,7 @@ public class Signupservice {
 	Wallet wallet=new Wallet();
 	StoreOTP storeOTP;
 
-	public void addUser(Users users) {
+	public String addUser(Users users) {
 
 		Random rnd = new Random();
 		Date date = new Date();
@@ -89,7 +89,9 @@ public class Signupservice {
 			mail.sendMail(otp1,email);
 			otpgenerate.sendSMS(otp1);
 			
-			
+			return "Your account has been successfully \n" + 
+					"created. Please, verify it by using \n" + 
+					"OTP.";
 		
 
 	}
@@ -100,10 +102,10 @@ public class Signupservice {
 	}
 
 	public String auth(StoreOTP storeotp1) {
-		storeOTP=storeOTPRepository.findByUserotp(storeotp1.getUserotp());
-		users=usersRepository.findByEmailid(storeotp1.getEmailid());
+		storeOTP=storeOTPRepository.findByTokenOTP(storeotp1.getTokenOTP());
+		users=usersRepository.findByEmail(storeotp1.getEmail());
 		if(storeOTP!=null) {
-			if(storeOTP.getEmailid().equals(storeotp1.getEmailid())){
+			if(storeOTP.getEmail().equals(storeotp1.getEmail())){
 				
 				storeOTPRepository.delete(storeOTP);
 				users.setStatus(Status.ACTIVE);
@@ -128,7 +130,7 @@ public class Signupservice {
 		return usersRepository.findById(id);
 	}
 
-	public Users update(Users users, int id) {
+	public Users update(Users users) {
 		// TODO Auto-generated method stub
 		return usersRepository.save(users);
 	}

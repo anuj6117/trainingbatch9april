@@ -2,9 +2,9 @@ package io.oodles.springboot1.enums;
 
 public enum OrderStatus {
 	PENDING("pending"),
-	COMPLETE("complete"),
-	MODERATE("moderate");
-	
+	FAILED("failed"),
+	REJECTED("rejected"),
+	APPROVE("approve");
 	String value;
 
 	private OrderStatus(String value) {

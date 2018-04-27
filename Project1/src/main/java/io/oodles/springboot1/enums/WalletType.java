@@ -4,8 +4,7 @@ public enum WalletType {
 	
 	
 	FIATE("fiate"),
-	BITCOIN("bitcoin"),
-	ETHEREUM("ethereum");
+	CRYPTO("crypto");
 	
 	public String value;
 	

@@ -18,29 +18,43 @@ import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
+
+import org.hibernate.validator.constraints.NotBlank;
+import org.hibernate.validator.constraints.NotEmpty;
+import org.springframework.lang.NonNull;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import io.oodles.springboot1.enums.Status;
 
 @Entity
 @Table(name = "user", 
 uniqueConstraints = @UniqueConstraint(name = "email_user_uc"
-                                      ,columnNames = {"emailid","phoneNumber"}))
+                                      ,columnNames = {"email","phoneNumber"}))
 public class Users {
 	
 	@Id @GeneratedValue(strategy=GenerationType.AUTO)
 	public Integer userid;
+	@NotNull(message="UserName can't be null")
+	@NotEmpty
+	@Size(max=25,message="Maximun characters allowed for this field is 25")
 	public String userName;
-	
+	@NotEmpty
+	@NotNull
+	@Email(message="Please, enter a valid email address")
 	public String email;
-	
+	@Size(min=10,max=10)
 	@Pattern(regexp="(^$|[0-9]{10})")
 	public String phoneNumber;
 	public String getUserName() {
 		return userName;
 	}
 	public void setUserName(String userName) {
-		this.userName = userName;
+		this.userName = userName.replaceAll("\\s","");
 	}
 	public String getEmail() {
 		return email;
@@ -54,7 +68,18 @@ public class Users {
 	public void setPhoneNumber(String phoneNumber) {
 		this.phoneNumber = phoneNumber;
 	}
+	@NotEmpty
+	@NotNull
+	@NotBlank
 	public String country;
+	@Size(min=8,max=32)
+	@Pattern(regexp="^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\\S+$).{8,}$",message="\"Please, enter password \n" + 
+			"with minimum 8 characters.\n" + 
+			"You password should \n" + 
+			"have atleast 1 Upper \n" + 
+			"Case, 1 Lower Case, 1 \n" + 
+			"Digit & 1 Special \n" + 
+			"Character.\"")
 	public String password;
 	Date date;
 	@Enumerated(EnumType.STRING)
@@ -68,6 +93,7 @@ public class Users {
 	@OneToMany(mappedBy="users")
 	private Set<Wallet> wallet;
 	
+	@JsonIgnore
 	@OneToMany(mappedBy="usersorder")
 	private Set<UserOrder> userOrder;
 	

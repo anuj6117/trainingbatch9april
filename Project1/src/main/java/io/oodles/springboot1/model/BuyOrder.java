@@ -1,10 +1,24 @@
 package io.oodles.springboot1.model;
 
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+
+import io.oodles.springboot1.enums.WalletType;
+
 public class BuyOrder {
 	private Integer userid;
 	private Integer coinQuantity;
 	private Integer price;
-	private String coinName;
+	private String coinname;
+	@Enumerated(EnumType.STRING)
+	private WalletType coinType;
+	
+	public WalletType getCoinType() {
+		return coinType;
+	}
+	public void setCoinType(WalletType coinType) {
+		this.coinType = coinType;
+	}
 	public Integer getUserid() {
 		return userid;
 	}
@@ -23,12 +37,13 @@ public class BuyOrder {
 	public void setPrice(Integer price) {
 		this.price = price;
 	}
-	public String getCoinName() {
-		return coinName;
+	public String getCoinname() {
+		return coinname;
 	}
-	public void setCoinName(String coinName) {
-		this.coinName = coinName;
+	public void setCoinname(String coinname) {
+		this.coinname = coinname;
 	}
+	
 	
 
 }

@@ -2,7 +2,8 @@ package io.oodles.springboot1.enums;
 
 public enum OrderType {
 	BUY("buy"),
-	SELL("sell");
+	SELL("sell"),
+	DEPOSIT("deposit");
 	
 	String value;
 	OrderType(String value){}

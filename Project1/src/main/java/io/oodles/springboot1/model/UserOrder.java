@@ -3,6 +3,8 @@ package io.oodles.springboot1.model;
 import java.util.Date;
 
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -13,23 +15,61 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import io.oodles.springboot1.enums.OrderStatus;
 import io.oodles.springboot1.enums.OrderType;
+import io.oodles.springboot1.enums.WalletType;
 
 @Entity
 public class UserOrder {
 	@Id @GeneratedValue(strategy=GenerationType.AUTO) 
-	Integer id;
+   	Integer id;
+	@Enumerated(EnumType.STRING)
 	OrderType ordertype;
-	String coinName;
-	Integer coinQuantity;
-	Integer price;
+	@Enumerated(EnumType.STRING)
+	WalletType coinType;
+	String coinname;
+	Integer coinQuantity=0;
+	Integer price=0;
 	Date orderCreatedOn;
+	@Enumerated(EnumType.STRING)
 	OrderStatus orderStatus;
 	Integer fee;
 	@ManyToOne
 	@JoinColumn(name="user_id")
 	@JsonIgnore
 	Users usersorder;
+	Integer netAmount;
+	Integer grossAmount;
 	
+	
+	
+
+	
+
+	
+
+	public WalletType getCoinType() {
+		return coinType;
+	}
+
+	public void setCoinType(WalletType coinType) {
+		this.coinType = coinType;
+	}
+
+	public Integer getNetAmount() {
+		return netAmount;
+	}
+
+	public void setNetAmount(Integer netAmount) {
+		this.netAmount = netAmount;
+	}
+
+	public Integer getGrossAmount() {
+		return grossAmount;
+	}
+
+	public void setGrossAmount(Integer grossAmount) {
+		this.grossAmount = grossAmount;
+	}
+
 	public UserOrder() {
 		// TODO Auto-generated constructor stub
 	}
@@ -50,12 +90,16 @@ public class UserOrder {
 		this.ordertype = ordertype;
 	}
 
-	public String getCoinName() {
-		return coinName;
+	
+
+	
+
+	public String getCoinname() {
+		return coinname;
 	}
 
-	public void setCoinName(String coinName) {
-		this.coinName = coinName;
+	public void setCoinname(String coinname) {
+		this.coinname = coinname;
 	}
 
 	public Integer getCoinQuantity() {
@@ -105,6 +149,7 @@ public class UserOrder {
 	public void setUsersorder(Users usersorder) {
 		this.usersorder = usersorder;
 	}
+
 	
 	
 	

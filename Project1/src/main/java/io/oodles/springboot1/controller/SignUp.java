@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.oodles.springboot1.model.AssignRole;
@@ -22,11 +23,11 @@ public class SignUp {
 	
 
 	@PostMapping("/signup")
-	public void insertUser(@RequestBody Users users) {
-		signupservice.addUser(users);
+	public String insertUser(@RequestBody Users users) {
+		return signupservice.addUser(users);
 	}
 	
-	@PostMapping("/verify")
+	@PostMapping("/verifyuser")
 	public String verify(@RequestBody StoreOTP otp) {
 		return signupservice.auth(otp);
 		
@@ -38,14 +39,14 @@ public class SignUp {
 		return signupservice.getallusers();
 	}
 	
-	@GetMapping("/getbyuserid/{id}")
-	public Optional<Users> getbyid(@PathVariable int id){
+	@GetMapping("/getbyuserid")
+	public Optional<Users> getbyid(@RequestParam int id){
 		return signupservice.searchbyid(id);
 	}
 	
-	@PostMapping("/updateuser/{id}")
-	public Users updateuser(@RequestBody Users users,@PathVariable int id) {
-		return signupservice.update(users,id);
+	@PostMapping("/updateuser")
+	public Users updateuser(@RequestBody Users users) {
+		return signupservice.update(users);
 	}
 	
 	@GetMapping("/deleteuser/{id}")

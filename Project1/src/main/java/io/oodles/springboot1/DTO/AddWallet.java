@@ -1,10 +1,14 @@
-package io.oodles.springboot1.model;
+package io.oodles.springboot1.DTO;
+
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 
 import io.oodles.springboot1.enums.WalletType;
 
 public class AddWallet {
 	
 	Integer userid;
+	@Enumerated(EnumType.STRING)
 	WalletType walletType;
 	
 	

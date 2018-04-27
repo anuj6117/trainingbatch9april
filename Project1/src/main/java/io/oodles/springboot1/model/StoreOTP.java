@@ -16,8 +16,8 @@ public class StoreOTP {
     @Id
     @GeneratedValue(strategy=GenerationType.AUTO)
     private Integer id;
-	private Integer userotp;
-	private String emailid;
+	private Integer tokenOTP;
+	private String email;
 	private Date date;
 	
 	
@@ -42,30 +42,35 @@ public class StoreOTP {
 	}
 
 	
-
-	public Integer getUserotp() {
-		return userotp;
-	}
-
-	public void setUserotp(Integer userotp) {
-		this.userotp = userotp;
-	}
+       
+	
+	
 
 	
 
-	public StoreOTP(Integer userotp, String emailid, Date date) {
+	
+
+	public StoreOTP(Integer tokenOTP, String email, Date date) {
 		super();
-		this.userotp = userotp;
-		this.emailid = emailid;
+		this.tokenOTP = tokenOTP;
+		this.email = email;
 		this.date = date;
 	}
 
-	public String getEmailid() {
-		return emailid;
+	public Integer getTokenOTP() {
+		return tokenOTP;
 	}
 
-	public void setEmailid(String emailid) {
-		this.emailid = emailid;
+	public void setTokenOTP(Integer tokenOTP) {
+		this.tokenOTP = tokenOTP;
+	}
+
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
 	}
 
 	public Date getDate() {

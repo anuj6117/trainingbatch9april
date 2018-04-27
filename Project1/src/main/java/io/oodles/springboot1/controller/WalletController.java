@@ -10,7 +10,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import io.oodles.springboot1.model.AddWallet;
+import io.oodles.springboot1.DTO.AddWallet;
+import io.oodles.springboot1.model.ApprovalDTO;
 import io.oodles.springboot1.model.Deposit;
 import io.oodles.springboot1.model.Users;
 import io.oodles.springboot1.model.Wallet;
@@ -34,12 +35,14 @@ public class WalletController {
 		return walletService.newwallet1(wallet);
 	}*/
 	@PostMapping("/depositamount")
-	public Users depositamount(@RequestBody Deposit deposit) {
+	public String depositamount(@RequestBody Deposit deposit) {
 		return walletService.deposit(deposit);
 	}
 	
-	/*@PostMapping("/withdrawamount")
-	public Users withdrawamount(@RequestBody )*/
+@PostMapping("/approve")
+public String approvedeposit(@RequestBody ApprovalDTO approvalDTO ) {
+	return walletService.approve(approvalDTO);
+}
 	
 	
 	@GetMapping("/getbywalletid/{id}")
