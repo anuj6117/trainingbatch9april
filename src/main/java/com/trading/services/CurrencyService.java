@@ -52,7 +52,7 @@ public class CurrencyService {
 			}
 		} else {
 			result.put("isSuccess", false);
-			result.put("message", "Currency Type already exists");
+			result.put("message", "Coin Name already exists");
 			return result;
 		}
 	}
@@ -74,6 +74,7 @@ public class CurrencyService {
 			result.put("message", "Symbol already exists");
 			return result;
 		}
+		
 		if (currency.getInitialSupply() == 0L) {
 			result.put("isSuccess", false);
 			result.put("message", "Initial supply can not be null");

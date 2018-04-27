@@ -1,12 +1,29 @@
 package com.trading.dto;
 
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+
 import com.trading.Enum.WalletType;
 
 public class UserWalletDto {
 
 	private long userId;
-	private WalletType walletType;
+	
+	@Enumerated(EnumType.STRING)
+	private WalletType coinType;
 	private long amount;
+	
+	private String coinName;
+
+	public String getCoinName() {
+		return coinName;
+	}
+
+	public void setCoinName(String coinName) {
+		this.coinName = coinName;
+	}
+
+	
 
 	public long getuserId() {
 		return userId;
@@ -16,12 +33,12 @@ public class UserWalletDto {
 		this.userId = userId;
 	}
 
-	public WalletType getwalletType() {
-		return walletType;
+	public WalletType getCoinType() {
+		return coinType;
 	}
 
-	public void setwalletType(WalletType walletType) {
-		this.walletType = walletType;
+	public void setCoinType(WalletType coinType) {
+		this.coinType = coinType;
 	}
 
 	public long getamount() {

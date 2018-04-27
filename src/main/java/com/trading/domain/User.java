@@ -57,8 +57,8 @@ public class User {
 	
 	private long phoneNumber;
 
-	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-	private Date date;
+//	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss+05:30", timezone = "India/Delhi")
+	private String date;
 
 	@Enumerated(EnumType.STRING)
 	private UserStatus status;
@@ -121,11 +121,11 @@ public class User {
 		this.status = status;
 	}
 
-	public Date getDate() {
+	public String getDate() {
 		return date;
 	}
 
-	public void setDate(Date date) {
+	public void setDate(String date) {
 		this.date = date;
 	}
 

@@ -21,7 +21,16 @@ public class Wallet {
 	private long walletId;
 
 	@Enumerated(EnumType.STRING)
-	private WalletType walletType;
+	private WalletType coinType;
+
+	private String coinName;
+	public String getCoinName() {
+		return coinName;
+	}
+
+	public void setCoinName(String coinName) {
+		this.coinName = coinName;
+	}
 
 	long balance;
 	long shadowBalance;
@@ -48,12 +57,14 @@ public class Wallet {
 		this.user = user;
 	}
 
-	public WalletType getwalletType() {
-		return walletType;
+	
+
+	public WalletType getCoinType() {
+		return coinType;
 	}
 
-	public void setwalletType(WalletType walletType) {
-		this.walletType = walletType;
+	public void setCoinType(WalletType coinType) {
+		this.coinType = coinType;
 	}
 
 	public long getBalance() {

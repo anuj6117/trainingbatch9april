@@ -34,7 +34,7 @@ public class WalletService {
 		Map<String, Object> result = new HashMap<String, Object>();
 
 		User user = userRepository.findOneByUserId(userwalletdto.getuserId());
-		Wallet walletdb = walletRepository.findByWalletTypeAndUser(userwalletdto.getwalletType(), user);
+		Wallet walletdb = walletRepository.findByCoinNameAndUser(userwalletdto.getCoinName(), user);
 		if(user ==null)
 		{
 			result.put("isSuccess", true);
@@ -43,8 +43,9 @@ public class WalletService {
 		}
 		if (walletdb == null) {
 			Wallet wallet = new Wallet();
-			wallet.setwalletType(userwalletdto.getwalletType());
+			wallet.setCoinType(userwalletdto.getCoinType());
 			wallet.setuser(user);
+			wallet.setCoinName(userwalletdto.getCoinName());
 			walletRepository.save(wallet);
 			result.put("isSuccess", true);
 			result.put("message", "New wallet has been added and assigned");
@@ -53,7 +54,7 @@ public class WalletService {
 
 		else {
 			result.put("isSuccess", false);
-			result.put("message", "WalletType already exist");
+			result.put("message", "CoinName already exist");
 			return result;
 		}
 	}
@@ -63,15 +64,29 @@ public class WalletService {
 
 		User user = userRepository.findOneByUserId(userwalletdto.getuserId());
 		UserOrder userOrder = new UserOrder();
-
+	if(user == null) {
+		result.put("isSuccess", false);
+		result.put("message", "User does not  exist");
+		return result;
+	}
+			
+		if(orderRepository.findByCoinNameAndUser(userwalletdto.getCoinName(), user)== null) {
+			
 		userOrder.setOrderType(OrderType.DEPOSIT);
 		userOrder.setCoinType(WalletType.FIAT);
+		userOrder.setCoinName(userwalletdto.getCoinName());
 		userOrder.setPrice(userwalletdto.getamount());
 		userOrder.setOrderCreatedOn(new Date());
 		userOrder.setStatus(TransactionOrderStatus.PENDING);
 		userOrder.setUser(user);
 		orderRepository.save(userOrder);
-		;
+		}
+		else
+		{
+			result.put("isSuccess", false);
+			result.put("message", "CoinName corresponsding to user already exist");
+			return result;
+		}
 		if (userOrder.getStatus() == TransactionOrderStatus.APPROVED) {
 
 			result.put("isSuccess", true);
@@ -88,7 +103,7 @@ public class WalletService {
 		Map<String, Object> result = new HashMap<String, Object>();
 		Wallet wallet = new Wallet();
 		User user = userRepository.findOneByUserId(userwalletdto.getuserId());
-		wallet = walletRepository.findByWalletTypeAndUser(userwalletdto.getwalletType(), user);
+		wallet = walletRepository.findByCoinNameAndUser(userwalletdto.getCoinName(), user);
 		if (wallet.getBalance() == 0) {
 			result.put("isSuccess", false);
 			result.put("message", "No balance in wallet");

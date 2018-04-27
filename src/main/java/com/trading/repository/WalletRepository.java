@@ -8,5 +8,8 @@ import com.trading.domain.Wallet;
 
 public interface WalletRepository extends JpaRepository<Wallet, Long> {
 
-	Wallet findByWalletTypeAndUser(WalletType getwalletType, User user);
+
+	Wallet findByCoinNameAndUser(String coinName, User user);
+
+	Wallet findByCoinTypeAndUser(WalletType coinType, User user);
 }

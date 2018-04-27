@@ -93,7 +93,7 @@ public class UserService {
 			if (PasswordValidator.isValid(user.getPassword())) {
 
 				if (userRepository.save(user) != null) {
-					user.setDate(new Date());
+					user.setDate(new Date().toString());
 					user.setStatus(UserStatus.INACTIVE);
 					String email = user.getEmail();
 					otpservice.sendSMS(otp);
@@ -102,7 +102,8 @@ public class UserService {
 					userotp.setEmail(email);
 					userotpRepository.save(userotp);
 					Wallet wallet = new Wallet();
-					wallet.setwalletType(WalletType.FIAT);
+					wallet.setCoinType(WalletType.FIAT);
+					wallet.setCoinName("INR");
 					wallet.setuser(user);
 					user.getWallet().add(wallet);
 					Role role = new Role();

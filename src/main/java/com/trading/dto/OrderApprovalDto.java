@@ -7,6 +7,7 @@ public class OrderApprovalDto {
 	private TransactionOrderStatus status;
 	private long userId;
 	
+	
 	public long getUserId() {
 		return userId;
 	}

@@ -25,7 +25,6 @@ public class Currency {
 	@Enumerated(EnumType.STRING)
 	private WalletType coinType;
 	
-	private long INR;
 	
 	
 	public WalletType getCoinType() {
@@ -36,13 +35,7 @@ public class Currency {
 		this.coinType = coinType;
 	}
 
-	public long getINR() {
-		return INR;
-	}
-
-	public void setINR(long iNR) {
-		INR = iNR;
-	}
+	
 
 	@Column(unique = true)
 	@NotNull
