@@ -136,8 +136,8 @@ public class WalletService {
 			Set<Wallet> walletSet = new HashSet<Wallet>();
 			wallet.setBalance(longBalance);
 			//wallet.setUser(user);
-			//wallet.setCoinType(userorder.getCoinType());
-			//wallet.setCoinName(userorder.getCoinName());
+			wallet.setCoinType(userorder.getCoinType());
+			wallet.setCoinName(userorder.getCoinName());
 			wallet.setShadowBalance(longBalance);
 			walletSet.add(wallet);
 			walletRepository.save(wallet);

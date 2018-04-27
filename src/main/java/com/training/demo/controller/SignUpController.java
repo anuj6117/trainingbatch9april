@@ -26,18 +26,17 @@ public class SignUpController {
 
 	@RequestMapping(value = "/signup", method = RequestMethod.POST)
 	public String insertUser(@RequestBody User user) {
-		System.out.println("controller hit");
 		String password=user.getPassword().trim();
 		String username=user.getuserName();
 		int length=password.length();
 	    int unamelength=username.length();
-		if((length!=0)&&(unamelength!=0)&&(unamelength>=5&&unamelength<=25))
+		if((length!=0)&&(unamelength<=25))
 		{
 		String newUser = signUpService.addUser(user);
-		if (newUser != null) {
+		if ((newUser != null)&&(unamelength!=0)) {
 			return newUser;
 		} else {
-			return "failure";
+			return "user can not be null";
 		}
 		}
 		
@@ -51,8 +50,6 @@ public class SignUpController {
 	@RequestMapping(value = "/verify", method = RequestMethod.POST)
 	public String userVerification(@RequestBody OtpVerification otpVerification) {
 		if ((otpVerification.getEmail() == null) || (otpVerification.getOtp() == null)) {
-			System.out.println("Inside Controller first if.");
-			System.out.println("Email and otp is null");
 			return "otp not found";
 		} else {
 			 return signUpService.verifyUserWithOtp(otpVerification.getEmail(), otpVerification.getOtp());
@@ -81,7 +78,7 @@ public class SignUpController {
 		return "Role Is Successfully Assigned.";
 	}
 
-	@RequestMapping(value = "/getByUserId", method = RequestMethod.GET)
+	@RequestMapping(value = "/getbyuserid", method = RequestMethod.GET)
 	public Optional<User> getUserById(@RequestParam("userId") Integer userId) {
 		Optional<User> obj = null;
 		try {
@@ -92,7 +89,7 @@ public class SignUpController {
 		return obj;
 	}
 
-	@RequestMapping(value = "/delete", method = RequestMethod.GET)
+	@RequestMapping(value = "/deleteuser", method = RequestMethod.GET)
 	public String deleteUser(@RequestParam("userId") Integer id) {
 		try {
 			User t_user = userRepository.findByUserId(id);

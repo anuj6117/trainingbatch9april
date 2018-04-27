@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.training.demo.model.CoinManagement;
+import com.training.demo.repository.CoinManagementRepository;
 import com.training.demo.service.CoinManagementService;
 
 @RestController
@@ -17,15 +18,19 @@ public class CoinManagementController {
 
 	@Autowired
 	private CoinManagementService coinManagementService;
+	@Autowired
+	private CoinManagementRepository coinmanagementrepository;
 
 	@RequestMapping(value = "/addcurrency", method = RequestMethod.POST)
 	public String addCoin(@RequestBody CoinManagement data) {
 		String result = coinManagementService.addAllCoin(data);
+		String s=data.getCoinName();
+		int l=s.length();
 
-		if (result != null) {
+		if ((result != null)&&(l>0)) {
 			return "From controller coin added";
 		} else {
-			return "From controller coin not added";
+			return "data not found";
 		}
 	}
 
@@ -47,10 +52,13 @@ public class CoinManagementController {
 
 	@RequestMapping(value = "/deletecurrency", method = RequestMethod.GET)
 	public String delete(@RequestParam("coinId") Integer id) {
-		if (id != null) {
+		if ((id != null)) {
 			coinManagementService.delete(id);
 			return "success";
 		}
 		return "fail";
+		
+		
+		
 	}
 }

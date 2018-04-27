@@ -18,7 +18,8 @@ public class CoinManagementService {
 			return "Coin Added Successfully";
 		} else {
 			return "Not Added Successfully";
-		}
+		
+	}
 	}
 
 	public List<CoinManagement> getCurrencies() {

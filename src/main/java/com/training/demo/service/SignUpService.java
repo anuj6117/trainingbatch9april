@@ -51,10 +51,10 @@ public class SignUpService {
 		HashSet<Role> hashSet = new HashSet();
 		boolean b = hashSet.add(roles);
 		boolean flag = userRepository.existsByEmail(user.getEmail());
-				//)&&(userRepository.existByPhoneNo(user.getPhoneNo())));
+		// )&&(userRepository.existByPhoneNo(user.getPhoneNo())));
 		if (flag == false) {
 			String email = user.getEmail();
-		   String phoneNo=user.getPhoneNo();
+			String phoneNo = user.getPhoneNo();
 			System.out.println(email);
 
 			System.out.println("service hit");
@@ -82,7 +82,7 @@ public class SignUpService {
 			if (existingUser != null) {
 
 				System.out.println("service hit inside if.");
-				otpService.sendSms(otp,phoneNo);
+				otpService.sendSms(otp, phoneNo);
 				emailService.home(email, otp);
 
 				otpVerification = new OtpVerification();
@@ -99,7 +99,7 @@ public class SignUpService {
 			}
 		} else {
 			System.out.println("Already existing Email or Phoneno");
-			return "Already existing Email or Username.";
+			return "oops this email id is already registerd ";
 		}
 	}
 
@@ -108,33 +108,30 @@ public class SignUpService {
 		Integer t_otp = otpVerification.getOtp();
 		try {
 
-		OtpVerification tempOtpVerification = otpRepository.findByEmail(email);
-		String v_email = tempOtpVerification.getEmail();
-		int v_otp = tempOtpVerification.getOtp();
-		User t_user = userRepository.findByEmail(email);
+			OtpVerification tempOtpVerification = otpRepository.findByEmail(email);
+			String v_email = tempOtpVerification.getEmail();
+			int v_otp = tempOtpVerification.getOtp();
+			User t_user = userRepository.findByEmail(email);
 
-		if (t_email.equals(v_email)) {
-			System.out.println("email is successfully verified" + t_email);
-			if (t_otp.equals(v_otp)) {
-				System.out.println(t_otp + " otp is successfully verified" + t_otp);
-				
+			if (t_email.equals(v_email)) {
+				System.out.println("email is successfully verified" + t_email);
+				if (t_otp.equals(v_otp)) {
+					System.out.println(t_otp + " otp is successfully verified" + t_otp);
+
+				}
+				otpRepository.delete(tempOtpVerification);
+				t_user.setUserStatus(UserStatus.ACTIVE);
+				userRepository.save(t_user);
+				System.out.println("otpVerification table deleted.");
+				return "suceess";
+			} else {
+				System.out.println("Sorry, invalid username or otp");
+				return "otp is not valid";
 			}
-			otpRepository.delete(tempOtpVerification);
-			t_user.setUserStatus(UserStatus.ACTIVE);
-			userRepository.save(t_user);
-			System.out.println("otpVerification table deleted.");
-			return "suceess";
-		} else {
-			System.out.println("Sorry, invalid username or otp");
-			return "otp is not valid";
+		} catch (Exception e) {
+			return " email does not match" + e.toString();
 		}
 	}
-	catch(Exception e)
-		{
-		return " email does not match" +e.toString();
-		}
-	}
-	
 
 	public List<User> getAllUsers() {
 		List<User> l = new ArrayList<User>();
