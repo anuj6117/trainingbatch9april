@@ -23,6 +23,7 @@ public class Wallet
 private Integer id;
 @Enumerated(EnumType.STRING)
 private WalletType walletType;
+private String walletName;
 private Integer balance;
 
 private Integer shadowbalance;
@@ -31,6 +32,16 @@ private Integer shadowbalance;
 @JoinColumn(name="userId")
 @JsonIgnore
  User user;
+
+
+
+public String getWalletName() {
+	return walletName;
+}
+
+public void setWalletName(String walletName) {
+	this.walletName = walletName;
+}
 
 public Integer getId() {
 	return id;

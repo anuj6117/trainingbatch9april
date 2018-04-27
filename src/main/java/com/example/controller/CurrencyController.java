@@ -4,10 +4,10 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.model.Currency;
@@ -39,18 +39,19 @@ private CurrencyRepository currencyrepository;
 
 
 @RequestMapping(value="/updatecurrency",method=RequestMethod.POST)
- public void updatecurrency(@RequestBody Currency currency)
+ public String updatecurrency(@RequestBody Currency currency)
  {
 	
 	currencyrepository.save(currency);
+	return "Your currency has been updated successfully";
  }
 
-@GetMapping("/deletecurrency/{id}")
-public String deletecurrency(@PathVariable("id") Integer coinid)
+@GetMapping("/deletecurrency")
+public String deletecurrency(@RequestParam("coinId") Integer coinid)
 {
 	 currency=currencyrepository.findByCoinId(coinid);
 	 currencyrepository.delete(currency);
-	 return "currency deleted";
+	 return "Your currency has been deleted successfully";
 	
 }
 

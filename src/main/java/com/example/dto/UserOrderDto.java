@@ -1,11 +1,22 @@
 package com.example.dto;
 
+import com.example.enums.WalletType;
+
 public class UserOrderDto
 {
  private Integer userId;
  private Integer coinQuantity;
  private Integer price;
  private String coinName;
+/* private WalletType coinType;
+ 
+ 
+public WalletType getCoinType() {
+	return coinType;
+}
+public void setCoinType(WalletType coinType) {
+	this.coinType = coinType;
+}*/
 public Integer getUserId() {
 	return userId;
 }

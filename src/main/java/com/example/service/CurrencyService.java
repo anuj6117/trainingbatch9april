@@ -16,12 +16,17 @@ public class CurrencyService
 	{
 	  if(!(currencyrepository.save(currency)==null))
 	  {
-		  return "saved";
+		  Integer initalsupply=currency.getInitialSupply();
+		  Integer price=currency.getPrice();
+		  currency.setCoinInINR(initalsupply*price);
+		  currencyrepository.save(currency);
+		  
+		  return "Your coin has been added successfully";
 	  }	
 	  else
 		  return "not saved, its null";
 	}
-	/*public String updatecurrency(Currency currency)
+	public String updatecurrency(Currency currency)
 	{
 	  if(!(currencyrepository.save(currency)==null))
 	  {
@@ -30,5 +35,5 @@ public class CurrencyService
 	  else
 		  return "not";
 	}
-*/	
+	
 }

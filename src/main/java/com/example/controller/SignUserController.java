@@ -38,16 +38,22 @@ public class SignUserController
 	@RequestMapping(value="/signup", method=RequestMethod.POST)
 	public String insertUser(@RequestBody User user)
 	{  System.out.println("......................1111111111");
+		
+		String username1=user.getUserName();
+		String username=user.getUserName().trim();
+		int usernameLength=username.length();
+		int usernameLength2=username1.length();
+		
 		String passwordvalue=user.getPassword();
 		int passwordLength1=passwordvalue.length();
-		String username=user.getUserName().trim();
 	    passwordvalue=passwordvalue.replaceAll("\\s+","");
 	    int passwordLength2=passwordvalue.length();
-	    int usernameLength=username.length();
-	    if((passwordLength2!=0) && (passwordLength1==passwordLength2))
+	    
+	    String pattern="(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\\S+$).{8,32}";
+	    if((passwordLength2!=0) && (passwordLength1==passwordLength2) && (passwordvalue.matches(pattern)))
 		{
 	    	 System.out.println("......................111111111122222");
-	    	if(usernameLength!=0)
+	    	if((usernameLength!=0 )&& (usernameLength==usernameLength2))
 	    	{
 	    		 System.out.println("......................1111111111333333");
 			 String u=signupservice.addUser(user);
@@ -61,7 +67,7 @@ public class SignUserController
 			   }
 	    	}
 	    	else
-	    		return "username can't be null";
+	    		return "enter valid username";
 		}
 		else
 		{

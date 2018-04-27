@@ -41,6 +41,7 @@ public class User
 	private String phoneNumber;
 	@Size(min=8,max=32)
 	private String password;
+	@NotNull
 	private String country;
 	private String createdOn;
 	

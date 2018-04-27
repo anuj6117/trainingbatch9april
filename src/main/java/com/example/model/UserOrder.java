@@ -27,6 +27,7 @@ public class UserOrder
 	@Enumerated(EnumType.STRING)
 	private OrderType orderType;
 	private String coinName;
+	@Enumerated(EnumType.STRING)
 	private WalletType coinType;
 	private Integer coinQuantity;
 	private Integer price;

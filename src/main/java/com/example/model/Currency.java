@@ -1,6 +1,9 @@
 package com.example.model;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -17,19 +20,31 @@ public class Currency
   @GeneratedValue(strategy = GenerationType.AUTO)
   private Integer coinId;
   @NotNull
+  @Column(unique=true)
   private String coinName;
+ 
+  @Enumerated(EnumType.STRING)
   private WalletType coinType;
   @NotNull
+  @Column(unique=true)
   private String symbol;
   @NotNull
-  private Long initialSupply;
+  private Integer initialSupply;
   @NotNull
-  private Long price;
+  private Integer price;
   private Integer fees;
   private Integer profit;
   private Integer coinInINR;
   
-  public Integer getFees() {
+  
+  
+  public WalletType getCoinType() {
+	return coinType;
+}
+public void setCoinType(WalletType coinType) {
+	this.coinType = coinType;
+}
+public Integer getFees() {
 	return fees;
 }
 public void setFees(Integer fees) {
@@ -67,17 +82,17 @@ public String getSymbol() {
 public void setSymbol(String symbol) {
 	this.symbol = symbol;
 }
-public Long getInitialSupply() {
+public Integer getInitialSupply() {
 	return initialSupply;
 }
-public void setInitialSupply(Long initialSupply) {
+public void setInitialSupply(Integer initialSupply) {
 	this.initialSupply = initialSupply;
 }
-public Long getPrice() {
+public Integer getPrice() {
 	return price;
 }
-public void setPrice(Long price) {
+public void setPrice(Integer price) {
 	this.price = price;
-} 
+}
  	
 }
