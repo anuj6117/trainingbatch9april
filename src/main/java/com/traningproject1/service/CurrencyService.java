@@ -17,11 +17,12 @@ public class CurrencyService {
 //	@Autowired
 //	 private CurrencyClass currency;
 		
-	public CurrencyClass addCurrency(CurrencyClass currency)
+	public String addCurrency(CurrencyClass currency)
 		{   
-		
-			CurrencyClass currencyCreated=currencyRepository.save(currency);
-			return currencyCreated;
+			Integer coinininr=currency.getPrice()*currency.getInitialSupply();
+			currency.setCoinInINR(coinininr);
+			currencyRepository.save(currency);
+			return "Your Coin has been Added Successfully";
 					
 		}
 	public ArrayList<CurrencyClass> getAllCurrency()
@@ -36,12 +37,15 @@ public class CurrencyService {
 	  Optional<CurrencyClass> currencyGet=currencyRepository.findById(id);
 	  return currencyGet;
 	}
-	public void deleteCurrency(Integer id)
+	public String deleteCurrency(Integer id)
 	{
 		currencyRepository.deleteById(id);
+		return "Your Coin has been deleted Successfully";
 	}
-	public CurrencyClass updateCurrency(CurrencyClass currency) {
-		return currencyRepository.save(currency);
+	public String updateCurrency(CurrencyClass currency) {
+		
+		 currencyRepository.save(currency);
+		 return "Your Coin Has been Updated successfully";
 	}
 
 }

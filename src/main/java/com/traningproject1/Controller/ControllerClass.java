@@ -3,17 +3,18 @@ package com.traningproject1.Controller;
 import java.util.List;
 import java.util.Optional;
 
+import org.apache.commons.validator.routines.EmailValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.traningproject1.demo.dto.AssignWalletDTO;
 import com.traningproject1.demo.dto.ClassDTO;
 import com.traningproject1.demo.dto.DepositAmountDTO;
 import com.traningproject1.demo.dto.VerifyUserDTO;
 import com.traningproject1.domain.User;
+import com.traningproject1.repository.UserRepository;
 import com.traningproject1.service.ServiceClass;
 import com.traningproject1.service.UserOTPService;
 import com.traningproject1.service.WalletService;
@@ -27,10 +28,12 @@ public class ControllerClass {
 	WalletService walletService;
 	@Autowired
 	UserOTPService userOTPService;
+	@Autowired
+	UserRepository userRepository;
 	
 @RequestMapping(value="/signup",method=RequestMethod.POST)
 public String addUser(@RequestBody User user)
-{      //String passLength=user.getPassword();
+{     
        if(user.getUserName().equalsIgnoreCase(" "))
        {
     	   return "Name cannot Be Null";
@@ -43,11 +46,20 @@ public String addUser(@RequestBody User user)
        {
     	   return "Password Cannot be less Than 8 or Greater than 32";
        }
-//       for(int i=0;i<passLength.length();i++)
-//       {
-//    	   char c=passLength.charAt(i);
-//       }
-       
+       if(userRepository.findByphoneNumber(user.getPhoneNumber())!=null)
+       {
+    	   return "Oops Phone number already registration ";
+       }
+       if(userRepository.findByemail(user.getEmail())!=null)
+       {
+    	   return "This email id already registered ";
+       }
+       String emailverify=user.getEmail();
+      // String emailid
+       if(!(EmailValidator.getInstance().isValid(user.getEmail())))
+       {
+    	   return "Email Should be in Correct Format";
+       }
 	  User userCreated=serviceClass.addUser(user);
 	  if(userCreated!=null)
 		 return"success";
@@ -100,12 +112,12 @@ public String assignRoleToUser(@RequestBody ClassDTO classDTO)
   }
   return "Role Assign Succesfully";
 }
-@RequestMapping(value="/addwallet",method=RequestMethod.POST)
-public String assignWallet(@RequestBody AssignWalletDTO assignwalletdto)
-{
-	serviceClass.assignWallet(assignwalletdto);
-	return "success";
-}
+//@RequestMapping(value="/addwallet",method=RequestMethod.POST)
+//public String assignWallet(@RequestBody AssignWalletDTO assignwalletdto)
+//{
+//	serviceClass.assignWallet(assignwalletdto);
+//	return "success";
+//}
 @RequestMapping(value="/depositamount",method=RequestMethod.POST)
 public String depositAmount(@RequestBody DepositAmountDTO depositamountdto)
 {

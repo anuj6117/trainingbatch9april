@@ -28,6 +28,7 @@ import com.traningproject1.repository.UserOTPRepository;
 import com.traningproject1.repository.UserOrderRepository;
 import com.traningproject1.repository.UserRepository;
 import com.traningproject1.repository.WalletRepository;
+import com.traningproject1.utils.MailService;
 import com.traningproject1.utils.SmsService;
 @Service
 public class ServiceClass {
@@ -49,26 +50,29 @@ Integer otp;
 @Autowired
 SmsService smsService;
 
-
+@Autowired
+MailService mailService;
 
 @Autowired
 UserOTPRepository userOTPRepository;
+
+UserOTP userOTP;
 public User addUser(User user)
 	{
 	
 	    user.setCreatedOn(new Date());
 	   
-	    Role defaultrole=roleRepository.getRoleByid(1);
+	    //Role defaultrole=roleRepository.getRoleByid(1);
 		   	    
-		ArrayList<Role> roleType=new ArrayList<>();
+		//ArrayList<Role> roleType=new ArrayList<>();
 		
 		
-	  roleType.add(defaultrole);
+	  //roleType.add(defaultrole);
 		
-	   user.setRole(roleType);	
+	   //user.setRole(roleType);	
 	   Random random=new Random();
 	   otp=random.nextInt(20000);
-		roleRepository.save(defaultrole);
+		//roleRepository.save(defaultrole);
 		
 		userRepository.save(user);
 		
@@ -91,9 +95,10 @@ public User addUser(User user)
 		userRepository.save(user);
 		
 		 smsService.sendSms(otp);
-		UserOTP userOTP=new UserOTP(); 
+		 mailService.sendMail(otp,user.getEmail());
+		 userOTP=new UserOTP(); 
 		 userOTP.setUserOTPId(user.getUserId());
-		 userOTP.setTokenOtp(otp);
+		 userOTP.setTokenOTP(otp);
 		 userOTP.setEmailId(user.getEmail());
 		 userOTP.setDate(new Date());
 
@@ -166,52 +171,52 @@ public User assignRoleToUser(ClassDTO classDTO)
 		throw new NullPointerException(" "+"User id doesn't not exist");
 		}
 }
-public String assignWallet(AssignWalletDTO assignwalletDTO)
-{
-	User user=userRepository.findByuserId(assignwalletDTO.getUserId());
-	
-   
-	//Wallet wallet=walletRepository.findByWalletType(assignwalletDTO.getWallettype());
-	
-	Wallet wallet1=new Wallet();
-	
-	
-	
-	
-	
-	//WalletType walletType=WalletType.valueOf(assignwalletDTO.getWallettype());
-	
-	//System.out.println("Get Wallet Type is ++++++++"+walletType);
-	wallet1.setUser(user);
-	
-	wallet1.setCoinType(assignwalletDTO.getCoinType());
-	wallet1.setCoinName(assignwalletDTO.getCoinName());
-	wallet1.setCoinType(CoinType.CRYPTO);
-	
-	//walletRepository.save(wallet1);
-	  
-	
-	//System.out.println("New Wallet Object is++++++++++++++++++++"+wallet1.getWalletType());
-	
-	
-	
-	
-	HashSet<Wallet>walletset=new HashSet<>();
-    
-	System.out.println("walletset++++++++++++++++++++++++++++"+walletset);
-	
-    walletset.add(wallet1);
-   
-    //System.out.println("id++++++++++++++++++++++++++++"+user.getUserId());
-    
-    
-    
-    user.setWallet(walletset);
-    walletRepository.save(wallet1);
-    userRepository.save(user);
-    
-	return "success";
-}
+//public String assignWallet(AssignWalletDTO assignwalletDTO)
+//{
+//	User user=userRepository.findByuserId(assignwalletDTO.getUserId());
+//	
+//   
+//	//Wallet wallet=walletRepository.findByWalletType(assignwalletDTO.getWallettype());
+//	
+//	Wallet wallet1=new Wallet();
+//	
+//	
+//	
+//	
+//	
+//	//WalletType walletType=WalletType.valueOf(assignwalletDTO.getWallettype());
+//	
+//	//System.out.println("Get Wallet Type is ++++++++"+walletType);
+//	wallet1.setUser(user);
+//	
+//	wallet1.setCoinType(assignwalletDTO.getCoinType());
+//	wallet1.setCoinName(assignwalletDTO.getCoinName());
+//	wallet1.setCoinType(CoinType.CRYPTO);
+//	
+//	//walletRepository.save(wallet1);
+//	  
+//	
+//	//System.out.println("New Wallet Object is++++++++++++++++++++"+wallet1.getWalletType());
+//	
+//	
+//	
+//	
+//	HashSet<Wallet>walletset=new HashSet<>();
+//    
+//	System.out.println("walletset++++++++++++++++++++++++++++"+walletset);
+//	
+//    walletset.add(wallet1);
+//   
+//    //System.out.println("id++++++++++++++++++++++++++++"+user.getUserId());
+//    
+//    
+//    
+//    user.setWallet(walletset);
+//    walletRepository.save(wallet1);
+//    userRepository.save(user);
+//    
+//	return "success";
+//}
 //  public String withdrawAmount(WithdrawAmountDTO withdrawamountdto)
 //  {
 //	  User user=userRepository.findByuserId(withdrawamountdto.getUserId());
@@ -255,12 +260,15 @@ public String assignWallet(AssignWalletDTO assignwalletDTO)
   }
   public String verifyOTP(VerifyUserDTO verifyuserdto)
   {
-	  UserOTP userotp=userOTPRepository.findBytokenOtp(verifyuserdto.getTokenOTP());
+	  UserOTP userotp=userOTPRepository.findBytokenOTP(verifyuserdto.getTokenOTP());
 	  String email=userotp.getEmailId();
 	  User user=userRepository.findByemail(verifyuserdto.getEmailId());
 	  if(email.equals(user.getEmail()))
 	  {
 		  user.setStatus(UserStatus.ACTIVE);
+		  UserOTP userdelete=userOTPRepository.findBytokenOTP(verifyuserdto.getTokenOTP());
+		  userOTPRepository.delete(userdelete);
+		 
 	  }
 	  else
 	  {

@@ -19,9 +19,9 @@ public class CurrencyClass {
 	@NotNull(message="symbol Should Not Accept null")
 	private String symbol;
 	@NotNull(message="symbol Should Not Accept null")
-	private Long initialSupply;
+	private Integer initialSupply;
 	@NotNull(message="symbol Should Not Accept null")
-	private Long price;
+	private Integer price;
 	
 	private Integer fees;
 	private double profit;
@@ -50,16 +50,17 @@ public class CurrencyClass {
 	public void setSymbol(String symbol) {
 		this.symbol = symbol;
 	}
-	public Long getInitialSupply() {
+	
+	public Integer getInitialSupply() {
 		return initialSupply;
 	}
-	public void setInitialSupply(Long initialSupply) {
+	public void setInitialSupply(Integer initialSupply) {
 		this.initialSupply = initialSupply;
 	}
-	public Long getPrice() {
+	public Integer getPrice() {
 		return price;
 	}
-	public void setPrice(Long price) {
+	public void setPrice(Integer price) {
 		this.price = price;
 	}
 	public Integer getFees() {

@@ -15,7 +15,7 @@ public class UserOTP {
 	@GeneratedValue(strategy=GenerationType.AUTO)
 	private Integer userOTPId;
 	
-	private Integer tokenOtp;
+	private Integer tokenOTP;
 	private String emailId;
 	private Date date;
 	
@@ -36,12 +36,14 @@ public class UserOTP {
 	public void setUserOTPId(Integer userOTPId) {
 		this.userOTPId = userOTPId;
 	}
-	public Integer getTokenOtp() {
-		return tokenOtp;
+	
+
+	public Integer getTokenOTP() {
+		return tokenOTP;
 	}
 
-	public void setTokenOtp(Integer tokenOtp) {
-		this.tokenOtp = tokenOtp;
+	public void setTokenOTP(Integer tokenOTP) {
+		this.tokenOTP = tokenOTP;
 	}
 
 	public String getEmailId() {

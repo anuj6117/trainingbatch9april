@@ -13,6 +13,8 @@ public interface UserRepository extends JpaRepository<User,Integer>{
 
 	User findByemail(String emailId);
 
+	Object findByphoneNumber(String phoneNumber);
+
 	//User findByuserId(Integer userId);
 
 	//User findUserByid(Integer userId);

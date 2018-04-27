@@ -32,6 +32,14 @@ public String addCurrency(@RequestBody CurrencyClass currency)
     {
     	return "put Valid coin Name";
     }
+    if(currency.getSymbol().equals(""))
+    {
+    	return "Please enter the coin Symbol";
+    }
+    if(currency.getSymbol().equals(" "))
+    {
+    	return "Please enter the coin Symbol";
+    }
     if(currency.getInitialSupply()==0&&currency.getPrice()==0)
     {
     	return "Provide Initial Supply Or Provide Some Price ";
@@ -46,9 +54,9 @@ public String addCurrency(@RequestBody CurrencyClass currency)
 		return "CoinName Already Exist Or Coin Sysmbol Already exist";
 	}
    }
-	CurrencyClass currencyCreated=currencyService.addCurrency(currency);
-	if(currencyCreated!=null)
-	return"success";
+	
+	if(currencyService.addCurrency(currency)!=null)
+	return"Your Coin Has been Added Successfully";
 	else
 		return "fail";
 	}
@@ -64,12 +72,12 @@ public Optional<User> getUserById( Integer id)
  return serviceClass.getByUserId(id);	
 }*/
 @RequestMapping(value="/deletecurrency",method=RequestMethod.GET)
-public void deleteCurrcency(@RequestParam Integer coinId)
+public String deleteCurrcency(@RequestParam("coinId") Integer coinId)
 {
-  currencyService.deleteCurrency(coinId);
+  return currencyService.deleteCurrency(coinId);
 }
 @RequestMapping(value="/updatecurrency",method=RequestMethod.POST)
-public  CurrencyClass updateCurrency(@RequestBody CurrencyClass currency)
+public  String updateCurrency(@RequestBody CurrencyClass currency)
 {
  return  currencyService.updateCurrency(currency);	
 }	

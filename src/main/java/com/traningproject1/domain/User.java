@@ -19,6 +19,7 @@ import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -34,14 +35,17 @@ public class User {
 @NotNull
 private Integer userId;
 
+
+@NotBlank(message="Please Don't enter any leading and trailing space")
 @NotEmpty(message="Not null")
 @NotNull(message="UserName can't be Null")
 @Size(max=25,message="Maximum allowed Characters for this field is 25")
 private String userName;
 
+@Email
 @NotNull
-@Email(message="OOPs email id Already registered")
-@NotEmpty(message="Not null")
+//@Size(min = 1, max = 100)
+//@Pattern(regexp="^([a-zA-Z0-9\\-\\.\\_]+)'+'(\\@)([a-zA-Z0-9\\-\\.]+)'+'(\\.)([a-zA-Z]{2,4})$")
 private String email;
 
 private String password;
@@ -58,8 +62,6 @@ private Date createdOn;
 private UserStatus status;
 
 @NotNull
-@Column(unique = true)
-@Size(max=10,min=10)
 private String phoneNumber;
 
 
