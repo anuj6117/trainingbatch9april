@@ -11,7 +11,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.trainingproject.enums.WalletType;
+import com.trainingproject.enums.CoinType;
 
 @Entity
 @Table(name = "wallet")
@@ -20,7 +20,8 @@ public class Wallet {
 	@GeneratedValue(strategy = GenerationType.AUTO)
     private Integer walletId;
 	@Enumerated(EnumType.STRING)
-	private WalletType walletType;
+	private CoinType coinType;
+	private String coinName;
 	private Long balance;
 	private Long shadowBalance;
 	@ManyToOne
@@ -45,12 +46,23 @@ public class Wallet {
 	public void setWalletId(Integer walletId) {
 		this.walletId = walletId;
 	}
-	public WalletType getWalletType() {
-		return walletType;
+	
+	public CoinType getCoinType() {
+		return coinType;
 	}
-	public void setWalletType(WalletType walletType) {
-		this.walletType = walletType;
+
+	public void setCoinType(CoinType coinType) {
+		this.coinType = coinType;
 	}
+
+	public String getCoinName() {
+		return coinName;
+	}
+
+	public void setCoinName(String coinName) {
+		this.coinName = coinName;
+	}
+
 	public Long getBalance() {
 		return balance;
 	}

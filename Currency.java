@@ -10,7 +10,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
-import com.trainingproject.enums.WalletType;
+import com.trainingproject.enums.CoinType;
 
 @Entity
 @Table(name="currency")
@@ -19,7 +19,7 @@ public class Currency {
 	@GeneratedValue(strategy = GenerationType.AUTO)
     private Integer coinId;
 	@Enumerated(EnumType.STRING)
-	private  WalletType coinType;
+	private  CoinType coinType;
 	
 	@Column(unique = true)
 	@NotNull(message = "coinName not null")
@@ -30,25 +30,25 @@ public class Currency {
 	private String symbol;
 	
 	@NotNull(message = "initialSupply not null")
-	private Long initialSupply;
+	private Integer initialSupply;
 	
 	@NotNull(message = "price not null")
-	private Long price;
-	private Long fees;
-	private Long profit;
+	private Integer price;
+	private Integer fees;
+	private Integer profit;
 	private Long coinInINR;
 	
 	private Currency() {
-		fees = 0l;
-		profit = 0l;
+		fees = 0;
+		profit = 0;
 		coinInINR = 0l;
 	}
 	
-	public WalletType getCoinType() {
+	public CoinType getCoinType() {
 		return coinType;
 	}
 
-	public void setCoinType(WalletType coinType) {
+	public void setCoinType(CoinType coinType) {
 		this.coinType = coinType;
 	}
 
@@ -70,30 +70,38 @@ public class Currency {
 	public void setSymbol(String symbol) {
 		this.symbol = symbol;
 	}
-	public Long getInitialSupply() {
+	
+	public Integer getInitialSupply() {
 		return initialSupply;
 	}
-	public void setInitialSupply(Long initialSupply) {
+
+	public void setInitialSupply(Integer initialSupply) {
 		this.initialSupply = initialSupply;
 	}
-	public Long getPrice() {
+
+	public Integer getPrice() {
 		return price;
 	}
-	public void setPrice(Long price) {
+
+	public void setPrice(Integer price) {
 		this.price = price;
 	}
-	public Long getFees() {
+	public Integer getFees() {
 		return fees;
 	}
-	public void setFees(Long fees) {
+
+	public void setFees(Integer fees) {
 		this.fees = fees;
 	}
-	public Long getProfit() {
+
+	public Integer getProfit() {
 		return profit;
 	}
-	public void setProfit(Long profit) {
+
+	public void setProfit(Integer profit) {
 		this.profit = profit;
 	}
+
 	public Long getCoinInINR() {
 		return coinInINR;
 	}
