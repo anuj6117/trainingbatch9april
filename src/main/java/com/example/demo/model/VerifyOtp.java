@@ -8,7 +8,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "otpVerification")
+@Table(name = "verifyotp")
 public class VerifyOtp {
 
 	@Id
@@ -18,8 +18,9 @@ public class VerifyOtp {
 	private String emailId;
 	private Date date;
 	
-	public VerifyOtp() {
-		System.out.println("this default constructor of verify otp -------------------------");
+	public VerifyOtp() 
+	{
+		System.out.println("VerifyOtp()");
 	}
 	public Date getDate() {
 		return date;

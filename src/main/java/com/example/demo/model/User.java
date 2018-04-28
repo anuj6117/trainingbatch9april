@@ -35,17 +35,9 @@ public class User {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Integer userId;
 
-	@Size(min = 6, max = 25, message = "Fullname length must be between 6 to 25")
-	@NotEmpty(message = "Fullname should not left blank")
-	@NotNull(message = "Space is not allowed")
 	private String userName;
-
-	@NotEmpty(message = "Email should not left blank")
-	@NotNull(message = "Space is not allowed")
-	@Email
-	@Column(unique = true)
 	private String email;
-	private Long phoneNumber;
+	private String phoneNumber;
 	private String password;
 	private String country;
 	private Date date;
@@ -55,17 +47,15 @@ public class User {
 
 	@ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
 	@JoinTable(name = "User_Role", joinColumns = @JoinColumn(name = "userid", referencedColumnName = "userId"), inverseJoinColumns = @JoinColumn(name = "roleid", referencedColumnName = "roleId"))
-	private Set<Role> roles = new HashSet<>();
+	private Set<Role> roles = new HashSet<Role>();
 	
-	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-	private List<Wallet> wallets = new ArrayList<>();
+	@OneToMany(mappedBy = "user")
+	private Set<Wallet> wallets = new HashSet<Wallet>();
 	
-	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-	private List<UserOrder> userOrders=new ArrayList<>();
+	@OneToMany(mappedBy = "user")
+	private List<Order> userOrders=new ArrayList<Order>();
 
-	public User() {
-		System.out.println("Default Constructor");
-	}
+	public User() {}
 	
 	public User(User user) {
 		this.userName = user.getUserName();
@@ -100,11 +90,11 @@ public class User {
 		this.email = email;
 	}
 
-	public Long getPhoneNumber() {
+	public String getPhoneNumber() {
 		return phoneNumber;
 	}
 
-	public void setPhoneNumber(Long phoneNumber) {
+	public void setPhoneNumber(String phoneNumber) {
 		this.phoneNumber = phoneNumber;
 	}
 
@@ -148,11 +138,11 @@ public class User {
 		this.roles = roles;
 	}
 
-	public List<Wallet> getWallets() {
+	public Set<Wallet> getWallets() {
 		return wallets;
 	}
 
-	public void setWallets(List<Wallet> wallets) {
+	public void setWallets(Set<Wallet> wallets) {
 		this.wallets = wallets;
 	}
 

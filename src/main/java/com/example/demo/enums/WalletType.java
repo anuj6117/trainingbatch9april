@@ -2,7 +2,7 @@ package com.example.demo.enums;
 
 public enum WalletType {
 
-	FIAT, BITCOIN, ETHEREUM;
+	FIAT, CRYPTO;
 	
 	private String values;
 

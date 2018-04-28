@@ -1,27 +1,25 @@
 package com.example.demo.service;
 
 import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.example.demo.dto.TransactionDTO;
+import com.example.demo.dto.DepositAmountDTO;
 import com.example.demo.dto.WalletDTO;
 import com.example.demo.enums.OrderStatus;
 import com.example.demo.enums.OrderType;
 import com.example.demo.enums.WalletType;
 import com.example.demo.model.User;
-import com.example.demo.model.UserOrder;
+import com.example.demo.model.Order;
 import com.example.demo.model.Wallet;
 import com.example.demo.repository.OrderRepository;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.repository.WalletRepository;
 
 @Service
-public class WalletService {
-
+public class WalletService 
+{
 	@Autowired
 	private UserRepository userRepository;
 
@@ -35,27 +33,43 @@ public class WalletService {
 
 		User user = userRepository.findByUserId(walletDTO.getUserId());
 		
-		/* Wallet wallet = walletRepository.findById(walletDTO.getUserId()).get(); */
-		
 		Wallet wallet = new Wallet();
-		wallet.setWalletType(WalletType.valueOf(walletDTO.getWalletType()));
+		wallet.setWalletType(WalletType.FIAT);
 		wallet.setUser(user);
 		wallet.setBalance(0.0);
 		wallet.setShadowBalance(0.0);
 		try {
 			walletRepository.save(wallet);
 		} catch (Exception e) {
-			System.out.println("wallet not added==========" + e);
+			System.out.println("wallet not added to User." + e);
 		}
-		return "success";
+		return "Wallet Added to User.";
 
 	}
 
-	public String deposit(UserOrder userOrder)
+	public String deposit(DepositAmountDTO depositAmountDTO)
 	{
+		User user=userRepository.findByUserId(depositAmountDTO.getUserId());
 		
-		User user=userRepository.findByUserId(userOrder.getUserId());
-		UserOrder newUserOrder=new UserOrder();
+		Order order=new Order();
+		order.setUser(user);
+		order.setCoinQuantity(depositAmountDTO.getAmount());
+		order.setCoinName(depositAmountDTO.getCoinName());
+		order.setCoinType(WalletType.FIAT);
+		order.setNetAmount(depositAmountDTO.getAmount());
+		order.setGrossAmount(depositAmountDTO.getAmount());
+		order.setOrderStatus(OrderStatus.PENDING);
+		order.setOrderType(OrderType.DEPOSIT);
+		order.setDateCreated(new Date());
+		
+		orderRepository.save(order);
+		
+		return "successfully order saved.";
+		
+	}
+		
+		/*//User user=userRepository.findByUserId(userOrder.getUserId());
+		Order newUserOrder=new Order();
 		newUserOrder.setOrderType(OrderType.DEPOSIT);
 		newUserOrder.setCoinQuantity(userOrder.getCoinQuantity());
 		newUserOrder.setPrice(userOrder.getPrice());
@@ -64,12 +78,12 @@ public class WalletService {
 		newUserOrder.setGrossAmount(userOrder.getGrossAmount());
 		newUserOrder.setOrderStatus(OrderStatus.PENDING);
 		newUserOrder.setDateCreated(new Date());
-		newUserOrder.setUser(user);
+		//newUserOrder.setUser(user);
 		orderRepository.save(newUserOrder);
 		
 		return "successfully data saved into userorder table ";
 		
-		
+*/		
 		
 		//Integer userId=userOrder.getUserId();
 		//Double amount=userOrder.getAmount();
@@ -87,8 +101,7 @@ public class WalletService {
 		userOrder.setUser(user);
 		orderRepository.save(userOrder);*/
 		
-		
-		
+
 		/*Integer userId=transactionDto.getUserId();
 		Double amount=transactionDto.getAmount();
 		String walletType=transactionDto.getWalletType();
@@ -108,14 +121,10 @@ public class WalletService {
 			}
 		}*/
 		
-		
-		
-		
-		
 		//return "success";	
-	}
+// }
 
-	public String withdraw(TransactionDTO transactionDto) {
+	/*public String withdraw(DepositAmountDTO transactionDto) {
 		String walletType=transactionDto.getWalletType();
 		User user=userRepository.findByUserId(transactionDto.getUserId());
 		List<Wallet> wallets=user.getWallets();
@@ -141,5 +150,5 @@ public class WalletService {
 			}	
 		}
 		return "success";	
-	}
+	}*/
 }

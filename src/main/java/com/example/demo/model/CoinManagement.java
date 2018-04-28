@@ -4,8 +4,10 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Table;
 
 @Entity
+@Table(name="coinmanagement")
 public class CoinManagement {
 
 	@Id
@@ -82,7 +84,4 @@ public class CoinManagement {
 	public void setFee(Double fee) {
 		this.fee = fee;
 	}
-	
-	
-
 }

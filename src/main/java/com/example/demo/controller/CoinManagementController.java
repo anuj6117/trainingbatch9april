@@ -19,7 +19,8 @@ public class CoinManagementController {
 	private CoinManagementService coinManagementService;
 
 	@RequestMapping(value = "/addcurrency", method = RequestMethod.POST)
-	public String addCoin(@RequestBody CoinManagement data) {
+	public String addCoin(@RequestBody CoinManagement data)
+	{
 		String result = coinManagementService.addAllCoin(data);
 
 		if (result != null) {

@@ -2,7 +2,8 @@ package com.example.demo.utility;
 
 import java.util.Random;
 
-public class OtpGenerator {
+public class OtpGenerator 
+{
 	public static char[] generateOtp(int len)
     {               
         String numbers = "0123456789";         

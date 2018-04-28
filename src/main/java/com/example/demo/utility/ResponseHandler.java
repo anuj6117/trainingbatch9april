@@ -16,7 +16,7 @@ public class ResponseHandler {
 			Object response) {
 		Map<String, Object> map = new HashMap<String, Object>();
 		try {
-			map.put("timestamp", new Date());
+			map.put("timestamp", new Date().getTime());
 			map.put("status", status.value());
 			map.put("isSuccess", error);
 			map.put("message", message);
@@ -34,7 +34,7 @@ public class ResponseHandler {
 	public static ResponseEntity<Object> invalidResponse(HttpStatus status, boolean error, String message) {
 		Map<String, Object> map = new HashMap<String, Object>();
 		try {
-			map.put("timestamp", new Date());
+			map.put("timestamp", new Date().getTime());
 			map.put("status", status.value());
 			map.put("isSuccess", error);
 			map.put("message", message);
@@ -42,7 +42,7 @@ public class ResponseHandler {
 			return new ResponseEntity<Object>(map, status);
 		} catch (Exception e) {
 			map.clear();
-			map.put("timestamp", new Date());
+			map.put("timestamp", new Date().getTime());
 			map.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
 			// map.put("isSuccess",false);
 			map.put("message", e.getMessage());
@@ -53,11 +53,11 @@ public class ResponseHandler {
 
 	@org.springframework.web.bind.annotation.ExceptionHandler
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
-	public ResponseEntity<Object> handleException(MethodArgumentNotValidException exception) {
+	public ResponseEntity<Object> handleException(MethodArgumentNotValidException exception) 
+	{
 		String errorMsg = exception.getBindingResult().getFieldErrors().stream()
 				.map(DefaultMessageSourceResolvable::getDefaultMessage).findFirst().orElse(exception.getMessage());
 
 		return ResponseHandler.generateResponse(HttpStatus.BAD_REQUEST, false, errorMsg, null);
 	}
-
 }

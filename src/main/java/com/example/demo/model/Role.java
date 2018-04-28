@@ -18,8 +18,6 @@ public class Role {
 	@Id
 	@GeneratedValue
 	private Integer roleId;
-	
-	@Column(name="roleType", unique=true)
 	private String roleType;
 	
 	@JsonIgnore

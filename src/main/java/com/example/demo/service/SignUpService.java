@@ -1,8 +1,9 @@
 package com.example.demo.service;
 
 import java.util.Date;
-import java.util.HashSet;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Random;
 
@@ -19,6 +20,8 @@ import com.example.demo.repository.RoleRepository;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.repository.VerifyOtpRepository;
 import com.example.demo.repository.WalletRepository;
+import com.example.demo.utility.EmailValidator;
+import com.example.demo.utility.MobileNumberValidator;
 
 @Service
 public class SignUpService {
@@ -36,39 +39,109 @@ public class SignUpService {
 
 	@Autowired
 	private VerifyOtpRepository verifyOtpRepository;
-	
+
 	@Autowired
 	private WalletRepository walletRepository;
+	
+	@Autowired
+	private EmailValidator emailValidator;
+	
+	@Autowired
+	private MobileNumberValidator mobileNumberValidator;
 
 	private VerifyOtp verifyOtp = new VerifyOtp();
+	
+
 
 	private Integer otp;
 
-	public String addUser(User user) {
-		if ((userRepository.findByEmail(user.getEmail()) == null)) {
+	public Map<String, Object> addUser(User user) 
+	{
+		Map<String, Object> result = new HashMap<String, Object>();
+		
+		if ((userRepository.findByEmail(user.getEmail()) == null)) 
+		{
+			
+			String userName=user.getUserName();
+			if(userName.equals("") || userName.isEmpty() || userName == null)
+			{
+				result.put("isSuccess", false);
+				result.put("message", "User Name can't be null.");
+				return result;
+			}
+			if(userName.length() >= 26 || userName.length() <= 6)
+			{
+				result.put("isSuccess", false);
+				result.put("message", "Maximum characters allowed for this field is 6 to 25.");
+				return result;
+			}
+			if(userName.trim().length() == 0)
+			{
+				result.put("isSuccess", false);
+				result.put("message", "User Name must contain characters.");
+				return result;
+			}
+			
+			String email=user.getEmail();
+			
+			boolean b=emailValidator.validateEmail(email);
+			
+			if(!b)
+			{
+				result.put("isSuccess", false);
+				result.put("message", "Please enter a valid email address.");
+				return result;
+			}
+			
+			String phoneNumber=user.getPhoneNumber();
+			
+			if(!mobileNumberValidator.isValid(phoneNumber))
+			{
+				result.put("isSuccess", false);
+				result.put("message", "Please enter a valid mobile number.");
+				return result;
+			}
+			
+						
 			Random randomNumber = new Random();
 			otp = randomNumber.nextInt(10000);
-			
 
 			Role role = null;
-			if((role = roleRepository.findByRoleType("user")) == null) {
+			if ((role = roleRepository.findByRoleType("user")) == null) 
+			{
 				role = new Role();
 				role.setRoleType("user");
 			}
-			
+
 			User newUser = new User(user);
 			newUser.getRoles().add(role);
 			newUser.setStatus(UserStatus.INACTIVE);
-			System.out.println(newUser.getRoles());
-			Wallet wallet=new Wallet();
+
+			Wallet wallet = new Wallet();
 			wallet.setWalletType(WalletType.FIAT);
-			wallet.setUser(user);
+			wallet.setCoinName("INR");
 			wallet.setBalance(0.0);
 			wallet.setShadowBalance(0.0);
 			wallet.setUser(newUser);
 			newUser.getWallets().add(wallet);
+			
+			
+			newUser.setUserName(userName.trim());
+			newUser.setEmail(email);
+			if(userRepository.findByPhoneNumber(phoneNumber) == null)
+			{	
+				newUser.setPhoneNumber(phoneNumber);
+			}
+			else
+			{
+				result.put("isSuccess", false);
+				result.put("message", "Mobile number is already exist.");
+				return result;
+			}
 
-			if ((userRepository.save(newUser) != null)) {
+			if ((userRepository.save(newUser) != null))
+			{
+				walletRepository.save(wallet);
 				otpService.sendSms(otp);
 				mailService.sendMail(otp, user.getEmail());
 
@@ -80,39 +153,46 @@ public class SignUpService {
 
 				verifyOtpRepository.save(verifyOtp);
 
-				return "Successfully sent otp.";
-			} else {
-				return "Failure";
+				result.put("isSuccess", true);
+				result.put("message", "Your account has been successfully created. Please, verify it by using OTP.");
+				return result;
+			} 
+			else
+			{
+				result.put("isSuccess", false);
+				result.put("message", "FAIL");
+				return result;
 			}
-		} else {
-			return "Already existing user";
+		} 
+		else
+		{
+			result.put("isSuccess", false);
+			result.put("message", "Oopss, this email id is already exist.");
+			return result;
 		}
 	}
 
 	public String verifyUserWithOtp(String emailId, Integer otp) {
-		
+
 		VerifyOtp vOtp = verifyOtpRepository.findByEmailId(emailId);
-		if (vOtp == null) {
-			return "email not exist";
+		if (vOtp == null) 
+		{
+			return "email does not exist";
 		}
-		String v_email = vOtp.getEmailId();
-		System.out.println("v_email " + v_email);
+		
 		Integer v_otp = vOtp.getTokenOtp();
-		System.out.println("v_otp " + v_otp);
-
-		if (otp.equals(v_otp)) {
-			System.out.println(otp + " otp is successfully verified" + otp);
-
+		
+		if (otp.equals(v_otp)) 
+		{
 			User user = userRepository.findByEmail(emailId);
-			// System.out.println(userRepository.findByEmail(emailId));
 			user.setStatus(UserStatus.ACTIVE);
-			// verifyOtpRepository.delete(verifyOtp);
 			verifyOtpRepository.deleteById(vOtp.getId());
-			System.out.println("otpVerification table deleted.");
-		} else {
-			System.out.println("Sorry, invalid username or otp");
+			return "Otp verification successfull.";
+		} 
+		else
+		{
+			return "Sorry, invalid email or otp";
 		}
-		return "success";
 	}
 
 	public Optional<User> getuserById(Integer id) {
@@ -147,4 +227,42 @@ public class SignUpService {
 
 		userRepository.deleteById(id);
 	}
+	
+	/*
+	 * public String addUser(User user) { if
+	 * ((userRepository.findByEmail(user.getEmail()) == null)) { Random randomNumber
+	 * = new Random(); otp = randomNumber.nextInt(10000);
+	 * 
+	 * 
+	 * Role role = null; if((role = roleRepository.findByRoleType("user")) == null)
+	 * { role = new Role(); role.setRoleType("user"); }
+	 * 
+	 * User newUser = new User(user); newUser.getRoles().add(role);
+	 * newUser.setStatus(UserStatus.INACTIVE);
+	 * System.out.println(newUser.getRoles()); Wallet wallet=new Wallet();
+	 * wallet.setWalletType(WalletType.FIAT); wallet.setUser(user);
+	 * wallet.setBalance(0.0); wallet.setShadowBalance(0.0);
+	 * wallet.setUser(newUser); newUser.getWallets().add(wallet);
+	 * 
+	 * if ((userRepository.save(newUser) != null)) { otpService.sendSms(otp);
+	 * mailService.sendMail(otp, user.getEmail());
+	 * 
+	 * verifyOtp.setId(user.getUserId()); verifyOtp.setTokenOtp(otp);
+	 * verifyOtp.setEmailId(user.getEmail()); verifyOtp.getEmailId();
+	 * verifyOtp.setDate(new Date());
+	 * 
+	 * verifyOtpRepository.save(verifyOtp);
+	 * 
+	 * return "Successfully sent otp."; } else { return "Failure"; } } else { return
+	 * "Already existing user"; } }
+	 */
+	
+	
+	
+	
+	
+	
+	
+	
+	
 }

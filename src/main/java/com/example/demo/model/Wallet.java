@@ -1,5 +1,6 @@
 package com.example.demo.model;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -9,6 +10,8 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
 
 import com.example.demo.enums.WalletType;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -20,14 +23,13 @@ public class Wallet {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Integer walletId;
-	private Double balance ;
+	private Double balance;
 	private Double shadowBalance;
-	//@NotEmpty(message = "walletType  must not be empty")
-    //@NotBlank(message = "Space Not Accepted")
+	private String coinName;
 	@Enumerated(EnumType.STRING)
 	private WalletType walletType;
-	
-	@ManyToOne
+
+	@ManyToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "userId", referencedColumnName = "userId")
 	@JsonIgnore
 	private User user;
@@ -56,7 +58,7 @@ public class Wallet {
 		this.shadowBalance = shadowBalance;
 	}
 
-		public WalletType getWalletType() {
+	public WalletType getWalletType() {
 		return walletType;
 	}
 
@@ -64,11 +66,21 @@ public class Wallet {
 		this.walletType = walletType;
 	}
 
-		public User getUser() {
+	public User getUser() {
 		return user;
 	}
 
 	public void setUser(User user) {
 		this.user = user;
+
 	}
+
+	public String getCoinName() {
+		return coinName;
+	}
+
+	public void setCoinName(String coinName) {
+		this.coinName = coinName;
+	}
+
 }

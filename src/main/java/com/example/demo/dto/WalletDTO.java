@@ -1,10 +1,12 @@
 package com.example.demo.dto;
 
+import com.example.demo.enums.WalletType;
+
 public class WalletDTO {
 
 	private Integer userId;
 	private Double balance;
-	private String walletType;
+	private WalletType walletType;
 
 	public Integer getUserId() {
 		return userId;
@@ -22,11 +24,13 @@ public class WalletDTO {
 		this.balance = balance;
 	}
 
-	public String getWalletType() {
+	public WalletType getWalletType() {
 		return walletType;
 	}
 
-	public void setWalletType(String walletType) {
+	public void setWalletType(WalletType walletType) {
 		this.walletType = walletType;
 	}
+
+	
 }

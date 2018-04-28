@@ -1,12 +1,22 @@
 package com.example.demo.dto;
 
 import com.example.demo.enums.OrderType;
+import com.example.demo.enums.WalletType;
 
-public class TransactionDTO {
+public class DepositAmountDTO {
 	private Integer userId;
-	private String walletType;
+	private WalletType walletType;
 	private Double amount;
 	private OrderType orderType;
+	private String coinName;
+
+	public String getCoinName() {
+		return coinName;
+	}
+
+	public void setCoinName(String coinName) {
+		this.coinName = coinName;
+	}
 
 	public Integer getUserId() {
 		return userId;
@@ -16,12 +26,12 @@ public class TransactionDTO {
 		this.userId = userId;
 	}
 
-	public String getWalletType() {
-		return walletType;
+	public void setWalletType(WalletType walletType) {
+		this.walletType = walletType;
 	}
 
-	public void setWalletType(String walletType) {
-		this.walletType = walletType;
+	public WalletType getWalletType() {
+		return walletType;
 	}
 
 	public Double getAmount() {
@@ -39,7 +49,4 @@ public class TransactionDTO {
 	public void setOrderType(OrderType orderType) {
 		this.orderType = orderType;
 	}
-	
-	
-
 }

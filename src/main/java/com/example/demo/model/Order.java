@@ -2,11 +2,9 @@ package com.example.demo.model;
 
 import java.util.Date;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -14,54 +12,51 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-import com.example.demo.dto.UserOrderDTO;
+import com.example.demo.dto.OrderDTO;
 import com.example.demo.enums.OrderType;
+import com.example.demo.enums.TransactionType;
 import com.example.demo.enums.WalletType;
 import com.example.demo.enums.OrderStatus;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
-@Table(name = "userorder")
-public class UserOrder {
+@Table(name = "ordertable")
+public class Order {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Integer orderId;
+
+	private Double coinQuantity;
+	private Double price;
+	private Date dateCreated;
+	private String coinName;
+	private Double netAmount;
+	private Double fee;
+	private Double grossAmount;
 	
+	@Enumerated(EnumType.STRING)
+	private WalletType walletType;
+
+	@Enumerated(EnumType.STRING)
+	private TransactionType transactionType;
+
+	@Enumerated(EnumType.STRING)
+	private WalletType coinType;
+
 	@Enumerated(EnumType.STRING)
 	private OrderType orderType;
 
 	@Enumerated(EnumType.STRING)
 	private OrderStatus orderStatus;
 
-	private Integer coinQuantity;
-	private Double price;
-	private Date dateCreated;
-	private String coinName;
-	private Double netAmount;
-	private Integer fee;
-	private Integer grossAmount;
-	private WalletType coinType;
-	
 	@ManyToOne
 	@JoinColumn(name = "userId", referencedColumnName = "userId")
-	@JsonIgnore
 	private User user;
 
-	public WalletType getCoinType() {
-		return coinType;
-	}
-
-	public void setCoinType(WalletType coinType) {
-		this.coinType = coinType;
-	}
-
-	private Integer userId;
-
-	public UserOrder() {
+	public Order() {
 
 	}
 
-	public UserOrder(UserOrderDTO userOrderDTO) {
+	public Order(OrderDTO userOrderDTO) {
 		this.coinName = userOrderDTO.getCoinName();
 		this.coinQuantity = userOrderDTO.getCoinQuantity();
 		this.price = userOrderDTO.getPrice();
@@ -83,8 +78,6 @@ public class UserOrder {
 		this.orderType = orderType;
 	}
 
-	
-
 	public OrderStatus getOrderStatus() {
 		return orderStatus;
 	}
@@ -93,11 +86,11 @@ public class UserOrder {
 		this.orderStatus = orderStatus;
 	}
 
-	public Integer getCoinQuantity() {
+	public Double getCoinQuantity() {
 		return coinQuantity;
 	}
 
-	public void setCoinQuantity(Integer coinQuantity) {
+	public void setCoinQuantity(Double coinQuantity) {
 		this.coinQuantity = coinQuantity;
 	}
 
@@ -141,29 +134,43 @@ public class UserOrder {
 		this.netAmount = netAmount;
 	}
 
-	public Integer getFee() {
+	public Double getFee() {
 		return fee;
 	}
 
-	public void setFee(Integer fee) {
+	public void setFee(Double fee) {
 		this.fee = fee;
 	}
 
-	public Integer getUserId() {
-		return userId;
-	}
-
-	public void setUserId(Integer userId) {
-		this.userId = userId;
-	}
-
-	public Integer getGrossAmount() {
+	public Double getGrossAmount() {
 		return grossAmount;
 	}
 
-	public void setGrossAmount(Integer grossAmount) {
+	public void setGrossAmount(Double grossAmount) {
 		this.grossAmount = grossAmount;
 	}
-	
-	
+
+	public WalletType getCoinType() {
+		return coinType;
+	}
+
+	public void setCoinType(WalletType coinType) {
+		this.coinType = coinType;
+	}
+
+	public TransactionType getTransactionType() {
+		return transactionType;
+	}
+
+	public void setTransactionType(TransactionType transactionType) {
+		this.transactionType = transactionType;
+	}
+
+	public WalletType getWalletType() {
+		return walletType;
+	}
+
+	public void setWalletType(WalletType walletType) {
+		this.walletType = walletType;
+	}
 }

@@ -1,12 +1,11 @@
 package com.example.demo.enums;
 
-public enum OrderStatus {
-	PENDING("Pending"),APPROVED("Approved"),REJECTED("Rejected");
+public enum TransactionType {
+	BUYER("Buyer"),SELLER("Seller");
 	
-	private String value;
+	public String value;
 	
-	private OrderStatus(String value)
-	{
+	private TransactionType(String value) {
 		this.value = value;
 	}
 
