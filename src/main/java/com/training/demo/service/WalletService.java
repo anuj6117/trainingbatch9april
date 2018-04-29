@@ -34,12 +34,22 @@ public class WalletService {
 	
 	public String addWallet(WalletDto walletDto) {
 		boolean flag = false;
-		User user = userRepository.findByUserId(walletDto.getUserId());
-		Set walletSet = user.getWallets();
-		Iterator walletIterator = walletSet.iterator();
+		User user;
+		try
+		{
+		user = userRepository.findByUserId(walletDto.getUserId());
+		}
+		catch(Exception e)
+		{
+			return "user does not exist.";
+		}
+		if(user.getUserStatus().equals(UserStatus.ACTIVE))
+		{
+		Set<Wallet> walletSet = user.getWallets();
+		Iterator<Wallet> walletIterator = walletSet.iterator();
 		while(walletIterator.hasNext())
 		{
-			Wallet tempwallet = (Wallet)walletIterator.next();
+			Wallet tempwallet = walletIterator.next();
 			if(tempwallet.getWalletType().equals(walletDto.getWalletType()) && tempwallet.getCoinName().equals(walletDto.getCoinName()))
 			{
 				flag = true;
@@ -58,6 +68,11 @@ public class WalletService {
 		}
 		else {
 			return "Existing wallet type for the given coin name.";
+		}
+		}
+		else
+		{
+			return "Please activate your account first and than only you can create wallet.";
 		}
 	}
 	public String depositAmount(OrderDto orderDto) {
@@ -89,9 +104,9 @@ public class WalletService {
 
 		 User user = userRepository.findByUserId(userId);
 		 Set<Wallet> wallet = user.getWallets();
-		 Iterator itr = wallet.iterator();
+		 Iterator<Wallet> itr = wallet.iterator();
 		 while(itr.hasNext()) {
-			Wallet tempWallet = (Wallet) itr.next();
+			Wallet tempWallet = itr.next();
 			 if(tempWallet == walletRepository.findByWalletType(WalletType.valueOf(walletType))) {
 				 Double availBalance = tempWallet.getBalance();
 				 

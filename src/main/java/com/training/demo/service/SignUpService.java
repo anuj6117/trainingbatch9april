@@ -44,15 +44,18 @@ public class SignUpService
 	
 	private OtpVerification otpVerification;
 	
+//	private OtpVerification otpVerification=new OtpVerification();
+	
 	
 	public String addUser(User user)
 	{	
-		boolean flag = userRepository.existsByEmail(user.getEmail());
-		if(flag == false)
+		boolean emailFlag = userRepository.existsByEmail(user.getEmail());
+		boolean phoneNoFlag = userRepository.existsByPhoneNo(user.getPhoneNo());
+		if(emailFlag == false && phoneNoFlag == false)
 		{
 			System.out.println("service hit");
 			Random random=new Random();
-			int otp=random.nextInt(5255);
+			int tokenOTP=random.nextInt(999999)+1432;
 			Date date;
 			System.out.println("service hit before if");
 			user.setUserStatus(UserStatus.INACTIVE);
@@ -81,15 +84,15 @@ public class SignUpService
 						String email = user.getEmail();
 						String phoneNo = user.getPhoneNo();
 							System.out.println("service hit inside if.");
-							otpService.sendSms(otp, phoneNo);
+							//otpService.sendSms(tokenOTP, phoneNo);
 							try {
-								emailService.sendEmail(otp, email);
+								emailService.sendEmail(tokenOTP, email);
 							} catch (Exception e) {
 								System.out.println("email could not be verified as : "+e.getMessage());
 							}
 							otpVerification = new OtpVerification();
 							otpVerification.setUserId(user.getUserId());
-							otpVerification.setOtp(otp);
+							otpVerification.setTokenOTP(tokenOTP);
 							otpVerification.setEmail(user.getEmail());
 							date = new Date();
 							otpVerification.setDate(date);
@@ -108,37 +111,47 @@ public class SignUpService
 			return "Already existing Email or Username.";
 		}
 	}
-	public String verifyUserWithOtp(String email,Integer otp)
+	public String verifyUserWithOtp(String email,Integer tokenOTP)
 	{
-		try {
-		OtpVerification tempOtpVerification = otpRepository.findByEmail(email);
-		String v_email = tempOtpVerification.getEmail();
-		int v_otp = tempOtpVerification.getOtp();
-		User t_user = userRepository.findByEmail(email);
-		if(email.equals(v_email))
-		{
-			System.out.println("email is successfully verified"+email);
-				if(otp.equals(v_otp))
-				{
-					System.out.println(otp+" otp is successfully verified"+otp);
-				}
-			otpRepository.delete(tempOtpVerification);	
-			t_user.setUserStatus(UserStatus.ACTIVE);
-			userRepository.save(t_user);
-				System.out.println("otpVerification table deleted.");
-				return "Otp is successfully verified.";
-		}
-		else
-		{
-			System.out.println("Sorry, invalid username or otp");
-			return "Sorry, invalid username or otp.";
-		}
+		OtpVerification tempOtpVerification;
+		User t_user;
+		try 
+		{			
+			tempOtpVerification = otpRepository.findByEmail(email);
+			t_user = userRepository.findByEmail(email);		
+			String v_email = tempOtpVerification.getEmail();
+			int v_otp = tempOtpVerification.getTokenOTP();
+		
+			if(email.equals(v_email))
+			{
+				System.out.println("email is successfully verified : "+email);
+				System.out.println("..........---------Token otp >>>>>> "+tempOtpVerification.getTokenOTP());
+					if(tokenOTP.equals(v_otp))
+					{
+						System.out.println(tokenOTP+"< token otp is successfully verified with table otp > "+v_otp);
+					}
+					else
+					{
+						return "invalid otp";
+					}
+					otpRepository.delete(tempOtpVerification);	
+					t_user.setUserStatus(UserStatus.ACTIVE);
+					userRepository.save(t_user);
+					System.out.println("otpVerification table deleted.");
+					return "Your account is verified successfully.";
+			}
+			else
+			{
+					System.out.println("Sorry, invalid username or otp");
+					return "Invalid email";
+			}
 		}
 		catch(Exception e)
 		{
-			return "Otp verification failed due to either Otp or Id mismatch as "+e.toString();
+			return "invalid email.";
 		}
-	}	
+		
+	}
 	
 	public List<User> getAllUsers()
 	{
@@ -172,26 +185,42 @@ public class SignUpService
 		return "User succesfully updated!";
 	 }
 
-		public User assignRoleToUser(UserRoleDto userRoleDto)
+	public String assignRoleToUser(UserRoleDto userRoleDto)
+	{
+		User user;
+		Role role;
+		try 
 		{
-			User user = userRepository.findByUserId(userRoleDto.getUserId());
-			Role role = roleRepository.findByRoleType(userRoleDto.getRoleType());
-			
-			if(user != null)
-			{
-				if(role != null)
-				{
-					user.getRoles().add(role);
-					User tempUser = userRepository.save(user);
-					return tempUser;
-				}	
-				else {
-					throw new NullPointerException("User role doesn't exist");
-				}
+			user = userRepository.findByUserId(userRoleDto.getUserId());
+			role = roleRepository.findByRoleType(userRoleDto.getRoleType());
+		}	
+		catch(Exception e)
+		{
+				return "invalid userid";
 			}
+		try 
+		{
+			role = roleRepository.findByRoleType(userRoleDto.getRoleType());
+		}	
+		catch(Exception e)
+		{
+				return "invalid roleType";
+			}
+			if(user != null)
+				{
+					if(role != null)
+					{
+						user.getRoles().add(role);
+						userRepository.save(user);
+						return "Role is successfully assigned to the given user.";
+					}	
+					else {
+						throw new NullPointerException("Given role doesn't exist");
+					}
+				}
 			else
 			{
 				throw new NullPointerException("User id does not exist.");
 			}
-		}	
+	}	
 }

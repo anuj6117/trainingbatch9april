@@ -13,8 +13,19 @@ public class CoinManagementService {
 	private CoinManagementRepository coinManagementRepository;
 
 	public String addAllCoin(CoinManagement coinManagement) {
+			CoinManagement tempCoinManagement;
+			tempCoinManagement = coinManagementRepository.findOneByCoinName(coinManagement.getCoinName());			
+			if(tempCoinManagement == null){
+			Double coinInInr = coinManagement.getPrice() * coinManagement.getInitialSupply();
+			coinManagement.setProfit(0.0);
+			coinManagement.setCoinInINR(coinInInr);
 			coinManagementRepository.save(coinManagement);
 			return "Your Coin Has Been Added Successfully.";
+			}
+			else
+			{
+				return "Already existing coin name.";
+			}
 	}
 
 	public List<CoinManagement> getCurrencies() {

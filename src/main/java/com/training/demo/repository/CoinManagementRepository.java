@@ -10,5 +10,7 @@ public interface CoinManagementRepository extends JpaRepository<CoinManagement,I
 	public CoinManagement findOneByCoinId(Integer coinId);
 	
 	public CoinManagement findOneByCoinName(String coinName);
+	
+	public CoinManagement findAllByCoinName(String coinName);
 
 }

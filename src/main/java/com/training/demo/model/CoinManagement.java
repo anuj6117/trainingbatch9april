@@ -20,14 +20,13 @@ public class CoinManagement {
 	private Double fees;
 	private Double profit;
 	private Double coinInINR;
-	private Integer coinQuantity;
 	
 	public CoinManagement() {
 		super();
 	}
 	
 	public CoinManagement(Integer coinId, String coinName, String symbol, Double initialSupply, Double price,
-			Double fees, Double profit, Double coinInINR, Integer coinQuantity) {
+			Double fees, Double profit, Double coinInINR) {
 		super();
 		this.coinId = coinId;
 		this.coinName = coinName;
@@ -37,10 +36,7 @@ public class CoinManagement {
 		this.fees = fees;
 		this.profit = profit;
 		this.coinInINR = coinInINR;
-		this.coinQuantity = coinQuantity;
 	}
-
-
 
 	public Double getFees() {
 		return fees;

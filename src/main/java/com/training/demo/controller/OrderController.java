@@ -5,9 +5,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
-
 import com.training.demo.dto.OrderApprovalDto;
-import com.training.demo.model.OrderTable;
+import com.training.demo.dto.SellBuyTransactionDto;
 import com.training.demo.service.OrderService;
 
 @RestController
@@ -17,10 +16,12 @@ public class OrderController {
 	private OrderService orderService;
 		
 	@RequestMapping(value="/createbuyorder", method = RequestMethod.POST)
-	public String createBuyOrder(@RequestBody OrderTable orderTable){
-		if(orderTable != null) 
+	public String createBuyOrder(@RequestBody SellBuyTransactionDto sellBuyTransactionDto){
+		System.out.println("price = "+sellBuyTransactionDto.getPrice()+"/t"+"userId = "+sellBuyTransactionDto.getUserId()+"/t coinName = "+sellBuyTransactionDto.getCoinName()+"/t coinQuantity = "+sellBuyTransactionDto.getCoinQuantity());
+		if(sellBuyTransactionDto != null) 
 		{
-		return orderService.createBuyOrder(orderTable);
+			System.out.println("IIIIIIIIIIIIIIIIIIIIIIIIIInnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn");
+		return orderService.createBuyOrder(sellBuyTransactionDto);
 		}
 		else
 		{
@@ -28,11 +29,11 @@ public class OrderController {
 		}
 	}
 	
-	@RequestMapping(value="createSellOrder", method = RequestMethod.POST)
-	public String createSellOrder(@RequestBody OrderTable orderTable) {
-		if(orderTable != null)
+	@RequestMapping(value="/createsellorder", method = RequestMethod.POST)
+	public String createSellOrder(@RequestBody SellBuyTransactionDto sellBuyTransactionDto) {
+		if(sellBuyTransactionDto != null)
 		{
-		return orderService.createSellOrder(orderTable);
+		return orderService.createSellOrder(sellBuyTransactionDto);
 		}
 		else
 		{
@@ -40,7 +41,7 @@ public class OrderController {
 		}
 	}
 	
-	@RequestMapping(value="/approveOrder", method = RequestMethod.POST)
+	@RequestMapping(value="/approveorder", method = RequestMethod.POST)
 	public String approveOrder(@RequestBody OrderApprovalDto orderApprovalDto)
 	{
 		if(orderApprovalDto != null)

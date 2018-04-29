@@ -41,14 +41,15 @@ public class SignUpController
 	@RequestMapping(value = "/verify", method = RequestMethod.POST)
 	public String userVerification(@RequestBody OtpVerification otpVerification)
 	{
-		if((otpVerification.getEmail()!=null)||(otpVerification.getOtp()!=null))
+		if((otpVerification.getEmail()!=null) && (otpVerification.getTokenOTP()!=null))
 		{
-			return signUpService.verifyUserWithOtp(otpVerification.getEmail(),otpVerification.getOtp());		
+			return signUpService.verifyUserWithOtp(otpVerification.getEmail(),otpVerification.getTokenOTP());		
 		}
 		else
 		{
 			throw new NullPointerException("insufficient information.");
 		}
+		
 	 }
 	 @RequestMapping(value="/getallusers", method=RequestMethod.GET)
 	 public List<User> getAll()
@@ -80,26 +81,21 @@ public class SignUpController
 		try {
 			User t_user = userRepository.findByUserId(id);
 			userRepository.delete(t_user);
-			return "success";	
+			return "Your Account has been succesfully deleted.";	
 		}
 		catch(Exception e)
 		{
-			return "fail";
+			return "Invalid user id.";
 		}		
 	  }
 	 
 	@RequestMapping(value = "/assignrole", method = RequestMethod.POST)
 	public String assignRole(@RequestBody UserRoleDto userRoleDto) 
 	{
-		System.out.println("----------------Inside assignRole method of signupcontroller");
-			User user = null;
-			try {
-				System.out.println("Inside assignRole method of try signupcontroller--------------");
-				user = signUpService.assignRoleToUser(userRoleDto);
-			} catch (NullPointerException nullPointerException) {
-				System.out.println("Inside assignRole method of-------catch signupcontroller");
-				return "Role Cannot be assigned as : "+nullPointerException.getMessage();
+		String msg = null;
+			if(userRoleDto != null) {
+			msg = signUpService.assignRoleToUser(userRoleDto);
 			}
-			return "Role Is Successfully Assigned.";
-	 }
+			return msg; 
+	}
 }

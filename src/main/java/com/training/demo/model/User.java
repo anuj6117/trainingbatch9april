@@ -17,6 +17,10 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.training.demo.enums.UserStatus;
@@ -28,10 +32,26 @@ public class User
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Integer userId;
+	
+	@NotEmpty
+	@Size(min=2, max=30)	
+	@NotNull(message="Please enter your full name.")
 	private String fullName;
+	
+	@NotNull
+	@Email
+	@NotEmpty(message="Please enter your email address.")
 	private String email;
+	
+	@NotNull(message = "Please enter your mobile number.")
 	private String phoneNo;
+	
+	@NotNull
+	@NotEmpty(message = "Please enter your password.")
+	@Size(min = 6, max = 15, message = "Your password must between 6 and 15 characters")
 	private String password;
+	
+	@NotNull
 	private String country;
 	private Date date;
 	@Enumerated(EnumType.STRING)
@@ -47,7 +67,7 @@ public class User
 	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
 	private Set<Wallet> wallets = new HashSet<Wallet>();
 		
-	@OneToMany(mappedBy = "user")
+	@OneToMany(fetch=FetchType.EAGER, cascade = CascadeType.ALL, mappedBy = "user")
 	@JsonIgnore
 	private Set<OrderTable> orderTable = new HashSet<>();
 	
