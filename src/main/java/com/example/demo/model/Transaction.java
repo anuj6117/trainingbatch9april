@@ -2,154 +2,194 @@ package com.example.demo.model;
 
 import java.util.Date;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import javax.validation.constraints.NotNull;
 
-import com.example.demo.enums.TransactionStatus;
-import com.example.demo.enums.WalletEnum;
+import com.example.demo.enums.CoinType;
+import com.example.demo.enums.OrderStatus;
+import com.example.demo.enums.OrderType;
 
 
 @Entity
 @Table(name="Transaction")
 public class Transaction {
+	
 	@Id
-	@GeneratedValue
-	private Integer id;
+	private Integer transactionId;	
 	
-	@NotNull
+	@Column(unique=true)
+	private Double coinQuantity;
+	
 	@Enumerated(EnumType.STRING)
-	private TransactionStatus transactionStatus;
+	private CoinType coinType;	
 	
-	@NotNull
 	@Enumerated(EnumType.STRING)
-	private WalletEnum walletType;
+	private OrderStatus transactionStatus;
 	
-	@ManyToOne(fetch=FetchType.EAGER)
-	private User user;
-	@ManyToOne
-	private Wallet wallet;
+	@Enumerated(EnumType.STRING)
+	private OrderType transactionType;	
+
+	private String coinName;
+	private Integer fees;
+	private Double netAmount;
+	private Double grossAmount;
+	private Double exchangeRate;
+	private Integer buyerId;
+	private Integer sellerId;
+	private Date transactionCreatedOn;
+	private String description;
 	
-	private Integer depositAmount;
-	private Integer withdrawAmount;
-	private Integer netAmount;	
-	private Integer fee;
-	private Integer exchangeRate;
-	private Integer grossAmount;
-	private String buyer;
-	private String seller;		
-	private Date date;
+	public Transaction() {}
 	
-	public Transaction() {
-		
-	}
 	
-	public Transaction(User user, Wallet wallet, Integer depositAmount, Integer withdrawAmount,TransactionStatus status) {
-		this.user = user;
-		this.wallet = wallet;
-		this.walletType = wallet.getWalletType();
-		this.transactionStatus = TransactionStatus.PENDING;
-		this.depositAmount = depositAmount;
-		this.withdrawAmount = withdrawAmount;
-		this.date = new Date();
-	}
-	public Integer getId() {
-		return id;
-	}
-	
-	public Integer getNetAmount() {
-		return netAmount;
-	}
-	
-	public void setNetAmount(Integer netAmount) {
+	public Transaction(Integer transactionId, Double coinQuantity, CoinType coinType, OrderStatus transactionStatus,
+			OrderType transactionType, String coinName, Integer fees, Double netAmount, Double grossAmount,
+			Double exchangeRate, Integer buyerId, Integer sellerId, Date transactionCreatedOn, String description) {
+		super();
+		this.transactionId = transactionId;
+		this.coinQuantity = coinQuantity;
+		this.coinType = coinType;
+		this.transactionStatus = transactionStatus;
+		this.transactionType = transactionType;
+		this.coinName = coinName;
+		this.fees = fees;
 		this.netAmount = netAmount;
-	}
-	
-	public WalletEnum getWalletType() {
-		return walletType;
-	}
-	
-	public void setWalletType(WalletEnum walletType) {
-		this.walletType = walletType;
-	}
-	
-	public Integer getFee() {
-		return fee;
-	}
-	
-	public void setFee(Integer fee) {
-		this.fee = fee;
-	}
-	
-	public Integer getExchangeRate() {
-		return exchangeRate;
-	}
-	
-	public void setExchangeRate(Integer exchangeRate) {
-		this.exchangeRate = exchangeRate;
-	}
-	
-	public Integer getGrossAmount() {
-		return grossAmount;
-	}
-	
-	public void setGrossAmount(Integer grossAmount) {
 		this.grossAmount = grossAmount;
+		this.exchangeRate = exchangeRate;
+		this.buyerId = buyerId;
+		this.sellerId = sellerId;
+		this.transactionCreatedOn = transactionCreatedOn;
+		this.description = description;
 	}
 	
-	public String getBuyer() {
-		return buyer;
+	public Transaction(OrderDetails orderDetails) {
+		this.transactionId = orderDetails.getOrderId();
+		this.coinName = orderDetails.getCoinName();
+		this.coinType = orderDetails.getCoinType();
+		this.transactionStatus = orderDetails.getOrderStatus();
+		this.transactionType = orderDetails.getOrderType();
+		this.grossAmount = orderDetails.getPrice();
+		this.fees = orderDetails.getFee();
+		this.netAmount = orderDetails.getPrice();
+		this.grossAmount = orderDetails.getPrice();
+		this.exchangeRate = orderDetails.getExchangeRate();
+		this.buyerId = orderDetails.getUser().getUserId();
+		this.transactionCreatedOn = new Date();		
+	}
+
+	public OrderType getTransactionType() {
+		return transactionType;
+	}
+
+	public void setTransactionType(OrderType transactionType) {
+		this.transactionType = transactionType;
 	}
 	
-	public void setBuyer(String buyer) {
-		this.buyer = buyer;
+	public Integer getTransactionId() {
+		return transactionId;
 	}
 	
-	public String getSeller() {
-		return seller;
+	public void setTransactionId(Integer transactionId) {
+		this.transactionId = transactionId;
 	}
 	
-	public void setSeller(String seller) {
-		this.seller = seller;
+	public Double getCoinQuantity() {
+		return coinQuantity;
 	}
 	
-	public TransactionStatus getTransactionStatus() {
+	public void setCoinQuantity(Double coinQuantity) {
+		this.coinQuantity = coinQuantity;
+	}
+	
+	public CoinType getCoinType() {
+		return coinType;
+	}
+	
+	public void setCoinType(CoinType coinType) {
+		this.coinType = coinType;
+	}
+	
+	public String getCoinName() {
+		return coinName;
+	}
+	
+	public void setCoinName(String coinName) {
+		this.coinName = coinName;
+	}
+	public OrderStatus getTransactionStatus() {
 		return transactionStatus;
 	}
 	
-	public void setTransactionStatus(TransactionStatus transactionStatus) {
+	public void setTransactionStatus(OrderStatus transactionStatus) {
 		this.transactionStatus = transactionStatus;
 	}
 	
-	public Date getDate() {
-		return date;
+	public Integer getFees() {
+		return fees;
 	}
 	
-	public void setDate(Date date) {
-		this.date = date;
+	public void setFees(Integer fees) {
+		this.fees = fees;
 	}
-
-	public Integer getDepositAmount() {
-		return depositAmount;
+	
+	public Double getNetAmount() {
+		return netAmount;
 	}
-
-	public void setDepositAmount(Integer depositAmount) {
-		this.depositAmount = depositAmount;
+	
+	public void setNetAmount(Double netAmount) {
+		this.netAmount = netAmount;
 	}
-
-	public Integer getWithdrawAmount() {
-		return withdrawAmount;
+	
+	public Double getGrossAmount() {
+		return grossAmount;
 	}
-
-	public void setWithdrawAmount(Integer withdrawAmount) {
-		this.withdrawAmount = withdrawAmount;
+	
+	public void setGrossAmount(Double grossAmount) {
+		this.grossAmount = grossAmount;
 	}
-
-		
+	
+	public Double getExchangeRate() {
+		return exchangeRate;
+	}
+	
+	public void setExchangeRate(Double exchangeRate) {
+		this.exchangeRate = exchangeRate;
+	}
+	
+	public Integer getBuyerId() {
+		return buyerId;
+	}
+	
+	public void setBuyerId(Integer buyerId) {
+		this.buyerId = buyerId;
+	}
+	
+	public Integer getSellerId() {
+		return sellerId;
+	}
+	
+	public void setSellerId(Integer sellerId) {
+		this.sellerId = sellerId;
+	}
+	
+	public Date getTransactionCreatedOn() {
+		return transactionCreatedOn;
+	}
+	
+	public void setTransactionCreatedOn(Date transactionCreatedOn) {
+		this.transactionCreatedOn = transactionCreatedOn;
+	}
+	
+	public String getDescription() {
+		return description;
+	}
+	
+	public void setDescription(String description) {
+		this.description = description;
+	}
+	
 }

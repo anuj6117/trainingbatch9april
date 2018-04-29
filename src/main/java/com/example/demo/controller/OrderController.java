@@ -12,7 +12,7 @@ import com.example.demo.model.OrderDetails;
 import com.example.demo.service.OrderService;
 
 @RestController
-@RequestMapping("/order")
+
 public class OrderController {
 	
 	@Autowired
@@ -29,7 +29,7 @@ public class OrderController {
 	}
 	
 	@RequestMapping(value="/getorderbyuserid", method=RequestMethod.GET)
-	public List<OrderDetails> getOrderByUserId(@RequestParam("id")Integer id) {
+	public OrderDetails getOrderByUserId(@RequestParam("id")Integer id) {
 		return orderService.getOrderByUserId(id);
 	}
 	
@@ -37,5 +37,13 @@ public class OrderController {
 	public List<OrderDetails> showAllOrder() {
 		return orderService.showAllOrder();
 	}
+	
+	@RequestMapping(value = "/orderforapproval", method = RequestMethod.POST)
+	public String orderApproval(@RequestBody UserOrderDTO userOrderDto) {
+		return orderService.orderApproval(userOrderDto);
+	}
+	
+	/*@RequestMapping(value = "/transaction", method = RequestMethod.POST)
+	public String transaction()*/
 
 }

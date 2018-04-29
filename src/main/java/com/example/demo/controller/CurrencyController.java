@@ -20,25 +20,25 @@ public class CurrencyController {
 	
 	@RequestMapping(value="/addcurrency", method=RequestMethod.POST)
 	public String addCurrency(@RequestBody CurrencyModel currency) {
-		return (currencyService.addCurrency(currency)!=null)?"success":"currency already exist";			
+		return currencyService.addCurrency(currency);			
 	}
 	
-	@RequestMapping("/getallcurrnecy")
+	@RequestMapping("/getallcurrency")
 	public List<CurrencyModel> getAllCurrency() {
 		return currencyService.getAllCurrency();
 	}
 	
-	@RequestMapping("/getcurrnecybyid")
+	@RequestMapping("/getcurrencybyid")
 	public CurrencyModel getCurrencyById(@RequestParam("id")Integer id) {
 		return currencyService.getCurrencyById(id);
 	}
 	
-	@RequestMapping(name="/updatecurrnecy", method=RequestMethod.POST)
+	@RequestMapping(name="/updatecurrency", method=RequestMethod.POST)
 	public String updateCurrency(@RequestBody CurrencyModel currency) {
-		return (currencyService.updateCurrency(currency)!=null)?"success":"currency not found";		
+		return (currencyService.updateCurrency(currency));		
 	}
 	
-	@RequestMapping(name="/deletecurrnecy", method=RequestMethod.GET)
+	@RequestMapping(name="/deletecurrency", method=RequestMethod.GET)
 	public String deleteCurrency(@RequestParam("id")Integer id) {
 		return currencyService.deleteCurrency(id);
 	}

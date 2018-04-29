@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.example.demo.dto.UserWalletDTO;
-import com.example.demo.enums.WalletEnum;
+import com.example.demo.enums.CoinType;
 import com.example.demo.model.User;
 import com.example.demo.model.Wallet;
 import com.example.demo.repository.UserRepository;
@@ -23,10 +23,18 @@ public class WalletService {
 	private UserRepository userRepository;
 	
 	public String addWallet(UserWalletDTO userWalletDto) {
-		User user = userRepository.findOneById(userWalletDto.getId());
+		User user = userRepository.findOneByUserId(userWalletDto.getId());
 		Wallet wallet = new Wallet();
 		if(user!=null) {
-				wallet.setWalletType(WalletEnum.valueOf(userWalletDto.getWalletType()));
+			for(Wallet existwallet:user.getWallet()) {
+				if(existwallet.getCoinName().equals(userWalletDto.getCoinName()))
+					return "wallet already exist";
+			}
+			try {
+			CoinType coinType = CoinType.valueOf(userWalletDto.getCoinType());
+				wallet.setCoinType(coinType);
+				wallet.setCoinName(userWalletDto.getCoinName());
+		}catch(Exception e) {return "invalid wallet type";}
 				wallet.setUser(user);
 				return walletRepository.save(wallet)!=null?"success":"failure";			
 		}	

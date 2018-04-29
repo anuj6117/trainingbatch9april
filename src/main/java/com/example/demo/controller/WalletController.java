@@ -14,7 +14,7 @@ import com.example.demo.service.WalletService;
 
 
 @RestController
-@RequestMapping("wallet")
+//@RequestMapping("wallet")
 public class WalletController {
 	
 	@Autowired
