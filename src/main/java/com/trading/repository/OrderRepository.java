@@ -1,5 +1,7 @@
 package com.trading.repository;
 
+import java.util.List;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.trading.Enum.OrderType;
@@ -22,10 +24,11 @@ public interface OrderRepository extends JpaRepository<UserOrder, Long> {
 
 	UserOrder findByOrderTypeAndStatus(OrderType orderType, TransactionOrderStatus status);
 
-	UserOrder findByOrderTypeAndStatusAndCoinType(OrderType orderType, TransactionOrderStatus status, WalletType coinType);
+	
+	List<UserOrder> findByOrderTypeAndStatusAndCoinType(OrderType orderType, TransactionOrderStatus status, WalletType coinType);
 
 
-	UserOrder findByOrderTypeAndStatusAndCoinName(OrderType orderType, TransactionOrderStatus status, String coinName);
+	List<UserOrder> findByOrderTypeAndStatusAndCoinName(OrderType orderType, TransactionOrderStatus status, String coinName);
 
 	UserOrder findByCoinNameAndUser(String coinName, User user);
 }

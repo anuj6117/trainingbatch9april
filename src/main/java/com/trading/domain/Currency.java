@@ -7,7 +7,6 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.validation.constraints.NotNull;
 
 import com.trading.Enum.WalletType;
 
@@ -19,7 +18,6 @@ public class Currency {
 	private long coinId;
 
 	@Column(unique = true)
-	@NotNull
 	private String coinName;
 	
 	@Enumerated(EnumType.STRING)
@@ -38,18 +36,28 @@ public class Currency {
 	
 
 	@Column(unique = true)
-	@NotNull
+	
 	private String symbol;
 
-	@NotNull
+	
 	private Integer initialSupply;
 
-	@NotNull
+	
 	private Integer price;
 	
 	private long fee;
 	
 	private long coinINR;
+	
+	private long profit;
+
+	public long getProfit() {
+		return profit;
+	}
+
+	public void setProfit(long profit) {
+		this.profit = profit;
+	}
 
 	public long getCoinINR() {
 		return coinINR;
@@ -91,7 +99,7 @@ public class Currency {
 		this.symbol = symbol;
 	}
 
-	public long getInitialSupply() {
+	public Integer getInitialSupply() {
 		return initialSupply;
 	}
 
@@ -99,7 +107,7 @@ public class Currency {
 		this.initialSupply = initialSupply;
 	}
 
-	public long getPrice() {
+	public Integer getPrice() {
 		return price;
 	}
 

@@ -1,7 +1,5 @@
 package com.trading.domain;
 
-import java.util.Date;
-
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -49,7 +47,7 @@ public class Transaction {
 	private long grossAmount;
 
 	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-	private Date transactionCreatedOn;
+	private String transactionCreatedOn;
 
 	public long getTransactionId() {
 		return transactionId;
@@ -124,11 +122,11 @@ public class Transaction {
 		this.status = status;
 	}
 
-	public Date getTransactionCreatedOn() {
+	public String getTransactionCreatedOn() {
 		return transactionCreatedOn;
 	}
 
-	public void setTransactionCreatedOn(Date transactionCreatedOn) {
+	public void setTransactionCreatedOn(String transactionCreatedOn) {
 		this.transactionCreatedOn = transactionCreatedOn;
 	}
 

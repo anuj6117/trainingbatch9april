@@ -38,7 +38,7 @@ public class WalletController {
 
 	}
 
-	@RequestMapping(value = "/deposit", method = RequestMethod.POST)
+	@RequestMapping(value = "/depositamount", method = RequestMethod.POST)
 	public ResponseEntity<Object> deposit(@Valid @RequestBody UserWalletDto userwalletdto) {
 		Map<String, Object> result = null;
 		try {
@@ -54,7 +54,7 @@ public class WalletController {
 
 	}
 
-	@RequestMapping(value = "/withdraw", method = RequestMethod.POST)
+	@RequestMapping(value = "/withdrawamount", method = RequestMethod.POST)
 	public ResponseEntity<Object> withdraw(@Valid @RequestBody UserWalletDto userwalletdto) {
 		Map<String, Object> result = null;
 		try {

@@ -3,19 +3,10 @@ package com.trading.dto;
 public class UserOrderDto {
 
 	private long userId;
-	private long coinQuantity;
-	private long price;
+	private Integer coinQuantity;
+	private Integer price;
 	private String coinName;
-	private long fee;
 	
-
-	public long getFee() {
-		return fee;
-	}
-
-	public void setFee(long fee) {
-		this.fee = fee;
-	}
 
 	public long getUserId() {
 		return userId;
@@ -25,19 +16,19 @@ public class UserOrderDto {
 		this.userId = userId;
 	}
 
-	public long getCoinQuantity() {
+	public Integer getCoinQuantity() {
 		return coinQuantity;
 	}
 
-	public void setCoinQuantity(long coinQuantity) {
+	public void setCoinQuantity(Integer coinQuantity) {
 		this.coinQuantity = coinQuantity;
 	}
 
-	public long getPrice() {
+	public Integer getPrice() {
 		return price;
 	}
 
-	public void setPrice(long price) {
+	public void setPrice(Integer price) {
 		this.price = price;
 	}
 

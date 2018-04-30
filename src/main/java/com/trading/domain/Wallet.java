@@ -32,8 +32,8 @@ public class Wallet {
 		this.coinName = coinName;
 	}
 
-	long balance;
-	long shadowBalance;
+	private long balance;
+	private long shadowBalance;
 
 	@JsonIgnore
 	@ManyToOne(cascade = CascadeType.ALL)

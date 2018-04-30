@@ -38,7 +38,7 @@ public class User {
 	
 	@NotBlank
 	@NotNull
-	@Email(message = "Incorrect Format")
+
 	@Column(unique = true)
 	private String email;
 	

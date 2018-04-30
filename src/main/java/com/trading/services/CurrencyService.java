@@ -29,12 +29,12 @@ public class CurrencyService {
 			result.put("message", "Symbol already exists");
 			return result;
 		}
-		if (currency.getInitialSupply() == 0L) {
+		if (currency.getInitialSupply().toString() == null) {
 			result.put("isSuccess", false);
 			result.put("message", "Initial supply can not be null");
 			return result;
 		}
-		if (currency.getPrice() == 0L) {
+		if (currency.getPrice().toString() == null) {
 			result.put("isSuccess", false);
 			result.put("message", "Price can not be null");
 			return result;

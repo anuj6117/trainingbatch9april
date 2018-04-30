@@ -11,7 +11,7 @@ public class UserWalletDto {
 	
 	@Enumerated(EnumType.STRING)
 	private WalletType coinType;
-	private long amount;
+	private Integer amount;
 	
 	private String coinName;
 
@@ -41,11 +41,11 @@ public class UserWalletDto {
 		this.coinType = coinType;
 	}
 
-	public long getamount() {
+	public Integer getamount() {
 		return amount;
 	}
 
-	public void setamount(long amount) {
+	public void setamount(Integer amount) {
 		this.amount = amount;
 	}
 }

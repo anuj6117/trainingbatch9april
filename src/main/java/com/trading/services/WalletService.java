@@ -93,8 +93,8 @@ public class WalletService {
 			result.put("message", "Amount added to wallet balance");
 			return result;
 		} else {
-			result.put("isSuccess", false);
-			result.put("message", "Order status pending");
+			result.put("isSuccess", true);
+			result.put("message", "Successfully created entry in order table with status pending");
 			return result;
 		}
 	}
@@ -103,21 +103,59 @@ public class WalletService {
 		Map<String, Object> result = new HashMap<String, Object>();
 		Wallet wallet = new Wallet();
 		User user = userRepository.findOneByUserId(userwalletdto.getuserId());
+
 		wallet = walletRepository.findByCoinNameAndUser(userwalletdto.getCoinName(), user);
-		if (wallet.getBalance() == 0) {
+		
+		
+		UserOrder userOrder = new UserOrder();
+		if(user == null) {
 			result.put("isSuccess", false);
-			result.put("message", "No balance in wallet");
+			result.put("message", "User does not  exist");
 			return result;
 		}
-		if (userwalletdto.getamount() >= wallet.getBalance()) {
-			wallet.setBalance(userwalletdto.getamount() - wallet.getBalance());
-			walletRepository.save(wallet);
-		} else {
-			wallet.setBalance(wallet.getBalance() - userwalletdto.getamount());
-			walletRepository.save(wallet);
-		}
-		result.put("isSuccess", true);
-		result.put("message", "Success");
-		return result;
-	}
-}
+				
+			if(orderRepository.findByCoinNameAndUser(userwalletdto.getCoinName(), user)== null) {
+				
+			userOrder.setOrderType(OrderType.WITHDRAW);
+			userOrder.setCoinType(WalletType.FIAT);
+			userOrder.setCoinName(userwalletdto.getCoinName());
+			userOrder.setPrice(userwalletdto.getamount());
+			userOrder.setOrderCreatedOn(new Date());
+			userOrder.setStatus(TransactionOrderStatus.PENDING);
+			userOrder.setUser(user);
+			orderRepository.save(userOrder);
+			}
+			else
+			{
+				result.put("isSuccess", false);
+				result.put("message", "CoinName corresponsding to user already exist");
+				return result;
+			}
+			if (userOrder.getStatus() == TransactionOrderStatus.APPROVED) {
+
+				result.put("isSuccess", true);
+				result.put("message", "Amount deducted from wallet balance");
+				return result;
+			} else {
+				result.put("isSuccess", true);
+				result.put("message", "Successfully created entry in order table with status pending");
+				return result;
+			}
+		
+		
+		
+	}}
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		

@@ -23,6 +23,7 @@ import com.trading.repository.UserRepository;
 import com.trading.utilities.EmailValidator;
 import com.trading.utilities.NameValidator;
 import com.trading.utilities.PasswordValidator;
+import com.trading.utilities.PhoneValidator;
 
 @Service
 public class UserService {
@@ -91,7 +92,6 @@ public class UserService {
 		{
 		if (EmailValidator.isValidEmailAddress(user.getEmail())) {
 			if (PasswordValidator.isValid(user.getPassword())) {
-
 				if (userRepository.save(user) != null) {
 					user.setDate(new Date().toString());
 					user.setStatus(UserStatus.INACTIVE);
@@ -169,24 +169,16 @@ public class UserService {
 			result.put("message", "Username can not be null");
 			return result;
 		}
-		if (userRepository.findByEmail(user.getEmail()) != null) {
-			result.put("isSuccess", false);
-			result.put("message", "Oopss, this email is already registered");
-			return result;
-		}
+		
 		if (user.getEmail() == null || user.getEmail() == "") {
 			result.put("isSuccess", false);
 			result.put("message", "Email cannot be null");
 			return result;
 		}
 
-		if (userRepository.findByphoneNumber(user.getPhoneNumber()) != null) {
-			result.put("isSuccess", false);
-			result.put("message", "Oopss, this phoneNumber is already registered");
-			return result;
-		}
+		
 		String phoneNumber = user.getPhoneNumber()+"";
-		if (phoneNumber.trim().length()!= 10 ) {
+		if (phoneNumber.trim().length()!= 10  && PhoneValidator.isValid(phoneNumber)) {
 			result.put("isSuccess", false);
 			result.put("message", "Enter valid phone Number");
 			return result;

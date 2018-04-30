@@ -48,8 +48,13 @@ public class OrderService {
 
 		Currency currency = new Currency();
 		currency = currencyRepository.findByCoinName(userOrderDto.getCoinName());
-		currency.setFee(userOrderDto.getFee());
-
+		Wallet wallet = new Wallet();
+		 wallet = walletRepository.findByCoinTypeAndUser(WalletType.FIAT, user);
+		 long coinQuantity = userOrderDto.getCoinQuantity();
+			long price = userOrderDto.getPrice();
+			long fee = currency.getFee();
+			long balance = wallet.getBalance();
+			long shadowBalance = (coinQuantity * fee) + (coinQuantity * price);
 		if (user != null && userOrderDto != null) {
 			UserOrder userOrder = new UserOrder();
 			userOrder.setOrderCreatedOn(new Date());
@@ -60,21 +65,40 @@ public class OrderService {
 			userOrder.setCoinType(WalletType.CRYPTO);
 			userOrder.setCoinName(userOrderDto.getCoinName());
 			userOrder.setPrice(userOrderDto.getPrice());
+			userOrder.setFee(currency.getFee());
 			orderRepository.save(userOrder);
+				//if(balance > shadowBalance) { 
+			wallet.setShadowBalance( balance - shadowBalance );
+			walletRepository.save(wallet);	 
+			//}
+				/*else
+				{
+					result.put("isSuccess", false);
+					result.put("message", "Insufficient Balance");
+					return result;
+				}*/
+				 
 			result.put("isSuccess", true);
-			result.put("message", "Order added succesfully");
+			result.put("message", "Order and balance added succesfully");
 			return result;
 		} else {
 			result.put("isSuccess", false);
 			result.put("message", "Failed to add buy order");
 			return result;
 		}
+		
+		
 	}
 
 	public Map<String, Object> createSellOrder(UserOrderDto userOrderDto) {
 		Map<String, Object> result = new HashMap<String, Object>();
 
 		User user = userRepository.findOneByUserId(userOrderDto.getUserId());
+		Wallet wallet = walletRepository.findByCoinTypeAndUser(WalletType.CRYPTO, user);
+
+		
+		
+
 		if (user != null && userOrderDto != null) {
 			UserOrder userOrder = new UserOrder();
 			userOrder.setOrderCreatedOn(new Date());
@@ -84,7 +108,18 @@ public class OrderService {
 			userOrder.setCoinQuantity(userOrderDto.getCoinQuantity());
 			userOrder.setCoinName(userOrderDto.getCoinName());
 			userOrder.setPrice(userOrderDto.getPrice());
+			userOrder.setCoinType(WalletType.CRYPTO);
+			
 			orderRepository.save(userOrder);
+		//	if(wallet.getBalance() > userOrderDto.getCoinQuantity()) {
+			wallet.setShadowBalance(wallet.getBalance() - userOrderDto.getCoinQuantity() );
+			walletRepository.save(wallet);	 
+			/*}
+			else {
+				result.put("isSuccess", false);
+				result.put("message", "Insufficient Quantity");
+				return result;
+			}*/
 			result.put("isSuccess", true);
 			result.put("message", "Success");
 			return result;
@@ -117,15 +152,38 @@ public class OrderService {
 		Wallet wallet = walletRepository.findByCoinNameAndUser(userOrder.getCoinName(), user);
 		if (orderApprovalDto.getStatus() == TransactionOrderStatus.APPROVED) {
 			if (wallet != null && userOrder.getStatus() == TransactionOrderStatus.PENDING) {
+				if (wallet.getBalance() == 0) {
+					result.put("isSuccess", false);
+					result.put("message", "No balance in wallet");
+					return result;
+				}
+				if(userOrder.getOrderType() == OrderType.DEPOSIT )
+				{
 				wallet.setBalance(userOrder.getPrice() + wallet.getBalance());
-				walletRepository.save(wallet);
+				wallet.setShadowBalance(userOrder.getPrice() + wallet.getBalance());
+				walletRepository.save(wallet);}
+				else
+				{
+					if (wallet.getBalance() == 0) {
+						result.put("isSuccess", false);
+						result.put("message", "No balance in wallet");
+						return result;
+					}
+					if (userOrder.getPrice() >= wallet.getBalance()) {
+						wallet.setBalance(userOrder.getPrice() - wallet.getBalance());
+						walletRepository.save(wallet);
+					} else {
+						wallet.setBalance(wallet.getBalance() - userOrder.getPrice());
+						walletRepository.save(wallet);
+					}
+				}
 				Transaction transaction = new Transaction();
 				transaction.setCoinType(WalletType.FIAT);
 				transaction.setCoinName(userOrder.getCoinName());
 				transaction.setStatus(TransactionOrderStatus.APPROVED);
 				transaction.setNetAmount(userOrder.getPrice());
 				transaction.setBuyerId(userOrder.getOrderId());
-				transaction.setTransactionCreatedOn(new Date());
+				transaction.setTransactionCreatedOn(new Date().toString());
 				transactionRepository.save(transaction);
 				userOrder.setStatus(orderApprovalDto.getStatus());
 				orderRepository.save(userOrder);
@@ -133,19 +191,16 @@ public class OrderService {
 				result.put("message", "Order Status updated and Balance added");
 				return result;
 
+			} else {
+				result.put("isSuccess", false);
+				result.put("message", "CoinName doesnot exist in wallet and order status is not pending");
+				return result;
 			}
-			else
-			{
-			result.put("isSuccess", false);
-			result.put("message", "CoinName doesnot exist in wallet and order status is not pending");
-			return result;	
-		}
-		}
-		else {
+		} else {
 			result.put("isSuccess", false);
 			result.put("message", "Status is not approved by admin");
-			return result;	
+			return result;
 		}
-			
+
 	}
 }

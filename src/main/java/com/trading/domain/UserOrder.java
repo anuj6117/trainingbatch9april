@@ -48,10 +48,10 @@ public class UserOrder {
 	}
 
 	@NotNull
-	private long coinQuantity;
+	private Integer coinQuantity;
 
 	@NotNull
-	private long price;
+	private Integer price;
 
 	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
 	private Date orderCreatedOn;
@@ -98,7 +98,7 @@ public class UserOrder {
 		this.orderType = orderType;
 	}
 
-	public long getCoinQuantity() {
+	public Integer getCoinQuantity() {
 		return coinQuantity;
 	}
 
@@ -106,15 +106,15 @@ public class UserOrder {
 		return coinName;
 	}
 
-	public void setCoinQuantity(long coinQuantity) {
+	public void setCoinQuantity(Integer coinQuantity) {
 		this.coinQuantity = coinQuantity;
 	}
 
-	public long getPrice() {
+	public Integer getPrice() {
 		return price;
 	}
 
-	public void setPrice(long price) {
+	public void setPrice(Integer price) {
 		this.price = price;
 	}
 

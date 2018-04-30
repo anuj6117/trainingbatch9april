@@ -1,21 +1,18 @@
 package com.trading.utilities;
 
-import javax.mail.internet.AddressException;
-import javax.mail.internet.InternetAddress;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class EmailValidator {
 	
 	public static boolean isValidEmailAddress(String email) {
-		boolean result = true;   
-		try {
-		      InternetAddress emailAddr = new InternetAddress(email);
-		      emailAddr.validate();
-		} catch (AddressException ex) {
-			result = false;
-		}
-		return result;
+		      String regex = "^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$";
+
+		      Pattern pattern = Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
+		      Matcher matcher = pattern.matcher(email);
+		      return matcher.matches();
+		   }	
 	}
-	
-}
+
 
 

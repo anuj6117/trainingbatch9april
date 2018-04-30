@@ -2,7 +2,7 @@ package com.trading.Enum;
 
 public enum OrderType {
 
-	BUYER("buyer"), SELLER("seller"), DEPOSIT("deposit");
+	BUYER("buyer"), SELLER("seller"), DEPOSIT("deposit"), WITHDRAW("withdraw");
 
 	private String value;
 
