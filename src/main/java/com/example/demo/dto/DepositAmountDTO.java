@@ -7,6 +7,7 @@ public class DepositAmountDTO {
 	private Integer userId;
 	private WalletType walletType;
 	private Double amount;
+	private Double coinQuantity;
 	private OrderType orderType;
 	private String coinName;
 
@@ -49,4 +50,14 @@ public class DepositAmountDTO {
 	public void setOrderType(OrderType orderType) {
 		this.orderType = orderType;
 	}
+
+	public Double getCoinQuantity() {
+		return coinQuantity;
+	}
+
+	public void setCoinQuantity(Double coinQuantity) {
+		this.coinQuantity = coinQuantity;
+	}
+	
+	
 }

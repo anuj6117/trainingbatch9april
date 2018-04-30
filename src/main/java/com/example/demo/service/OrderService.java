@@ -16,6 +16,7 @@ import com.example.demo.dto.OrderDTO;
 import com.example.demo.enums.TransactionType;
 import com.example.demo.enums.WalletType;
 import com.example.demo.enums.OrderStatus;
+import com.example.demo.enums.OrderType;
 import com.example.demo.model.User;
 import com.example.demo.model.Wallet;
 import com.example.demo.model.Order;
@@ -44,6 +45,7 @@ public class OrderService {
 	public Map<String, Object> approveDeposit(DepositAmountApprovalDTO depositAmountApprovalDTO) 
 	{
 		Map<String, Object> result = new HashMap<String, Object>();
+		
 		Order order=orderRepository.findByOrderId(depositAmountApprovalDTO.getOrderId());
 		User user=order.getUser();
 		if(depositAmountApprovalDTO.getOrderStatus().equals(OrderStatus.APPROVED))
@@ -57,7 +59,8 @@ public class OrderService {
 			transaction.setGrossAmount(order.getGrossAmount());
 			transaction.setTransactionCreatedOn(order.getDateCreated());
 			transaction.setDescription(depositAmountApprovalDTO.getDescription());
-			transaction.setOrderStatus(order.getOrderStatus());
+			transaction.setOrderType(OrderType.DEPOSIT);
+			transaction.setOrderStatus(OrderStatus.APPROVED);
 			
 			transactionRepository.save(transaction);
 			Set<Wallet> wallet=user.getWallets();
@@ -104,6 +107,7 @@ public class OrderService {
 			userOrder.setOrderStatus(OrderStatus.PENDING);
 			userOrder.setTransactionType(TransactionType.BUYER);
 			userOrder.setCoinQuantity(orderDTO.getCoinQuantity());
+			userOrder.setFee(orderDTO.getFee());
 			userOrder.setPrice(orderDTO.getPrice());
 			userOrder.setDateCreated(new Date());
 			orderRepository.save(userOrder);
@@ -188,42 +192,4 @@ public class OrderService {
 		
 		return null;
 	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-		
-		/*if(user != null)
-		{
-			Order sellUserOrder=new Order();
-			sellUserOrder.setUser(user);
-			sellUserOrder.setCoinName(orderDTO.getCoinName());
-			sellUserOrder.setOrderStatus(OrderStatus.PENDING);
-			sellUserOrder.setTransactionType(TransactionType.SELLER);
-			sellUserOrder.setCoinQuantity(orderDTO.getCoinQuantity());
-			sellUserOrder.setPrice(orderDTO.getPrice());
-			sellUserOrder.setDateCreated(new Date());
-			orderRepository.save(sellUserOrder);
-			
-			result.put("isSuccess", false);
-			result.put("message", "Order is in pending status and has to be approved by admin.");
-			return result;
-		}*/
 }

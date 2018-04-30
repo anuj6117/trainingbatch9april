@@ -9,6 +9,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 import com.example.demo.enums.OrderStatus;
+import com.example.demo.enums.OrderType;
 import com.example.demo.enums.WalletType;
 
 @Entity
@@ -18,9 +19,16 @@ public class Transaction {
 	@Id
 	private Integer transactionId;
 	private Double coinQuantity;
+	
 	@Enumerated(EnumType.STRING)
 	private WalletType coinType;
+	
+	@Enumerated(EnumType.STRING)
 	private OrderStatus orderStatus;
+	
+	@Enumerated(EnumType.STRING)
+	private OrderType orderType;
+	
 	private Date transactionCreatedOn;
 	private Double netAmount;
 	private Double transactionFee;
@@ -102,5 +110,13 @@ public class Transaction {
 	public void setDescription(String description) {
 		this.description = description;
 	}
+	public OrderType getOrderType() {
+		return orderType;
+	}
+	public void setOrderType(OrderType orderType) {
+		this.orderType = orderType;
+	}
+	
+	
 	
 }

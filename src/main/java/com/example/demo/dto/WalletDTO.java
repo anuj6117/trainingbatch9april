@@ -1,11 +1,15 @@
 package com.example.demo.dto;
 
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+
 import com.example.demo.enums.WalletType;
 
 public class WalletDTO {
 
 	private Integer userId;
 	private Double balance;
+	@Enumerated(EnumType.STRING)
 	private WalletType walletType;
 
 	public Integer getUserId() {

@@ -1,7 +1,7 @@
 package com.example.demo.enums;
 
 public enum OrderType {
-	DEPOSIT("Deposit"), WITHDRAW("Withdraw");
+	DEPOSIT("Deposit"), WITHDRAW("Withdraw"),BUYER("Buyer"),SELLER("Seller");
 	
 	private String value;
 	

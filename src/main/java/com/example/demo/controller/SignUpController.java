@@ -75,7 +75,7 @@ public class SignUpController {
 		return obj;
 	}
 
-	@RequestMapping(value = "/updateuserbyid", method = RequestMethod.POST)
+	@RequestMapping(value = "/updateuser", method = RequestMethod.POST)
 	public User updateUserById(@RequestBody User user) {
 		return signUpService.update(user);
 	}

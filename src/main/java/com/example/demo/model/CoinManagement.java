@@ -12,7 +12,7 @@ public class CoinManagement {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	private Long coinId;
+	private Integer coinId;
 	private String coinName;
 	private String symbol;
 	private Double initialSupply;
@@ -21,11 +21,11 @@ public class CoinManagement {
 	private Double profit;
 	private Double fee;
 
-	public Long getCoinId() {
+	public Integer getCoinId() {
 		return coinId;
 	}
 
-	public void setCoinId(Long coinId) {
+	public void setCoinId(Integer coinId) {
 		this.coinId = coinId;
 	}
 

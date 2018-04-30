@@ -2,9 +2,14 @@ package com.example.demo.enums;
 
 public enum WalletType {
 
-	FIAT, CRYPTO;
+	FIAT("Fiat"), CRYPTO("Crypto");
 	
 	private String values;
+	
+	private WalletType(String values)
+	{
+		this.values = values;
+	}
 
 	public String getValues() {
 		return values;

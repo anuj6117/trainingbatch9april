@@ -1,6 +1,10 @@
 package com.example.demo.service;
 
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -28,8 +32,39 @@ public class WalletService
 	
 	@Autowired
 	private OrderRepository orderRepository;
+	
+	public Map<String, Object> addWallet(WalletDTO walletDTO)
+	{
+		Map<String, Object> result = new HashMap<String, Object>();
+		
+		User newUser=userRepository.findByUserId(walletDTO.getUserId());
+		
+		Wallet wallet=new Wallet();
+		//wallet.setWalletType(WalletType.FIAT);
+		wallet.setUser(newUser);
+		wallet.setBalance(0.0);
+		wallet.setShadowBalance(0.0);
+		walletRepository.save(wallet);
+		
+		/*Set<Wallet> wallets=newUser.getWallets();
+		Iterator<Wallet> itr=wallets.iterator();
+		while(itr.hasNext())
+		{
+			Wallet w=itr.next();
+			System.out.println(w);
+		}*/
+		
+		return result;
+		
+	}
+	
+	
+	
+	
+	
 
-	public String addWalletToUser(WalletDTO walletDTO) {
+	/*public String addWalletToUser(WalletDTO walletDTO) 
+	{
 
 		User user = userRepository.findByUserId(walletDTO.getUserId());
 		
@@ -38,14 +73,16 @@ public class WalletService
 		wallet.setUser(user);
 		wallet.setBalance(0.0);
 		wallet.setShadowBalance(0.0);
-		try {
+		try
+		{
 			walletRepository.save(wallet);
-		} catch (Exception e) {
+		} catch (Exception e) 
+		{
 			System.out.println("wallet not added to User." + e);
 		}
 		return "Wallet Added to User.";
 
-	}
+	}*/
 
 	public String deposit(DepositAmountDTO depositAmountDTO)
 	{
@@ -53,7 +90,7 @@ public class WalletService
 		
 		Order order=new Order();
 		order.setUser(user);
-		order.setCoinQuantity(depositAmountDTO.getAmount());
+		//order.setCoinQuantity(depositAmountDTO.getCoinQuantity());
 		order.setCoinName(depositAmountDTO.getCoinName());
 		order.setCoinType(WalletType.FIAT);
 		order.setNetAmount(depositAmountDTO.getAmount());
@@ -61,94 +98,11 @@ public class WalletService
 		order.setOrderStatus(OrderStatus.PENDING);
 		order.setOrderType(OrderType.DEPOSIT);
 		order.setDateCreated(new Date());
+		order.setWalletType(WalletType.FIAT);
 		
 		orderRepository.save(order);
 		
-		return "successfully order saved.";
+		return "Order saved successfully.";
 		
 	}
-		
-		/*//User user=userRepository.findByUserId(userOrder.getUserId());
-		Order newUserOrder=new Order();
-		newUserOrder.setOrderType(OrderType.DEPOSIT);
-		newUserOrder.setCoinQuantity(userOrder.getCoinQuantity());
-		newUserOrder.setPrice(userOrder.getPrice());
-		newUserOrder.setNetAmount(userOrder.getNetAmount());
-		newUserOrder.setFee(userOrder.getFee());
-		newUserOrder.setGrossAmount(userOrder.getGrossAmount());
-		newUserOrder.setOrderStatus(OrderStatus.PENDING);
-		newUserOrder.setDateCreated(new Date());
-		//newUserOrder.setUser(user);
-		orderRepository.save(newUserOrder);
-		
-		return "successfully data saved into userorder table ";
-		
-*/		
-		
-		//Integer userId=userOrder.getUserId();
-		//Double amount=userOrder.getAmount();
-		//String walletType=transactionDto.getWalletType();
-		//OrderType orderType=transactionDto.getOrderType();
-		
-		/*User user=userRepository.findByUserId(userId);
-		
-		UserOrder userOrder=new UserOrder();
-		userOrder.setOrderType(OrderType.DEPOSIT);
-		userOrder.setCoinName(WalletType.valueOf("FIAT").toString());
-		userOrder.setPrice(amount);
-		userOrder.setDateCreated(new Date());
-		userOrder.setOrderStatus(OrderStatus.PENDING);
-		userOrder.setUser(user);
-		orderRepository.save(userOrder);*/
-		
-
-		/*Integer userId=transactionDto.getUserId();
-		Double amount=transactionDto.getAmount();
-		String walletType=transactionDto.getWalletType();
-		System.out.println(walletType);
-		
-		User user=userRepository.findByUserId(userId);
-		List<Wallet> wallets=user.getWallets();
-		Iterator itr=wallets.iterator();
-		while(itr.hasNext())
-		{
-			Wallet wallet=(Wallet)itr.next();
-			System.out.println(wallet+"=================================================");
-			if( wallet == walletRepository.findByWalletType(WalletType.valueOf(walletType))) {
-				Double walletBalance=wallet.getBalance();
-				wallet.setBalance(transactionDto.getAmount()+walletBalance);
-				userRepository.save(user);
-			}
-		}*/
-		
-		//return "success";	
-// }
-
-	/*public String withdraw(DepositAmountDTO transactionDto) {
-		String walletType=transactionDto.getWalletType();
-		User user=userRepository.findByUserId(transactionDto.getUserId());
-		List<Wallet> wallets=user.getWallets();
-		Iterator itr=wallets.iterator();
-		while(itr.hasNext())
-		{
-			Wallet wallet=(Wallet)itr.next();
-			if(wallet == walletRepository.findByWalletType(WalletType.valueOf(walletType)))
-			{
-				Double walletBalance=wallet.getBalance();
-				
-				if(walletBalance >= transactionDto.getAmount())
-				{
-					walletBalance = walletBalance-transactionDto.getAmount();
-					wallet.setBalance(walletBalance);
-					
-					userRepository.save(user);
-				}
-				else
-				{
-					return "insufficient balance to withdraw";
-				}	
-			}	
-		}
-		return "success";	
-	}*/
 }

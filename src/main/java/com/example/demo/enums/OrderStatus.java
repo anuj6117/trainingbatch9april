@@ -17,7 +17,4 @@ public enum OrderStatus {
 	public void setValue(String value) {
 		this.value = value;
 	}
-	
-	
-
 }

@@ -102,6 +102,14 @@ public class SignUpService {
 				return result;
 			}
 			
+			String password=user.getPassword();
+			if(!(password.matches("(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\\S+$).{8,}")))
+			{
+				result.put("isSuccess", false);
+				result.put("message", "Please enter password with minimum 8 characters. Your password should have atleast 1 Uppercase, 1 Lowercase, 1 Digit & 1 Special character. Space is not allowed.");
+				return result;
+			}
+			
 						
 			Random randomNumber = new Random();
 			otp = randomNumber.nextInt(10000);
@@ -119,7 +127,7 @@ public class SignUpService {
 
 			Wallet wallet = new Wallet();
 			wallet.setWalletType(WalletType.FIAT);
-			wallet.setCoinName("INR");
+			//wallet.setCoinName("INR");
 			wallet.setBalance(0.0);
 			wallet.setShadowBalance(0.0);
 			wallet.setUser(newUser);
@@ -128,6 +136,7 @@ public class SignUpService {
 			
 			newUser.setUserName(userName.trim());
 			newUser.setEmail(email);
+			newUser.setPassword(password);
 			if(userRepository.findByPhoneNumber(phoneNumber) == null)
 			{	
 				newUser.setPhoneNumber(phoneNumber);
@@ -227,42 +236,4 @@ public class SignUpService {
 
 		userRepository.deleteById(id);
 	}
-	
-	/*
-	 * public String addUser(User user) { if
-	 * ((userRepository.findByEmail(user.getEmail()) == null)) { Random randomNumber
-	 * = new Random(); otp = randomNumber.nextInt(10000);
-	 * 
-	 * 
-	 * Role role = null; if((role = roleRepository.findByRoleType("user")) == null)
-	 * { role = new Role(); role.setRoleType("user"); }
-	 * 
-	 * User newUser = new User(user); newUser.getRoles().add(role);
-	 * newUser.setStatus(UserStatus.INACTIVE);
-	 * System.out.println(newUser.getRoles()); Wallet wallet=new Wallet();
-	 * wallet.setWalletType(WalletType.FIAT); wallet.setUser(user);
-	 * wallet.setBalance(0.0); wallet.setShadowBalance(0.0);
-	 * wallet.setUser(newUser); newUser.getWallets().add(wallet);
-	 * 
-	 * if ((userRepository.save(newUser) != null)) { otpService.sendSms(otp);
-	 * mailService.sendMail(otp, user.getEmail());
-	 * 
-	 * verifyOtp.setId(user.getUserId()); verifyOtp.setTokenOtp(otp);
-	 * verifyOtp.setEmailId(user.getEmail()); verifyOtp.getEmailId();
-	 * verifyOtp.setDate(new Date());
-	 * 
-	 * verifyOtpRepository.save(verifyOtp);
-	 * 
-	 * return "Successfully sent otp."; } else { return "Failure"; } } else { return
-	 * "Already existing user"; } }
-	 */
-	
-	
-	
-	
-	
-	
-	
-	
-	
 }

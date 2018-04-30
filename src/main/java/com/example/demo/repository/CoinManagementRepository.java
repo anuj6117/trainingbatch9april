@@ -4,8 +4,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.example.demo.model.CoinManagement;
 
-public interface CoinManagementRepository extends JpaRepository<CoinManagement, Long> {
+public interface CoinManagementRepository extends JpaRepository<CoinManagement, Integer> {
 
-	public CoinManagement findOneByCoinId(Long coinId);
+	public CoinManagement findOneByCoinId(Integer coinId);
 
 }
