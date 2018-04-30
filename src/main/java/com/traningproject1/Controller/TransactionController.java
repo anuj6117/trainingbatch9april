@@ -9,14 +9,30 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.traningproject1.domain.Transaction;
 import com.traningproject1.service.TransactionService;
+import com.traningproject1.service.WalletService;
 
 @RestController
 public class TransactionController {
 	@Autowired
 	TransactionService transactionService;
+	@Autowired
+	WalletService walletService;
+//	@MockBean
+//    private TransactionService transactionService;
 @RequestMapping(value="/showalltransaction",method=RequestMethod.GET)
 public List<Transaction>getAllTransaction()
 {
 	return transactionService.getAllTransaction();
+}
+//@RequestMapping(value="/walletapproval",method=RequestMethod.POST)
+//public void walletApproval(@RequestBody  WalletApprovalDTO walletapprovaldto)
+//{
+//	transactionService.walletApproval(walletapprovaldto);
+//}
+@RequestMapping(value="/transaction",method=RequestMethod.POST)
+public String transactionApproval()
+{
+	transactionService.transactionApproval();
+ 	return "Success";
 }
 }

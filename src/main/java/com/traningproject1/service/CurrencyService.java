@@ -12,10 +12,8 @@ import com.traningproject1.repository.CurrencyRepository;
 @Service
 public class CurrencyService {
 	@Autowired
-	 private CurrencyRepository currencyRepository;
-	
-//	@Autowired
-//	 private CurrencyClass currency;
+	  CurrencyRepository currencyRepository;
+     CurrencyClass currency;
 		
 	public String addCurrency(CurrencyClass currency)
 		{   
@@ -43,9 +41,19 @@ public class CurrencyService {
 		return "Your Coin has been deleted Successfully";
 	}
 	public String updateCurrency(CurrencyClass currency) {
-		
-		 currencyRepository.save(currency);
-		 return "Your Coin Has been Updated successfully";
+		if(currency!=null)
+		{
+			CurrencyClass tempcurrency=currencyRepository.findByCoinId(currency.getCoinId());
+			tempcurrency.setCoinName(currency.getCoinName());
+			tempcurrency.setInitialSupply(currency.getInitialSupply());
+			tempcurrency.setFees(currency.getFees());
+			tempcurrency.setSymbol(currency.getSymbol());
+			tempcurrency.setPrice(currency.getPrice());
+			currencyRepository.save(tempcurrency);
+			return "Your Coin Has been Updated successfully";
+		}
+		 return "Coin Not present";
+		 
 	}
 
 }

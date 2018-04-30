@@ -10,10 +10,10 @@ import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.traningproject1.demo.dto.AssignWalletDTO;
 import com.traningproject1.demo.dto.ClassDTO;
 import com.traningproject1.demo.dto.DepositAmountDTO;
 import com.traningproject1.demo.dto.VerifyUserDTO;
+import com.traningproject1.demo.dto.WithdrawAmountDTO;
 import com.traningproject1.domain.Role;
 import com.traningproject1.domain.User;
 import com.traningproject1.domain.UserOTP;
@@ -59,20 +59,18 @@ UserOTPRepository userOTPRepository;
 UserOTP userOTP;
 public User addUser(User user)
 	{
-	
 	    user.setCreatedOn(new Date());
-	   
-	    //Role defaultrole=roleRepository.getRoleByid(1);
+	   	    Role defaultrole=roleRepository.getRoleByid(1);
 		   	    
-		//ArrayList<Role> roleType=new ArrayList<>();
+		ArrayList<Role> roleType=new ArrayList<>();
 		
 		
-	  //roleType.add(defaultrole);
+	  roleType.add(defaultrole);
 		
-	   //user.setRole(roleType);	
+	   user.setRole(roleType);	
 	   Random random=new Random();
 	   otp=random.nextInt(20000);
-		//roleRepository.save(defaultrole);
+		roleRepository.save(defaultrole);
 		
 		userRepository.save(user);
 		
@@ -88,9 +86,7 @@ public User addUser(User user)
 		walletset.add(wallet);
 		
 		walletRepository.save(wallet);
-	    
-		
-		user.setWallet(walletset);
+	    user.setWallet(walletset);
 	    user.setStatus(UserStatus.INACTIVE);
 		userRepository.save(user);
 		
@@ -104,7 +100,7 @@ public User addUser(User user)
 
 		userOTPRepository.save(userOTP);
 		return user;
-				
+
 	}
 public ArrayList<User> getAllUser()
 {
@@ -122,8 +118,19 @@ public void deleteUser(Integer userId)
 {
 	userRepository.deleteById(userId);
 }
-public User updateUserData(User user) {
-	return userRepository.save(user);
+public String updateUserData(User user) {
+	User tempuser=userRepository.findByuserId(user.getUserId());
+	if(user!=null)
+	{
+	 tempuser.setEmail(user.getEmail());
+	 tempuser.setUserName(user.getUserName());
+	 tempuser.setPassword(user.getPassword());
+	 tempuser.setPhoneNumber(user.getPhoneNumber());
+	 tempuser.setCountry(user.getCountry());
+	 userRepository.save(tempuser);
+	 return "success";
+	}
+	 return "User not present";
 }
 /*public void assignRole(Integer userId,Role roleType)
 {
@@ -171,66 +178,20 @@ public User assignRoleToUser(ClassDTO classDTO)
 		throw new NullPointerException(" "+"User id doesn't not exist");
 		}
 }
-//public String assignWallet(AssignWalletDTO assignwalletDTO)
-//{
-//	User user=userRepository.findByuserId(assignwalletDTO.getUserId());
-//	
-//   
-//	//Wallet wallet=walletRepository.findByWalletType(assignwalletDTO.getWallettype());
-//	
-//	Wallet wallet1=new Wallet();
-//	
-//	
-//	
-//	
-//	
-//	//WalletType walletType=WalletType.valueOf(assignwalletDTO.getWallettype());
-//	
-//	//System.out.println("Get Wallet Type is ++++++++"+walletType);
-//	wallet1.setUser(user);
-//	
-//	wallet1.setCoinType(assignwalletDTO.getCoinType());
-//	wallet1.setCoinName(assignwalletDTO.getCoinName());
-//	wallet1.setCoinType(CoinType.CRYPTO);
-//	
-//	//walletRepository.save(wallet1);
-//	  
-//	
-//	//System.out.println("New Wallet Object is++++++++++++++++++++"+wallet1.getWalletType());
-//	
-//	
-//	
-//	
-//	HashSet<Wallet>walletset=new HashSet<>();
-//    
-//	System.out.println("walletset++++++++++++++++++++++++++++"+walletset);
-//	
-//    walletset.add(wallet1);
-//   
-//    //System.out.println("id++++++++++++++++++++++++++++"+user.getUserId());
-//    
-//    
-//    
-//    user.setWallet(walletset);
-//    walletRepository.save(wallet1);
-//    userRepository.save(user);
-//    
-//	return "success";
-//}
-//  public String withdrawAmount(WithdrawAmountDTO withdrawamountdto)
-//  {
-//	  User user=userRepository.findByuserId(withdrawamountdto.getUserId());
-//	  Wallet wallet=walletRepository.findByCoinType(withdrawamountdto.getCoinType());
-//	  
-//	  long amount=withdrawamountdto.getAmount();
-//	  
-//	  wallet.setBalance(wallet.getBalance()-amount);
-//	  wallet.setShadowBalance(wallet.getBalance());
-//	  walletRepository.save(wallet);
-//	  userRepository.save(user);
-//	  
-//	  return "success";
-//  }
+  public String withdrawAmount(WithdrawAmountDTO withdrawamountdto)
+  {
+	  User user=userRepository.findByuserId(withdrawamountdto.getUserId());
+	  Wallet wallet=walletRepository.findByCoinType(withdrawamountdto.getCoinType());
+	  
+	  double amount=withdrawamountdto.getAmount();
+	  
+	  wallet.setBalance(wallet.getBalance()-amount);
+	  wallet.setShadowBalance(wallet.getBalance());
+	  walletRepository.save(wallet);
+	  userRepository.save(user);
+	  
+	  return "success";
+  }
   public String depositAmount(DepositAmountDTO depositamountdto)
   {
 	  User user=userRepository.findByuserId(depositamountdto.getUserId());

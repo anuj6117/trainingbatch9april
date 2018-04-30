@@ -22,6 +22,7 @@ public class WalletController {
 	@RequestMapping(value="/walletapproval",method=RequestMethod.POST)
 	public void walletApproval(@RequestBody  WalletApprovalDTO walletapprovaldto)
 	{
+	
 		walletService.walletApproval(walletapprovaldto);
 	}
 	
@@ -29,8 +30,7 @@ public class WalletController {
 	@RequestMapping(value="/addwallet",method=RequestMethod.POST)
 	public String assignWallet(@RequestBody AssignWalletDTO assignwalletdto)
 	{
-		walletService.assignWallet(assignwalletdto);
-		return "success";
+		return  walletService.assignWallet(assignwalletdto);
 	}
 
 }

@@ -2,6 +2,7 @@ package com.traningproject1.Controller;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.regex.Pattern;
 
 import org.apache.commons.validator.routines.EmailValidator;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,12 +32,27 @@ public class ControllerClass {
 	@Autowired
 	UserRepository userRepository;
 	
+
+	private static Pattern pswNamePtrn = 
+	        Pattern.compile("((?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%]).{8,32})");
+	     
 @RequestMapping(value="/signup",method=RequestMethod.POST)
 public String addUser(@RequestBody User user)
-{     
+{   
+	String usertrim=user.getUserName().trim();
+	user.setUserName(usertrim);
+	
+	
+	
        if(user.getUserName().equalsIgnoreCase(" "))
        {
     	   return "Name cannot Be Null";
+       }
+       String pass=user.getPassword();
+       java.util.regex.Matcher mtch = pswNamePtrn.matcher(pass);
+       if(!mtch.matches())
+       {
+    	   return "Password Must Contains one Uppercase Alphabet,one lower case ,on dgigt, one special symbol";
        }
        if(user.getUserName().length()>25)
        {
@@ -54,8 +70,7 @@ public String addUser(@RequestBody User user)
        {
     	   return "This email id already registered ";
        }
-       String emailverify=user.getEmail();
-      // String emailid
+     
        if(!(EmailValidator.getInstance().isValid(user.getEmail())))
        {
     	   return "Email Should be in Correct Format";
@@ -78,9 +93,9 @@ public List<User> getAllUser()
 
 
 @RequestMapping(value="/getbyuserid",method=RequestMethod.GET)
-public Optional<User> getUserById( Integer id)
+public Optional<User> getUserById( Integer userId)
 {
- return serviceClass.getByUserId(id);	
+ return serviceClass.getByUserId(userId);	
 }
 
 
@@ -93,9 +108,11 @@ public String deleteUser(Integer userId)
 
 
 @RequestMapping(value="/updateuser",method=RequestMethod.POST)
-public  User updateUserData(@RequestBody User user)
+public  String updateUserData(@RequestBody User user)
 {
- return  serviceClass.updateUserData(user);	
+	serviceClass.updateUserData(user);
+ return  "Success";
+		 	
 }
 
 
@@ -112,12 +129,7 @@ public String assignRoleToUser(@RequestBody ClassDTO classDTO)
   }
   return "Role Assign Succesfully";
 }
-//@RequestMapping(value="/addwallet",method=RequestMethod.POST)
-//public String assignWallet(@RequestBody AssignWalletDTO assignwalletdto)
-//{
-//	serviceClass.assignWallet(assignwalletdto);
-//	return "success";
-//}
+
 @RequestMapping(value="/depositamount",method=RequestMethod.POST)
 public String depositAmount(@RequestBody DepositAmountDTO depositamountdto)
 {

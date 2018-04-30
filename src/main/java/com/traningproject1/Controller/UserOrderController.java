@@ -22,7 +22,7 @@ public String createSellOrder(@RequestBody BuySellOrderDTO buysellorderdto)
 @RequestMapping(value="/createbuyorder",method=RequestMethod.POST)
 public String createBuyOrder(@RequestBody BuySellOrderDTO buysellorderdto)
 {
-	
+//  if(buysellorderdto.getCoinName().equals())	
   return userorderservice.createBuyOrder(buysellorderdto);	
 }
 }

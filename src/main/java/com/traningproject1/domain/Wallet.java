@@ -26,8 +26,9 @@ private String coinName;
 //@Enumerated(EnumType.STRING)
 //private WalletType walletType;
 
-private long balance;
-private long shadowBalance;
+
+private double balance;
+private double shadowBalance;
 
 @ManyToOne
 @JsonIgnore
@@ -35,8 +36,8 @@ private User user;
 
 public Wallet()
 {
- balance=0l;
- shadowBalance=0l;
+ balance=0;
+ shadowBalance=0;
 }
 public User getUser() {
 	return user;
@@ -58,25 +59,26 @@ public void setwId(Integer wId) {
 //	this.walletType = walletType;
 //}
 
-
-public long getBalance() {
+public double getBalance() {
 	return balance;
 }
+public void setBalance(double balance) {
+	this.balance = balance;
+}
+public double getShadowBalance() {
+	return shadowBalance;
+}
+public void setShadowBalance(double shadowBalance) {
+	this.shadowBalance = shadowBalance;
+}
+
 public CoinType getCoinType() {
 	return coinType;
 }
 public void setCoinType(CoinType coinType) {
 	this.coinType = coinType;
 }
-public void setBalance(long balance) {
-	this.balance = balance;
-}
-public long getShadowBalance() {
-	return shadowBalance;
-}
-public void setShadowBalance(long shadowBalance) {
-	this.shadowBalance = shadowBalance;
-}
+
 public String getCoinName() {
 	return coinName;
 }

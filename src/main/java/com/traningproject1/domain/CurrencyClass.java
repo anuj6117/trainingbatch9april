@@ -23,7 +23,7 @@ public class CurrencyClass {
 	@NotNull(message="symbol Should Not Accept null")
 	private Integer price;
 	
-	private Integer fees;
+	private double fees;
 	private double profit;
 	private Integer coinInINR;
 	public CurrencyClass()
@@ -63,10 +63,11 @@ public class CurrencyClass {
 	public void setPrice(Integer price) {
 		this.price = price;
 	}
-	public Integer getFees() {
+	
+	public double getFees() {
 		return fees;
 	}
-	public void setFees(Integer fees) {
+	public void setFees(double fees) {
 		this.fees = fees;
 	}
 	public double getProfit() {

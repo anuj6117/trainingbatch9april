@@ -19,10 +19,13 @@ public class Transaction {
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
 private Integer tranId;
+	@Enumerated(value=EnumType.STRING)
 private CoinType coinType;
 private long fees;
 private long exchangeRate;
-private long grossAmount;
+private double grossAmount;
+
+
 private Integer buyerId;
 private Integer sellerId;
 private String message;
@@ -70,13 +73,7 @@ public void setExchangeRate(long exchangeRate) {
 	this.exchangeRate = exchangeRate;
 }
 
-public long getGrossAmount() {
-	return grossAmount;
-}
 
-public void setGrossAmount(long grossAmount) {
-	this.grossAmount = grossAmount;
-}
 
 public TransactionStatus getStatus() {
 	return status;
@@ -129,5 +126,12 @@ public String getMessage() {
 
 public void setMessage(String message) {
 	this.message = message;
+}
+public double getGrossAmount() {
+	return grossAmount;
+}
+
+public void setGrossAmount(double grossAmount) {
+	this.grossAmount = grossAmount;
 }
 }
