@@ -27,10 +27,10 @@ public class CoinManagementController {
 		String s=data.getCoinName();
 		int l=s.length();
 
-		if ((result != null)&&(l>0)) {
+		if ((result != null)&&(s!=null)) {
 			return "From controller coin added";
 		} else {
-			return "data not found";
+			return "coin name can not be null ";
 		}
 	}
 

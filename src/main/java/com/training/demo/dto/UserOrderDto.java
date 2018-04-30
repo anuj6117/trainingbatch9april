@@ -4,17 +4,34 @@ import com.training.demo.enums.WalletType;
 
 public class UserOrderDto {
 
-	private long userId;
+	private Integer userId;
 	private long coinQuantity;
 	private long price;
-	private WalletType coinName;
+	private String coinName;
+	private WalletType coinType;
 
-	public long getUserId() {
+	public Integer getUserId() {
 		return userId;
 	}
 
-	public void setUserId(long userId) {
+	public void setUserId(Integer userId) {
 		this.userId = userId;
+	}
+
+	public String getCoinName() {
+		return coinName;
+	}
+
+	public void setCoinName(String coinName) {
+		this.coinName = coinName;
+	}
+
+	public WalletType getCoinType() {
+		return coinType;
+	}
+
+	public void setCoinType(WalletType coinType) {
+		this.coinType = coinType;
 	}
 
 	public long getCoinQuantity() {
@@ -31,14 +48,6 @@ public class UserOrderDto {
 
 	public void setPrice(long price) {
 		this.price = price;
-	}
-
-	public WalletType getCoinName() {
-		return coinName;
-	}
-
-	public void setCoinName(WalletType coinName) {
-		this.coinName = coinName;
 	}
 
 }

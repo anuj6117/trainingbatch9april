@@ -1,6 +1,7 @@
 package com.training.demo.controller;
 
 import java.util.List;
+import java.util.regex.*;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,26 +25,36 @@ public class SignUpController {
 	@Autowired
 	private UserRepository userRepository;
 
+	// RegexUtilities util = new RegexUtilities();
+
 	@RequestMapping(value = "/signup", method = RequestMethod.POST)
 	public String insertUser(@RequestBody User user) {
-		String password=user.getPassword().trim();
-		String username=user.getuserName();
-		int length=password.length();
-	    int unamelength=username.length();
-		if((length!=0)&&(unamelength<=25))
-		{
-		String newUser = signUpService.addUser(user);
-		if ((newUser != null)&&(unamelength!=0)) {
-			return newUser;
-		} else {
-			return "user can not be null";
+		String password = user.getPassword().trim();
+		String username = user.getuserName();
+		// String upperCaseChars = "(.*[A-Z].*)";
+		// String lowerCaseChars = "(.*[a-z].*)";
+
+		// String specialChars =
+		// "(.*[,~,!,@,#,$,%,^,&,*,(,),-,_,=,+,[,{,],},|,;,:,<,>,/,?].*$)";
+		// if (!password.matches(specialChars ))
+		int length = password.length();
+		int unamelength = username.length();
+
+		if ((length != 0) && (unamelength <= 25)) {
+
+			String newUser = signUpService.addUser(user);
+			if ((newUser != null) && (unamelength != 0)) {
+				return newUser;
+			}
+
+			else {
+				return "user can not be null";
+			}
 		}
-		}
-		
-		else
-		{
+
+		else {
 			return "enter valid password or user name";
-			
+
 		}
 	}
 
@@ -52,12 +63,12 @@ public class SignUpController {
 		if ((otpVerification.getEmail() == null) || (otpVerification.getOtp() == null)) {
 			return "otp not found";
 		} else {
-			 return signUpService.verifyUserWithOtp(otpVerification.getEmail(), otpVerification.getOtp());
+			return signUpService.verifyUserWithOtp(otpVerification.getEmail(), otpVerification.getOtp());
 
 		}
 	}
 
-	@RequestMapping(value = "/getAllUsers", method = RequestMethod.GET)
+	@RequestMapping(value = "/getallUsers", method = RequestMethod.GET)
 	public List<User> getAll() {
 		return signUpService.getAllUsers();
 	}
@@ -94,7 +105,7 @@ public class SignUpController {
 		try {
 			User t_user = userRepository.findByUserId(id);
 			userRepository.delete(t_user);
-			return "success";
+			return "user deleted sucessfully";
 		} catch (Exception e) {
 			return "fail";
 		}

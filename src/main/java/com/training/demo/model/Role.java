@@ -4,11 +4,16 @@ import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.training.demo.enums.RoleType;
 
 @Entity
 @Table(name = "role")
@@ -18,8 +23,13 @@ public class Role {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Integer roleId;
 	@Column(unique=true)
-	private String roleType;
+	@Enumerated(EnumType.STRING)
+	private RoleType roleType;
+	//private String roleType;
 
+
+
+	@JsonIgnore
 	@ManyToMany(mappedBy = "roles")
 	private Set<User> user;
 
@@ -27,9 +37,17 @@ public class Role {
 		super();
 	}
 
-	public Role(Integer roleId, String roleType) {
+	public Role(Integer roleId, RoleType roleType) {
 		super();
 		this.roleId = roleId;
+		this.roleType = roleType;
+	}
+
+	public RoleType getRoleType() {
+		return roleType;
+	}
+
+	public void setRoleType(RoleType roleType) {
 		this.roleType = roleType;
 	}
 
@@ -41,14 +59,9 @@ public class Role {
 		this.roleId = roleId;
 	}
 
-	public String getRoleType() {
-		return roleType;
-	}
+	
 
-	public void setRoleType(String roleType) {
-		this.roleType = roleType;
-	}
-
+	
 	public Set<User> getUser() {
 		return user;
 	}

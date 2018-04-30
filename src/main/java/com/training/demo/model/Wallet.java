@@ -1,6 +1,7 @@
 package com.training.demo.model;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -24,6 +25,8 @@ public class Wallet {
 
 	@Enumerated(EnumType.STRING)
 	private WalletType coinType;
+	
+	@Column(unique=true)
 	private String coinName;
 	long balance;
 	

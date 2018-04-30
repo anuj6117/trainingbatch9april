@@ -73,8 +73,13 @@ public class UserOrder {
 	}
 
 
-	private Long fee;
-	 @ManyToOne
+	private Integer fee;
+	 public void setFee(Integer fee) {
+		this.fee = fee;
+	}
+
+
+	@ManyToOne
 	 @JoinColumn(name = "userId")
 	 @JsonIgnore
       private User user;
@@ -136,12 +141,5 @@ public class UserOrder {
 		this.status = status;
 	}
 
-	public Long getFee() {
-		return fee;
-	}
-
-	public void setFee(Long fee) {
-		this.fee = fee;
-	}
-
+	
 }

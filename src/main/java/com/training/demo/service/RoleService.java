@@ -22,8 +22,16 @@ public class RoleService {
 	@Autowired
 	private OtpRepository otpRepository;
 
-	public void addRole(Role roleArg) {
+	public String addRole(Role roleArg) {
+		role=roleRepository.findByRoleType(roleArg.getRoleType());
+		if(role==null) {
 		roleRepository.save(roleArg);
+		return "role added succesfully"; 
+	}
+		else
+		{
+			return "role is already exist";
+		}
 	}
 
 	public void deleteRole(Integer roleId) {

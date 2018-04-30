@@ -20,11 +20,11 @@ public class RoleController {
 	@Autowired
 	private RoleRepository roleRepository;
 
-	@RequestMapping(value = "/addRole", method = RequestMethod.POST)
+	@RequestMapping(value = "/createRole", method = RequestMethod.POST)
 	public String insertRole(@RequestBody Role role) {
 		if (role != null) {
-			roleService.addRole(role);
-			return "Role Added Successfully.";
+		return	roleService.addRole(role);
+			
 		} else {
 			return "Role Addition Failure.";
 		}

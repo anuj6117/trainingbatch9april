@@ -45,11 +45,11 @@ public class User {
 	private Date date;
 	@Enumerated(EnumType.STRING)
 	private UserStatus userStatus;
-
+	//@JsonIgnore
 	@ManyToMany(cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
 	@JoinTable(name = "User_Role", joinColumns = @JoinColumn(name = "userid", referencedColumnName = "userId"), inverseJoinColumns = @JoinColumn(name = "roleid", referencedColumnName = "roleId"))
 	private Set<Role> roles;
-
+	//@JsonIgnore
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
 	private Set<Wallet> Wallet;
 	

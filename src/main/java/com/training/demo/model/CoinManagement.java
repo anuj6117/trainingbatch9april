@@ -16,18 +16,26 @@ public class CoinManagement {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long coinId;
 	private WalletType coinType;
-	@NotNull(message = "coinName not null")
+	//@NotNull(message = "coinName not null")
 	private String coinName;
 	@Column(unique = true)
 	@NotNull(message = "symbol not null")
 	private String symbol;
-	@NotNull(message = "can not be null")
+	//@NotNull(message = "can not be null")
 	private Double initialSupply;
-	@NotNull(message = "price not null")
+	//@NotNull(message = "price not null")
 	private Integer price;
 	private Integer fee;
 	private Long INRconversion;
 	private Long profit;
+
+	public Long getProfit() {
+		return profit;
+	}
+
+	public void setProfit(Long profit) {
+		this.profit = profit;
+	}
 
 	public WalletType getCoinType() {
 		return coinType;

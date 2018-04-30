@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import com.training.demo.dto.DtoUser;
+import com.training.demo.enums.RoleType;
 import com.training.demo.enums.UserStatus;
 import com.training.demo.enums.WalletType;
 import com.training.demo.model.OtpVerification;
@@ -51,8 +52,18 @@ public class SignUpService {
 		HashSet<Role> hashSet = new HashSet();
 		boolean b = hashSet.add(roles);
 		boolean flag = userRepository.existsByEmail(user.getEmail());
+		boolean phone=userRepository.existsByPhoneNo(user.getPhoneNo());
 		// )&&(userRepository.existByPhoneNo(user.getPhoneNo())));
 		if (flag == false) {
+			if(phone==false)
+			{
+				
+				
+			}
+			else
+			{
+				return " oops this number is already exist";
+			}
 			String email = user.getEmail();
 			String phoneNo = user.getPhoneNo();
 			System.out.println(email);
@@ -71,11 +82,14 @@ public class SignUpService {
 			Set<Wallet> wallet = new HashSet<Wallet>();
 			Wallet userwallet = new Wallet();
 			userwallet.setCoinType(WalletType.FIAT);
+			//userwallet.setCoinName("inr");
 			userwallet.setUser(existingUser);
-			// userwallet.setUser(user);
 			wallet.add(userwallet);
 			walletRepository.save(userwallet);
 			user.setWallet(wallet);
+			Role role=new Role();
+			role.setRoleType(RoleType.USER);
+			user.getRoles().add(role);
 			userRepository.save(existingUser);
 
 			// user.getWallet().add(wallet);
@@ -92,13 +106,13 @@ public class SignUpService {
 				date = new Date();
 				otpVerification.setDate(date);
 				otpRepository.save(otpVerification);
-				return "Otp sent successfully.";
+				return "your account is succesfully created plese verify it by using OTP.";
 			} else {
 				System.out.println("Invalid Username.");
 				return "Registration Failure.";
 			}
 		} else {
-			System.out.println("Already existing Email or Phoneno");
+			
 			return "oops this email id is already registerd ";
 		}
 	}
@@ -123,9 +137,8 @@ public class SignUpService {
 				t_user.setUserStatus(UserStatus.ACTIVE);
 				userRepository.save(t_user);
 				System.out.println("otpVerification table deleted.");
-				return "suceess";
+				return "your account is verified succesfully";
 			} else {
-				System.out.println("Sorry, invalid username or otp");
 				return "otp is not valid";
 			}
 		} catch (Exception e) {
@@ -154,6 +167,7 @@ public class SignUpService {
 
 		if (user != null) {
 			if (role != null) {
+				
 				user.getRoles().add(role);
 				User tempUser = userRepository.save(user);
 				return tempUser;

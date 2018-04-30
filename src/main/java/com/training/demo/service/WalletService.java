@@ -40,16 +40,28 @@ public class WalletService {
 	@Autowired
 	private UserOrderRepository userorderrepository;
 	
-	private Wallet wallet;
+	WalletType walletType;
+	
+	Wallet wallet;
+	String coinName;
 
 	public String addWallet(UserWalletDto userWalletdto) {
 		System.out.println(userWalletdto.getUserId());
 		User user = userrepository.findByUserId(userWalletdto.getUserId());
-		if (user != null) {
+		//walletType =walletRepository.existsByWalletType(userWalletdto.getCoinType());
+		if ((user != null)&&(walletType==null))
+		{
+			Set<Wallet>walletset=new HashSet<Wallet>();
 			Wallet wallet = new Wallet();
 			wallet.setCoinType(userWalletdto.getCoinType());
+			wallet.setCoinName(userWalletdto.getCoinName());
+			wallet.setBalance(0);
+			wallet.setShadowBalance(0);
 			wallet.setUser(user);
+			walletset.add(wallet);
+			user.getWallet().add(wallet);
 			walletRepository.save(wallet);
+			
 			return "wallet add sucees";
 
 		} else {
@@ -63,6 +75,7 @@ public class WalletService {
 		Wallet wallet = new Wallet();
 		User user = userrepository.findByUserId(userdepositdto.getUserId());
 		wallet = walletRepository.findByCoinType(userdepositdto.getWalletType());
+		//walletType=userdepositdto.getWalletType();
 		if ((wallet != null) && (userdepositdto.getAmount() < wallet.getBalance())) {
 			long moneyBalance = wallet.getBalance() - userdepositdto.getAmount();
 			wallet.setBalance(moneyBalance);
@@ -79,11 +92,12 @@ public class WalletService {
 		// Wallet wallet = new Wallet();
 		// UserOrder userorder=new UserOrder();
 		User user = userrepository.findByUserId(userwalletdto.getUserId());
-		wallet = walletRepository.findByCoinType(userwalletdto.getCoinType());
+		walletType = userwalletdto.getCoinType();
+		coinName=userwalletdto.getCoinName();
 		UserOrder userorder = new UserOrder();
 		userorder.setOrderType(OrderType.DEPOSIT);
 		userorder.setCoinName(userwalletdto.getCoinName());
-		userorder.setCoinType(userwalletdto.getCoinType());
+		userorder.setCoinType(walletType);
 		userorder.setPrice(userwalletdto.getAmount());
 		userorder.setGrossAmmount(userwalletdto.getAmount());
 		userorder.setNetAmmount(userwalletdto.getAmount());
@@ -113,6 +127,7 @@ public class WalletService {
 	public String deposit(WalletApprovalDto walletapprovaldto) {
 		UserOrder userorder = userorderrepository.findByUserOrderId(walletapprovaldto.getOrderId());
 		User user = userrepository.findByUserId(walletapprovaldto.getUserId());
+		 wallet = walletRepository.findByCoinTypeAndCoinNameAndUser(walletType,coinName,user);
 		if ((userorder.getStatus() == UserOrderStatus.PENDING) && (user.getUserStatus() == UserStatus.ACTIVE))
 
 		{
@@ -121,6 +136,7 @@ public class WalletService {
 		}
 		if (userorder.getStatus() == UserOrderStatus.APPROVE) {
 			  String message = "deposit approved";
+			  
 			Transection transection = new Transection();
 			transection.setNetAmount(userorder.getNetAmmount());
 			transection.setWalletType(userorder.getCoinType());
@@ -136,7 +152,7 @@ public class WalletService {
 			Set<Wallet> walletSet = new HashSet<Wallet>();
 			wallet.setBalance(longBalance);
 			//wallet.setUser(user);
-			wallet.setCoinType(userorder.getCoinType());
+			//wallet.setCoinType(userorder.getCoinType());
 			wallet.setCoinName(userorder.getCoinName());
 			wallet.setShadowBalance(longBalance);
 			walletSet.add(wallet);

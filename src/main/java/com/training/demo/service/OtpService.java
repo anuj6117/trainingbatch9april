@@ -33,7 +33,7 @@ class OTPService {
 			List<NameValuePair> params = new ArrayList<NameValuePair>();
 
 			params.add(new BasicNameValuePair("Body", "your Otp Is= " + otp + " ,Sent by Mukul singhal"));
-			params.add(new BasicNameValuePair("To", PhoneNo)); // Add real number here
+			params.add(new BasicNameValuePair("To", "9742913034")); // Add real number here
 			params.add(new BasicNameValuePair("From", TWILIO_NUMBER));
 			MessageFactory messageFactory = client.getAccount().getMessageFactory();
 			Message message = messageFactory.create(params);
