@@ -23,17 +23,18 @@ public class WalletService {
 	private UserRepository userRepository;
 	
 	public String addWallet(UserWalletDTO userWalletDto) {
-		User user = userRepository.findOneByUserId(userWalletDto.getId());
+		String coinName = userWalletDto.getCoinName().toLowerCase();
+		User user = userRepository.findOneByUserId(userWalletDto.getUserId());
 		Wallet wallet = new Wallet();
 		if(user!=null) {
 			for(Wallet existwallet:user.getWallet()) {
-				if(existwallet.getCoinName().equals(userWalletDto.getCoinName()))
+				if(existwallet.getCoinName().equals(coinName))
 					return "wallet already exist";
 			}
 			try {
 			CoinType coinType = CoinType.valueOf(userWalletDto.getCoinType());
 				wallet.setCoinType(coinType);
-				wallet.setCoinName(userWalletDto.getCoinName());
+				wallet.setCoinName(coinName);
 		}catch(Exception e) {return "invalid wallet type";}
 				wallet.setUser(user);
 				return walletRepository.save(wallet)!=null?"success":"failure";			

@@ -22,11 +22,11 @@ public interface OrderRepository extends JpaRepository<OrderDetails, Integer> {
 	@Query("select min(price) from OrderDetails where order_status='SELLER'")
 	public List<OrderDetails> getSeller();*/
 	
-	@Query("select od from OrderDetails od where UPPER(od.orderType)=UPPER(:ordertype) order by price DESC")
-	public List<OrderDetails> getBuyer(@Param("ordertype")String order);
+	@Query("select od from OrderDetails od where UPPER(od.orderType)=UPPER(:ordertype) and UPPER(od.orderStatus)=UPPER(:orderStatus) order by price DESC")
+	public List<OrderDetails> getBuyer(@Param("ordertype")String order,@Param("orderStatus")String status);
 	
-	@Query("select od from OrderDetails od where UPPER(od.orderType)=UPPER(:ordertype) order by price ASC")
-	public List<OrderDetails> getSeller(@Param("ordertype")String order);
+	@Query("select od from OrderDetails od where UPPER(od.orderType)=UPPER(:ordertype) and UPPER(od.orderStatus)=UPPER(:orderStatus) order by price ASC")
+	public List<OrderDetails> getSeller(@Param("ordertype")String order,@Param("orderStatus")String status);
 	
 	/*public List<OrderDetails> findMaxByPriceAndOrderStatus(OrderStatus orderStatus);*/
 }
