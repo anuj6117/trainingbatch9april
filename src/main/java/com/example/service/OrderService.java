@@ -1,5 +1,6 @@
 package com.example.service;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
@@ -23,8 +24,8 @@ public class OrderService
 	@Autowired
 	private OrderRepository orderRepository;
 	private CurrencyRepository currencyRepository;
-	Set<UserOrder> buyList=new HashSet<UserOrder>();
-	Set<UserOrder> sellList=new HashSet<UserOrder>();
+	ArrayList<UserOrder> buyList=new ArrayList<UserOrder>();
+	ArrayList<UserOrder> sellList=new ArrayList<UserOrder>();
  public String createBUYORDER(UserOrderDto userOrderDto,Currency currency,UserOrder userorder)
  {
 	try
@@ -55,16 +56,16 @@ public class OrderService
 	}
  }
    
- public String transactionMethod()
- {
-	/* Set<UserOrder> orderList=new HashSet<UserOrder>();
-	 int 
-	 for(int i=0;i<orderList.size();i++)	 
-	 {
-		 orderList.add(e)
-	 }
-		*/ 
-	 return "";
+ public UserOrder transactionMethod()
+ { 
+	 
+	 
+	return sellList.get(0);
+	
+	
+	
+	 //return "";
+	//return ;
 
  }
  

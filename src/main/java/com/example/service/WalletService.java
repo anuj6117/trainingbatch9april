@@ -45,6 +45,7 @@ public class WalletService
 	 user=userrepository.findByUserId(userwalletdto.getUserId());
 	 Wallet wallet=new Wallet();
 	 wallet.setWalletType(userwalletdto.getWalletType());
+	 wallet.setWalletName(userwalletdto.getWalletName());
 	 wallet.setUser(user);
 	 walletrepository.save(wallet);
 	 return "wallet added in service";

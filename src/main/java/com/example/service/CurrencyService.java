@@ -14,17 +14,11 @@ public class CurrencyService
     
 	public String addCurrency(Currency currency)
 	{
-	  if(!(currencyrepository.save(currency)==null))
-	  {
-		  Integer initalsupply=currency.getInitialSupply();
-		  Integer price=currency.getPrice();
-		  currency.setCoinInINR(initalsupply*price);
+		System.out.println("...................................");
 		  currencyrepository.save(currency);
-		  
 		  return "Your coin has been added successfully";
-	  }	
-	  else
-		  return "not saved, its null";
+	  	
+	  
 	}
 	public String updatecurrency(Currency currency)
 	{

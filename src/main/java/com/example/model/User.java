@@ -31,14 +31,14 @@ public class User
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Integer userId;
 
-	@NotNull
+	
 	@Size(min=1,max=25,message="name should be less than equal to 25")
-	private String userName;
+	private String userName;//@NotNull
 	@Email
-	private String email;
-	@Column(unique=true)
+	private String email;//@Column(unique=true)
+	
 	@Size(min=10,max=10,message="phonenumber length should be 10 only")
-	private String phoneNumber;
+	private String phoneNumber;//@Column(unique=true)
 	@Size(min=8,max=32)
 	private String password;
 	@NotNull

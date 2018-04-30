@@ -55,12 +55,7 @@ public class SignUpService
 	
 	public String addUser(User user)
 	{ 
-		if( !(userrepository.findByEmail(user.getEmail())==null) )
-		{
-			return null;
-		}
-		else
-		{	
+         //System.out.println("[[[[[[[[[[[[[[[[[[[[[[[[[[[[ "+userrepository.Eemail(10));
 		 String date=new Date()+"";
 		 Random random=new Random();
 		 otpNum=random.nextInt(899000)+1000;
@@ -71,13 +66,14 @@ public class SignUpService
 		 user.setPassword(newpassword);
 		 String name=user.getUserName();
 		 user.setUserName(name.trim());
-		 System.out.println(user.getUserName()+"..............");
+	
 		 user.setCreatedOn(date);
 		 user.setStatus((UserStatus.INACTIVE));
 		 userrepository.save(user);
 		 Set<Wallet> walletset=new HashSet<Wallet>();
 		 Wallet wallet = new Wallet();
 	     wallet.setWalletType(WalletType.FIAT);
+	     wallet.setWalletName("INR");
 		 wallet.setUser(user);
 		 walletset.add(wallet);
 		 walletrepository.save(wallet);
@@ -89,9 +85,9 @@ public class SignUpService
 		 if( !(userrepository.save(user) == null))
 		{
 			
-			otps.sendSms(otpNum,user.getPhoneNumber());
+			//otps.sendSms(otpNum,user.getPhoneNumber());
 			mailController.getMailOtp(otpval);
-			otptableservice.valuemethod(user,otpval);
+			//otptableservice.valuemethod(user,otpval);
 			mailController.home(user.getEmail());
 			 
 			return "Sent Successfully ";
@@ -100,7 +96,7 @@ public class SignUpService
 		{
 			return "Failure";
 		}
-	   }
+	   
 	}
 	public String updateuser(User user)
 	 {  
@@ -137,7 +133,7 @@ public class SignUpService
 		  
 		 userorder.setStatusType(StatusType.PENDING);
 		 userorder.setCoinType(WalletType.FIAT);
-		 userorder.setCoinName(userwalletdto.getCoinName());
+		 userorder.setCoinName(userwalletdto.getWalletName());
 		 userorder.setNetAmount(userwalletdto.getAmount());
 		 userorder.setGrossAmount(userwalletdto.getAmount());
 		 userorder.setOrderType(OrderType.DEPOSIT);

@@ -37,8 +37,18 @@ public class SignUserController
 	 
 	@RequestMapping(value="/signup", method=RequestMethod.POST)
 	public String insertUser(@RequestBody User user)
-	{  System.out.println("......................1111111111");
-		
+	{  User user1=userrepository.findByEmail(user.getEmail());
+	   User user2=userrepository.findByPhoneNumber(user.getPhoneNumber());
+		if(user1!=null)
+		{
+			return "email already exist";
+		}
+		else if(user2!=null)
+		{
+			return "phone number already exist";
+		}
+		else 
+		{
 		String username1=user.getUserName();
 		String username=user.getUserName().trim();
 		int usernameLength=username.length();
@@ -53,26 +63,39 @@ public class SignUserController
 	    if((passwordLength2!=0) && (passwordLength1==passwordLength2) && (passwordvalue.matches(pattern)))
 		{
 	    	 System.out.println("......................111111111122222");
-	    	if((usernameLength!=0 )&& (usernameLength==usernameLength2))
-	    	{
-	    		 System.out.println("......................1111111111333333");
-			 String u=signupservice.addUser(user);
-			   if(u != null)
-			   {
-				return "Your account has been successfully created. Please, verify it by using OTP ";
-		       }
-			   else
-			   {
-				return "use different email";
-			   }
-	    	}
-	    	else
-	    		return "enter valid username";
-		}
+	    	 if(user.getPhoneNumber().length()==10)
+	    	 {
+	    		 if((usernameLength!=0 )&& (usernameLength==usernameLength2) && (user.getUserName()!=null) )
+	    	   {
+	    		 if( (username1.length()<=25))
+	    		 {
+	    			if(user.getCountry()!=null)
+	    			{
+			         String u=signupservice.addUser(user);
+			         if(u != null)
+			         {
+			    	 return "Your account has been successfully created. Please, verify it by using OTP ";
+		             }
+			         else
+			         return "use different email";
+			        }
+	    			else
+	    			 return "Country can't be null";	
+	    		 }
+	    		 else
+	    		 return "Maximum character for username is 25";
+	    	   }
+	    	   else
+	    		return "Username can't be null or cannot contain inappropriate spaces";
+		     }
+	    	   else
+	    		return "Phone number should be of length 10";
+	   }
 		else
 		{
 			return "enter valid password";
 		}
+	   } 
 	}
 	
 	@RequestMapping(value="/verifyuser",method=RequestMethod.POST)

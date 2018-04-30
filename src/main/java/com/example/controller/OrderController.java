@@ -48,7 +48,7 @@ public class OrderController
 	}
    
    
-   @RequestMapping(value="/createSellorder",method=RequestMethod.POST)
+   @RequestMapping(value="/createsellorder",method=RequestMethod.POST)
 	public String createSellOrder(@RequestBody UserOrderDto userOrderDto )
 	{
 		/*user=userRepository.findByUserId(userOrderDto.getUserId());
@@ -63,29 +63,30 @@ public class OrderController
 	   user=userRepository.findByUserId(userOrderDto.getUserId());
 	   if(user.getStatus()==UserStatus.ACTIVE)
 	   { 
-		   Set<Wallet> list=user.getWallet();
+		 /*  Set<Wallet> list=user.getWallet();
 		   for(Wallet s:list)
 		     {
 		    	 
 		   
 		    	 if(s.getWalletType()==WalletType.CRYPTOCURRENCY && (s.getWalletName()==userOrderDto.getCoinName()))
-		    	 {
+		    	 {*/
+		    		 System.out.println("enter here............");
 		    		 currency=currencyRepository.findByCoinName(userOrderDto.getCoinName());
 		    		   userorder.setUser(user);	
 		    		   return  orderService.createSELLORDER(userOrderDto, currency,userorder);
 		        		 
-		    	 }
-		     }
+		    	 //}
+		     
 		  
 	  
-	   return "";
-	  
+	   	  
 	   }
 	   else
 		return "Invalid User";   
 	}
+   
    @RequestMapping(value="/transaction")
-   public String transactionMethod()
+   public UserOrder transactionMethod()
    {
 	   return orderService.transactionMethod();
    }

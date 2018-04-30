@@ -16,29 +16,28 @@ import com.example.enums.WalletType;
 @Table(name="currency")
 public class Currency
 {
-	@Id
+  @Id
   @GeneratedValue(strategy = GenerationType.AUTO)
   private Integer coinId;
-  @NotNull
-  @Column(unique=true)
+
   private String coinName;
  
   @Enumerated(EnumType.STRING)
   private WalletType coinType;
-  @NotNull
-  @Column(unique=true)
+  
   private String symbol;
-  @NotNull
+ 
   private Integer initialSupply;
-  @NotNull
+
   private Integer price;
   private Integer fees;
   private Integer profit;
   private Integer coinInINR;
   
-  
-  
-  public WalletType getCoinType() {
+  public void setCoinId(Integer coinId) {
+	this.coinId = coinId;
+}
+public WalletType getCoinType() {
 	return coinType;
 }
 public void setCoinType(WalletType coinType) {

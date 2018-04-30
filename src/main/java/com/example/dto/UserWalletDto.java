@@ -1,21 +1,26 @@
 package com.example.dto;
 
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+
 import com.example.enums.WalletType;
 
 public class UserWalletDto
  {
   private Integer userId;
-  private String coinName;
+  private String walletName;
+  @Enumerated(EnumType.STRING)
   private WalletType walletType;
   private Integer amount;
   
   
   
-public String getCoinName() {
-	return coinName;
+
+public String getWalletName() {
+	return walletName;
 }
-public void setCoinName(String coinName) {
-	this.coinName = coinName;
+public void setWalletName(String walletName) {
+	this.walletName = walletName;
 }
 public Integer getAmount() {
 	return amount;
