@@ -26,13 +26,23 @@ public class Transaction {
 	private long fee;
 	private long exchangeRate;
 	private long grossAmount;
-	private String buyer;
+	private Integer buyer;
+	private Integer seller;
 	 @Enumerated(EnumType.STRING)
 	private TransactionStatus status;
 	private Date date;
+	private String remarks;
+	
+	
 	
 	public Integer getTransactionId() {
 		return transactionId;
+	}
+	public String getRemarks() {
+		return remarks;
+	}
+	public void setRemarks(String remarks) {
+		this.remarks = remarks;
 	}
 	public void setTransactionId(Integer transactionId) {
 		this.transactionId = transactionId;
@@ -73,10 +83,16 @@ public class Transaction {
 	public void setGrossAmount(long grossAmount) {
 		this.grossAmount = grossAmount;
 	}
-	public String getBuyer() {
+	public Integer getBuyer() {
 		return buyer;
 	}
-	public void setBuyer(String buyer) {
+	public Integer getSeller() {
+		return seller;
+	}
+	public void setSeller(Integer seller) {
+		this.seller = seller;
+	}
+	public void setBuyer(Integer buyer) {
 		this.buyer = buyer;
 	}
 	

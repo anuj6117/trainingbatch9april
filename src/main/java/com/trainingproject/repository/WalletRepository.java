@@ -15,4 +15,6 @@ public interface WalletRepository extends JpaRepository<Wallet,Integer> {
 	Wallet findByuser(User user);
 	
 	Wallet findBycoinTypeAndUser(CoinType coinType,User user);
+	
+	Wallet findBycoinNameAndUser(String coinName,User user);
 }

@@ -17,7 +17,6 @@ import com.trainingproject.domain.UserOrder;
 import com.trainingproject.domain.Wallet;
 import com.trainingproject.dto.AssignRoleBean;
 import com.trainingproject.dto.AssignWalletBean;
-import com.trainingproject.dto.BuySellBean;
 import com.trainingproject.dto.WithdrawDepositBean;
 import com.trainingproject.enums.CoinType;
 import com.trainingproject.enums.OrderType;
@@ -55,16 +54,21 @@ public class UserService {
 	
 	public String createUser(User user) {
 		
-		Pattern p = Pattern.compile("[^a-z0-9 ]", Pattern.CASE_INSENSITIVE);
+		Pattern p = Pattern.compile("^[a-zA-Z0-9._-]{3,}$", Pattern.CASE_INSENSITIVE);
 		Matcher m = p.matcher(user.getUserName());
-		if(user.getUserName().contains(" "))
+		
+		 if(!m.find())
+			 return "invalid username";
+		if(user.getUserName().charAt(0)==' ')
 			return "your name canot have spaces";
 		
+		if(user.getUserName().charAt(0)==' ')
+			return "your name canot have spaces";
 		
-	     if(m.find())
-	    	 return "your name cannot have a special character";
+	     if(user.getUserName().charAt(user.getUserName().length()-1)==' ')
+	    	 return "your name cannot have space";
 	     
-	     p = Pattern.compile("(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\\S+$).{8,}");
+	     p = Pattern.compile("(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\\S+$).{8,}$");
 		 m = p.matcher(user.getPassword());
     
 		 if(!m.find())
@@ -74,7 +78,7 @@ public class UserService {
 		if(user.getUserName().length()==0)
 			return "name cannot be empty";
 		else if(user.getUserName().length()>25)
-			return "Maximum characters allowed for this field is 25";
+			return "Maximum characters allowed for user name field is 25";
 		
 		if(userRepository.findByEmail(user.getEmail())!=null)
 			return "oops this email id is already registered";
@@ -89,14 +93,24 @@ public class UserService {
 			return "please enter password with minimum 8 characters";
 		
 		if(user.getPassword().length()>32)
-			return "Maximum characters allowed for this field is 32";
+			return "Maximum characters allowed for password field is 32";
 		
 		if(user.getCountry()==null||user.getCountry().length()==0)
 			return "county cannot be null";
 		
 		user.setCreatedOn(new Date());
+		user.setStatus(UserStatus.INACTIVE);
 		
-		User createduser=userRepository.save(user);
+		String regex = "^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$";
+
+	      Pattern pattern = Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
+	      Matcher matcher = pattern.matcher(user.getEmail());
+	      
+	      if(matcher.matches())
+	      {
+	      
+	    	  userRepository.save(user);
+		
 		List<Wallet> walletSet=new ArrayList<Wallet>();
 		Wallet wallet=new Wallet();
 		wallet.setCoinType(CoinType.FIAT);
@@ -121,11 +135,17 @@ public class UserService {
 	  signupOTPRepository.save(otpobj);
 	 
 	  userRepository.save(user);
-	     
-		   return "success";
+			
+	 return "success";
+	 
 	}
 	
 	
+	else {
+		return "Invalid email";
+	   }
+	      
+	}
 	
 	public List<User> getAllUsers() {
 		
@@ -276,9 +296,7 @@ public class UserService {
 	    	return "please enter a valid amount to deposit";
 	    
 	    
-		
 		User user =getUserById(wdb.getUserId()).get();
-		
 		
 		
 		if(user.getStatus().equals(UserStatus.INACTIVE))

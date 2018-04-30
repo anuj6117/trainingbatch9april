@@ -1,27 +1,26 @@
 package com.trainingproject.util;
 
 	import java.util.ArrayList;
-	import java.util.List;
-	import java.util.Random;
+import java.util.List;
+import java.util.Random;
 
-	import javax.mail.MessagingException;
-	import javax.mail.internet.MimeMessage;
+import javax.mail.MessagingException;
+import javax.mail.internet.MimeMessage;
 
-	import org.apache.http.NameValuePair;
-	import org.apache.http.message.BasicNameValuePair;
-	import org.springframework.beans.factory.annotation.Autowired;
-	import org.springframework.mail.javamail.JavaMailSender;
-	import org.springframework.mail.javamail.MimeMessageHelper;
-	import org.springframework.stereotype.Service;
-	import org.springframework.web.bind.annotation.RequestMapping;
-	import org.springframework.web.bind.annotation.ResponseBody;
-	import org.springframework.web.bind.annotation.RestController;
+import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.mail.MailSenderValidatorAutoConfiguration;
+import org.springframework.mail.MailSendException;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.JavaMailSenderImpl;
+import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.stereotype.Service;
 
-	import com.trainingproject.repository.UserRepository;
-	import com.twilio.sdk.TwilioRestClient;
-	import com.twilio.sdk.TwilioRestException;
-	import com.twilio.sdk.resource.factory.MessageFactory;
-	import com.twilio.sdk.resource.instance.Message;
+import com.twilio.sdk.TwilioRestClient;
+import com.twilio.sdk.TwilioRestException;
+import com.twilio.sdk.resource.factory.MessageFactory;
+import com.twilio.sdk.resource.instance.Message;
 	
 	
 	@Service
@@ -73,8 +72,14 @@ package com.trainingproject.util;
 		e.printStackTrace();
 	
 		}
+		try {
+	
 		sender.send(message);
-		
+		}
+		catch(MailSendException e) {
+			
+			
+		}
 		}
 		}
 

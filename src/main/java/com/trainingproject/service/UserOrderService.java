@@ -1,18 +1,20 @@
 package com.trainingproject.service;
 
 import java.util.Date;
-import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.trainingproject.domain.User;
 import com.trainingproject.domain.UserOrder;
+import com.trainingproject.domain.Wallet;
 import com.trainingproject.dto.BuySellBean;
 import com.trainingproject.enums.OrderType;
 import com.trainingproject.enums.UserOrderStatus;
 import com.trainingproject.enums.UserStatus;
+import com.trainingproject.repository.CurrencyRepository;
 import com.trainingproject.repository.UserOrderRepository;
+import com.trainingproject.repository.WalletRepository;
 
 @Service
 public class UserOrderService {
@@ -24,11 +26,15 @@ public class UserOrderService {
 	@Autowired
 	UserService userservice;
 	
+	@Autowired
+	WalletRepository walletRepository;
 	
+	@Autowired
+	CurrencyRepository currencyRepository;
 	
 	public String createBuyOrder(BuySellBean bsb) {
-		User user =userservice.getUserById(bsb.getUserId()).get();
 		
+		User user =userservice.getUserById(bsb.getUserId()).get();
 		if(user==null)
 			return "user is null";
 		
@@ -47,6 +53,15 @@ public class UserOrderService {
 		
 		if(bsb.getPrice()==null||bsb.getPrice()==0)
 		      return "price cannot be null";
+		
+		
+		Integer totamount=bsb.getCoinQuantity()*bsb.getPrice();
+		Integer fee=currencyRepository.findBycoinName(bsb.getCoinName()).getFees();
+		long gross=(totamount*fee)/100+totamount;
+		Wallet buyerWallet=walletRepository.findBycoinNameAndUser(bsb.getCoinName(), user);
+		
+	  if(buyerWallet.getShadowBal()<gross)
+		  return "Insufficient funds!";
 		
 		UserOrder userorder=new UserOrder();
 		userorder.setCoinName(bsb.getCoinName());
@@ -69,7 +84,11 @@ public class UserOrderService {
 
 		
 	     User user =userservice.getUserById(bsb.getUserId()).get();
-	 	
+	      Wallet sellerWallet=walletRepository.findBycoinNameAndUser(bsb.getCoinName(), user);
+	      
+	 	 if(sellerWallet==null) {
+	 		 return "seller dont have this currency";
+	 	 }
 	     if(user==null)
 				return "user is null";
 	     

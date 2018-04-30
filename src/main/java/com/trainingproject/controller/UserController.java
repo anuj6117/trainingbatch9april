@@ -1,12 +1,13 @@
 package com.trainingproject.controller;
 
 import java.util.List;
-
 import java.util.Optional;
+
+import javax.lang.model.type.UnknownTypeException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.http.InvalidMediaTypeException;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -104,15 +105,21 @@ public class UserController{
 		
 		 return  userservice.getAllOrdersByUserId(userId);
 	}
+}
 	
 //	  @ResponseStatus(value = HttpStatus.BAD_REQUEST, reason = "please enter valid data")
 //	   @ExceptionHandler(HttpMessageNotReadableException.class)
-//	   public void handleException() {
+//	   public String handleException() {
 //	        //Handle Exception Here...
-//		  
+//		  try{
+//			  
+//		  }
+//		  catch(ConstraintViolationException e) {
+//			  return e.getMessage();
+//		  }
+//		  return "";
 //	    }
-	
+//	
 
 
-	}
 

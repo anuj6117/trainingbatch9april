@@ -31,7 +31,7 @@ public class User {
     
 	private String userName;
     
-   @Email
+	
 	private String email;
     private String country;
     
