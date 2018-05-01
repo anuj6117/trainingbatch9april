@@ -15,6 +15,7 @@ import com.traningproject1.demo.dto.ClassDTO;
 import com.traningproject1.demo.dto.DepositAmountDTO;
 import com.traningproject1.demo.dto.VerifyUserDTO;
 import com.traningproject1.domain.User;
+import com.traningproject1.enumsclass.UserStatus;
 import com.traningproject1.repository.UserRepository;
 import com.traningproject1.service.ServiceClass;
 import com.traningproject1.service.UserOTPService;
@@ -140,6 +141,11 @@ public  String updateUserData(@RequestBody User user)
 @RequestMapping(value="/assignrole",method=RequestMethod.POST)
 public String assignRoleToUser(@RequestBody ClassDTO classDTO)
 {
+	User user=userRepository.findByuserId(classDTO.getUserId());
+	if(user.getStatus().equals(UserStatus.INACTIVE))
+	{
+	 return "User is Not verified";
+	}
   try
   {
 	  serviceClass.assignRoleToUser(classDTO);

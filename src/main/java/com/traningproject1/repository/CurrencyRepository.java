@@ -20,6 +20,8 @@ public interface CurrencyRepository extends JpaRepository<CurrencyClass,Integer>
 
 	CurrencyClass findByCoinId(Integer coinId);
 
+	CurrencyClass findBySymbol(String sym);
+
 
 
 }

@@ -61,17 +61,17 @@ public User addUser(User user)
 	{
 	
 	    user.setCreatedOn(new Date());
-	   	    Role defaultrole=roleRepository.getRoleByid(1);
+	   	  //  Role defaultrole=roleRepository.getRoleByid(1);
 		   	    
-		ArrayList<Role> roleType=new ArrayList<>();
+		//ArrayList<Role> roleType=new ArrayList<>();
 		
 		
-	  roleType.add(defaultrole);
+	  //roleType.add(defaultrole);
 		
-	   user.setRole(roleType);	
+	   //user.setRole(roleType);	
 	   Random random=new Random();
 	   otp=random.nextInt(20000);
-		roleRepository.save(defaultrole);
+		//roleRepository.save(defaultrole);
 		
 		userRepository.save(user);
 		
@@ -148,6 +148,7 @@ public String updateUserData(User user) {
 public User assignRoleToUser(ClassDTO classDTO)
 {
 	User user=userRepository.findByuserId(classDTO.getUserId());
+	
 	Role role=roleRepository.findByroleType(classDTO.getRoleType());
 	/*if(!(classDTO.getRoleType().equals(role1)))
 	{
@@ -171,7 +172,7 @@ public User assignRoleToUser(ClassDTO classDTO)
 		}
 		else
 		{
-			throw new NullPointerException(   "User Role doesn't not exist");
+			throw new NullPointerException("User Role doesn't not exist");
 		}
 	}
 	else
@@ -234,9 +235,9 @@ public User assignRoleToUser(ClassDTO classDTO)
 	  }
 	  else
 	  {
-		  return "User Not Verified";
+		  return "Invalid OTP";
 	  }
 	  userRepository.save(user);
-	  return "User Veified";
+	  return "Your account verified Successfully";
    }
 }
