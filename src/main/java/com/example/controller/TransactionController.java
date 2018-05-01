@@ -11,8 +11,8 @@ public class TransactionController
 {   @Autowired
 	private TransactionService transactionService;
    @RequestMapping("/transaction")
-	public String transaction()
+	public void transaction()
 	{
-    	return transactionService.transactionMethod();
+       transactionService.transactionMethod();
 	}
 }

@@ -27,16 +27,7 @@ private CurrencyRepository currencyrepository;
 @RequestMapping(value="/addcurrency",method=RequestMethod.POST)	
  public String addCurrency(@RequestBody Currency currency)
  {
-	/*System.out.println("just checking the querr//////////////// "+currencyrepository.myPrice(32));
-	Currency currency3=currencyrepository.myPrice(32);
-	System.out.println("value of cuurency3 "+currency3 );
-	System.out.println("query shows the currency value of.... "+ currency3.getCoinName());
-	Set<Currency> buyListt=currencyrepository.buylist(22);
-	for(Currency s:buyListt)
-	{
-		System.out.println("wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww"+s.getCoinId());
-	}
-	*/
+	
 	
 	Currency currency1=null;
 	Currency currency2=null;
@@ -68,7 +59,7 @@ private CurrencyRepository currencyrepository;
 	{
 		String pattern="(?=.*[@#$%^&+=])(?=\\S+$).{1,1}";
 		
-		System.out.println("gusaad............");
+	
 		//here null pointer maeans we can insert
 		if(currency1==null && currency2==null)
 		{
