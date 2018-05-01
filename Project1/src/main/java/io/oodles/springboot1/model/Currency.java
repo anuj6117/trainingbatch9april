@@ -6,21 +6,27 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 import io.oodles.springboot1.enums.WalletType;
 
 @Entity
 public class Currency {
 	@Id @GeneratedValue(strategy=GenerationType.AUTO)
-	private Integer id;
+	private Integer coinId;
 	@Enumerated(EnumType.STRING)
 	private WalletType coinType;
-	private String coinname;
+	private String coinName;
+	
 	private String symbol;
 	private Integer initialSupply;
+	
 	private Integer price;
-	private Integer fee;
+	private Integer fees;
 	private Integer INRconversion;
+	
+	
 	private Integer profit;
 	
 	
@@ -34,14 +40,7 @@ public class Currency {
 		this.profit = profit;
 	}
 
-	public Integer getFee() {
-		return fee;
-	}
-
-	public void setFee(Integer fee) {
-		this.fee = fee;
-	}
-
+	
 	public Integer getINRconversion() {
 		return INRconversion;
 	}
@@ -50,9 +49,7 @@ public class Currency {
 		INRconversion = iNRconversion;
 	}
 
-	public String getCoinname() {
-		return coinname;
-	}
+	
 	
 	public WalletType getCoinType() {
 		return coinType;
@@ -62,9 +59,7 @@ public class Currency {
 		this.coinType = coinType;
 	}
 
-	public void setCoinname(String coinname) {
-		this.coinname = coinname;
-	}
+	
 	public String getSymbol() {
 		return symbol;
 	}
@@ -86,12 +81,31 @@ public class Currency {
 	public void setPrice(Integer price) {
 		this.price = price;
 	}
-	public Integer getId() {
-		return id;
+
+	public Integer getCoinId() {
+		return coinId;
 	}
-	public void setId(Integer id) {
-		this.id = id;
+
+	public void setCoinId(Integer coinId) {
+		this.coinId = coinId;
 	}
+
+	public String getCoinName() {
+		return coinName;
+	}
+
+	public void setCoinName(String coinName) {
+		this.coinName = coinName;
+	}
+
+	public Integer getFees() {
+		return fees;
+	}
+
+	public void setFees(Integer fees) {
+		this.fees = fees;
+	}
+	
 	
 	
 	

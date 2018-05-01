@@ -55,9 +55,11 @@ public class CurrencyService {
 	}
 */
 
-	public Currency create(Currency currency) {
+	public String create(Currency currency) {
 		// TODO Auto-generated method stub
-		return currencyRepository.save(currency);
+		
+		currencyRepository.save(currency);
+		return "Currency Added";
 	}
 
 	public Optional<Currency> searchbyid(Integer id) {
@@ -65,14 +67,17 @@ public class CurrencyService {
 		return  currencyRepository.findById(id); 
 	}
 
-	public Currency update(Currency currency) {
+	public String update(Currency currency) {
 		// TODO Auto-generated method stub
-		return currencyRepository.save(currency);
+		
+		currencyRepository.save(currency);
+		return "Currency Updated";
 		
 	}
 
-	public void delete(int id) {
+	public String delete(int id) {
 		// TODO Auto-generated method stub
 		currencyRepository.deleteById(id);
+		return "Currency has been Deleted";
 	}
 }

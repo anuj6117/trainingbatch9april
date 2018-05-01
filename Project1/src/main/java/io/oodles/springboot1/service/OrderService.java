@@ -3,6 +3,7 @@ package io.oodles.springboot1.service;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -34,7 +35,7 @@ public class OrderService {
 	public String buy(BuyOrder buyOrder) {
 	
 		
-		currency=currencyRepository.findByCoinname(buyOrder.getCoinname());
+		currency=currencyRepository.findByCoinName(buyOrder.getCoinname());
 		
 		
 		
@@ -42,10 +43,10 @@ public class OrderService {
 		
 		Integer netAmount=buyOrder.getPrice()*buyOrder.getCoinQuantity();
 		
-	    Integer grossAmount=(netAmount+((netAmount*currency.getFee())/100));
+	    Integer grossAmount=(netAmount+((netAmount*currency.getFees())/100));
 	    
 		// TODO Auto-generated method stub
-		user=usersRepository.findByUserid(buyOrder.getUserid());
+		user=usersRepository.findByUserId(buyOrder.getUserid());
 		
 		UserOrder userOrder=new UserOrder();
 		
@@ -59,7 +60,7 @@ public class OrderService {
 		
 		userOrder.setCoinType(buyOrder.getCoinType());
 		
-	    userOrder.setFee(currency.getFee());
+	    userOrder.setFee(currency.getFees());
 		
 		userOrder.setGrossAmount(grossAmount);
 		
@@ -84,7 +85,7 @@ public class OrderService {
 	}
 	public String sell(BuyOrder buyOrder) {
 		// TODO Auto-generated method stub
-        currency=currencyRepository.findByCoinname(buyOrder.getCoinname());
+        currency=currencyRepository.findByCoinName(buyOrder.getCoinname());
 		
 		
 		
@@ -92,10 +93,10 @@ public class OrderService {
 		
 		Integer netAmount=buyOrder.getPrice()*buyOrder.getCoinQuantity();
 		
-	    Integer grossAmount=(netAmount+((netAmount*currency.getFee())/100));
+	    Integer grossAmount=(netAmount+((netAmount*currency.getFees())/100));
 	    
 		// TODO Auto-generated method stub
-		user=usersRepository.findByUserid(buyOrder.getUserid());
+		user=usersRepository.findByUserId(buyOrder.getUserid());
 		
 		UserOrder userOrder=new UserOrder();
 		
@@ -135,13 +136,14 @@ public class OrderService {
 		// TODO Auto-generated method stub
 		
 		return orderRepository.findById(id).get();
+
 	}
-	public String transaction() {
-		// TODO Auto-generated method stub
-		
-		return null;
+	public void transaction() {
+		List<UserOrder> list1=new ArrayList<UserOrder>();
+		list1.add(orderRepository.findByOrdertype(OrderType.BUY));
+		System.out.println(list1.size());
+
 	}
-	
 	
 
 }

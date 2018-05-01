@@ -10,7 +10,11 @@ import io.oodles.springboot1.model.Wallet;
 public interface WalletRepository extends JpaRepository<Wallet, Integer>{
 
 
-	Wallet findByWallet(WalletType wallet);
+	Wallet findByCoinType(WalletType coinType);
+
+	Wallet findByCoinName(String coinName);
+	
+    
 
 	
 

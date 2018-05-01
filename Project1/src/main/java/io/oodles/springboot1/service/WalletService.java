@@ -1,5 +1,6 @@
 package io.oodles.springboot1.service;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -29,9 +30,10 @@ public class WalletService {
 	@Autowired
 	WalletRepository walletRepository;
 	//Wallet wallet=new Wallet();
-	Users user;
+	Users user,user1;
 	WalletType walletType;
 	Wallet wallet;
+	Wallet wallet1;
 	
 	//OrderStatus orderStatus;
 	
@@ -44,7 +46,7 @@ public class WalletService {
 	@Autowired
 	TransactionRepository transactionRepository;
 	
-	UserOrder userorder;
+	UserOrder userorder=new UserOrder();
 
 	public List<Wallet> getallwallet() {
 		// TODO Auto-generated method stub
@@ -68,26 +70,28 @@ public class WalletService {
 		walletRepository.deleteById(id);
 	}
 
-	public Users add(AddWallet addwallet) {
+	public String add(AddWallet addwallet) {
 		// TODO Auto-generated method stub
-		user=usersRepository.findByUserid(addwallet.getUserid());
+		user=usersRepository.findByUserId(addwallet.getUserid());
 		Set<Wallet> walletsets=new HashSet<Wallet>();
 		Wallet wallet=new Wallet();
 		wallet.setUsers(user);
-		
-		wallet.setWallet(addwallet.getWalletType());
+		wallet.setCoinName(addwallet.getCoinName());
+		wallet.setCoinType(addwallet.getCoinType());
 		
 		walletsets.add(wallet);
 		
 		walletRepository.save(wallet);
 		user.setWallet(walletsets);
-		System.out.println("/////////////////"+wallet.getWallet());
+		
 		if(user!=null && wallet!=null) {
+						
 		user.getWallet().add(wallet);
 	
-		usersRepository.save(user);}
-		return user;
-		
+		usersRepository.save(user);
+		}
+			
+		return "Wallet Added";
 	}
 
 	public Wallet newwallet1(Wallet wallet) {
@@ -98,12 +102,20 @@ public class WalletService {
 
 	public String deposit(Deposit deposit) {
 		// TODO Auto-generated method stub
-		user=usersRepository.findByUserid(deposit.getUserid());
-		wallet=walletRepository.findByWallet((deposit.getCoinType()));
+		user=usersRepository.findByUserId(deposit.getUserId());
+		//wallet=walletRepository.findByCoinType((deposit.getCoinType()));
+		//wallet1=walletRepository.findByCoinName(deposit.getCoinName());
+	   
+		
+		
 		Date date=new Date();
 		
 		UserOrder userOrder=new UserOrder();
+		
+		
 	    userOrder.setUsersorder(user);
+	    
+	    	
 	    userOrder.setCoinType(deposit.getCoinType());
 	    
 	    userOrder.setCoinname(deposit.getCoinName());
@@ -112,7 +124,7 @@ public class WalletService {
 	    userOrder.setGrossAmount(deposit.getAmount());
 	    
 	    
-	    userOrder.setCoinname(deposit.getCoinName());
+	    //userOrder.setCoinname(deposit.getCoinName());
 	    
 	    userOrder.setOrderStatus(OrderStatus.PENDING);
 	    
@@ -122,33 +134,41 @@ public class WalletService {
 	    
 	     orderRepository.save(userOrder);
 	    
-	    return "Success";
+	    return "Success";}
 		
        
 	
-	}
+	
 
 	public String approve(ApprovalDTO approvalDTO) {
 		// TODO Auto-generated method stub
-		/*userorder=orderRepository.findById(order.getId()).get();
-		if(userorder.getOrderStatus()==OrderStatus.PENDING)
-		{
-			userorder.setOrderStatus(OrderStatus.APPROVE);
-			orderRepository.save(userorder);
-		}
-		return "Success";
-	}*/
-		user=usersRepository.findByUserid(approvalDTO.getUserid());
+		//System.out.println("/////////////////////////");
+		
+		user=usersRepository.findByUserId(approvalDTO.getUserid());
+		//System.out.println("<<<<<<<<<<<<<<<<<<<<<");
+		//Set<Wallet>hashset=user.getWallet();
+		
+		//wallet=walletRepository.findByUserIdAndCoinType(user,);
+		//System.out.println(user.getUserId());
+		/*userorder.setUsersorder(user);
+		System.out.println("{{{{{{{{{{{");
+		System.out.println(userorder.getCoinname());
+		System.out.println(userorder.getCoinType());
+		*/
 		
 		Date date=new Date();
 		UserTransaction userTransaction=new UserTransaction();
 		userorder=orderRepository.findById(approvalDTO.getOrderid()).get();
-		System.out.println(userorder);
-		System.out.println(userorder.getOrderStatus());
+		System.out.println(userorder.getId());
+		System.out.println(userorder.getUsersorder().getUserId());
+		//wallet=
+		
+		
 		if(userorder.getOrderStatus()==OrderStatus.PENDING) {
 			userorder.setOrderStatus(approvalDTO.getOrderStatus());}
 			if(userorder.getOrderStatus()==OrderStatus.APPROVE) {
 				Set<Wallet> walletset=new HashSet<Wallet>();
+				
 				
 				userTransaction.setTransactionstatus(userorder.getOrderStatus());
 				userTransaction.setGrossAmount(userorder.getGrossAmount());
@@ -158,17 +178,18 @@ public class WalletService {
 				userTransaction.setDescription("Approved");
 				
 				transactionRepository.save(userTransaction);
-				System.out.println("???????????????");
-				wallet.setBalance(userorder.getNetAmount());
-				System.out.println("???????????????");
-				wallet.setShadowbalance(userorder.getNetAmount());
-				System.out.println("???????????????");
-				wallet.setWallet(userorder.getCoinType());
-				System.out.println("???????????????");
 				wallet.setUsers(user);
-				System.out.println("???????????????");
+		        		
+				wallet.setBalance(userorder.getNetAmount());
+				
+				wallet.setShadowbalance(userorder.getNetAmount());
+				
+				wallet.setCoinType(userorder.getCoinType());
+				
+				
+			
 				walletRepository.save(wallet);
-				System.out.println("???????????????");
+				
 				walletset.add(wallet);
 				user.setWallet(walletset);
 				usersRepository.save(user);
@@ -198,6 +219,8 @@ public class WalletService {
 				
 		return "No Approval";
 		}
+
+	
 	}
 
 

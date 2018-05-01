@@ -3,7 +3,7 @@ package io.oodles.springboot1.enums;
 public enum WalletType {
 	
 	
-	FIATE("fiate"),
+	FIAT("fiat"),
 	CRYPTO("crypto");
 	
 	public String value;

@@ -8,6 +8,6 @@ import io.oodles.springboot1.model.Currency;
 @Repository
 public interface CurrencyRepository extends JpaRepository<Currency, Integer> {
 
-	Currency findByCoinname(String coinname);
+	Currency findByCoinName(String coinName);
 
 }

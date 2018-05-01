@@ -8,7 +8,7 @@ import io.oodles.springboot1.model.Role;
 @Repository
 public interface RoleRepository extends JpaRepository<Role, Integer>{
 
-	Role findByRoletype(String roletype);
+	Role findByRoleType(String roleType);
 
 	
 	

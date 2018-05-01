@@ -6,11 +6,11 @@ import javax.persistence.Enumerated;
 import io.oodles.springboot1.enums.WalletType;
 
 public class Deposit {
-	Integer userid;
+	Integer userId;
 	@Enumerated(EnumType.STRING)
 	WalletType coinType;
 	String coinName;
-	Integer Amount;
+	Integer amount;
 	
 	
 	
@@ -24,19 +24,20 @@ public class Deposit {
 	
 	
 	
+	
+	
+	public Integer getUserId() {
+		return userId;
+	}
+	public void setUserId(Integer userId) {
+		this.userId = userId;
+	}
 	public Integer getAmount() {
-		return Amount;
+		return amount;
 	}
 	public void setAmount(Integer amount) {
-		Amount = amount;
+		this.amount = amount;
 	}
-	public Integer getUserid() {
-		return userid;
-	}
-	public void setUserid(Integer userid) {
-		this.userid = userid;
-	}
-	
 	public WalletType getCoinType() {
 		return coinType;
 	}

@@ -37,7 +37,7 @@ public class Role_Service {
 		// TODO Auto-generated method stud
 		Role role1=roleRepository.getOne(id);
 		
-		role1.setRoletype(role.getRoletype());
+		role1.setRoleType(role.getRoleType());
 		return roleRepository.save(role1);
 	}
 	
@@ -46,10 +46,11 @@ public class Role_Service {
 		// TODO Auto-generated method stub
 		 roleRepository.deleteById(id);;
 	}
-	public Role create(Role role) {
+	public String create(Role role) {
 		// TODO Auto-generated method stub
 		//System.out.println("Done2");
-		return roleRepository.save(role);
+		roleRepository.save(role);
+		return "Role Created";
 	}
 	
 	    

@@ -25,7 +25,7 @@ public class Role_Controller {
          return role_Service.getallroles();       	
 	}
 	@PostMapping("/createrole")
-	public Role createRole(@RequestBody Role role) {
+	public String createRole(@RequestBody Role role) {
 		//System.out.println("Done1");
 		return role_Service.create(role);
 	}

@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.oodles.springboot1.model.Currency;
@@ -23,7 +24,7 @@ public class CurrencyController {
          return currencyservice.getallcurrency();       	
 	}
 	@PostMapping("/addcurrency")
-	public Currency createCurrency(@RequestBody Currency currency) {
+	public String createCurrency(@RequestBody Currency currency) {
 		//System.out.println("Done1");
 		return currencyservice.create(currency);
 	}
@@ -34,13 +35,13 @@ public class CurrencyController {
 	
 	
 	@PostMapping("/updatecurrency")
-	public Currency updatecurrency(@RequestBody Currency currency) {
+	public String updatecurrency(@RequestBody Currency currency) {
 		return currencyservice.update(currency);
 	}
 	
-	@GetMapping("/deletecurrency/{id}")
-	public void deleteuser(@PathVariable int id) {
-	    currencyservice.delete(id);
+	@GetMapping("/deletecurrency")
+	public String deleteuser(@RequestParam int coinId) {
+	    return currencyservice.delete(coinId);
 	}
 
 }

@@ -27,7 +27,7 @@ public class WalletController {
          return walletService.getallwallet();       	
 	}
 	@PostMapping("/addwallet")
-	public Users addwallet(@RequestBody AddWallet addwallet) {
+	public String addwallet(@RequestBody AddWallet addwallet) {
 		return walletService.add(addwallet);
 	}
 	/*@PostMapping("/newwallet")
@@ -41,6 +41,7 @@ public class WalletController {
 	
 @PostMapping("/approve")
 public String approvedeposit(@RequestBody ApprovalDTO approvalDTO ) {
+	System.out.println("????????????????????????????");
 	return walletService.approve(approvalDTO);
 }
 	
@@ -60,5 +61,7 @@ public String approvedeposit(@RequestBody ApprovalDTO approvalDTO ) {
 	public void deletewallet(@PathVariable int id) {
 	    walletService.delete(id);
 	}
+	
+	
 
 }

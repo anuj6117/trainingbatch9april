@@ -11,7 +11,7 @@ public class Role {
 	@Id @GeneratedValue(strategy=GenerationType.AUTO)
 	Integer roleid;
 	@NotNull
-	String roletype;
+	String roleType;
 	
 	/*Users user;
 	public Users getUser() {
@@ -27,11 +27,11 @@ public class Role {
 	public void setRoleid(Integer roleid) {
 		this.roleid = roleid;
 	}
-	public String getRoletype() {
-		return roletype;
+	public String getRoleType() {
+		return roleType;
 	}
-	public void setRoletype(String roletype) {
-		this.roletype = roletype;
+	public void setRoleType(String roleType) {
+		this.roleType = roleType;
 	}
 	
 	

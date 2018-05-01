@@ -18,7 +18,8 @@ public class Wallet {
 	@Id @GeneratedValue(strategy=GenerationType.AUTO)
 	private Integer id;
 	@Enumerated(EnumType.STRING)
-	private WalletType wallet;
+	private WalletType coinType;
+	private String coinName;
 	private Integer balance=0;
 	private Integer shadowbalance=0;
 	@ManyToOne
@@ -29,10 +30,7 @@ public class Wallet {
 	
 	 public Wallet(){}
 	
-	public Wallet(WalletType wallet) {
-		super();
-		this.wallet = wallet;
-	}
+	
 	public Users getUsers() {
 		return users;
 	}
@@ -45,12 +43,27 @@ public class Wallet {
 	public void setId(Integer id) {
 		this.id = id;
 	}
-	public WalletType getWallet() {
-		return wallet;
+	
+	public WalletType getCoinType() {
+		return coinType;
 	}
-	public void setWallet(WalletType wallet) {
-		this.wallet = wallet;
+
+
+	public void setCoinType(WalletType coinType) {
+		this.coinType = coinType;
 	}
+
+
+	public String getCoinName() {
+		return coinName;
+	}
+
+
+	public void setCoinName(String coinName) {
+		this.coinName = coinName;
+	}
+
+
 	public Integer getBalance() {
 		return balance;
 	}

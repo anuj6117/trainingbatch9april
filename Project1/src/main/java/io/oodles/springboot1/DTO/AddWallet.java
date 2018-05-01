@@ -9,7 +9,8 @@ public class AddWallet {
 	
 	Integer userid;
 	@Enumerated(EnumType.STRING)
-	WalletType walletType;
+	WalletType coinType;
+	String coinName;
 	
 	
 	public Integer getUserid() {
@@ -18,12 +19,19 @@ public class AddWallet {
 	public void setUserid(Integer userid) {
 		this.userid = userid;
 	}
-	public WalletType getWalletType() {
-		return walletType;
+	public WalletType getCoinType() {
+		return coinType;
 	}
-	public void setWalletType(WalletType walletType) {
-		this.walletType = walletType;
+	public void setCoinType(WalletType coinType) {
+		this.coinType = coinType;
 	}
+	public String getCoinName() {
+		return coinName;
+	}
+	public void setCoinName(String coinName) {
+		this.coinName = coinName;
+	}
+	
 	
 	
 

@@ -1,10 +1,12 @@
 package io.oodles.springboot1.model;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -22,10 +24,11 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
 
-import org.hibernate.validator.constraints.NotBlank;
-import org.hibernate.validator.constraints.NotEmpty;
-import org.springframework.lang.NonNull;
+import org.springframework.transaction.support.ResourceHolderSupport;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -35,15 +38,18 @@ import io.oodles.springboot1.enums.Status;
 @Table(name = "user", 
 uniqueConstraints = @UniqueConstraint(name = "email_user_uc"
                                       ,columnNames = {"email","phoneNumber"}))
-public class Users {
-	
+//@XmlRootElement(name="users")
+//@XmlAccessorType(XmlAccessType.FIELD)
+public class Users  {
+	//private static final long serialversionUID=1L;
+	@Column(name="userId")
 	@Id @GeneratedValue(strategy=GenerationType.AUTO)
-	public Integer userid;
+	public Integer userId;
 	@NotNull(message="UserName can't be null")
-	@NotEmpty
+	@javax.validation.constraints.NotEmpty
 	@Size(max=25,message="Maximun characters allowed for this field is 25")
 	public String userName;
-	@NotEmpty
+	@javax.validation.constraints.NotEmpty
 	@NotNull
 	@Email(message="Please, enter a valid email address")
 	public String email;
@@ -68,9 +74,9 @@ public class Users {
 	public void setPhoneNumber(String phoneNumber) {
 		this.phoneNumber = phoneNumber;
 	}
-	@NotEmpty
+	@javax.validation.constraints.NotEmpty
 	@NotNull
-	@NotBlank
+	@javax.validation.constraints.NotEmpty
 	public String country;
 	@Size(min=8,max=32)
 	@Pattern(regexp="^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\\S+$).{8,}$",message="\"Please, enter password \n" + 
@@ -130,13 +136,14 @@ public class Users {
 	}
 	public Users(){}
 	
-	public Integer getUserid() {
-		return userid;
-	}
-	public void setUserid(Integer userid) {
-		this.userid = userid;
-	}
 	
+	
+	public Integer getUserId() {
+		return userId;
+	}
+	public void setUserId(Integer userId) {
+		this.userId = userId;
+	}
 	public String getCountry() {
 		return country;
 	}

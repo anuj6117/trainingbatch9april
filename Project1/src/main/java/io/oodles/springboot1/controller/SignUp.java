@@ -3,7 +3,11 @@ package io.oodles.springboot1.controller;
 import java.util.List;
 import java.util.Optional;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -23,8 +27,9 @@ public class SignUp {
 	
 
 	@PostMapping("/signup")
-	public String insertUser(@RequestBody Users users) {
+	public String insertUser( @RequestBody Users users) {
 		return signupservice.addUser(users);
+		
 	}
 	
 	@PostMapping("/verifyuser")
@@ -40,12 +45,12 @@ public class SignUp {
 	}
 	
 	@GetMapping("/getbyuserid")
-	public Optional<Users> getbyid(@RequestParam int id){
-		return signupservice.searchbyid(id);
+	public Optional<Users> getbyid(@RequestParam int userId){
+		return signupservice.searchbyid(userId);
 	}
 	
 	@PostMapping("/updateuser")
-	public Users updateuser(@RequestBody Users users) {
+	public String updateuser(@RequestBody Users users) {
 		return signupservice.update(users);
 	}
 	
@@ -54,7 +59,7 @@ public class SignUp {
 		signupservice.delete(id);
 	}
 	@PostMapping("/assignrole")
-	public Users assignRoleToUser(@RequestBody AssignRole assignrole ) {
+	public String assignRoleToUser(@RequestBody AssignRole assignrole ) {
 		return signupservice.assign(assignrole);
 		
 	}

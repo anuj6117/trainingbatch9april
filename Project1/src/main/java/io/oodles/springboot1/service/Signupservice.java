@@ -52,11 +52,13 @@ public class Signupservice {
 	Role role=new Role();
 	Wallet wallet=new Wallet();
 	StoreOTP storeOTP;
+	Date date = new Date();
 
 	public String addUser(Users users) {
+		
 
 		Random rnd = new Random();
-		Date date = new Date();
+		
 		int otp1 = rnd.nextInt(10000);
 		
 		
@@ -66,13 +68,14 @@ public class Signupservice {
         Users user1=usersRepository.save(users);
         Set<Wallet> wallet=new HashSet<Wallet>();
         Wallet wallet1=new Wallet();
-        wallet1.setWallet(wallettype.FIATE);
+        wallet1.setCoinName("INR");
+        wallet1.setCoinType(wallettype.FIAT);
         wallet1.setUsers(user1);
         wallet.add(wallet1);
         walletRepository.save(wallet1);
         users.setWallet(wallet);
         List<Role> list=new ArrayList<Role>();
-		list.add(rolerepository.findByRoletype("USER"));
+		list.add(rolerepository.findByRoleType("USER"));
 	    users.setRoles(list);
         usersRepository.save(user1);
 		
@@ -83,18 +86,16 @@ public class Signupservice {
 		    
 		    
 		   
-		    usersRepository.save(users);
+		    
 		   
 		    
 			mail.sendMail(otp1,email);
 			otpgenerate.sendSMS(otp1);
+			usersRepository.save(users);
 			
-			return "Your account has been successfully \n" + 
-					"created. Please, verify it by using \n" + 
-					"OTP.";
-		
-
-	}
+			return "Your account has been successfully created. Please, verify it by using OTP.";
+		}
+	
 
 	public List<Users> getallusers() {
 		
@@ -130,9 +131,19 @@ public class Signupservice {
 		return usersRepository.findById(id);
 	}
 
-	public Users update(Users users) {
+	public String update(Users users) {
 		// TODO Auto-generated method stub
-		return usersRepository.save(users);
+		Users user=usersRepository.findByUserId(users.getUserId());
+		users.setDate(date);
+		if(user.getStatus()==Status.INACTIVE) {
+		
+		users.setStatus(Status.INACTIVE);}
+		else
+		{
+			users.setStatus(Status.ACTIVE);
+		}
+		usersRepository.save(users);
+		return "User Updated";
 	}
 
 	public void delete(int id) {
@@ -140,12 +151,13 @@ public class Signupservice {
 		 usersRepository.deleteById(id);;
 	}
 
-	public Users assign(AssignRole assignrole) {
+	public String assign(AssignRole assignrole) {
 		// TODO Auto-generated method stub
-		users=usersRepository.findByUserid(assignrole.getUserid());
-		role=rolerepository.findByRoletype(assignrole.getRoletype());
+		users=usersRepository.findByUserId(assignrole.getUserid());
+		role=rolerepository.findByRoleType(assignrole.getRoletype());
 		users.getRoles().add(role);
-		return usersRepository.save(users);
+		usersRepository.save(users);
+		return "Role Assigned";
 	}
 	
 }	
