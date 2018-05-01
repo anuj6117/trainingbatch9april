@@ -1,6 +1,7 @@
 package com.example.controller;
 
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,6 +27,17 @@ private CurrencyRepository currencyrepository;
 @RequestMapping(value="/addcurrency",method=RequestMethod.POST)	
  public String addCurrency(@RequestBody Currency currency)
  {
+	/*System.out.println("just checking the querr//////////////// "+currencyrepository.myPrice(32));
+	Currency currency3=currencyrepository.myPrice(32);
+	System.out.println("value of cuurency3 "+currency3 );
+	System.out.println("query shows the currency value of.... "+ currency3.getCoinName());
+	Set<Currency> buyListt=currencyrepository.buylist(22);
+	for(Currency s:buyListt)
+	{
+		System.out.println("wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww"+s.getCoinId());
+	}
+	*/
+	
 	Currency currency1=null;
 	Currency currency2=null;
 	System.out.println("rest");

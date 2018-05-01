@@ -24,6 +24,7 @@ public class OrderService
 	@Autowired
 	private OrderRepository orderRepository;
 	private CurrencyRepository currencyRepository;
+	
 	ArrayList<UserOrder> buyList=new ArrayList<UserOrder>();
 	ArrayList<UserOrder> sellList=new ArrayList<UserOrder>();
  public String createBUYORDER(UserOrderDto userOrderDto,Currency currency,UserOrder userorder)
@@ -37,7 +38,7 @@ public class OrderService
 	userorder.setCoinType(currency.getCoinType());
 	userorder.setStatusType(StatusType.PENDING);
 	userorder.setCoinQuantity(userOrderDto.getCoinQuantity());
-	userorder.setPrice(currency.getPrice());
+	userorder.setPrice(userOrderDto.getPrice());
 	userorder.setFees(currency.getFees());
 	int netamount=userOrderDto.getCoinQuantity()*currency.getPrice();
 	System.out.println(netamount+"..........netamount........");
@@ -56,11 +57,12 @@ public class OrderService
 	}
  }
    
- public UserOrder transactionMethod()
+/* public UserOrder transactionMethod()
  { 
-	 
-	 
-	return sellList.get(0);
+	 UserOrder userorder=new UserOrder();
+	 Set<UserOrder> buyList=orderRepository.useList("BUY");
+	 Set<UserOrder> sellList=orderRepository.useList("SELL");
+	return userorder;
 	
 	
 	
@@ -68,7 +70,7 @@ public class OrderService
 	//return ;
 
  }
- 
+*/ 
  public String createSELLORDER(UserOrderDto userOrderDto,Currency currency,UserOrder userorder)
  {
 	 

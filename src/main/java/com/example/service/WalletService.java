@@ -54,14 +54,13 @@ public class WalletService
  public String walletApprovalStatus(WalletApprovalDto walletApprovalDto)
  {   User user1=userrepository.findByUserId(walletApprovalDto.getUserId());
     
-     
      Wallet wallet=null;
 	 String date=new Date()+"";
 
 	 userorder=orderrepository.findByOrderId(walletApprovalDto.getOrderId());
 	 user=userorder.getUser();
-
-	 if(user.getStatus()==UserStatus.ACTIVE)
+     
+	 if(user.getStatus().equals(UserStatus.ACTIVE))
 	 {
 		
 		 if(walletApprovalDto.getStatusType()==StatusType.APPROVED)
@@ -105,9 +104,10 @@ public class WalletService
 			 orderrepository.save(userorder);
 			 
 		  }
-		 
+		 return "user is active";
 	 }
-	return "user is not active"; 
+	 else
+	    return "user is not active"; 
  }
  
  public  void addBalance()

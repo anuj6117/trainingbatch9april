@@ -10,13 +10,13 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.dto.UserOrderDto;
+import com.example.enums.OrderType;
 import com.example.enums.UserStatus;
-import com.example.enums.WalletType;
 import com.example.model.Currency;
 import com.example.model.User;
 import com.example.model.UserOrder;
-import com.example.model.Wallet;
 import com.example.repository.CurrencyRepository;
+import com.example.repository.OrderRepository;
 import com.example.repository.UserRepository;
 import com.example.service.OrderService;
 
@@ -28,6 +28,8 @@ public class OrderController
  @Autowired
  private UserRepository userRepository;
  @Autowired
+ private OrderRepository orderrepository;
+ @Autowired
  private OrderService orderService;
  Currency currency=new Currency();
  @Autowired
@@ -36,6 +38,8 @@ public class OrderController
    @RequestMapping(value="/createbuyorder",method=RequestMethod.POST)
 	public String createBuyOrder(@RequestBody UserOrderDto userOrderDto )
 	{
+	    
+	   
 	   user=userRepository.findByUserId(userOrderDto.getUserId());
 	   if(user.getStatus()==UserStatus.ACTIVE)
 	   {
@@ -85,9 +89,15 @@ public class OrderController
 		return "Invalid User";   
 	}
    
-   @RequestMapping(value="/transaction")
+  /* @RequestMapping(value="/transaction")
    public UserOrder transactionMethod()
+   { 
+  
+   for(UserOrder d: buyListt)
    {
-	   return orderService.transactionMethod();
+	   System.out.println("oooooooooooooooo  "+d.getOrderId());
    }
+
+	   return orderService.transactionMethod();
+   }*/
 }
