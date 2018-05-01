@@ -153,6 +153,7 @@ public class WalletService
       transaction.setUserOrderType(userorder.getOrderType());
       transaction.setGrossAmount(userorder.getGrossAmount());
       transaction.setNetAmount(userorder.getCoinQuantity());
+      transaction.setCoinName(userorder.getCoinName());
       transaction.setDateCreated(new Date());
 
        transactionRepository.save(transaction);

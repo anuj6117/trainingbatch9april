@@ -33,8 +33,12 @@ private RoleService roleService;
 				return "Role Already Exist";
 			}
 		   }
-		roleService.addRole(role);
-		return "Creating a new role is Successfully";
+		   if(role.getRoleType().equalsIgnoreCase("user")||role.getRoleType().equalsIgnoreCase("admin")||role.getRoleType().equalsIgnoreCase("manager"))
+		   {
+			   roleService.addRole(role);
+		       return "Creating a new role is Successfully";
+		   }
+		   return "Role is not appropriate";
 	}
 	@RequestMapping(value="/getallrole",method=RequestMethod.GET)
 	public List<Role> getAllRole()

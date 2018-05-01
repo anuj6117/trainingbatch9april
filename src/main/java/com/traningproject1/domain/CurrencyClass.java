@@ -25,7 +25,7 @@ public class CurrencyClass {
 	
 	private double fees;
 	private double profit;
-	private Integer coinInINR;
+	private double coinInINR;
 	public CurrencyClass()
 	{
 		fees=0;
@@ -76,10 +76,11 @@ public class CurrencyClass {
 	public void setProfit(double profit) {
 		this.profit = profit;
 	}
-	public Integer getCoinInINR() {
+	public double getCoinInINR() {
 		return coinInINR;
 	}
-	public void setCoinInINR(Integer coinInINR) {
+	public void setCoinInINR(double coinInINR) {
 		this.coinInINR = coinInINR;
 	}
+	
 }

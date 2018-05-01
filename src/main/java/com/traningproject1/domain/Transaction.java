@@ -21,11 +21,11 @@ public class Transaction {
 private Integer tranId;
 	@Enumerated(value=EnumType.STRING)
 private CoinType coinType;
-private long fees;
-private long exchangeRate;
+private double fees;
+private double exchangeRate;
 private double grossAmount;
 
-
+private String coinName;
 private Integer buyerId;
 private Integer sellerId;
 private String message;
@@ -34,7 +34,7 @@ private UserOrderType userOrderType;
 
 @Enumerated(EnumType.STRING)
 private TransactionStatus status;
-private Integer netAmount;
+private double netAmount;
 
 private  Date dateCreated;
 
@@ -57,23 +57,26 @@ public void setCoinType(CoinType coinType) {
 	this.coinType = coinType;
 }
 
-public long getFees() {
+
+
+
+
+
+public double getFees() {
 	return fees;
 }
 
-public void setFees(long fees) {
+public void setFees(double fees) {
 	this.fees = fees;
 }
 
-public long getExchangeRate() {
+public double getExchangeRate() {
 	return exchangeRate;
 }
 
-public void setExchangeRate(long exchangeRate) {
+public void setExchangeRate(double exchangeRate) {
 	this.exchangeRate = exchangeRate;
 }
-
-
 
 public TransactionStatus getStatus() {
 	return status;
@@ -113,13 +116,23 @@ public Integer getSellerId() {
 public void setSellerId(Integer sellerId) {
 	this.sellerId = sellerId;
 }
-public Integer getNetAmount() {
+
+public double getNetAmount() {
 	return netAmount;
 }
 
-public void setNetAmount(Integer netAmount) {
+public void setNetAmount(double netAmount) {
 	this.netAmount = netAmount;
 }
+
+public String getCoinName() {
+	return coinName;
+}
+
+public void setCoinName(String coinName) {
+	this.coinName = coinName;
+}
+
 public String getMessage() {
 	return message;
 }

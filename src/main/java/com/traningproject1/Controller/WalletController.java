@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.traningproject1.demo.dto.AssignWalletDTO;
 import com.traningproject1.demo.dto.WalletApprovalDTO;
+import com.traningproject1.enumsclass.CoinType;
 import com.traningproject1.service.ServiceClass;
 import com.traningproject1.service.WalletService;
 
@@ -30,7 +31,11 @@ public class WalletController {
 	@RequestMapping(value="/addwallet",method=RequestMethod.POST)
 	public String assignWallet(@RequestBody AssignWalletDTO assignwalletdto)
 	{
-		return  walletService.assignWallet(assignwalletdto);
+		if(!(assignwalletdto.getCoinType().equals(CoinType.FIATE)))
+		{
+		 return  walletService.assignWallet(assignwalletdto);
+		}
+		return "Wallet Not Assign";
 	}
 
 }

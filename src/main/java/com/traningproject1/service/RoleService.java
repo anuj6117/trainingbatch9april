@@ -16,9 +16,10 @@ public class RoleService {
 	
 	//private User user;
 	
-	public void addRole(Role role)
-	{
-		roleRepository.save(role);
+	public String addRole(Role role)
+	{   
+		  roleRepository.save(role);
+		  return "Success";
 	}
  public List<Role> getAllRole()
  {
