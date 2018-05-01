@@ -59,6 +59,7 @@ UserOTPRepository userOTPRepository;
 UserOTP userOTP;
 public User addUser(User user)
 	{
+	
 	    user.setCreatedOn(new Date());
 	   	    Role defaultrole=roleRepository.getRoleByid(1);
 		   	    

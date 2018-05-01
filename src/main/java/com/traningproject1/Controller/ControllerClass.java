@@ -40,11 +40,12 @@ public class ControllerClass {
 public String addUser(@RequestBody User user)
 {   
 	String usertrim=user.getUserName().trim();
-	user.setUserName(usertrim);
-	
-	
-	
-       if(user.getUserName().equalsIgnoreCase(" "))
+	//user.setUserName(usertrim);
+	if(usertrim.length()!=user.getUserName().length())
+	{
+		return"Please Enter user name without using Leading and Trailing Space";
+	}
+       if(user.getUserName().equals(" "))
        {
     	   return "Name cannot Be Null";
        }
@@ -58,19 +59,30 @@ public String addUser(@RequestBody User user)
        {
     	   return "Name cannot be greater than 25";
        }
+       if(user.getCountry().length()==0)
+       {
+    	   return"Please enter the country Name";
+       }
+       String country1=user.getCountry().trim();
+       
+       if(country1.length()!=user.getCountry().length())
+       {
+    	   return "Invalid input of Country Name";
+       }
+       
        if(user.getPassword().length()<8||user.getPassword().length()>32)
        {
     	   return "Password Cannot be less Than 8 or Greater than 32";
        }
-       String phone=user.getPassword();
-       for(int i=0;i<phone.length();i++)
-       {
-    	   char c=phone.charAt(i);
-    	    if(!(c>=0&&c<=9))
-    	    {
-    	    	return "Space or character is not valid in Phone Number ";
-    	    }
-       }
+       
+//       String patternPhone="(?=.*[0-9]).{10,10}";
+//       String phone=user.getPhoneNumber();
+//       if(!(patternPhone.matches(phone)))
+//       {
+//    	   return "Please enter valid Phone number";
+//       }
+       
+      
        if(userRepository.findByphoneNumber(user.getPhoneNumber())!=null)
        {
     	   return "Oops Phone number already registration ";
@@ -86,7 +98,7 @@ public String addUser(@RequestBody User user)
        }
 	  User userCreated=serviceClass.addUser(user);
 	  if(userCreated!=null)
-		 return"success";
+		 return"Your Account has been successfull created.Please verify it by using OTP";
 	
 	 else
 		return "fail";
