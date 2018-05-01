@@ -159,7 +159,7 @@ public class WalletService {
 		Date date=new Date();
 		UserTransaction userTransaction=new UserTransaction();
 		userorder=orderRepository.findById(approvalDTO.getOrderid()).get();
-		System.out.println(userorder.getId());
+		System.out.println(userorder.getOrderid());
 		System.out.println(userorder.getUsersorder().getUserId());
 		//wallet=
 		
@@ -172,8 +172,8 @@ public class WalletService {
 				
 				userTransaction.setTransactionstatus(userorder.getOrderStatus());
 				userTransaction.setGrossAmount(userorder.getGrossAmount());
-				userTransaction.setNetBalance(userorder.getNetAmount());
-				userTransaction.setWalletType(userorder.getCoinType());
+				userTransaction.setNetAmount(userorder.getNetAmount());
+				userTransaction.setCoinType(userorder.getCoinType());
 				userTransaction.setDateCreated(date);
 				userTransaction.setDescription("Approved");
 				
@@ -198,8 +198,8 @@ public class WalletService {
 			else if(userorder.getOrderStatus()==OrderStatus.FAILED) {
 				userTransaction.setTransactionstatus(userorder.getOrderStatus());
 				userTransaction.setGrossAmount(userorder.getGrossAmount());
-				userTransaction.setNetBalance(userorder.getNetAmount());
-				userTransaction.setWalletType(userorder.getCoinType());
+				userTransaction.setNetAmount(userorder.getNetAmount());
+				userTransaction.setCoinType(userorder.getCoinType());
 				userTransaction.setDateCreated(date);
 				userTransaction.setDescription("Failed");
 				transactionRepository.save(userTransaction);
@@ -208,8 +208,8 @@ public class WalletService {
 			else if(userorder.getOrderStatus()==OrderStatus.REJECTED) {
 				userTransaction.setTransactionstatus(userorder.getOrderStatus());
 				userTransaction.setGrossAmount(userorder.getGrossAmount());
-				userTransaction.setNetBalance(userorder.getNetAmount());
-				userTransaction.setWalletType(userorder.getCoinType());
+				userTransaction.setNetAmount(userorder.getNetAmount());
+				userTransaction.setCoinType(userorder.getCoinType());
 				userTransaction.setDateCreated(date);
 				userTransaction.setDescription("Rejected");
 				transactionRepository.save(userTransaction);

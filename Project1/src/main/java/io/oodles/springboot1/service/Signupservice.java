@@ -148,7 +148,7 @@ public class Signupservice {
 
 	public void delete(int id) {
 		// TODO Auto-generated method stub
-		 usersRepository.deleteById(id);;
+		 usersRepository.deleteById(id);
 	}
 
 	public String assign(AssignRole assignrole) {

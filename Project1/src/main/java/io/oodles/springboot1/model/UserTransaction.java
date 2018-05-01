@@ -16,9 +16,10 @@ import io.oodles.springboot1.enums.WalletType;
 public class UserTransaction {
 	@Id @GeneratedValue(strategy=GenerationType.AUTO)
 	Integer id;
-	Integer netBalance;
-	WalletType walletType;
-	Integer fee;
+	Integer netAmount;
+	WalletType coinType;
+	String coinName;
+	Integer fees;
 	Integer exchangeRate;
 	Integer grossAmount;
 	Integer buyer_id;
@@ -40,31 +41,39 @@ public class UserTransaction {
 	public void setDescription(String description) {
 		this.description = description;
 	}
-	public Integer getNetBalance() {
-		return netBalance;
-	}
-	public void setNetBalance(Integer netBalance) {
-		this.netBalance = netBalance;
-	}
-	public WalletType getWalletType() {
-		return walletType;
-	}
 	
+	
+	public Integer getNetAmount() {
+		return netAmount;
+	}
+	public void setNetAmount(Integer netAmount) {
+		this.netAmount = netAmount;
+	}
+	public WalletType getCoinType() {
+		return coinType;
+	}
+	public void setCoinType(WalletType coinType) {
+		this.coinType = coinType;
+	}
+	public String getCoinName() {
+		return coinName;
+	}
+	public void setCoinName(String coinName) {
+		this.coinName = coinName;
+	}
+	public Integer getFees() {
+		return fees;
+	}
+	public void setFees(Integer fees) {
+		this.fees = fees;
+	}
 	public OrderStatus getTransactionstatus() {
 		return transactionstatus;
 	}
 	public void setTransactionstatus(OrderStatus transactionstatus) {
 		this.transactionstatus = transactionstatus;
 	}
-	public void setWalletType(WalletType walletType) {
-		this.walletType = walletType;
-	}
-	public Integer getFee() {
-		return fee;
-	}
-	public void setFee(Integer fee) {
-		this.fee = fee;
-	}
+	
 	public Integer getExchangeRate() {
 		return exchangeRate;
 	}

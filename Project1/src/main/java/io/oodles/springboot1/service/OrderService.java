@@ -1,18 +1,20 @@
 package io.oodles.springboot1.service;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
-import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import io.oodles.springboot1.comparator.Sortbyprice;
 import io.oodles.springboot1.enums.OrderStatus;
 import io.oodles.springboot1.enums.OrderType;
 import io.oodles.springboot1.model.BuyOrder;
 import io.oodles.springboot1.model.Currency;
 import io.oodles.springboot1.model.UserOrder;
+import io.oodles.springboot1.model.UserTransaction;
 import io.oodles.springboot1.model.Users;
 import io.oodles.springboot1.repository.CurrencyRepository;
 import io.oodles.springboot1.repository.OrderRepository;
@@ -21,7 +23,7 @@ import io.oodles.springboot1.repository.UsersRepository;
 public class OrderService {
 	Users user;
 	Date date=new Date();
-	Currency currency=new Currency();
+	Currency currency;
 	List<UserOrder> listBuyOrder=new ArrayList<UserOrder>();
 	List<UserOrder> listSellOrder=new ArrayList<UserOrder>();
 	
@@ -139,11 +141,54 @@ public class OrderService {
 
 	}
 	public void transaction() {
-		List<UserOrder> list1=new ArrayList<UserOrder>();
-		list1.add(orderRepository.findByOrdertype(OrderType.BUY));
-		System.out.println(list1.size());
-
+	 List<UserOrder> buyerlist=orderRepository.findByOrdertype1();
+	 System.out.println("?????????????"+buyerlist.size());
+	 Collections.sort(buyerlist,new Sortbyprice());
+	 Collections.reverse(buyerlist);
+	 for(UserOrder u:buyerlist) {
+	 System.out.println(u.getPrice());}
+	 
+	 List<UserOrder> sellerlist=orderRepository.findByOrdertype();
+	//System.out.println(sellerlist.size());	
+     Collections.sort(sellerlist,new Sortbyprice());
+     for(UserOrder s:sellerlist) {
+    	 System.out.println(s.getPrice());}
+     
+     for(UserOrder b: buyerlist) {
+    	 for(UserOrder s:sellerlist ) {
+    		
+    			if(b.getCoinname().equals(s.getCoinname())) {
+    				if(b.getCoinQuantity()==s.getCoinQuantity()) {
+    					UserTransaction userTransaction=new UserTransaction();
+    					userTransaction.setCoinName(b.getCoinname());
+    					userTransaction.setCoinType(b.getCoinType());
+    					userTransaction.setDateCreated(date);
+    					userTransaction.setDescription("Approved");
+    					currency=currencyRepository.findByCoinName(b.getCoinname());
+    					userTransaction.setFees(currency.getFees());
+    					Integer netAmount1=b.getPrice()*b.getCoinQuantity();
+    					
+    				    Integer grossAmount1=(netAmount1+((netAmount1*currency.getFees())/100));
+    					userTransaction.setGrossAmount(grossAmount1);
+    					userTransaction.setBuyer_id(b.getOrderid());
+    					userTransaction.setNetAmount(netAmount1);
+    					userTransaction.setSeller_id(s.getOrderid());
+    					userTransaction.setTransactionstatus(OrderStatus.APPROVE);
+    					
+    					
+    					
+    				}else if(b.getCoinQuantity()>s.getCoinQuantity()) {
+    				
+    				}
+    				else {
+    					
+    				}
+    					
+    			}
+    		}
+    	 }
+     }
 	}
 	
 
-}
+

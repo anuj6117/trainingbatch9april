@@ -20,7 +20,7 @@ import io.oodles.springboot1.enums.WalletType;
 @Entity
 public class UserOrder {
 	@Id @GeneratedValue(strategy=GenerationType.AUTO) 
-   	Integer id;
+   	Integer orderid;
 	@Enumerated(EnumType.STRING)
 	OrderType ordertype;
 	@Enumerated(EnumType.STRING)
@@ -74,12 +74,14 @@ public class UserOrder {
 		// TODO Auto-generated constructor stub
 	}
 
-	public Integer getId() {
-		return id;
+	
+
+	public Integer getOrderid() {
+		return orderid;
 	}
 
-	public void setId(Integer id) {
-		this.id = id;
+	public void setOrderid(Integer orderid) {
+		this.orderid = orderid;
 	}
 
 	public OrderType getOrdertype() {
