@@ -13,6 +13,7 @@ import com.example.demo.dto.DepositAmountDTO;
 import com.example.demo.dto.WalletDTO;
 import com.example.demo.enums.OrderStatus;
 import com.example.demo.enums.OrderType;
+import com.example.demo.enums.UserStatus;
 import com.example.demo.enums.WalletType;
 import com.example.demo.model.User;
 import com.example.demo.model.Order;
@@ -36,53 +37,58 @@ public class WalletService
 	public Map<String, Object> addWallet(WalletDTO walletDTO)
 	{
 		Map<String, Object> result = new HashMap<String, Object>();
+		User newUser=null;
 		
-		User newUser=userRepository.findByUserId(walletDTO.getUserId());
-		
-		Wallet wallet=new Wallet();
-		//wallet.setWalletType(WalletType.FIAT);
-		wallet.setUser(newUser);
-		wallet.setBalance(0.0);
-		wallet.setShadowBalance(0.0);
-		walletRepository.save(wallet);
-		
-		/*Set<Wallet> wallets=newUser.getWallets();
-		Iterator<Wallet> itr=wallets.iterator();
-		while(itr.hasNext())
+		try 
 		{
-			Wallet w=itr.next();
-			System.out.println(w);
-		}*/
-		
-		return result;
-		
-	}
-	
-	
-	
-	
-	
-
-	/*public String addWalletToUser(WalletDTO walletDTO) 
-	{
-
-		User user = userRepository.findByUserId(walletDTO.getUserId());
-		
-		Wallet wallet = new Wallet();
-		wallet.setWalletType(WalletType.FIAT);
-		wallet.setUser(user);
-		wallet.setBalance(0.0);
-		wallet.setShadowBalance(0.0);
-		try
-		{
-			walletRepository.save(wallet);
-		} catch (Exception e) 
-		{
-			System.out.println("wallet not added to User." + e);
+			System.out.println(walletDTO.getUserId());
+			newUser=userRepository.findByUserId(walletDTO.getUserId());
 		}
-		return "Wallet Added to User.";
-
-	}*/
+		catch(Exception e)
+		{
+			result.put("isSuccess", false);
+			result.put("message", "User does not exist.");
+			return result;
+		}
+		
+		if(newUser.getStatus().equals(UserStatus.ACTIVE))
+		{
+			Set<Wallet> wallets=newUser.getWallets();
+			Iterator<Wallet> itr=wallets.iterator();
+			while(itr.hasNext())
+			{
+				Wallet wallet=itr.next();
+				if(wallet.getWalletType().equals(walletDTO.getWalletType()) && wallet.getCoinName().equals(walletDTO.getCoinName()))
+				{
+					result.put("isSuccess", false);
+					result.put("message", "User has already this wallet.");
+					return result;
+				}
+				else
+				{
+					Wallet userWallet=new Wallet();
+					userWallet.setWalletType(walletDTO.getWalletType());
+					userWallet.setCoinName(walletDTO.getCoinName());
+					userWallet.setBalance(0.0);
+					userWallet.setShadowBalance(0.0);
+					userWallet.setUser(newUser);
+					walletRepository.save(userWallet);
+					
+					result.put("isSuccess", true);
+					result.put("message", "Your wallet has been created.");
+					return result;
+				}
+				
+			}
+		}
+		else
+		{
+			result.put("isSuccess", false);
+			result.put("message", "User is INACTIVE please verify user then add wallet to user.");
+			return result;
+		}
+		return result;
+	}
 
 	public String deposit(DepositAmountDTO depositAmountDTO)
 	{

@@ -17,7 +17,7 @@ public class TransactionController {
 	@Autowired
 	private TransactionService transactionService;
 	
-	@RequestMapping(value = "/transactionmanagement", method = RequestMethod.GET)
+	/*@RequestMapping(value = "/transactionmanagement", method = RequestMethod.GET)
 	public ResponseEntity<Object> transactionManagement()
 	{
 		Map<String,Object> result = null;
@@ -34,8 +34,19 @@ public class TransactionController {
 		} catch (Exception e) {
 			return ResponseHandler.generateResponse(HttpStatus.BAD_REQUEST, false, e.getMessage(), result);
 		}
-		
-		
-	}
+	}*/
+	
+	/*@RequestMapping(value = "/transactionapproval", method = RequestMethod.GET)
+	public String transactionManagement()
+	{
+		try
+		{
+			return transactionService.transactionManagement();
+		}
+		catch(Exception e)
+		{
+			throw new NullPointerException("transaction unsuccessful...."+e);
+		}
+	}*/
 
 }

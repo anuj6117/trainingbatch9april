@@ -24,7 +24,8 @@ import com.example.demo.utility.EmailValidator;
 import com.example.demo.utility.MobileNumberValidator;
 
 @Service
-public class SignUpService {
+public class SignUpService
+{
 	@Autowired
 	private UserRepository userRepository;
 
@@ -51,9 +52,7 @@ public class SignUpService {
 
 	private VerifyOtp verifyOtp = new VerifyOtp();
 	
-
-
-	private Integer otp;
+	private Integer tokenOtp;
 
 	public Map<String, Object> addUser(User user) 
 	{
@@ -69,10 +68,23 @@ public class SignUpService {
 				result.put("message", "User Name can't be null.");
 				return result;
 			}
-			if(userName.length() >= 26 || userName.length() <= 6)
+			if(userName.startsWith(" "))
 			{
 				result.put("isSuccess", false);
-				result.put("message", "Maximum characters allowed for this field is 6 to 25.");
+				result.put("message", "User Name should not have leading space.");
+				return result;
+			}
+			if(userName.endsWith(" "))
+			{
+				result.put("isSuccess", false);
+				result.put("message", "User Name should not have trailing space.");
+				return result;
+			}
+			
+			if(userName.length() >= 26)
+			{
+				result.put("isSuccess", false);
+				result.put("message", "Maximum characters allowed for this field is 25.");
 				return result;
 			}
 			if(userName.trim().length() == 0)
@@ -109,10 +121,9 @@ public class SignUpService {
 				result.put("message", "Please enter password with minimum 8 characters. Your password should have atleast 1 Uppercase, 1 Lowercase, 1 Digit & 1 Special character. Space is not allowed.");
 				return result;
 			}
-			
 						
 			Random randomNumber = new Random();
-			otp = randomNumber.nextInt(10000);
+			tokenOtp = randomNumber.nextInt(10000);
 
 			Role role = null;
 			if ((role = roleRepository.findByRoleType("user")) == null) 
@@ -127,7 +138,6 @@ public class SignUpService {
 
 			Wallet wallet = new Wallet();
 			wallet.setWalletType(WalletType.FIAT);
-			//wallet.setCoinName("INR");
 			wallet.setBalance(0.0);
 			wallet.setShadowBalance(0.0);
 			wallet.setUser(newUser);
@@ -151,11 +161,11 @@ public class SignUpService {
 			if ((userRepository.save(newUser) != null))
 			{
 				walletRepository.save(wallet);
-				otpService.sendSms(otp);
-				mailService.sendMail(otp, user.getEmail());
+				otpService.sendSms(tokenOtp);
+				mailService.sendMail(tokenOtp, user.getEmail());
 
 				verifyOtp.setId(user.getUserId());
-				verifyOtp.setTokenOtp(otp);
+				verifyOtp.setTokenOtp(tokenOtp);
 				verifyOtp.setEmailId(user.getEmail());
 				verifyOtp.getEmailId();
 				verifyOtp.setDate(new Date());
@@ -186,7 +196,7 @@ public class SignUpService {
 		VerifyOtp vOtp = verifyOtpRepository.findByEmailId(emailId);
 		if (vOtp == null) 
 		{
-			return "email does not exist";
+			return "email does not exist.";
 		}
 		
 		Integer v_otp = vOtp.getTokenOtp();
@@ -210,17 +220,18 @@ public class SignUpService {
 		if (usrid != null) {
 			return usrid;
 		} else {
-			throw new NullPointerException("Id doen't be exist");
+			throw new NullPointerException("Id does not exist.");
 		}
 	}
 
-	public List<User> getAllUsers() {
+	public List<User> getAllUsers() 
+	{
 		return userRepository.findAll();
 
 	}
 
-	public User update(User user) {
-
+	public User update(User user) 
+	{
 		User userdb = null;
 		userdb = userRepository.findOneByUserId(user.getUserId());
 		userdb.setUserName(user.getUserName());

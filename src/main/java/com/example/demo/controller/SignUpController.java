@@ -31,9 +31,14 @@ public class SignUpController {
 		try {
 			result = signUpService.addUser(user);
 
-			if (result.get("isSuccess").equals(true)) {
+			if (result.get("isSuccess").equals(true))
+			{
+				System.out.println("if block of Controller.");
 				return ResponseHandler.generateResponse(HttpStatus.OK, true, result.get("message").toString(), result);
-			} else {
+			} 
+			else
+			{
+				System.out.println("else block of controller.");
 				return ResponseHandler.generateResponse(HttpStatus.OK, false, result.get("message").toString(), result);
 			}
 

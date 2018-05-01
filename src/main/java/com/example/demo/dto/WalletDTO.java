@@ -9,8 +9,18 @@ public class WalletDTO {
 
 	private Integer userId;
 	private Double balance;
+	private String coinName;
+	
 	@Enumerated(EnumType.STRING)
 	private WalletType walletType;
+	
+	public String getCoinName() {
+		return coinName;
+	}
+
+	public void setCoinName(String coinName) {
+		this.coinName = coinName;
+	}
 
 	public Integer getUserId() {
 		return userId;

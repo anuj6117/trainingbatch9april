@@ -20,7 +20,7 @@ public class VerifyOtp {
 	
 	public VerifyOtp() 
 	{
-		System.out.println("VerifyOtp()");
+		
 	}
 	public Date getDate() {
 		return date;

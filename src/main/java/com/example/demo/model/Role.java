@@ -2,7 +2,6 @@ package com.example.demo.model;
 
 import java.util.Set;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -24,15 +23,6 @@ public class Role {
 	@ManyToMany(mappedBy="roles")
 	private Set<User> user;
 
-
-	public Set<User> getUser() {
-		return user;
-	}
-
-	public void setUser(Set<User> user) {
-		this.user = user;
-	}
-
 	public Integer getRoleId() {
 		return roleId;
 	}
@@ -47,5 +37,13 @@ public class Role {
 
 	public void setRoleType(String roleType) {
 		this.roleType = roleType;
+	}
+	
+	public Set<User> getUser() {
+		return user;
+	}
+
+	public void setUser(Set<User> user) {
+		this.user = user;
 	}
 }

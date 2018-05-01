@@ -76,11 +76,9 @@ public class OrderService {
 					walletUpdate.setShadowBalance(order.getNetAmount());
 					walletUpdate.setCoinName(order.getCoinName());
 					walletRepository.save(walletUpdate);
-					//user.getWallets().add(walletUpdate);
 					userRepository.save(user);
 				}
 			}
-			//List<Wallet> wallets= user.getWallets();
 			result.put("isSuccess", true);
 			result.put("message", "Deposit Approval Done.");
 			return result;	
@@ -189,7 +187,6 @@ public class OrderService {
 			Order order = (Order)itr.next();
 			
 		}
-		
 		return null;
 	}
 }

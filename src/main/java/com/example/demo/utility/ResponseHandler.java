@@ -11,18 +11,23 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 
-public class ResponseHandler {
+public class ResponseHandler
+{
 	public static ResponseEntity<Object> generateResponse(HttpStatus status, boolean error, String message,
-			Object response) {
+			Object response) 
+	{
 		Map<String, Object> map = new HashMap<String, Object>();
-		try {
+		try 
+		{
 			map.put("timestamp", new Date().getTime());
 			map.put("status", status.value());
 			map.put("isSuccess", error);
 			map.put("message", message);
 			map.put("data", response);
 			return new ResponseEntity<Object>(map, status);
-		} catch (Exception e) {
+		} 
+		catch (Exception e) 
+		{
 			map.clear();
 			map.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
 			map.put("message", e.getMessage());
@@ -31,16 +36,20 @@ public class ResponseHandler {
 		}
 	}
 
-	public static ResponseEntity<Object> invalidResponse(HttpStatus status, boolean error, String message) {
+	public static ResponseEntity<Object> invalidResponse(HttpStatus status, boolean error, String message)
+	{
 		Map<String, Object> map = new HashMap<String, Object>();
-		try {
+		try 
+		{
 			map.put("timestamp", new Date().getTime());
 			map.put("status", status.value());
 			map.put("isSuccess", error);
 			map.put("message", message);
 
 			return new ResponseEntity<Object>(map, status);
-		} catch (Exception e) {
+		} 
+		catch (Exception e) 
+		{
 			map.clear();
 			map.put("timestamp", new Date().getTime());
 			map.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
