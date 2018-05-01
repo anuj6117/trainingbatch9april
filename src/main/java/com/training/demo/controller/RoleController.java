@@ -26,7 +26,7 @@ public class RoleController {
 	@Autowired
 	private UserRepository userRepository;
 	
-	@RequestMapping(value="/addrole", method=RequestMethod.POST)
+	@RequestMapping(value="/createrole", method=RequestMethod.POST)
 	public String insertRole(@RequestBody Role role)
 	{ 
 		System.out.println("Role controller hit addRole api");

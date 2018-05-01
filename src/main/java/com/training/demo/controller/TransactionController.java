@@ -12,6 +12,7 @@ import com.training.demo.enums.OrderType;
 import com.training.demo.model.OrderTable;
 import com.training.demo.repository.OrderRepository;
 import com.training.demo.repository.TransactionRepository;
+import com.training.demo.service.TransactionService;
 
 @RestController
 public class TransactionController {
@@ -21,23 +22,18 @@ public class TransactionController {
 	
 	@Autowired
 	TransactionRepository transactionRepository;
+	
+	@Autowired
+	TransactionService transactionService;
+	
 	@RequestMapping(value="/maketransaction", method=RequestMethod.GET)
 	public String transactionApproval() {
-			//Order order = findAllOrderByCoinType();
-		//List<OrderTable> buyerOrderList = orderRepository.findAllByOrderType(OrderType.BUYER);
-		List<OrderTable> buyerOrderList = orderRepository.getBuyer("BUYER","bitcoin");
-		Iterator<OrderTable> buyerIterator = buyerOrderList.iterator();
-		
-		while(buyerIterator.hasNext())
-		{
-			OrderTable orderTable = buyerIterator.next();
-			System.out.println("Coin name >>>>>>>>> "+orderTable.getCoinName()+" <<<<<<<  Price"+orderTable.getPrice()+" >>>"+orderTable.getOrderStatus());	
-		}		
-		
-		//List<OrderTable> sellerOrderList = orderRepository.findAllByOrderType(OrderType.SELLER);
-		//Iterator<OrderTable> sellerIterator = sellerOrderList.iterator();
-	
-		return null;
+		try {
+		return transactionService.gettransaction();
+		}
+		catch(Exception e) {
+		  throw new NullPointerException("-----------------"+e.getMessage());
+		}
 	}
 
 }

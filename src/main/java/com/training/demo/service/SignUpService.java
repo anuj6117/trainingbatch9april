@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
-import java.util.ListIterator;
 import java.util.Optional;
 import java.util.Random;
 import java.util.Set;
@@ -23,6 +22,8 @@ import com.training.demo.model.Wallet;
 import com.training.demo.repository.OtpRepository;
 import com.training.demo.repository.RoleRepository;
 import com.training.demo.repository.UserRepository;
+import com.training.demo.utility.EmailValidation;
+import com.training.demo.utility.PhoneValidation;
 
 @Service
 public class SignUpService 
@@ -44,50 +45,116 @@ public class SignUpService
 	
 	private OtpVerification otpVerification;
 	
-//	private OtpVerification otpVerification=new OtpVerification();
-	
+	EmailValidation emailValidation = new EmailValidation();		
 	
 	public String addUser(User user)
-	{	
-		boolean emailFlag = userRepository.existsByEmail(user.getEmail());
-		boolean phoneNoFlag = userRepository.existsByPhoneNo(user.getPhoneNo());
-		if(emailFlag == false && phoneNoFlag == false)
+	{
+		String userName=user.getFullName();
+		String password = user.getPassword();
+		//password validation
+		
+		/*
+		
+		if(password.equals("") || password.isEmpty() || password == null)
 		{
-			System.out.println("service hit");
-			Random random=new Random();
-			int tokenOTP=random.nextInt(999999)+1432;
-			Date date;
-			System.out.println("service hit before if");
-			user.setUserStatus(UserStatus.INACTIVE);
-			user.setDate(new Date());
+			return  "Password can't be null.";
+		}
+
+		if(!(password.length() >= 8 && password.length() <= 32))
+		{
+			System.out.println("Please, enter password  >> " +password);
+			return  "Please, enter password with minimum 8 characters.";			
+		}
+
+		boolean validatePassword=emailValidation.validateEmail(password);
+			if(!validatePassword)
+			{
+				return  "You password should have atleast 1 Upper Case 1 Lower Case, 1 Digit & 1 Special Character.";
+			}
+*/			
+
+		if(!(password.matches("(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\\S+$).{8,}")))
+		{
+			return "Please enter password with minimum 8 characters. Your password should have atleast 1 Uppercase, 1 Lowercase, 1 Digit & 1 Special character. Space is not allowed.";
 			
-			System.out.println("Default roleType assigned to user = ");
-			//Default Role Creation
-			Role roles = roleRepository.findByRoleId(1);
-			HashSet<Role> roleHashSet = new HashSet<Role>();
-			roleHashSet.add(roles);
-			user.setRoles(roleHashSet);
+		}
+		
+			if(userName.equals("") || userName.isEmpty() || userName == null)
+			{
+				return  "User Name can't be null.";
+			}
 			
-			// Default Wallet Creation 
-			Wallet wallet  = new Wallet();
-			wallet.setWalletType(WalletType.FIAT);
-			wallet.setUser(user);
-			wallet.setBalance(0.0);
-			wallet.setShadowBalance(0.0);
-			Set<Wallet> walletHashSet = new HashSet<Wallet>();
-			walletHashSet.add(wallet);
-			user.setWallets(walletHashSet);
+			if(userName.length() >= 26 || userName.length() <= 6)
+			{
+				return  "Maximum characters allowed for this field is 6 to 25.";			
+			}
 			
-			User existingUser =userRepository.save(user);
-				if( existingUser != null)
+			if(userName.trim().length() == 0)
+			{
+				return	"User Name must contain characters.";
+			}
+		
+		String tempEmail=user.getEmail();
+		
+		boolean validateEmail=emailValidation.validateEmail(tempEmail);
+		
+			if(!validateEmail)
+			{
+				return  "Please enter a valid email address.";
+			}
+		
+		String tempPhoneNo=user.getPhoneNo();
+		
+			if(!PhoneValidation.isValid(tempPhoneNo))
+			{
+				return  "Please enter a valid mobile number.";
+			}
+
+		
+			if ((userRepository.findByEmail(user.getEmail()) == null)) 
+			{
+				//boolean emailFlag = userRepository.existsByEmail(user.getEmail());
+				boolean phoneNoFlag = userRepository.existsByPhoneNo(user.getPhoneNo());
+					if(phoneNoFlag == false)
 					{
-						String email = user.getEmail();
-						String phoneNo = user.getPhoneNo();
+						System.out.println("service hit");
+						Random random=new Random();
+						int tokenOTP=random.nextInt(99777)+1432;
+						Date date;
+						System.out.println("service hit before if");
+						user.setUserStatus(UserStatus.INACTIVE);
+						user.setDate(new Date());
+						
+						System.out.println("Default roleType assigned to user = ");
+						//Default Role Creation
+						Role roles = roleRepository.findByRoleId(1);
+						HashSet<Role> roleHashSet = new HashSet<Role>();
+						roleHashSet.add(roles);
+						user.setRoles(roleHashSet);
+			
+						//Default Wallet Creation 
+						Wallet wallet  = new Wallet();
+						wallet.setWalletType(WalletType.FIAT);
+						wallet.setUser(user);
+						wallet.setBalance(0.0);
+						wallet.setShadowBalance(0.0);
+						Set<Wallet> walletHashSet = new HashSet<Wallet>();
+						walletHashSet.add(wallet);
+						user.setWallets(walletHashSet);
+			
+						User existingUser =userRepository.save(user);
+						if( existingUser != null)
+						{
+							String email = user.getEmail();
+							String phoneNo = user.getPhoneNo();
 							System.out.println("service hit inside if.");
 							//otpService.sendSms(tokenOTP, phoneNo);
-							try {
+							try 
+							{
 								emailService.sendEmail(tokenOTP, email);
-							} catch (Exception e) {
+							}
+							catch (Exception e) 
+							{
 								System.out.println("email could not be verified as : "+e.getMessage());
 							}
 							otpVerification = new OtpVerification();
@@ -98,18 +165,17 @@ public class SignUpService
 							otpVerification.setDate(date);
 							otpRepository.save(otpVerification);
 							return "Your account has been successfully created. Please, verify it by using OTP.";
-							}
-				else
-				{
-					System.out.println("Invalid Username.");
-					return "Registration Failure.";
+						}
+					}	
+					else
+					{
+							System.out.println("Invalid Username.");
+							return "already existing phone number.";
+					}
 				}
-		}
-		else
-		{
-			System.out.println("Already existing Email or Username.");
-			return "Already existing Email or Username.";
-		}
+			
+					System.out.println("Already existing Email or Username.");
+					return "Already existing Email.";			
 	}
 	public String verifyUserWithOtp(String email,Integer tokenOTP)
 	{
@@ -169,19 +235,60 @@ public class SignUpService
 		}
 	}
 		public String updateUser(@RequestBody User user) {
-		try {
+			String userName = user.getFullName();
+			String password = user.getPassword();
+			
+			if(!(password.matches("(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\\S+$).{8,}")))
+			{
+				return "Please enter password with minimum 8 characters. Your password should have atleast 1 Uppercase, 1 Lowercase, 1 Digit & 1 Special character. Space is not allowed.";
+				
+			}
+			
+				if(userName.equals("") || userName.isEmpty() || userName == null)
+				{
+					return  "User Name can't be null.";
+				}
+				
+				if(userName.length() >= 26 || userName.length() <= 6)
+				{
+					return  "Maximum characters allowed for this User Name field is 6 to 25.";			
+				}
+				
+				if(userName.trim().length() == 0)
+				{
+					return	"User Name must contain characters.";
+				}
+			
+			String tempEmail=user.getEmail();
+			
+			boolean validateEmail=emailValidation.validateEmail(tempEmail);
+			
+				if(!validateEmail)
+				{
+					return  "Please enter a valid email address.";
+				}
+			
+			String tempPhoneNo=user.getPhoneNo();
+			
+				if(!PhoneValidation.isValid(tempPhoneNo))
+				{
+					return  "Please enter a valid mobile number.";
+				}
+
+			try {
 		     User tempUser = userRepository.findByUserId(user.getUserId());
 			 tempUser.setEmail(user.getEmail());
 			 tempUser.setFullName(user.getFullName());
 			 tempUser.setPhoneNo(user.getPhoneNo());
 			 tempUser.setCountry(user.getCountry());
 			 tempUser.setPassword(user.getPassword());	      
-			 userRepository.save(tempUser);
-			 }
+			 userRepository.save(tempUser); 
+			}
 		catch (Exception ex)
 		{	 
 			return "Error while updating the user: " + ex.toString();
 		}
+			
 		return "User succesfully updated!";
 	 }
 

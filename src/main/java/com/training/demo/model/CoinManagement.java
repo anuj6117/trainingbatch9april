@@ -16,6 +16,7 @@ public class CoinManagement {
 	private String coinName;
 	private String symbol;
 	private Double initialSupply;
+	private Double exchangeRate;
 	private Double price;
 	private Double fees;
 	private Double profit;
@@ -25,18 +26,23 @@ public class CoinManagement {
 		super();
 	}
 	
-	public CoinManagement(Integer coinId, String coinName, String symbol, Double initialSupply, Double price,
-			Double fees, Double profit, Double coinInINR) {
+
+
+	public CoinManagement(Integer coinId, String coinName, String symbol, Double initialSupply, Double exchangeRate,
+			Double price, Double fees, Double profit, Double coinInINR) {
 		super();
 		this.coinId = coinId;
 		this.coinName = coinName;
 		this.symbol = symbol;
 		this.initialSupply = initialSupply;
+		this.setExchangeRate(exchangeRate);
 		this.price = price;
 		this.fees = fees;
 		this.profit = profit;
 		this.coinInINR = coinInINR;
 	}
+
+
 
 	public Double getFees() {
 		return fees;
@@ -100,6 +106,14 @@ public class CoinManagement {
 
 	public void setProfit(Double profit) {
 		this.profit = profit;
+	}
+
+	public Double getExchangeRate() {
+		return exchangeRate;
+	}
+
+	public void setExchangeRate(Double exchangeRate) {
+		this.exchangeRate = exchangeRate;
 	}
 
 }

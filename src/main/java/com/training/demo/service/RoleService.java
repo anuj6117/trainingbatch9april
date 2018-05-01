@@ -23,9 +23,21 @@ public class RoleService{
 	private UserRepository userRepository;
 	User user;	
 	
-	public void addRole(Role roleArg)
+	public String addRole(Role roleArg)
 	{
+		String roleName = roleArg.getRoleType();
+		if(roleName.equals("") || roleName.isEmpty() || roleName == null)
+		{
+			return  "Role type can't be null.";
+		}
+		String trimmedRole = roleName.trim();
+		if(!roleName.equals(trimmedRole))
+		{
+			return "please remove leading or trailing spaces.";
+		}
+		
 		roleRepository.save(roleArg);
+		return "Role is successfully added.";
 	}
 
 	public void deleteRole(Integer roleId) {

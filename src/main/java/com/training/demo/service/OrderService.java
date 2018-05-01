@@ -170,18 +170,20 @@ public class OrderService {
 			Double shadowBalance = 0.0;
 			Wallet tempWallet = null;
 			Set<Wallet> wallets ;
+			Iterator<Wallet> iterator ;
 			try {
 				System.out.println(sellBuyTransactionDto.getUserId()+"///////////////////");
 				user = userRepository.findByUserId(userId);
 				System.out.println("  >> "+user.getUserId());
 				wallets = user.getWallets();
-				Iterator<Wallet> iterator = wallets.iterator();
+				iterator = wallets.iterator();
 				while(iterator.hasNext()) {
 				 tempWallet = iterator.next();
 					if(tempWallet.getWalletType().equals(WalletType.FIAT.toString()))
 					{
 						shadowBalance = tempWallet.getShadowBalance();
 						System.out.println("11111111111111111111111111111111111"+shadowBalance);
+						break;
 					}					
 				}
 			}
@@ -223,8 +225,21 @@ public class OrderService {
 				orderRepository.save(tempOrderTable);
 				shadowBalance = shadowBalance - grossAmount;
 				tempWallet.setShadowBalance(shadowBalance);
-				
 				walletRepository.save(tempWallet);
+				
+				while(iterator.hasNext()) {
+					 tempWallet = iterator.next();
+						if(tempWallet.getWalletType().equals(WalletType.CRYPTO.toString()) && tempWallet.getCoinName().equals(sellBuyTransactionDto.getCoinName()))
+						{
+							shadowBalance = tempWallet.getShadowBalance();
+							System.out.println("11111111111111111111111111111111111"+shadowBalance);
+							break;
+						}					
+					}
+				shadowBalance = shadowBalance + sellBuyTransactionDto.getCoinQuantity();
+				tempWallet.setShadowBalance(shadowBalance);
+				walletRepository.save(tempWallet);
+				
 				return "Your Order Has Been  placed successfully, Wait for Approval.";
 			}
 			else if(shadowBalance < grossAmount)
@@ -242,18 +257,21 @@ public class OrderService {
 	{ 
 		Integer userId = sellBuyTransactionDto.getUserId();
 		boolean flag = false;
+		Double shadowBalance= 0.0;
 		User user = userRepository.findByUserId(userId);
 		Set<Wallet> wallets = user.getWallets();
 		Iterator<Wallet> iterator = wallets.iterator();
+		Wallet wallet = null;
 		while(iterator.hasNext())
 		{
-			Wallet wallet = iterator.next();
+			wallet = iterator.next();
 			String walletType = wallet.getWalletType();
 			String coinName = wallet.getCoinName();
 			if(walletType.equals("CRYPTO") && coinName.equals(sellBuyTransactionDto.getCoinName())) {
 				if(wallet.getBalance()>=sellBuyTransactionDto.getCoinQuantity())
 				{
 					flag = true;
+					shadowBalance = wallet.getShadowBalance()-sellBuyTransactionDto.getCoinQuantity();
 					break;
 				}
 			}
@@ -269,6 +287,8 @@ public class OrderService {
 		tempOrderTable.setOrderStatus(OrderStatus.PENDING);
 		tempOrderTable.setFees(fees);
 		orderRepository.save(tempOrderTable);
+		wallet.setShadowBalance(shadowBalance);
+		walletRepository.save(wallet);
 		return "Your Order Has Been  placed successfully, Wait for Approval.";
 		}
 		else

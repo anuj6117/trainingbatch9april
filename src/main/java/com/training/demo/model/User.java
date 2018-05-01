@@ -48,7 +48,7 @@ public class User
 	
 	@NotNull
 	@NotEmpty(message = "Please enter your password.")
-	@Size(min = 6, max = 15, message = "Your password must between 6 and 15 characters")
+	@Size(min = 8, max = 32, message = "Your password must between 8 and 32 characters")
 	private String password;
 	
 	@NotNull

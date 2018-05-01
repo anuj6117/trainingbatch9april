@@ -11,10 +11,10 @@ import com.training.demo.model.Transaction;
 
 public interface TransactionRepository extends JpaRepository<Transaction,Integer> {
 
-/*	@Query("select od from OrderTable od where UPPER(od.orderType)=UPPER(:orderType) order by price DESC")
+	@Query("select od from OrderTable od where UPPER(od.orderType)=UPPER(:orderType) order by price DESC")
 	public List<OrderTable> getBuyer(@Param("orderType")String order);
 	
-	@Query("select od from OrderDetails od where UPPER(od.orderType)=UPPER(:ordertype) order by price ASC")
+	@Query("select od from OrderTable od where UPPER(od.orderType)=UPPER(:orderType) order by price ASC")
 	public List<OrderTable> getSeller(@Param("orderType")String order);
-	*/
+	
 }
