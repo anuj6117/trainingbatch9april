@@ -55,6 +55,8 @@ public class OrderService {
 			long fee = currency.getFee();
 			long balance = wallet.getBalance();
 			long shadowBalance = (coinQuantity * fee) + (coinQuantity * price);
+			if(balance > shadowBalance)
+			{
 		if (user != null && userOrderDto != null) {
 			UserOrder userOrder = new UserOrder();
 			userOrder.setOrderCreatedOn(new Date());
@@ -85,19 +87,24 @@ public class OrderService {
 			result.put("isSuccess", false);
 			result.put("message", "Failed to add buy order");
 			return result;
-		}
+		}}
+		else
+		{
 		
-		
+			result.put("isSuccess", false);
+		result.put("message", "Insufficient Balance");
+		return result;
 	}
-
+	}
 	public Map<String, Object> createSellOrder(UserOrderDto userOrderDto) {
 		Map<String, Object> result = new HashMap<String, Object>();
 
 		User user = userRepository.findOneByUserId(userOrderDto.getUserId());
 		Wallet wallet = walletRepository.findByCoinTypeAndUser(WalletType.CRYPTO, user);
-
+		long balance = wallet.getBalance();
+		long shadowBalance = wallet.getBalance() - userOrderDto.getCoinQuantity();
 		
-		
+		if(balance >shadowBalance) {
 
 		if (user != null && userOrderDto != null) {
 			UserOrder userOrder = new UserOrder();
@@ -114,12 +121,7 @@ public class OrderService {
 		//	if(wallet.getBalance() > userOrderDto.getCoinQuantity()) {
 			wallet.setShadowBalance(wallet.getBalance() - userOrderDto.getCoinQuantity() );
 			walletRepository.save(wallet);	 
-			/*}
-			else {
-				result.put("isSuccess", false);
-				result.put("message", "Insufficient Quantity");
-				return result;
-			}*/
+			
 			result.put("isSuccess", true);
 			result.put("message", "Success");
 			return result;
@@ -127,7 +129,13 @@ public class OrderService {
 			result.put("isSuccess", false);
 			result.put("message", "Failed");
 			return result;
+		}}
+		else {
+			result.put("isSuccess", false);
+			result.put("message", "Insufficient Quantity");
+			return result;
 		}
+		
 	}
 
 	public UserOrder getOrderByUserId(long userId) {
@@ -151,12 +159,9 @@ public class OrderService {
 		}
 		Wallet wallet = walletRepository.findByCoinNameAndUser(userOrder.getCoinName(), user);
 		if (orderApprovalDto.getStatus() == TransactionOrderStatus.APPROVED) {
+			
 			if (wallet != null && userOrder.getStatus() == TransactionOrderStatus.PENDING) {
-				if (wallet.getBalance() == 0) {
-					result.put("isSuccess", false);
-					result.put("message", "No balance in wallet");
-					return result;
-				}
+				
 				if(userOrder.getOrderType() == OrderType.DEPOSIT )
 				{
 				wallet.setBalance(userOrder.getPrice() + wallet.getBalance());

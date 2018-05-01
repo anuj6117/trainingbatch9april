@@ -11,7 +11,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -29,7 +28,7 @@ public class UserOrder {
 	@Enumerated(EnumType.STRING)
 	private OrderType orderType;
 
-	@NotNull
+	
 	@Enumerated(EnumType.STRING)
 	private WalletType coinType;
 
@@ -47,10 +46,9 @@ public class UserOrder {
 		this.coinName = coinName;
 	}
 
-	@NotNull
+	
 	private Integer coinQuantity;
 
-	@NotNull
 	private Integer price;
 
 	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")

@@ -18,6 +18,7 @@ public class CurrencyService {
 	public Map<String, Object> addCurrency(Currency currency) {
 		Map<String, Object> result = new HashMap<String, Object>();
 
+		System.out.println(currency.getInitialSupply()+ " vvvvvvvvvvvvvvvvvvvvvvvvvv");
 		if (currency.getCoinName() == null || currency.getCoinName() == "") {
 			result.put("isSuccess", false);
 			result.put("message", "Coin Name cannot be null");
@@ -29,12 +30,15 @@ public class CurrencyService {
 			result.put("message", "Symbol already exists");
 			return result;
 		}
-		if (currency.getInitialSupply().toString() == null) {
+
+		
+		if (currency.getInitialSupply() == null ) {
+			System.out.println(currency.getInitialSupply()+ " vvvvvvvvvvvvvvvvvvv" );
 			result.put("isSuccess", false);
 			result.put("message", "Initial supply can not be null");
 			return result;
 		}
-		if (currency.getPrice().toString() == null) {
+		if (currency.getPrice() == null) {
 			result.put("isSuccess", false);
 			result.put("message", "Price can not be null");
 			return result;
@@ -55,6 +59,7 @@ public class CurrencyService {
 			result.put("message", "Coin Name already exists");
 			return result;
 		}
+	
 	}
 
 	public Iterable<Currency> getDetails() {
@@ -69,11 +74,7 @@ public class CurrencyService {
 			return result;
 		}
 
-		if (currencyrepository.findBySymbol(currency.getSymbol()) != null) {
-			result.put("isSuccess", false);
-			result.put("message", "Symbol already exists");
-			return result;
-		}
+	
 		
 		if (currency.getInitialSupply() == 0L) {
 			result.put("isSuccess", false);
@@ -85,11 +86,7 @@ public class CurrencyService {
 			result.put("message", "Price can not be null");
 			return result;
 		}
-		if (currencyrepository.findBycoinName(currency.getCoinName()) != null) {
-			result.put("isSuccess", false);
-			result.put("message", "Coin Name exists");
-			return result;
-		}
+		
 
 		if (currencyrepository.findOneByCoinId(currency.getCoinId()) != null) {
 			currencyrepository.save(currency);

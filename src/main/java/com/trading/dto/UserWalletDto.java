@@ -14,6 +14,25 @@ public class UserWalletDto {
 	private Integer amount;
 	
 	private String coinName;
+	
+	private long balance;
+	private long shadowBalance;
+
+	public long getBalance() {
+		return balance;
+	}
+
+	public void setBalance(long balance) {
+		this.balance = balance;
+	}
+
+	public long getShadowBalance() {
+		return shadowBalance;
+	}
+
+	public void setShadowBalance(long shadowBalance) {
+		this.shadowBalance = shadowBalance;
+	}
 
 	public String getCoinName() {
 		return coinName;

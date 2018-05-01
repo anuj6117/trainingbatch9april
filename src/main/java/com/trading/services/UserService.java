@@ -80,14 +80,11 @@ public class UserService {
 			result.put("message", "Oopss, this phoneNumber is already registered");
 			return result;
 		}
-		String phoneNumber = user.getPhoneNumber()+"";
-		if (phoneNumber.trim().length()!= 10 ) {
-			result.put("isSuccess", false);
-			result.put("message", "Enter valid phone Number");
-			return result;
-		}
 		
-				
+		String phoneNumber = user.getPhoneNumber()+"";
+
+	if(PhoneValidator.isValid(phoneNumber) && phoneNumber.trim().length()== 10 )	
+	{
 	if(NameValidator.isValid(user.getUserName())  && user.getUserName().trim().length() <= 25) 
 		{
 		if (EmailValidator.isValidEmailAddress(user.getEmail())) {
@@ -136,7 +133,12 @@ public class UserService {
 			result.put("isSuccess", false);
 			result.put("message", "Please enter valid user name");
 			return result;
-		}
+		}}
+	else {
+		result.put("isSuccess", false);
+		result.put("message", "Enter valid phone Number");
+		return result;
+	}
 		}
 		
 

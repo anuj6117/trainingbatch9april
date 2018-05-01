@@ -46,6 +46,8 @@ public class WalletService {
 			wallet.setCoinType(userwalletdto.getCoinType());
 			wallet.setuser(user);
 			wallet.setCoinName(userwalletdto.getCoinName());
+			wallet.setBalance(userwalletdto.getBalance());
+			wallet.setShadowBalance(userwalletdto.getShadowBalance());
 			walletRepository.save(wallet);
 			result.put("isSuccess", true);
 			result.put("message", "New wallet has been added and assigned");
@@ -64,14 +66,11 @@ public class WalletService {
 
 		User user = userRepository.findOneByUserId(userwalletdto.getuserId());
 		UserOrder userOrder = new UserOrder();
-	if(user == null) {
-		result.put("isSuccess", false);
-		result.put("message", "User does not  exist");
-		return result;
-	}
+		Wallet wallet = walletRepository.findByCoinNameAndUser(userwalletdto.getCoinName(), user);
+
 			
-		if(orderRepository.findByCoinNameAndUser(userwalletdto.getCoinName(), user)== null) {
-			
+			if(user != null) {
+				if(wallet != null) {
 		userOrder.setOrderType(OrderType.DEPOSIT);
 		userOrder.setCoinType(WalletType.FIAT);
 		userOrder.setCoinName(userwalletdto.getCoinName());
@@ -84,9 +83,15 @@ public class WalletService {
 		else
 		{
 			result.put("isSuccess", false);
-			result.put("message", "CoinName corresponsding to user already exist");
+			result.put("message", "Wallet does not  exist");
 			return result;
-		}
+		}}
+			else {
+				result.put("isSuccess", false);
+				result.put("message", "User does not  exist");
+				return result;
+			}
+			
 		if (userOrder.getStatus() == TransactionOrderStatus.APPROVED) {
 
 			result.put("isSuccess", true);
@@ -108,14 +113,11 @@ public class WalletService {
 		
 		
 		UserOrder userOrder = new UserOrder();
-		if(user == null) {
-			result.put("isSuccess", false);
-			result.put("message", "User does not  exist");
-			return result;
-		}
+		
 				
-			if(orderRepository.findByCoinNameAndUser(userwalletdto.getCoinName(), user)== null) {
-				
+			//if(orderRepository.findByCoinNameAndUser(userwalletdto.getCoinName(), user)== null) {
+			if(user != null) {
+				if(wallet != null) {
 			userOrder.setOrderType(OrderType.WITHDRAW);
 			userOrder.setCoinType(WalletType.FIAT);
 			userOrder.setCoinName(userwalletdto.getCoinName());
@@ -128,8 +130,14 @@ public class WalletService {
 			else
 			{
 				result.put("isSuccess", false);
-				result.put("message", "CoinName corresponsding to user already exist");
+				result.put("message", "Wallet does not exist");
 				return result;
+			}}
+			else
+			{
+				result.put("isSuccess", false);
+				result.put("message", "User does not  exist");
+				return result;	
 			}
 			if (userOrder.getStatus() == TransactionOrderStatus.APPROVED) {
 
@@ -144,7 +152,25 @@ public class WalletService {
 		
 		
 		
-	}}
+	}
+
+	public Wallet walletHistory(long userId, WalletType coinType)
+	{
+		
+		User user = userRepository.findOneByUserId(userId);
+		if(user != null)
+		{
+			
+		
+		Wallet wallet = walletRepository.findByCoinTypeAndUser(coinType, user);
+		return wallet;
+	}
+		else {
+			return null;
+		}
+}}
+
+
 		
 		
 		

@@ -24,7 +24,7 @@ public class CurrencyController {
 	private CurrencyService currencyService;
 
 	@RequestMapping(value = "/addcurrency", method = RequestMethod.POST)
-	public ResponseEntity<Object> addCurrency(@Valid @RequestBody Currency currency) throws Exception {
+	public ResponseEntity<Object> addCurrency( @RequestBody Currency currency) throws Exception {
 		Map<String, Object> result = null;
 		try {
 			result = currencyService.addCurrency(currency);
