@@ -24,7 +24,7 @@ public class Wallet
 private Integer id;
 @Enumerated(EnumType.STRING)
 private WalletType walletType;
-@Column(unique=true)
+
 private String walletName;
 private Integer balance;
 

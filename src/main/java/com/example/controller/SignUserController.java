@@ -58,12 +58,12 @@ public class SignUserController
 		int passwordLength1=passwordvalue.length();
 	    passwordvalue=passwordvalue.replaceAll("\\s+","");
 	    int passwordLength2=passwordvalue.length();
-	    
+	    String patternPhone="(?=.*[0-9]).{10,10}";
 	    String pattern="(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\\S+$).{8,32}";
 	    if((passwordLength2!=0) && (passwordLength1==passwordLength2) && (passwordvalue.matches(pattern)))
 		{
 	    	 System.out.println("......................111111111122222");
-	    	 if(user.getPhoneNumber().length()==10)
+	    	 if(user.getPhoneNumber().length()==10 && (user.getPhoneNumber().matches(patternPhone)))
 	    	 {
 	    		 if((usernameLength!=0 )&& (usernameLength==usernameLength2) && (user.getUserName()!=null) )
 	    	   {
@@ -89,7 +89,7 @@ public class SignUserController
 	    		return "Username can't be null or cannot contain inappropriate spaces";
 		     }
 	    	   else
-	    		return "Phone number should be of length 10";
+	    		return "Phone number should be of length 10 and should contain numeric only ";
 	   }
 		else
 		{
