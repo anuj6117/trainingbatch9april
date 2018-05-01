@@ -80,39 +80,40 @@ public class UserOrderService {
     	while(itr1.hasNext())
     	{
     		CurrencyClass cc=itr1.next();
-    		if(!(cc.getCoinName().equals(buysellorderdto.getCoinName())))
+    		boolean f=(cc.getCoinName().equals(buysellorderdto.getCoinName()));
+    		if(f)
     		{
-    			return "Invalid Coin Name";
+    			 double cal=buysellorderdto.getPrice()*buysellorderdto.getCoinQuantity();
+    		       
+    		       CurrencyClass currency=currencyRepository.findByCoinName(buysellorderdto.getCoinName());
+    		      
+    		       double fee=currency.getFees();
+    		       
+    		       double gross=(cal*fee)/100;
+    		       double calc=gross+cal;
+    		       
+    		       double sbalance=wallet.getShadowBalance();
+    		       
+    		       if(sbalance>=calc)
+    		       {
+    		        wallet.setShadowBalance(sbalance-calc);
+    		        UserOrder userorder=new UserOrder();
+    		        userorder.setCoinName(buysellorderdto.getCoinName());
+    	    	    userorder.setCoinQuantity(buysellorderdto.getCoinQuantity());
+    	    	    userorder.setPrice(buysellorderdto.getPrice());
+    	    	    userorder.setOrderType(UserOrderType.BUYER);
+    	    	    userorder.setStatus(UserOrderStatus.PENDING);
+    	    	    userorder.setGrossAmount(calc);
+    	    	    userorder.setFees(currency.getFees());
+    	    	    userorder.setUser(user);
+    	            userorder.setDateCreated(new Date());
+    	    	    userorderRepository.save(userorder);  
+    	    	    return "Buyer Order SuccessFully Submit";
+    	    	  }
+    		      return "Invalid Coin Name";
     		}
     	}
     
-	       double cal=buysellorderdto.getPrice()*buysellorderdto.getCoinQuantity();
-	       
-	       CurrencyClass currency=currencyRepository.findByCoinName(buysellorderdto.getCoinName());
-	      
-	       double fee=currency.getFees();
-	       
-	       double gross=(cal*fee)/100;
-	       double calc=gross+cal;
-	       
-	       double sbalance=wallet.getShadowBalance();
-	       
-	       if(sbalance>=calc)
-	       {
-	        wallet.setShadowBalance(sbalance-calc);
-	        UserOrder userorder=new UserOrder();
-	        userorder.setCoinName(buysellorderdto.getCoinName());
-    	    userorder.setCoinQuantity(buysellorderdto.getCoinQuantity());
-    	    userorder.setPrice(buysellorderdto.getPrice());
-    	    userorder.setOrderType(UserOrderType.BUYER);
-    	    userorder.setStatus(UserOrderStatus.PENDING);
-    	    userorder.setGrossAmount(calc);
-    	    userorder.setFees(currency.getFees());
-    	    userorder.setUser(user);
-            userorder.setDateCreated(new Date());
-    	    userorderRepository.save(userorder);  
-    	    return "Buyer Order SuccessFully Submit";
-    	}
 	       return "Insufficent Fund";
     }
 }

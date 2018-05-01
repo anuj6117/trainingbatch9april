@@ -85,10 +85,11 @@ public List<Transaction> getAllTransaction()
  public String transactionApproval()
  {
 	 double total=0;
+	 Transaction transaction=new Transaction();
 	
 	List<UserOrder>listbuyer=userOrderRepository.getBuyers("BUYER");
 	
-	List<UserOrder>listseller=userOrderRepository.getSellers("SELLER");
+	//List<UserOrder>listseller=userOrderRepository.getSellers("SELLER");
 	
 	List<CurrencyClass>tempcurrency=currencyRepoistory.findAll();
 	
@@ -101,10 +102,12 @@ public List<Transaction> getAllTransaction()
    	  	 Iterator<UserOrder>listbuy=listbuyer.iterator();
    	  	while(listbuy.hasNext())
    	  	{
-   	  		UserOrder list=listbuy.next();
-   	  		User user=list.getUser();
+   	  		UserOrder buyer=listbuy.next();
+   	  		User user=buyer.getUser();
    	  	    Wallet wallet=walletRepository.findByUserAndCoinType(user,CoinType.FIATE);
-   	  		String coin=list.getCoinName();
+   	    
+   	  	    Wallet wallet1=walletRepository.findByUserAndCoinTypeAndCoinName(user,CoinType.CRYPTO,buyer.getCoinName());
+   	  	    String coin=buyer.getCoinName();
    	  	  
    	  	 //Coding Start from here At 11.02am 1 may//		
           
@@ -113,27 +116,53 @@ public List<Transaction> getAllTransaction()
    	  		{
    	  			CurrencyClass currencycoin=supply.next();
    	  			
-   	  		if(currencycoin.getCoinName().equals(coin)&&currencycoin.getInitialSupply()!=0)
+   	  		if(currencycoin.getCoinName().equals(coin))
    	  			{
-   	  			  if(list.getPrice()>currencycoin.getPrice())
+//   	  			  if(list.getPrice()>currencycoin.getPrice())
+//   	  			  {
+//   	  				  double fee=currencycoin.getFees();
+//   	  				  double gross= list.getGrossAmount();
+//   	  			  }
+   	  			  if(buyer.getPrice()==currencycoin.getPrice())
    	  			  {
-   	  				  double fee=currencycoin.getFees();
-   	  				  double gross= list.getGrossAmount();
-   	  			  }
-   	  			  else if(list.getPrice()==currencycoin.getPrice()&&list.getCoinQuantity()==currencycoin.getInitialSupply())
-   	  			  {
-   	  					 Wallet wallet1=walletRepository.findByUserAndCoinTypeAndCoinName(user,CoinType.CRYPTO,list.getCoinName());
+   	  				 
    	  					 
-   	  					 ///Method of Transaction///
-   	  				     transactionDetail(wallet,wallet1,user,list);
-   	  	
-   	  				     ////method of Wallet////
-   	  				     ////////////////////////
-   	  				     wallet(wallet,wallet1,list);
-   	  				     
-   	  				     coinManagement(currencycoin,list);
-				
+     	      		 currencycoin.setCoinInINR(currencycoin.getCoinInINR());
+   	  			     currencycoin.setProfit(buyer.getFees());
+   	  				 currencycoin.setInitialSupply(0);
+   	  			      
+   	  				 	  				 
+     				 wallet.setBalance((wallet.getBalance()-buyer.getGrossAmount()));
+   	  				 wallet1.setBalance((buyer.getCoinQuantity()+wallet1.getBalance()));
+   	  				 wallet1.setShadowBalance((buyer.getCoinQuantity()+wallet1.getShadowBalance()));
+   	  			     
+   	  				 
+   	  			     
    	  				  }
+   	  			  else if(buyer.getPrice()>currencycoin.getPrice())
+   	  			   {
+   	  				 //tr 
+   	  			   }
+   	  			
+	  				 
+   	  			
+	  				 transaction.setBuyerId(user.getUserId());
+	  				 transaction.setCoinType(CoinType.CRYPTO);
+	  				 transaction.setCoinName(buyer.getCoinName());
+	  				 transaction.setSellerId(null);
+	  				 transaction.setExchangeRate(buyer.getPrice());
+	  				 transaction.setFees(buyer.getFees());
+	  				 transaction.setGrossAmount(buyer.getGrossAmount());
+	  				 transaction.setNetAmount(buyer.getCoinQuantity()*buyer.getPrice());
+	  				 transaction.setDateCreated(new Date());
+	  				 transaction.setMessage("Transaction Done");
+	  				 transaction.setStatus(TransactionStatus.APPROVED);
+	  				 transaction.setUserOrderType(buyer.getOrderType());
+	  	             
+	  				  transactionRepository.save(transaction);
+	  				  walletRepository.save(wallet);
+	  				  walletRepository.save(wallet1);
+	  				  currencyRepoistory.save(currencycoin);
    	  			  }
    	  			}
    	  		}
@@ -146,49 +175,21 @@ public List<Transaction> getAllTransaction()
  
 private void transactionDetail(Wallet wallet, Wallet wallet1, User user, UserOrder buyer) {
 	         
-	         ////Saving Inside Transaction/////
-			 /////////////////////////////////
-			 ////////////////////////////////
-			 
-			 Transaction transaction=new Transaction();
-			 
-			 transaction.setBuyerId(user.getUserId());
-			 transaction.setCoinType(CoinType.CRYPTO);
-			 transaction.setCoinName(buyer.getCoinName());
-			 transaction.setSellerId(null);
-			 transaction.setExchangeRate(buyer.getPrice());
-			 transaction.setFees(buyer.getFees());
-			 transaction.setNetAmount(buyer.getGrossAmount()-buyer.getFees());
-			 transaction.setDateCreated(new Date());
-			 transaction.setMessage("Transaction Done");
-			 transaction.setStatus(TransactionStatus.APPROVED);
-			 transaction.setUserOrderType(buyer.getOrderType());
-             transactionRepository.save(transaction);
+	       
 	
 }
 private void wallet(Wallet wallet,Wallet wallet1,UserOrder buyer)
  {
 
-		  ///update in FIATE and CYPTO Wallet///
-		 //////////////////////////////////////
-		 /////////////////////////////////////
-		 
-		 wallet.setBalance((wallet.getBalance()-buyer.getGrossAmount()));
-		 wallet1.setBalance((buyer.getCoinQuantity()+wallet1.getBalance()));
-		 wallet1.setShadowBalance((buyer.getCoinQuantity()+wallet1.getShadowBalance()));
-		 
-	     walletRepository.save(wallet);
-		 walletRepository.save(wallet1);
+		
  }
 private void coinManagement(CurrencyClass currencycoin,UserOrder order)
 {
-	 ////update in Currency Class Table//// 
-		 //////////////////////////////////////
-		 //////////////////////////////////////
-		 currencycoin.setCoinInINR(currencycoin.getCoinInINR());
-	     currencycoin.setProfit(order.getFees());
-		 currencycoin.setInitialSupply(0);
+	 
 }
- 
+ private void userOrderTable(UserOrder order)
+ {
+	 
+ }
 }
 

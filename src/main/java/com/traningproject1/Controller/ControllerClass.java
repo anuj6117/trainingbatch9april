@@ -62,6 +62,15 @@ public String addUser(@RequestBody User user)
        {
     	   return "Password Cannot be less Than 8 or Greater than 32";
        }
+       String phone=user.getPassword();
+       for(int i=0;i<phone.length();i++)
+       {
+    	   char c=phone.charAt(i);
+    	    if(!(c>=0&&c<=9))
+    	    {
+    	    	return "Space or character is not valid in Phone Number ";
+    	    }
+       }
        if(userRepository.findByphoneNumber(user.getPhoneNumber())!=null)
        {
     	   return "Oops Phone number already registration ";
