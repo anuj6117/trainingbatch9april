@@ -9,6 +9,7 @@ import com.trainingproject.domain.Transaction;
 import com.trainingproject.domain.User;
 import com.trainingproject.domain.UserOrder;
 import com.trainingproject.domain.Wallet;
+import com.trainingproject.domain.WalletHistory;
 import com.trainingproject.dto.ApproveWalletBean;
 import com.trainingproject.enums.CoinType;
 import com.trainingproject.enums.OrderType;
@@ -96,6 +97,12 @@ public class WalletService {
 	     }
 	     return "";
 	   
+		
+	}
+	
+	public Wallet walletHistory(Integer userId,CoinType coinType) {
+		
+		return walletRepository.findBycoinTypeAndUser(coinType, userService.getUserById(userId).get());
 		
 	}
 }

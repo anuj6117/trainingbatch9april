@@ -68,7 +68,7 @@ public class UserService {
 	     if(user.getUserName().charAt(user.getUserName().length()-1)==' ')
 	    	 return "your name cannot have space";
 	     
-	     p = Pattern.compile("(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\\S+$).{8,}$");
+	     p = Pattern.compile("(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#!*()$%^&+=])(?=\\S+$).{8,}$");
 		 m = p.matcher(user.getPassword());
     
 		 if(!m.find())
@@ -98,6 +98,10 @@ public class UserService {
 		if(user.getCountry()==null||user.getCountry().length()==0)
 			return "county cannot be null";
 		
+		p = Pattern.compile("^[a-zA-Z]{1,}$", Pattern.CASE_INSENSITIVE);
+		m = p.matcher(user.getCountry());
+		  if(!m.matches())
+		    return "Invalid country name";
 		user.setCreatedOn(new Date());
 		user.setStatus(UserStatus.INACTIVE);
 		
@@ -123,8 +127,13 @@ public class UserService {
 		Role role=new Role();
 		role.setRoleType("User");
 		roleList.add(role);      //todo
+		try {
 		if(roleRepository.findByroleType("User")==null)
 		roleRepository.save(role);
+		}
+		catch(Exception e) {
+			
+		}
 		user.setRoleType(roleList);
 		
 		otp= smsOTP.sendSMS();
@@ -413,9 +422,15 @@ public class UserService {
 	public String verifyUser(SignUpOTP userOtp) {
 		
 		SignUpOTP userOTP = signupOTPRepository.findBytokenOTP(userOtp.getTokenOTP());
-		User user = userRepository.findByEmail(userOtp.getEmail());
+		User user=null;
+		if(userOtp.getEmail()!=null)
+		 user = userRepository.findByEmail(userOtp.getEmail());
+		else if(userOtp.getPhoneNumber()!=0)
+			 user = userRepository.findByphoneNumber(userOtp.getPhoneNumber());
+		
 		if(userOTP != null) {
 			
+			if(userOtp.getEmail()!=null) {
 			if(userOtp.getEmail().equals(userOTP.getEmail())) {
 				signupOTPRepository.delete(userOTP);
 				user.setStatus(UserStatus.ACTIVE);
@@ -424,9 +439,23 @@ public class UserService {
 			}
 				else
 					return "failure";
+		}
+			else  if(userOtp.getPhoneNumber()!=0) {
+				
+				if(userOtp.getPhoneNumber()==userOTP.getPhoneNumber()) {
+					signupOTPRepository.delete(userOTP);
+					user.setStatus(UserStatus.ACTIVE);
+					userRepository.save(user);
+					return "success";
+				}
+					else
+						return "failure";
+				
+			}
+			return "not found..";
 		  }
-		else
-			return "not found";
+		
+		else return "not found";
 		
 	
 	}

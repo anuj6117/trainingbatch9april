@@ -17,7 +17,7 @@ public class Currency {
 	private String symbol;
 	private Integer initialSupply;
 	private Integer price; 
-	private Integer fees; 
+	private long fees; 
 	private Integer profit; 
 	private Integer coinInINR; 
 	
@@ -39,10 +39,10 @@ public class Currency {
 	public void setInitialSupply(Integer initialsupply) {
 		this.initialSupply = initialsupply;
 	}
-	public Integer getFees() {
+	public long getFees() {
 		return fees;
 	}
-	public void setFees(Integer fees) {
+	public void setFees(long fees) {
 		this.fees = fees;
 	}
 	public Integer getProfit() {

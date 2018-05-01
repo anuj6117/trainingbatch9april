@@ -14,8 +14,15 @@ public class SignUpOTP {
 	private Integer tokenOTP;
 	private String email;
 	private Date date;
+	private long phoneNumber;
 	
 	
+	public long getPhoneNumber() {
+		return phoneNumber;
+	}
+	public void setPhoneNumber(long phoneNumber) {
+		this.phoneNumber = phoneNumber;
+	}
 	public Integer getTokenOTP() {
 		return tokenOTP;
 	}
