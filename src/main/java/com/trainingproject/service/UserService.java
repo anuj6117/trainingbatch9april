@@ -122,7 +122,7 @@ public class UserService {
 		List<Role> roleList=new ArrayList<Role>();
 		Role role=new Role();
 		role.setRoleType("User");
-		roleList.add(role);
+		roleList.add(role);      //todo
 		roleRepository.save(role);
 		user.setRoleType(roleList);
 		

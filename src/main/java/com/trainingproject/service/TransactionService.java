@@ -12,6 +12,7 @@ import com.trainingproject.domain.Currency;
 import com.trainingproject.domain.Transaction;
 import com.trainingproject.domain.UserOrder;
 import com.trainingproject.domain.Wallet;
+import com.trainingproject.enums.CoinType;
 import com.trainingproject.enums.OrderType;
 import com.trainingproject.enums.TransactionStatus;
 import com.trainingproject.enums.UserOrderStatus;
@@ -57,10 +58,14 @@ public class TransactionService implements Comparator<UserOrder> {
 	            	
 	            	if(coinBuyed<=0) {
 	            		//all coins will be buyed
-	            		coinBuyed=buyers.get(i).getCoinQuantity()*-1;
+	            		coinBuyed=buyers.get(i).getCoinQuantity();
+	            		admin.setInitialSupply(admin.getInitialSupply()-coinBuyed);
+	            		buyers.get(i).setOrderStatus(UserOrderStatus.APPROVED);
 	            	}
 	            	else {
 	            		coinBuyed=admin.getInitialSupply();
+	            		admin.setInitialSupply(0);
+	            		buyers.get(i).setOrderStatus(UserOrderStatus.PENDING);
 	            	}
 	            	
 	            	
@@ -68,13 +73,13 @@ public class TransactionService implements Comparator<UserOrder> {
 	    		 //check if buyer has that kind of money or not for purchasing
 	    		 Integer fees=currencyRepository.findBycoinName(coinName).getFees();
 					long totprice= (buyers.get(i).getPrice()*coinBuyed);
-					long fee=(fees*totprice)/100;
+					Integer fee=(int) ((fees*totprice)/100);
 					long grossAmount=totprice+fee;
 					
-				    Wallet buyerwallet=walletRepository.findBycoinNameAndUser(coinName, buyers.get(i).getUser());
+				    Wallet buyerFiatwallet=walletRepository.findBycoinTypeAndUser(CoinType.FIAT, buyers.get(i).getUser());
 				    
 					Transaction trans=new Transaction();
-		            if(buyerwallet.getShadowBal()<grossAmount) {
+		            if(buyerFiatwallet.getShadowBal()<grossAmount) {
 		            	//transaction will be failed
 		            	
 		            	
@@ -98,8 +103,13 @@ public class TransactionService implements Comparator<UserOrder> {
 		            }
 		            else {
 		            	//approve transaction
-		            
-		            
+		            	
+		            	//update admin currency 
+		            	long adminprice= (admin.getPrice()*coinBuyed);
+		            	Integer coinInINR=(int) (totprice-adminprice);
+		            	admin.setProfit(fee);
+		                admin.setCoinInINR(coinInINR);
+		                currencyRepository.save(admin);
 						trans.setBuyer(buyers.get(i).getUser().getUserId());
 						trans.setSeller(admin.getId());
 						trans.setFee(fees);
@@ -111,13 +121,33 @@ public class TransactionService implements Comparator<UserOrder> {
 						trans.setGrossAmount(grossAmount);
 					    transactionRepository.save(trans);
 						
-					    buyers.get(i).setOrderStatus(UserOrderStatus.APPROVED);
+					    Wallet buyerwallet=walletRepository.findBycoinNameAndUser(coinName, buyers.get(i).getUser());
+					    buyerFiatwallet.setBalance(buyerFiatwallet.getBalance()-grossAmount);
+					    buyerFiatwallet.setShadowBal(buyerFiatwallet.getShadowBal()-grossAmount);
+					    if(buyerwallet==null) {
+					    	buyerwallet=new Wallet();
+					    	buyerwallet.setCoinQuantity(coinBuyed);
+					    	buyerwallet.setCoinName(coinName);
+					    	buyerwallet.setCoinType( buyers.get(i).getCoinType());
+					    	buyerwallet.setBalance(coinBuyed);
+					    	buyerwallet.setShadowBal(coinBuyed);
+					    }
+					    else {
+					    	buyerwallet.setCoinQuantity(buyerwallet.getCoinQuantity()+coinBuyed);
+					    	//buyerwallet.setCoinName(coinName);
+					    	//buyerwallet.setCoinType( buyers.get(i).getCoinType());
+					    	buyerwallet.setBalance(buyerwallet.getBalance()+coinBuyed);
+					    	buyerwallet.setShadowBal(buyerwallet.getShadowBal()+coinBuyed);
+					    }
+					    walletRepository.save(buyerwallet);
+					   
+					    
 					    orderRepository.save(buyers.get(i));
 						
 						
 		            }
 	    	 }
-	    	 return "success :: no sellers";
+	    	 return "success :: admin is only seller";
 	     }
 	     
 	     else if(buyers.size()==0) {
@@ -145,19 +175,40 @@ public class TransactionService implements Comparator<UserOrder> {
 					if(buyer.getOrderStatus().equals(UserOrderStatus.PENDING)&&seller.getCoinName().equals(coinName))
 					{
 						
-						Integer scQ=seller.getCoinQuantity();
+						 Currency admin=currencyRepository.findBycoinName(coinName);
+						 Wallet sellerWallet=walletRepository.findBycoinTypeAndUser(CoinType.FIAT, seller.getUser());
+						 
+						Integer scq=seller.getCoinQuantity();
+						if(scq==0)
+							continue;
 						Integer bcq=buyer.getCoinQuantity();
+						Integer coinBuyed=bcq-scq;
 						
+						if(coinBuyed<0) {
+							coinBuyed=bcq;
+							scq=scq-bcq;
+							 buyer.setOrderStatus(UserOrderStatus.APPROVED);
+							 seller.setOrderStatus(UserOrderStatus.PENDING);
+						
+						}
+						else {
+							coinBuyed=scq;
+							scq=0;
+							 buyer.setOrderStatus(UserOrderStatus.PENDING);
+							 seller.setOrderStatus(UserOrderStatus.APPROVED);
+							
+						}
 						Integer fees=currencyRepository.findBycoinName(coinName).getFees();
-						long totprice= (buyers.get(i).getPrice()*buyers.get(i).getCoinQuantity());
-						long fee=(fees*totprice)/100;
+						long totprice= (buyers.get(i).getPrice()*coinBuyed);
+						Integer fee=(int) ((fees*totprice)/100);
 						long grossAmount=totprice+fee;
 						
+					    Wallet buyerFiatwallet=walletRepository.findBycoinTypeAndUser(CoinType.FIAT, buyer.getUser());
 					    Wallet buyerwallet=walletRepository.findBycoinNameAndUser(coinName, buyer.getUser());
 					    
 					    Transaction trans=new Transaction();
 					    
-			            if(buyerwallet.getShadowBal()<grossAmount) {
+			            if(buyerFiatwallet.getShadowBal()<grossAmount) {
 			            	
 			            	trans.setBuyer(buyer.getUser().getUserId());
 							trans.setSeller(seller.getUserId());
@@ -179,7 +230,26 @@ public class TransactionService implements Comparator<UserOrder> {
 			       
 			            }
 						
+			            
+			            sellerWallet.setBalance(coinBuyed*seller.getPrice()+sellerWallet.getBalance());
+						sellerWallet.setShadowBal(sellerWallet.getShadowBal()+coinBuyed*seller.getPrice());
+						seller.setCoinQuantity(scq);
+						buyerFiatwallet.setBalance(buyerFiatwallet.getBalance()-grossAmount);
+						buyerFiatwallet.setShadowBal(buyerFiatwallet.getShadowBal()-grossAmount);
+						buyerwallet.setCoinQuantity(buyerwallet.getCoinQuantity()+coinBuyed);
+						walletRepository.save(buyerwallet);
+						walletRepository.save(buyerFiatwallet);
+						walletRepository.save(sellerWallet);
+						
+						
+						
+						 
 			            //approve transaction
+			            
+			            long sellerprice= (seller.getPrice()*coinBuyed);
+		            	Integer coinInINR=(int) (totprice-sellerprice);
+		            	admin.setProfit(fee);
+		                admin.setCoinInINR(coinInINR);
 						
 			            trans.setBuyer(buyer.getUser().getUserId());
 						trans.setSeller(seller.getUserId());
@@ -192,9 +262,11 @@ public class TransactionService implements Comparator<UserOrder> {
 						trans.setGrossAmount(grossAmount);
 					    transactionRepository.save(trans);
 						
-					    buyers.get(i).setOrderStatus(UserOrderStatus.APPROVED);
+//					    buyer.setOrderStatus(UserOrderStatus.APPROVED);
+					    buyer.setCoinQuantity(buyer.getCoinQuantity()-coinBuyed);
+					    seller.setCoinQuantity(scq);
 					    orderRepository.save(buyer);
-					
+					    orderRepository.save(seller);
 						
 					}
 				}

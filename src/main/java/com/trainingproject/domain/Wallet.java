@@ -25,7 +25,7 @@ public class Wallet {
      private String coinName;
 	private long balance;
 	private long shadowBal;
-	//private Long amount;
+	private Integer coinQuantity;
 	
 
 	@ManyToOne
@@ -42,6 +42,14 @@ public class Wallet {
 	
 	public Integer getWalletId() {
 		return walletId;
+	}
+
+	public Integer getCoinQuantity() {
+		return coinQuantity;
+	}
+
+	public void setCoinQuantity(Integer coinQuantity) {
+		this.coinQuantity = coinQuantity;
 	}
 
 	public void setWalletId(Integer walletId) {

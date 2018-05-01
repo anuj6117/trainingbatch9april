@@ -9,6 +9,7 @@ import com.trainingproject.domain.User;
 import com.trainingproject.domain.UserOrder;
 import com.trainingproject.domain.Wallet;
 import com.trainingproject.dto.BuySellBean;
+import com.trainingproject.enums.CoinType;
 import com.trainingproject.enums.OrderType;
 import com.trainingproject.enums.UserOrderStatus;
 import com.trainingproject.enums.UserStatus;
@@ -58,7 +59,7 @@ public class UserOrderService {
 		Integer totamount=bsb.getCoinQuantity()*bsb.getPrice();
 		Integer fee=currencyRepository.findBycoinName(bsb.getCoinName()).getFees();
 		long gross=(totamount*fee)/100+totamount;
-		Wallet buyerWallet=walletRepository.findBycoinNameAndUser(bsb.getCoinName(), user);
+		Wallet buyerWallet=walletRepository.findBycoinTypeAndUser(CoinType.FIAT, user);
 		
 	  if(buyerWallet.getShadowBal()<gross)
 		  return "Insufficient funds!";
