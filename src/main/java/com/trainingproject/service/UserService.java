@@ -123,6 +123,7 @@ public class UserService {
 		Role role=new Role();
 		role.setRoleType("User");
 		roleList.add(role);      //todo
+		if(roleRepository.findByroleType("User")==null)
 		roleRepository.save(role);
 		user.setRoleType(roleList);
 		

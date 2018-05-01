@@ -54,7 +54,8 @@ public class UserOrderService {
 		
 		if(bsb.getPrice()==null||bsb.getPrice()==0)
 		      return "price cannot be null";
-		
+		 if(bsb.getCoinQuantity()==0)
+	    	 return "0 quantity to buy";
 		
 		Integer totamount=bsb.getCoinQuantity()*bsb.getPrice();
 		Integer fee=currencyRepository.findBycoinName(bsb.getCoinName()).getFees();
@@ -93,6 +94,8 @@ public class UserOrderService {
 	     if(user==null)
 				return "user is null";
 	     
+	     if(bsb.getCoinQuantity()==0)
+	    	 return "0 quantity to sell";
 	     if(user.getStatus()==null)
 				return "user is inactive";
 			if(user.getStatus().equals(UserStatus.INACTIVE))
