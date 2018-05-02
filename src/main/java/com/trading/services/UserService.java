@@ -2,8 +2,8 @@ package com.trading.services;
 
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Random;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -104,7 +104,9 @@ public class UserService {
 					wallet.setuser(user);
 					user.getWallet().add(wallet);
 					Role role = new Role();
+				
 					role.setRoleType(RoleType.USER);
+					
 					user.getRole().add(role);
 					userRepository.save(user);
 					result.put("isSuccess", true);
@@ -144,13 +146,13 @@ public class UserService {
 
 	
 
-	public Iterable<User> getDetails() {
-		return userRepository.findAll();
+	public List<User> getDetails() {
+		return (List<User>) userRepository.findAll();
 	}
 
-	public Optional<User> getById(long userId) {
+	public User getById(long userId) {
 		if (userRepository.findOneByUserId(userId) != null) {
-			return userRepository.findById(userId);
+			return userRepository.findOneByUserId(userId);
 		} else {
 			return null;
 		}
@@ -264,11 +266,14 @@ public class UserService {
 			result.put("message", "New role has been added and assigned");
 			return result;
 		} else {
+			
 			userdb.getRole().add(roledb);
 			userRepository.save(userdb);
-			result.put("isSuccess", false);
+			result.put("isSuccess", true);
 			result.put("message", "Existing role has been assigned");
 			return result;
+		
+			
 		}
 	}
 }

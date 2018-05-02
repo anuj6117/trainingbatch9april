@@ -1,5 +1,6 @@
 package com.trading.controller;
 
+import java.util.List;
 import java.util.Map;
 
 import javax.validation.Valid;
@@ -39,8 +40,13 @@ public class CurrencyController {
 	}
 
 	@RequestMapping(value = "/getallcurrency", method = RequestMethod.GET)
-	public Iterable<Currency> getAllCurrency() throws Exception {
-		return currencyService.getDetails();
+	public Object getAllCurrency() throws Exception {
+	List<Currency> list = currencyService.getDetails();
+	if(list.isEmpty())
+	{
+		return "No currency available";
+	}
+	return list;
 	}
 
 	@RequestMapping(value = "/updatecurrency", method = RequestMethod.POST)
@@ -75,7 +81,13 @@ public class CurrencyController {
 	}
 
 	@RequestMapping(value = "/getcurrencybyid", method = RequestMethod.GET)
-	public Currency getDetailsById(@Valid @RequestParam("coinId") long coinId) {
-		return currencyService.getCurrencyById(coinId);
+	public Object  getDetailsById(@Valid @RequestParam("coinId") long coinId) {
+		Currency currency = currencyService.getCurrencyById(coinId);
+		if(currency == null)
+		{
+			return"Currency Id does not exist";
+			
+		}
+		return currency;
 	}
 }

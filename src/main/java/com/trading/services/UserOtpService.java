@@ -39,11 +39,11 @@ public class UserOtpService {
 				user.setStatus(UserStatus.Active);
 				userrepository.save(user);
 				result.put("isSuccess", true);
-				result.put("message", "Your account is verified succesfully");
+				result.put("message", "Success");
 				return result;
 			} else {
 				result.put("isSuccess", false);
-				result.put("message", "Failed to verify your account");
+				result.put("message", "Failure");
 				return result;
 			}
 		} else {

@@ -15,7 +15,7 @@ public class ResponseHandler {
 			Object response) {
 		Map<String, Object> map = new HashMap<String, Object>();
 		try {
-			map.put("timestamp", new Date());
+			map.put("timestamp", new Date().toString());
 			map.put("status", status.value());
 			map.put("isSuccess", error);
 			map.put("message", message);
@@ -33,7 +33,8 @@ public class ResponseHandler {
 	public static ResponseEntity<Object> invalidResponse(HttpStatus status, boolean error, String message) {
 		Map<String, Object> map = new HashMap<String, Object>();
 		try {
-			map.put("timestamp", new Date());
+			map.put("timestamp", new Date().toString()
+					);
 			map.put("status", status.value());
 			map.put("isSuccess", error);
 			map.put("message", message);

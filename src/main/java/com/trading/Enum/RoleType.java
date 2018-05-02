@@ -2,7 +2,7 @@ package com.trading.Enum;
 
 public enum RoleType {
 
-	ADMIN("admin"), USER("user");
+	ADMIN("admin"), USER("user"), MANAGER("manager");
 
 	private String value;
 

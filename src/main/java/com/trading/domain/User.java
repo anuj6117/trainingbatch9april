@@ -1,8 +1,9 @@
 package com.trading.domain;
 
 import java.util.ArrayList;
-import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -17,11 +18,9 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
-import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.trading.Enum.UserStatus;
 
@@ -71,7 +70,7 @@ public class User {
 			@JoinColumn(name = "user_Id", referencedColumnName = "userId") }, inverseJoinColumns = {
 					@JoinColumn(name = "role_Id", referencedColumnName = "roleId") })
 
-	private List<Role> role = new ArrayList<>();
+	private Set<Role> role = new HashSet<>();
 
 	@OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 
@@ -89,11 +88,11 @@ public class User {
 		this.userOrder = userOrder;
 	}
 
-	public List<Role> getRole() {
+	public Set<Role> getRole() {
 		return role;
 	}
 
-	public void setRole(List<Role> role) {
+	public void setRole(Set<Role> role) {
 		this.role = role;
 	}
 

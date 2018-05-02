@@ -45,11 +45,12 @@ public class TransactionService {
 	private UserRepository userRepository;
 
 	public Map<String, Object> transaction()
-	
-	{		Map<String, Object> result = new HashMap<String, Object>();
-	
-	Transaction transaction = new Transaction();
- 
+
+	{
+		Map<String, Object> result = new HashMap<String, Object>();
+
+		Transaction transaction = new Transaction();
+
 		Currency currency = new Currency();
 		List<UserOrder> buyer = orderRepository.findByOrderTypeAndStatusAndCoinType(OrderType.BUYER,
 				TransactionOrderStatus.PENDING, WalletType.CRYPTO);
@@ -61,46 +62,52 @@ public class TransactionService {
 		}
 
 		for (UserOrder buy : buyer) {
-			
+
 			long buyPrice = buy.getPrice();
 			currency = currencyRepository.findByCoinName(buy.getCoinName());
+			if (currency == null) {
+				result.put("isSuccess", false);
+				result.put("message", "Currency does not exist");
+				return result;
+			}
+
 			long coinPrice = currency.getPrice();
 			List<UserOrder> seller = orderRepository.findByOrderTypeAndStatusAndCoinName(OrderType.SELLER,
 					TransactionOrderStatus.PENDING, buy.getCoinName());
-			Collections.sort(seller, new UserOrderComparator(new PriceComparator() ));
+			Collections.sort(seller, new UserOrderComparator(new PriceComparator()));
 			List<UserOrder> sellerData = new ArrayList<UserOrder>();
 			boolean flag = false;
 			boolean selluser = false;
 			boolean admin = false;
-			
+
 			for (UserOrder sellerInfo : seller) {
 				if (sellerInfo.getUser() != buy.getUser()) {
 					sellerData.add(sellerInfo);
 					sell = sellerInfo;
-					
+
 				}
 			}
-			
+
 			User user = userRepository.findOneByUserId(buy.getUser().getUserId());
 			Wallet wallet = walletRepository.findByCoinNameAndUser(buy.getCoinName(), user);
 			Wallet walletFiat = walletRepository.findByCoinTypeAndUser(WalletType.FIAT, user);
 			if ((sellerData.isEmpty())) {
-				if(currency.getInitialSupply() ==0)
-				{
+
+				if (currency.getInitialSupply() == 0) {
 					result.put("isSuccess", false);
 					result.put("message", "No supply");
 					return result;
 				}
-				
+
 				if (buyPrice > coinPrice) {
-					
-					 flag = true;
-					 admin = true;
-				}} else {
-				
-				if(sell.getCoinName().equals( buy.getCoinName())) {
-															
-							
+
+					flag = true;
+					admin = true;
+				}
+			} else {
+
+				if (sell.getCoinName().equals(buy.getCoinName())) {
+
 					if (sell.getPrice() >= currency.getPrice()) {
 						if (buy.getPrice() > currency.getPrice()) {
 							flag = true;
@@ -110,20 +117,20 @@ public class TransactionService {
 						if (buy.getPrice() > sell.getPrice()) {
 							flag = true;
 							selluser = true;
-							
-			
-						}}}}
+
+						}
+					}
+				}
+			}
 			long fee = currency.getFee();
 			long coinQuantity = buy.getCoinQuantity();
 			long netAmount = (buyPrice * coinQuantity);
 			long grossAmount = (buyPrice * coinQuantity) + (coinQuantity * fee);
-			if(flag = true)
-			{
-				if(admin = true)
-				{
-				
+			if (flag = true) {
+				if (admin = true) {
+
 					if (buy.getCoinQuantity() < currency.getInitialSupply()) {
-						
+
 						transaction.setCoinType(WalletType.CRYPTO);
 						transaction.setCoinName(buy.getCoinName());
 						transaction.setStatus(TransactionOrderStatus.APPROVED);
@@ -133,7 +140,7 @@ public class TransactionService {
 						transaction.setExchangeRate(buyPrice);
 						transaction.setBuyerId(buy.getOrderId());
 						transaction.setTransactionCreatedOn(new Date().toString());
-					
+						transaction.setCoinQuantiy(buy.getCoinQuantity());
 						buy.setStatus(TransactionOrderStatus.APPROVED);
 						buy.setCoinQuantity(currency.getInitialSupply() - buy.getCoinQuantity());
 						walletFiat.setBalance(wallet.getShadowBalance());
@@ -148,14 +155,13 @@ public class TransactionService {
 						walletRepository.save(wallet);
 						walletRepository.save(walletFiat);
 						currencyRepository.save(currency);
-						System.out.println(currency.getInitialSupply()+ " vanshikamadan");
+						System.out.println(currency.getInitialSupply() + " vanshikamadan");
 						result.put("isSuccess", true);
 						result.put("message", "Transaction created succesfully");
 						return result;
-				
+
 					} else if (buy.getCoinQuantity() > currency.getInitialSupply()) {
-						
-						
+
 						transaction.setCoinType(WalletType.CRYPTO);
 						transaction.setCoinName(buy.getCoinName());
 						transaction.setStatus(TransactionOrderStatus.APPROVED);
@@ -165,15 +171,16 @@ public class TransactionService {
 						transaction.setExchangeRate(buyPrice);
 						transaction.setBuyerId(buy.getOrderId());
 						transaction.setTransactionCreatedOn(new Date().toString());
+						transaction.setCoinQuantiy(currency.getInitialSupply());
 						transactionRepository.save(transaction);
 						long balance = currency.getInitialSupply() * buy.getPrice();
 						walletFiat.setBalance(wallet.getBalance() - balance);
 						wallet.setBalance(wallet.getBalance() + currency.getInitialSupply());
 						wallet.setShadowBalance(wallet.getBalance() + currency.getInitialSupply());
-						buy.setCoinQuantity(buy.getCoinQuantity()-currency.getInitialSupply());
+						buy.setCoinQuantity(buy.getCoinQuantity() - currency.getInitialSupply());
 						currency.setProfit(fee * currency.getInitialSupply());
 						currency.setCoinINR(buyPrice - currency.getPrice());
-						currency.setInitialSupply( buy.getCoinQuantity() - currency.getInitialSupply() );
+						currency.setInitialSupply(buy.getCoinQuantity() - currency.getInitialSupply());
 						orderRepository.save(buy);
 						walletRepository.save(wallet);
 						walletRepository.save(walletFiat);
@@ -182,46 +189,41 @@ public class TransactionService {
 						result.put("isSuccess", true);
 						result.put("message", "Transaction created succesfully");
 						return result;
+					} else {
+
+						transaction.setCoinType(WalletType.CRYPTO);
+						transaction.setCoinName(buy.getCoinName());
+						transaction.setStatus(TransactionOrderStatus.APPROVED);
+						transaction.setTransactionFee(currency.getFee());
+						transaction.setNetAmount(netAmount);
+						transaction.setGrossAmount(grossAmount);
+						transaction.setExchangeRate(buyPrice);
+						transaction.setBuyerId(buy.getOrderId());
+						transaction.setTransactionCreatedOn(new Date().toString());
+						transaction.setCoinQuantiy(buy.getCoinQuantity());
+						transactionRepository.save(transaction);
+						buy.setCoinQuantity(0);
+						walletFiat.setBalance(walletFiat.getShadowBalance());
+						wallet.setBalance(wallet.getBalance() + buy.getCoinQuantity());
+						wallet.setShadowBalance(wallet.getBalance() + buy.getCoinQuantity());
+						currency.setProfit(fee * coinQuantity);
+						currency.setCoinINR(buyPrice - currency.getPrice());
+						currency.setInitialSupply(currency.getInitialSupply() - buy.getCoinQuantity());
+						orderRepository.save(buy);
+						walletRepository.save(wallet);
+						walletRepository.save(walletFiat);
+
+						result.put("message", "Transaction created succesfully");
+						return result;
 					}
-					else
-					{
-					
-						
-					transaction.setCoinType(WalletType.CRYPTO);
-					transaction.setCoinName(buy.getCoinName());
-					transaction.setStatus(TransactionOrderStatus.APPROVED);
-					transaction.setTransactionFee(currency.getFee());
-					transaction.setNetAmount(netAmount);
-					transaction.setGrossAmount(grossAmount);
-					transaction.setExchangeRate(buyPrice);
-					transaction.setBuyerId(buy.getOrderId());
-					transaction.setTransactionCreatedOn(new Date().toString());
-					result.put("isSuccess", true);
-					transactionRepository.save(transaction);
-					buy.setCoinQuantity(0);
-					walletFiat.setBalance(walletFiat.getShadowBalance());
-					wallet.setBalance(wallet.getBalance() + buy.getCoinQuantity());
-					wallet.setShadowBalance(wallet.getBalance() + buy.getCoinQuantity());
-					currency.setProfit(fee * coinQuantity);
-					currency.setCoinINR(buyPrice - currency.getPrice());
-					currency.setInitialSupply(currency.getInitialSupply() - buy.getCoinQuantity());
-					orderRepository.save(buy);
-					walletRepository.save(wallet);
-					walletRepository.save(walletFiat);
-					
-					result.put("message", "Transaction created succesfully");
-					return result;
-				}
 				}
 			}
-			if(flag = true)
-			{
-				if(selluser = true)
-				{
-					User sellerUser = userRepository.findByUserId(sell.getUser().getUserId()); 
-				Wallet	sellerWallet = walletRepository.findByCoinNameAndUser(sell.getCoinName(), user);
-				Wallet sellerWalletFiat = walletRepository.findByCoinTypeAndUser(WalletType.FIAT, sellerUser);
-					if (buy.getCoinQuantity() < sell.getCoinQuantity()) {							
+			if (flag = true) {
+				if (selluser = true) {
+					User sellerUser = userRepository.findByUserId(sell.getUser().getUserId());
+					Wallet sellerWallet = walletRepository.findByCoinNameAndUser(sell.getCoinName(), user);
+					Wallet sellerWalletFiat = walletRepository.findByCoinTypeAndUser(WalletType.FIAT, sellerUser);
+					if (buy.getCoinQuantity() < sell.getCoinQuantity()) {
 						transaction.setCoinType(WalletType.CRYPTO);
 						transaction.setCoinName(buy.getCoinName());
 						transaction.setStatus(TransactionOrderStatus.APPROVED);
@@ -232,6 +234,8 @@ public class TransactionService {
 						transaction.setBuyerId(buy.getOrderId());
 						transaction.setTransactionCreatedOn(new Date().toString());
 						transaction.setSellerId(sell.getOrderId());
+						transaction.setCoinQuantiy(buy.getCoinQuantity());
+
 						transactionRepository.save(transaction);
 						walletFiat.setBalance(wallet.getShadowBalance());
 						wallet.setBalance(wallet.getBalance() + buy.getCoinQuantity());
@@ -244,8 +248,10 @@ public class TransactionService {
 						buy.setCoinQuantity(0);
 						sell.setCoinQuantity(sell.getCoinQuantity() - buy.getCoinQuantity());
 						sellerWallet.setBalance(sellerWallet.getShadowBalance());
-						sellerWalletFiat.setBalance(sellerWalletFiat.getBalance() + (buy.getPrice() * buy.getCoinQuantity()));
-						sellerWalletFiat.setShadowBalance(sellerWalletFiat.getBalance() + (buy.getPrice() * buy.getCoinQuantity()));
+						sellerWalletFiat
+								.setBalance(sellerWalletFiat.getBalance() + (buy.getPrice() * buy.getCoinQuantity()));
+						sellerWalletFiat.setShadowBalance(
+								sellerWalletFiat.getBalance() + (buy.getPrice() * buy.getCoinQuantity()));
 						currencyRepository.save(currency);
 						walletRepository.save(sellerWallet);
 						walletRepository.save(sellerWalletFiat);
@@ -257,7 +263,7 @@ public class TransactionService {
 						result.put("message", "Transaction created succesfully");
 						return result;
 					} else if (buy.getCoinQuantity() > sell.getCoinQuantity()) {
-						
+
 						transaction.setCoinType(WalletType.CRYPTO);
 						transaction.setCoinName(buy.getCoinName());
 						transaction.setStatus(TransactionOrderStatus.APPROVED);
@@ -268,9 +274,11 @@ public class TransactionService {
 						transaction.setBuyerId(buy.getOrderId());
 						transaction.setSellerId(sell.getOrderId());
 						transaction.setTransactionCreatedOn(new Date().toString());
+						transaction.setCoinQuantiy(sell.getCoinQuantity());
+
 						transactionRepository.save(transaction);
 						buy.setCoinQuantity(sell.getCoinQuantity() - buy.getCoinQuantity());
-					sell.setCoinQuantity(sell.getCoinQuantity() - buy.getCoinQuantity());
+						sell.setCoinQuantity(buy.getCoinQuantity() - sell.getCoinQuantity());
 						walletFiat.setBalance(wallet.getShadowBalance());
 						wallet.setBalance(wallet.getBalance() + buy.getCoinQuantity());
 						wallet.setShadowBalance(wallet.getBalance() + buy.getCoinQuantity());
@@ -278,8 +286,10 @@ public class TransactionService {
 						currency.setCoinINR(buyPrice - sell.getPrice());
 						sell.setStatus(TransactionOrderStatus.APPROVED);
 						sellerWallet.setBalance(sellerWallet.getBalance() + buy.getCoinQuantity());
-						sellerWalletFiat.setBalance(sellerWalletFiat.getBalance() + (buy.getPrice() * sell.getCoinQuantity()));
-						sellerWalletFiat.setShadowBalance(sellerWalletFiat.getBalance() + (buy.getPrice() * sell.getCoinQuantity()));
+						sellerWalletFiat
+								.setBalance(sellerWalletFiat.getBalance() + (buy.getPrice() * sell.getCoinQuantity()));
+						sellerWalletFiat.setShadowBalance(
+								sellerWalletFiat.getBalance() + (buy.getPrice() * sell.getCoinQuantity()));
 						currencyRepository.save(currency);
 						walletRepository.save(sellerWallet);
 						walletRepository.save(sellerWalletFiat);
@@ -291,7 +301,7 @@ public class TransactionService {
 						result.put("message", "Transaction created succesfully");
 						return result;
 					} else {
-						
+
 						transaction.setCoinType(WalletType.CRYPTO);
 						transaction.setCoinName(buy.getCoinName());
 						transaction.setStatus(TransactionOrderStatus.APPROVED);
@@ -302,6 +312,8 @@ public class TransactionService {
 						transaction.setBuyerId(buy.getOrderId());
 						transaction.setTransactionCreatedOn(new Date().toString());
 						transaction.setSellerId(sell.getOrderId());
+						transaction.setCoinQuantiy(buy.getCoinQuantity());
+
 						transactionRepository.save(transaction);
 						sell.setStatus(TransactionOrderStatus.APPROVED);
 						sell.setCoinQuantity(0);
@@ -314,8 +326,10 @@ public class TransactionService {
 						currency.setCoinINR(buyPrice - sell.getPrice());
 						sell.setCoinQuantity(sell.getCoinQuantity() - buy.getCoinQuantity());
 						sellerWallet.setBalance(sellerWallet.getShadowBalance());
-						sellerWalletFiat.setBalance(sellerWalletFiat.getBalance() + (buy.getPrice() * buy.getCoinQuantity()));
-						sellerWalletFiat.setShadowBalance(sellerWalletFiat.getBalance() + (buy.getPrice() * buy.getCoinQuantity()));
+						sellerWalletFiat
+								.setBalance(sellerWalletFiat.getBalance() + (buy.getPrice() * buy.getCoinQuantity()));
+						sellerWalletFiat.setShadowBalance(
+								sellerWalletFiat.getBalance() + (buy.getPrice() * buy.getCoinQuantity()));
 						currencyRepository.save(currency);
 						walletRepository.save(sellerWallet);
 						walletRepository.save(sellerWalletFiat);
@@ -323,17 +337,19 @@ public class TransactionService {
 						orderRepository.save(sell);
 						walletRepository.save(wallet);
 						walletRepository.save(walletFiat);
-				
+
 						result.put("isSuccess", true);
 						result.put("message", "Transaction created succesfully");
 						return result;
-				}}}}
+					}
+				}
+			}
+		}
 		result.put("isSuccess", false);
 		result.put("message", "No transactions done");
 		return result;
-							
-						
-		}
+
+	}
 
 	public Iterable<Transaction> showAllTransaction() {
 		return transactionRepository.findAll();

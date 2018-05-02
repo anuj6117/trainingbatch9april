@@ -2,6 +2,7 @@ package com.trading.services;
 
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,7 +60,7 @@ public class OrderService {
 			{
 		if (user != null && userOrderDto != null) {
 			UserOrder userOrder = new UserOrder();
-			userOrder.setOrderCreatedOn(new Date());
+			userOrder.setOrderCreatedOn(new Date().toString());
 			userOrder.setStatus(TransactionOrderStatus.PENDING);
 			userOrder.setOrderType(OrderType.BUYER);
 			userOrder.setUser(user);
@@ -108,7 +109,7 @@ public class OrderService {
 
 		if (user != null && userOrderDto != null) {
 			UserOrder userOrder = new UserOrder();
-			userOrder.setOrderCreatedOn(new Date());
+			userOrder.setOrderCreatedOn(new Date().toString());
 			userOrder.setStatus(TransactionOrderStatus.PENDING);
 			userOrder.setOrderType(OrderType.SELLER);
 			userOrder.setUser(user);
@@ -138,13 +139,11 @@ public class OrderService {
 		
 	}
 
-	public UserOrder getOrderByUserId(long userId) {
-		User user = userRepository.findOneByUserId(userId);
-		if (user != null) {
-			return orderRepository.findOneByUser(user);
-		} else {
-			return null;
-		}
+	public List<UserOrder> getOrderByUserId(long userId) {
+		User user = userRepository.findByUserId(userId);
+		
+			return  orderRepository.findByUser(user);
+		
 	}
 
 	public Map<String, Object> approveOrder(OrderApprovalDto orderApprovalDto) {

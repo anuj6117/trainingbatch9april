@@ -1,6 +1,7 @@
 package com.trading.services;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +19,6 @@ public class CurrencyService {
 	public Map<String, Object> addCurrency(Currency currency) {
 		Map<String, Object> result = new HashMap<String, Object>();
 
-		System.out.println(currency.getInitialSupply()+ " vvvvvvvvvvvvvvvvvvvvvvvvvv");
 		if (currency.getCoinName() == null || currency.getCoinName() == "") {
 			result.put("isSuccess", false);
 			result.put("message", "Coin Name cannot be null");
@@ -28,6 +28,12 @@ public class CurrencyService {
 		if (currencyrepository.findBySymbol(currency.getSymbol()) != null) {
 			result.put("isSuccess", false);
 			result.put("message", "Symbol already exists");
+			return result;
+		}
+		
+		if(currency.getSymbol() == null || currency.getSymbol() == "") {
+			result.put("isSuccess", false);
+			result.put("message", "Symbol can not be null");
 			return result;
 		}
 
@@ -62,8 +68,8 @@ public class CurrencyService {
 	
 	}
 
-	public Iterable<Currency> getDetails() {
-		return currencyrepository.findAll();
+	public List<Currency> getDetails() {
+		return (List<Currency>) currencyrepository.findAll();
 	}
 
 	public Map<String, Object> updateDetails(Currency currency) {

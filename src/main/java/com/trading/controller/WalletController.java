@@ -13,10 +13,12 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.trading.Enum.WalletType;
-import com.trading.domain.Wallet;
+import com.trading.domain.User;
+import com.trading.domain.UserOrder;
 import com.trading.dto.UserWalletDto;
 import com.trading.handler.ResponseHandler;
+import com.trading.repository.OrderRepository;
+import com.trading.repository.UserRepository;
 import com.trading.services.WalletService;
 
 @RestController
@@ -24,6 +26,12 @@ public class WalletController {
 
 	@Autowired
 	private WalletService walletService;
+
+	@Autowired
+	private OrderRepository orderRepository;
+
+	@Autowired
+	private UserRepository userRepository;
 
 	@RequestMapping(value = "/addwallet", method = RequestMethod.POST)
 	public ResponseEntity<Object> addWallet(@Valid @RequestBody UserWalletDto userwalletdto) {
@@ -71,10 +79,18 @@ public class WalletController {
 			return ResponseHandler.generateResponse(HttpStatus.BAD_REQUEST, false, e.getMessage(), result);
 		}
 	}
-	
+
 	@RequestMapping(value = "/walletHistory", method = RequestMethod.GET)
-	public Wallet walletHistory( @RequestParam ("userId")long userId, @RequestParam ( "coinType") WalletType coinType)
-{
-	return walletService.walletHistory(userId, coinType);
-}
+	public Object walletHistory(@RequestParam("userId") long userId, @RequestParam("coinName") String coinName) {
+		UserOrder userOrder = walletService.walletHistory(userId, coinName);
+		User user = userRepository.findOneByUserId(userId);
+		if (orderRepository.findByCoinName(coinName) == null) {
+			return "CoinName does not exist";
+
+		} else if (orderRepository.findByUser(user) == null) {
+			return " User does not exist";
+		}
+		return userOrder;
+	}
+
 }

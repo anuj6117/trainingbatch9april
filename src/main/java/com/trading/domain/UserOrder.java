@@ -51,8 +51,8 @@ public class UserOrder {
 
 	private Integer price;
 
-	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-	private Date orderCreatedOn;
+//	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+	private String orderCreatedOn;
 
 	@Enumerated(EnumType.STRING)
 	private TransactionOrderStatus status;
@@ -116,11 +116,11 @@ public class UserOrder {
 		this.price = price;
 	}
 
-	public Date getOrderCreatedOn() {
+	public String getOrderCreatedOn() {
 		return orderCreatedOn;
 	}
 
-	public void setOrderCreatedOn(Date orderCreatedOn) {
+	public void setOrderCreatedOn(String orderCreatedOn) {
 		this.orderCreatedOn = orderCreatedOn;
 	}
 

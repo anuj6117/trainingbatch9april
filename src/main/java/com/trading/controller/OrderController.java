@@ -1,5 +1,6 @@
 package com.trading.controller;
 
+import java.util.List;
 import java.util.Map;
 
 import javax.validation.Valid;
@@ -58,8 +59,13 @@ public class OrderController {
 	}
 
 	@RequestMapping(value = "/getorderbyuserid", method = RequestMethod.GET)
-	public UserOrder getOrder(@Valid @RequestParam("userId") long userId) throws Exception {
-		return orderService.getOrderByUserId(userId);
+	public Object getOrder(@Valid @RequestParam("userId") long userId) throws Exception {
+		List<UserOrder> userOrder = orderService.getOrderByUserId(userId);
+	if(userOrder.isEmpty())
+	{
+		return "Order Id does not exist";
+	}
+	return userOrder;
 	}
 
 	@RequestMapping(value = "/approveorder", method = RequestMethod.POST)

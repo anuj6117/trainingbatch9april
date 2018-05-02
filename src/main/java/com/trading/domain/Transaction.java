@@ -101,6 +101,15 @@ public class Transaction {
 	public long getBuyerId() {
 		return buyerId;
 	}
+	public Integer CoinQuantiy;
+
+	public Integer getCoinQuantiy() {
+		return CoinQuantiy;
+	}
+
+	public void setCoinQuantiy(Integer coinQuantiy) {
+		CoinQuantiy = coinQuantiy;
+	}
 
 	public void setBuyerId(long buyerId) {
 		this.buyerId = buyerId;

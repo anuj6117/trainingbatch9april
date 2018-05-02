@@ -75,7 +75,7 @@ public class WalletService {
 		userOrder.setCoinType(WalletType.FIAT);
 		userOrder.setCoinName(userwalletdto.getCoinName());
 		userOrder.setPrice(userwalletdto.getamount());
-		userOrder.setOrderCreatedOn(new Date());
+		userOrder.setOrderCreatedOn(new Date().toString());
 		userOrder.setStatus(TransactionOrderStatus.PENDING);
 		userOrder.setUser(user);
 		orderRepository.save(userOrder);
@@ -122,7 +122,7 @@ public class WalletService {
 			userOrder.setCoinType(WalletType.FIAT);
 			userOrder.setCoinName(userwalletdto.getCoinName());
 			userOrder.setPrice(userwalletdto.getamount());
-			userOrder.setOrderCreatedOn(new Date());
+			userOrder.setOrderCreatedOn(new Date().toString());
 			userOrder.setStatus(TransactionOrderStatus.PENDING);
 			userOrder.setUser(user);
 			orderRepository.save(userOrder);
@@ -154,7 +154,7 @@ public class WalletService {
 		
 	}
 
-	public Wallet walletHistory(long userId, WalletType coinType)
+	public UserOrder walletHistory(long userId, String coinName)
 	{
 		
 		User user = userRepository.findOneByUserId(userId);
@@ -162,8 +162,8 @@ public class WalletService {
 		{
 			
 		
-		Wallet wallet = walletRepository.findByCoinTypeAndUser(coinType, user);
-		return wallet;
+		UserOrder userorder = orderRepository.findByCoinNameAndUser(coinName, user);
+		return userorder;
 	}
 		else {
 			return null;

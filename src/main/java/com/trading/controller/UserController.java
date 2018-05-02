@@ -1,7 +1,7 @@
 package com.trading.controller;
 
+import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 import javax.validation.Valid;
 
@@ -31,7 +31,7 @@ public class UserController {
 	private UserOtpService userotpService;
 
 	@RequestMapping(value = "/signup", method = RequestMethod.POST)
-	public ResponseEntity<Object> signup(@Valid @RequestBody User user) throws Exception {
+	public ResponseEntity<Object> signup(@RequestBody User user) throws Exception {
 		Map<String, Object> result = null;
 
 		try {
@@ -63,13 +63,21 @@ public class UserController {
 	}
 
 	@RequestMapping(value = "/getallusers", method = RequestMethod.GET)
-	public Iterable<User> getAllUser() throws Exception {
-		return userService.getDetails();
+	public  Object getAllUser() throws Exception {
+		List<User> list =  userService.getDetails();
+		if(list.isEmpty())
+			return "no user  available";
+		return list;
+		
 	}
 
 	@RequestMapping(value = "/getbyuserid", method = RequestMethod.GET)
-	public Optional<User> getByUserId(@Valid @RequestParam("userId") long userId) throws Exception {
-		return userService.getById(userId);
+	public Object getByUserId(@Valid @RequestParam("userId") long userId) throws Exception {
+		
+		User user =(User) userService.getById(userId);
+		if(user==null)
+			return "User Id does not exist";
+		return user;
 	}
 
 	@RequestMapping(value = "/updateuser", method = RequestMethod.POST)
