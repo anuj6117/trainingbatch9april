@@ -26,7 +26,7 @@ public class Wallet {
 	@Enumerated(EnumType.STRING)
 	private WalletType coinType;
 	
-	@Column(unique=true)
+	//@Column(unique=true)
 	private String coinName;
 	long balance;
 	

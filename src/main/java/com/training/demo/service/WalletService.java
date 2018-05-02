@@ -48,8 +48,14 @@ public class WalletService {
 	public String addWallet(UserWalletDto userWalletdto) {
 		System.out.println(userWalletdto.getUserId());
 		User user = userrepository.findByUserId(userWalletdto.getUserId());
-		//walletType =walletRepository.existsByWalletType(userWalletdto.getCoinType());
-		if ((user != null)&&(walletType==null))
+		WalletType w=userWalletdto.getCoinType();
+		String c=userWalletdto.getCoinName();
+		
+		//wallet =walletRepository.findByCoinTypeAndCoinNameAndUser(w,c,user);
+		
+		//if(user.
+		if ((user != null)&&(wallet==null))
+				//&&(walletType==null))
 		{
 			Set<Wallet>walletset=new HashSet<Wallet>();
 			Wallet wallet = new Wallet();
@@ -65,7 +71,7 @@ public class WalletService {
 			return "wallet add sucees";
 
 		} else {
-			return "failed to add new wallet";
+			return "failed to add new wallet, wallet already exist";
 		}
 
 	}
@@ -153,7 +159,7 @@ public class WalletService {
 			wallet.setBalance(longBalance);
 			//wallet.setUser(user);
 			//wallet.setCoinType(userorder.getCoinType());
-			wallet.setCoinName(userorder.getCoinName());
+			//wallet.setCoinName(userorder.getCoinName());
 			wallet.setShadowBalance(longBalance);
 			walletSet.add(wallet);
 			walletRepository.save(wallet);

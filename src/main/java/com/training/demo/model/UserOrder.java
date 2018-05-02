@@ -59,6 +59,10 @@ public class UserOrder {
 		return grossAmmount;
 	}
 
+	public long getFee() {
+		return fee;
+	}
+
 	public void setGrossAmmount(Long grossAmmount) {
 		this.grossAmmount = grossAmmount;
 	}
@@ -73,8 +77,8 @@ public class UserOrder {
 	}
 
 
-	private Integer fee;
-	 public void setFee(Integer fee) {
+	private long fee;
+	 public void setFee(long fee) {
 		this.fee = fee;
 	}
 

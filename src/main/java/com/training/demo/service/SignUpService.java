@@ -4,10 +4,10 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
-import java.util.ListIterator;
 import java.util.Optional;
 import java.util.Random;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,10 +21,11 @@ import com.training.demo.model.OtpVerification;
 import com.training.demo.model.Role;
 import com.training.demo.model.User;
 import com.training.demo.model.Wallet;
-import com.training.demo.repository.UserRepository;
-import com.training.demo.repository.WalletRepository;
 import com.training.demo.repository.OtpRepository;
 import com.training.demo.repository.RoleRepository;
+import com.training.demo.repository.UserRepository;
+import com.training.demo.repository.WalletRepository;
+
 
 @Service
 public class SignUpService {
@@ -46,14 +47,26 @@ public class SignUpService {
 	private RoleRepository roleRepository;
 
 	private OtpVerification otpVerification;
+	
+	private static Pattern pswNamePtrn = 
+			Pattern.compile("((?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%]).{8,32})");
+	
 
 	public String addUser(User user) {
 		Role roles = roleRepository.findByRoleId(1);
 		HashSet<Role> hashSet = new HashSet();
 		boolean b = hashSet.add(roles);
+		
 		boolean flag = userRepository.existsByEmail(user.getEmail());
 		boolean phone=userRepository.existsByPhoneNo(user.getPhoneNo());
 		// )&&(userRepository.existByPhoneNo(user.getPhoneNo())));
+		
+		 String pass=user.getPassword();
+	       java.util.regex.Matcher mtch = pswNamePtrn.matcher(pass);
+	       if(!mtch.matches())
+	       {
+	    	   return "Password Must Contains one Uppercase Alphabet,one lower case ,on dgigt, one special symbol";
+	       }
 		if (flag == false) {
 			if(phone==false)
 			{
@@ -82,7 +95,7 @@ public class SignUpService {
 			Set<Wallet> wallet = new HashSet<Wallet>();
 			Wallet userwallet = new Wallet();
 			userwallet.setCoinType(WalletType.FIAT);
-			//userwallet.setCoinName("inr");
+			userwallet.setCoinName("inr");
 			userwallet.setUser(existingUser);
 			wallet.add(userwallet);
 			walletRepository.save(userwallet);

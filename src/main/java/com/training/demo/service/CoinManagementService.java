@@ -13,8 +13,9 @@ public class CoinManagementService {
 	private CoinManagementRepository coinManagementRepository;
 
 	public String addAllCoin(CoinManagement data) {
+		// String s=coinManagementRepository.save(data);
 
-		if (coinManagementRepository.save(data) != null) {
+		if ( coinManagementRepository.save(data) != null) {
 			return "Coin Added Successfully";
 		} else {
 			return "Not Added Successfully";

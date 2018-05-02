@@ -20,15 +20,49 @@ public class CoinManagementController {
 	private CoinManagementService coinManagementService;
 	@Autowired
 	private CoinManagementRepository coinmanagementrepository;
+	
+	
+	CoinManagement coinmanagement;
+	CoinManagement coin;
+
 
 	@RequestMapping(value = "/addcurrency", method = RequestMethod.POST)
 	public String addCoin(@RequestBody CoinManagement data) {
-		String result = coinManagementService.addAllCoin(data);
+	//	String result = coinManagementService.addAllCoin(data);
+		String sm=data.getSymbol();
+		coinmanagement=coinmanagementrepository.findByCoinName(data.getCoinName());
+		coin=coinmanagementrepository.findBySymbol(data.getSymbol());
 		String s=data.getCoinName();
+		//String sm=data.getSymbol();
+		int sml=sm.length();
 		int l=s.length();
+		double d=data.getInitialSupply();
+		int t=data.getPrice();
+		int sk = String.valueOf(t).length();
+		 // int b=sk.length();
 
-		if ((result != null)&&(s!=null)) {
-			return "From controller coin added";
+		if (l>0) {
+			
+			if(sml==0)
+			{
+				return "Symbol cant be null";
+				
+				
+			}
+			if(sk==0)
+			{
+				return "price can not be null";
+			}
+			if((coinmanagement!=null)&&(coin!=null))
+			{
+				return"coin or symbol already exist";
+			}
+			
+			
+			String result = coinManagementService.addAllCoin(data);
+			
+			
+			return "success";
 		} else {
 			return "coin name can not be null ";
 		}

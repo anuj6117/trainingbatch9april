@@ -30,7 +30,7 @@ public class SignUpController {
 	@RequestMapping(value = "/signup", method = RequestMethod.POST)
 	public String insertUser(@RequestBody User user) {
 		String password = user.getPassword().trim();
-		String username = user.getuserName();
+		String username = user.getuserName().trim();
 		// String upperCaseChars = "(.*[A-Z].*)";
 		// String lowerCaseChars = "(.*[a-z].*)";
 
@@ -48,7 +48,7 @@ public class SignUpController {
 			}
 
 			else {
-				return "user can not be null";
+				return "user can not be null and maximum charector allowed for this field 25";
 			}
 		}
 
@@ -68,7 +68,7 @@ public class SignUpController {
 		}
 	}
 
-	@RequestMapping(value = "/getallUsers", method = RequestMethod.GET)
+	@RequestMapping(value = "/getallusers", method = RequestMethod.GET)
 	public List<User> getAll() {
 		return signUpService.getAllUsers();
 	}

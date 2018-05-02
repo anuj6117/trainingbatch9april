@@ -10,7 +10,15 @@ public interface WalletRepository extends JpaRepository<Wallet, Long> {
 
 	Wallet findByCoinType(WalletType getCoinType);
 
-	Wallet findByCoinTypeAndCoinNameAndUser(WalletType walletType, String coinName, User user);
+	Wallet findByCoinTypeAndCoinNameAndUser(WalletType coinType, String coinName, User user);
+	//Wallet findByCoinTypeAndCoinNameAndUser(WalletType coinType, String coinName, User user);
+
+	Wallet findBycoinNameAndUser(String coinName, User user);
+
+	Wallet findBycoinTypeAndUser(WalletType fiat, User user);
+
+
+	//Wallet findByUser(User user, WalletType fiat);
 	
 	
 	             // WalletType existsByWalletType(WalletType walletType);

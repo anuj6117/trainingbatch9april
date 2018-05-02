@@ -2,6 +2,8 @@ package com.training.demo.model;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -14,25 +16,54 @@ public class CoinManagement {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	private Long coinId;
+	private Integer coinId;
+	
+	public void setCoinId(Integer coinId) {
+		this.coinId = coinId;
+	}
+
+	@Enumerated(EnumType.STRING)
 	private WalletType coinType;
 	//@NotNull(message = "coinName not null")
 	private String coinName;
-	@Column(unique = true)
-	@NotNull(message = "symbol not null")
+	//@Column(unique = true)
+	//@NotNull(message = "symbol not null")
 	private String symbol;
-	//@NotNull(message = "can not be null")
-	private Double initialSupply;
-	//@NotNull(message = "price not null")
+	@NotNull(message = "can not be null")
+	private long initialSupply;
+	
+	public long getInitialSupply() {
+		return initialSupply;
+	}
+
+
+	public void setInitialSupply(long initialSupply) {
+		this.initialSupply = initialSupply;
+	}
+
+	@NotNull(message = "price not null")
 	private Integer price;
-	private Integer fee;
-	private Long INRconversion;
+	private long fee;
+	
+
+	
+	private Integer INRconversion;
+	public Integer getINRconversion() {
+		return INRconversion;
+	}
+
+
+	public void setINRconversion(Integer iNRconversion) {
+		INRconversion = iNRconversion;
+	}
+
 	private Long profit;
 
 	public Long getProfit() {
 		return profit;
 	}
 
+	
 	public void setProfit(Long profit) {
 		this.profit = profit;
 	}
@@ -45,29 +76,23 @@ public class CoinManagement {
 		this.coinType = coinType;
 	}
 
-	public Integer getFee() {
+	public long getFee() {
 		return fee;
 	}
 
-	public void setFee(Integer fee) {
+	public void setFee(long fee) {
 		this.fee = fee;
 	}
 
-	public Long getINRconversion() {
-		return INRconversion;
-	}
 
-	public void setINRconversion(Long iNRconversion) {
-		INRconversion = iNRconversion;
-	}
+	
+	
 
-	public Long getCoinId() {
+	public Integer getCoinId() {
 		return coinId;
 	}
+	
 
-	public void setCoinId(Long coinId) {
-		this.coinId = coinId;
-	}
 
 	public String getCoinName() {
 		return coinName;
@@ -85,14 +110,7 @@ public class CoinManagement {
 		this.symbol = symbol;
 	}
 
-	public Double getInitialSupply() {
-		return initialSupply;
-	}
-
-	public void setInitialSupply(Double initialSupply) {
-		this.initialSupply = initialSupply;
-	}
-
+	
 	public Integer getPrice() {
 		return price;
 	}

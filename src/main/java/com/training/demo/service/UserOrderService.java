@@ -11,13 +11,15 @@ import org.springframework.stereotype.Service;
 import com.training.demo.dto.UserOrderDto;
 import com.training.demo.enums.OrderType;
 import com.training.demo.enums.UserOrderStatus;
+import com.training.demo.enums.WalletType;
 import com.training.demo.model.CoinManagement;
 import com.training.demo.model.User;
 import com.training.demo.model.UserOrder;
+import com.training.demo.model.Wallet;
 import com.training.demo.repository.CoinManagementRepository;
 import com.training.demo.repository.UserOrderRepository;
 import com.training.demo.repository.UserRepository;
-
+import com.training.demo.repository.WalletRepository;
 
 import ch.qos.logback.core.status.Status;
 
@@ -29,8 +31,11 @@ public class UserOrderService {
 	private UserRepository userRepository;
 	@Autowired
 	private CoinManagementRepository currencyRepository;
+	@Autowired
+	private WalletRepository walletRepository;
 	
 	User user;
+	//@Autowired
 	CoinManagement currency;
 	Long netAmount;
 	Long grossAmount;
@@ -60,13 +65,30 @@ public class UserOrderService {
 	public String createBuyOrder(UserOrderDto userOrderDto) {
 		// TODO Auto-generated method stub
 	    user = userRepository.findByUserId(userOrderDto.getUserId());
-	    currency = currencyRepository.findByCoinName(userOrderDto.getCoinName());
+	    try {
+	    currency = currencyRepository.findOneByCoinName(userOrderDto.getCoinName());
+	    }
+	    catch(Exception e) {
+	    	e.printStackTrace();
+	    	return "currency not exist";
+	    	
+	    }
+	  // int  fees=currency.getFee();
+	  // long cal=userOrderDto.getCoinQuantity()* userOrderDto.getPrice();
+	    //long calc=(cal*fees)/100;
+	    //long gross=calc+cal;
+	    //Wallet wallet=walletRepository.findByUser(user,WalletType.FIAT);
+	    
+	    //double l=wallet.getShadowBalance();
+	    //if(l>=gross) {
+	    
 	    UserOrder  userOrder = new UserOrder();
 	    if(user != null) {
 		userOrder.setOrderType(OrderType.BUYER);
 		userOrder.setCoinName(userOrderDto.getCoinName());
 		userOrder.setCoinType(userOrderDto.getCoinType());
 		userOrder.setCoinQuantity(userOrderDto.getCoinQuantity());
+		System.out.println("++++++++++++++++++++++++++++++++++++"+currency.getFee());
 		userOrder.setFee(currency.getFee());
 		userOrder.setPrice(userOrderDto.getPrice());
 		netAmount = (userOrderDto.getCoinQuantity() * userOrderDto.getPrice());
@@ -80,15 +102,24 @@ public class UserOrderService {
 		userOrderRepository.save(userOrder);
 		return "success";
 	    }
-	    else 
+	
+	    
+	    else {
 	    	return "failed";
 	}
+	}
+	  //  }
+	  //  else
+	   // {
+	    	//return"insufficient balence";
+	   // }
+	
 	    
 
 	public String createSellOrder(UserOrderDto userOrderDto) {
 		// TODO Auto-generated method stub
 		user = userRepository.findByUserId(userOrderDto.getUserId());
-		com.training.demo.model.UserOrder  userOrder = new UserOrder();
+		UserOrder  userOrder = new UserOrder();
 		if(user != null) {
 		userOrder.setOrderType(OrderType.SELLER);
 		userOrder.setCoinName(userOrderDto.getCoinName());
