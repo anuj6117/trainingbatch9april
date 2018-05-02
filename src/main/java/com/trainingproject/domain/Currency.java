@@ -6,6 +6,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import com.trainingproject.enums.CoinType;
+
 @Entity
 @Table(name="Currency")
 public class Currency {
@@ -14,19 +16,28 @@ public class Currency {
 	private Integer coinId;
     
 	private String coinName;
+	private CoinType coinType;
 	private String symbol;
 	private Integer initialSupply;
 	private Integer price; 
-	private long fees; 
+	private long fee; 
 	private Integer profit; 
 	private Integer coinInINR; 
 	
 	public Currency () {
 		coinInINR=0;
 		profit=0;
-		fees=0;
+		fee=0;
 	}
 	
+	public CoinType getCoinType() {
+		return coinType;
+	}
+
+	public void setCoinType(CoinType coinType) {
+		this.coinType = coinType;
+	}
+
 	public Integer getCoinId() {
 		return coinId;
 	}
@@ -39,11 +50,11 @@ public class Currency {
 	public void setInitialSupply(Integer initialsupply) {
 		this.initialSupply = initialsupply;
 	}
-	public long getFees() {
-		return fees;
+	public long getFee() {
+		return fee;
 	}
-	public void setFees(long fees) {
-		this.fees = fees;
+	public void setFee(long fee) {
+		this.fee = fee;
 	}
 	public Integer getProfit() {
 		return profit;

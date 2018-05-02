@@ -58,7 +58,7 @@ public class UserOrderService {
 	    	 return "0 quantity to buy";
 		
 		Integer totamount=bsb.getCoinQuantity()*bsb.getPrice();
-		long fee=currencyRepository.findBycoinName(bsb.getCoinName()).getFees();
+		long fee=currencyRepository.findBycoinName(bsb.getCoinName()).getFee();
 		long gross=(totamount*fee)/100+totamount;
 		Wallet buyerWallet=walletRepository.findBycoinTypeAndUser(CoinType.FIAT, user);
 		

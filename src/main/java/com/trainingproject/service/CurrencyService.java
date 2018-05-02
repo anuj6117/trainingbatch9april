@@ -19,6 +19,8 @@ public class CurrencyService {
 	public String addCurrency(Currency cur) {
 		if(cur.getCoinName()==null||cur.getCoinName().length()==0)
 			return "coin name cannot be null";
+		if(cur.getCoinType()==null)
+			return "coin type cannot be null";
 		if(cur.getSymbol()==null)
 			return "symbol cannot be null";
 		if(cur.getInitialSupply()==null)
@@ -29,8 +31,9 @@ public class CurrencyService {
 			return "coin name already exists!";
 		if(currencyRepository.findBysymbol(cur.getSymbol())!=null)
 			return "symbol already exists!";
-		cur.setFees(cur.getFees());
+		cur.setFee(cur.getFee());
 		cur.setCoinInINR(cur.getCoinInINR());
+		
 		currencyRepository.save(cur);
 		return "success";
 	}
@@ -57,7 +60,7 @@ public class CurrencyService {
 		
 		 Currency currency=currencyRepository.findBycoinName(cur.getCoinName());
 		  currency.setInitialSupply(currency.getInitialSupply()+cur.getInitialSupply());
-		  currency.setFees(cur.getFees());
+		  currency.setFee(cur.getFee());
 		  currency.setSymbol(cur.getSymbol());
 		  currency.setCoinName(cur.getCoinName());
 		 currencyRepository.save(currency);

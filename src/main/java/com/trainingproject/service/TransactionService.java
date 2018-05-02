@@ -80,7 +80,7 @@ public class TransactionService implements Comparator<UserOrder> {
 	            	
 	    		 
 	    		 //check if buyer has that kind of money or not for purchasing
-	    		 long fees=currencyRepository.findBycoinName(coinName).getFees();
+	    		 long fees=currencyRepository.findBycoinName(coinName).getFee();
 					long totprice= (buyers.get(i).getPrice()*coinBuyed);
 					Integer fee=(int) ((fees*totprice)/100);
 					long grossAmount=totprice+fee;
@@ -93,6 +93,7 @@ public class TransactionService implements Comparator<UserOrder> {
 		            	
 		            	
 		            	trans.setBuyer(buyers.get(i).getUser().getUserId());
+		            	
 						trans.setSeller(admin.getId());
 						trans.setFee(fees);
 						trans.setDate(new Date());
@@ -128,8 +129,9 @@ public class TransactionService implements Comparator<UserOrder> {
 							trans.setRemarks("no match");
 						    transactionRepository.save(trans);
 						    
-		            		 buyers.get(i).setOrderStatus(UserOrderStatus.PENDING);
-							    orderRepository.save(buyers.get(i));
+						    buyers.get(i).setCoinQuantity(coinBuyed);
+		            		buyers.get(i).setOrderStatus(UserOrderStatus.PENDING);
+							 orderRepository.save(buyers.get(i));
 							    break;
 							    
 		            	}
@@ -152,7 +154,7 @@ public class TransactionService implements Comparator<UserOrder> {
 						trans.setAmount(totprice);
 						trans.setGrossAmount(grossAmount);
 						trans.setRemarks("done");
-						trans.setExchangeRate(admin.getPrice());
+						trans.setExchangeRate(buyers.get(i).getPrice());
 					    transactionRepository.save(trans);
 						
 					    Wallet buyerwallet=walletRepository.findBycoinNameAndUser(coinName, buyers.get(i).getUser());
@@ -230,25 +232,25 @@ public class TransactionService implements Comparator<UserOrder> {
 						
 						if(coinBuyed<0) {
 							coinBuyed=bcq;
-							scq=scq-coinBuyed;
+							scq=sellerWallet.getCoinQuantity()-coinBuyed;
 							 buyer.setOrderStatus(UserOrderStatus.APPROVED);
 							 seller.setOrderStatus(UserOrderStatus.PENDING);
 						
 						}
 						else {
 							coinBuyed=scq;
-							scq=0;
+							
 							if(bcq-scq==0) {
 							 buyer.setOrderStatus(UserOrderStatus.APPROVED);
 							}
 							else {
 								buyer.setOrderStatus(UserOrderStatus.PENDING);
 							}
-							
+							scq=sellerWallet.getCoinQuantity()-scq;;
 							 seller.setOrderStatus(UserOrderStatus.APPROVED);
 							
 						}
-						long fees=currencyRepository.findBycoinName(coinName).getFees();
+						long fees=currencyRepository.findBycoinName(coinName).getFee();
 						long totprice= (buyers.get(i).getPrice()*coinBuyed);
 						Integer fee=(int) ((fees*totprice)/100);
 						long grossAmount=totprice+fee;
@@ -306,8 +308,9 @@ public class TransactionService implements Comparator<UserOrder> {
 			            sellerWallet.setBalance(scq);
 			            sellerWallet.setShadowBal(scq);
 			            sellerWallet.setCoinQuantity(scq);
-			            
-						seller.setCoinQuantity(scq);
+			            if(seller.getCoinQuantity()-coinBuyed>=0)
+						seller.setCoinQuantity(seller.getCoinQuantity()-coinBuyed);
+			            else seller.setCoinQuantity(0);
 						buyerFiatwallet.setBalance(buyerFiatwallet.getBalance()-grossAmount);
 						buyerFiatwallet.setShadowBal(buyerFiatwallet.getShadowBal()-grossAmount);
 					
@@ -315,9 +318,7 @@ public class TransactionService implements Comparator<UserOrder> {
 						walletRepository.save(buyerFiatwallet);
 						walletRepository.save(sellerFiatWallet);
 						
-						
-						
-						 
+					
 			            //approve transaction
 			            
 			            long sellerprice= (seller.getPrice()*coinBuyed);
@@ -339,7 +340,7 @@ public class TransactionService implements Comparator<UserOrder> {
 					    transactionRepository.save(trans);
 					    buyer.setGrossAmount(grossAmount);
 					    buyer.setCoinQuantity(buyer.getCoinQuantity()-coinBuyed);
-					  
+					    
 					    seller.setCoinQuantity(scq);
 					    seller.setGrossAmount(sellerprice);
 					  
@@ -384,7 +385,7 @@ public class TransactionService implements Comparator<UserOrder> {
     	
 	 
 	 //check if buyer has that kind of money or not for purchasing
-	 long fees=currencyRepository.findBycoinName(coinName).getFees();
+	 long fees=currencyRepository.findBycoinName(coinName).getFee();
 		long totprice= (buyer.getPrice()*coinBuyed);
 		Integer fee=(int) ((fees*totprice)/100);
 		long grossAmount=totprice+fee;
@@ -497,6 +498,11 @@ public class TransactionService implements Comparator<UserOrder> {
 		return (int) (o1.getPrice()-o2.getPrice());
 		
 		else return o1.getDate().compareTo(o2.getDate());
+		
+	}
+
+	public  List<Transaction> getAllTransaction() {
+		return transactionRepository.findAll();
 		
 	}
 

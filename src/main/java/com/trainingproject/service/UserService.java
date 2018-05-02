@@ -68,7 +68,7 @@ public class UserService {
 	     if(user.getUserName().charAt(user.getUserName().length()-1)==' ')
 	    	 return "your name cannot have space";
 	     
-	     p = Pattern.compile("(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#!*()$%^&+=])(?=\\S+$).{8,}$");
+	     p = Pattern.compile("(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#/|()~`!$%^&+=])(?=\\S+$).{8,}$");
 		 m = p.matcher(user.getPassword());
     
 		 if(!m.find())
@@ -239,7 +239,10 @@ public class UserService {
 	      
 		Role roleobj=roleRepository.findByroleType(arb.getRoleType());
 		List<Role> role=new ArrayList<Role>();
+		
+		role=user.getRoleType();
 		role.add(roleobj);
+		
 		user.setRoleType(role);
 		userRepository.save(user);
 		return "success";
