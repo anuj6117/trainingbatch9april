@@ -20,6 +20,8 @@ public class WalletController {
 	public String addWallet(@RequestBody WalletDto walletDto) {
 		System.out.println("from wallet controller");
 		if (walletDto != null) {
+			System.out.println(walletDto.getCoinName()+"/t"+walletDto.getWalletType()+"/t"+walletDto.getUserId());
+			System.out.println("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");;
 			return walletService.addWallet(walletDto);
 		} else {
 			return "Insufficient information to create wallet.";

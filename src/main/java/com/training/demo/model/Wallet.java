@@ -1,7 +1,5 @@
 package com.training.demo.model;
 
-import java.util.List;
-
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -41,12 +39,20 @@ public class Wallet {
 	
 	public Wallet() {
 		super();
+		balance = 0d;
+		shadowBalance = 0d;
 	}
-		
-	public Wallet(Integer walletId, String walletType) {	
+	
+
+	public Wallet(Integer walletId, WalletType walletType, Double balance, Double shadowBalance, String coinName,
+			User user) {
 		super();
 		this.walletId = walletId;
-		this.walletType = WalletType.valueOf(walletType);
+		this.walletType = walletType;
+		this.balance = balance;
+		this.shadowBalance = shadowBalance;
+		this.coinName = coinName;
+		this.user = user;
 	}
 
 	public Integer getWalletId() {

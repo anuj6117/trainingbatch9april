@@ -11,11 +11,16 @@ public class WalletDto {
 	public WalletDto() {
 		super();
 	}
-	public WalletDto(Integer userId, String walletType) {
+
+	
+	public WalletDto(Integer userId, String walletType, String coinName) {
 		super();
 		this.userId = userId;
 		this.walletType = walletType;
+		this.coinName = coinName;
 	}
+
+
 	public Integer getUserId() {
 		return userId;
 	}

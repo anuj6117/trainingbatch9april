@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.training.demo.dto.OrderDto;
-import com.training.demo.dto.UserTransactionDto;
 import com.training.demo.dto.WalletDto;
 import com.training.demo.enums.OrderStatus;
 import com.training.demo.enums.OrderType;
@@ -16,6 +15,7 @@ import com.training.demo.enums.WalletType;
 import com.training.demo.model.OrderTable;
 import com.training.demo.model.User;
 import com.training.demo.model.Wallet;
+import com.training.demo.repository.CoinManagementRepository;
 import com.training.demo.repository.OrderRepository;
 import com.training.demo.repository.UserRepository;
 import com.training.demo.repository.WalletRepository;
@@ -32,9 +32,22 @@ public class WalletService {
 	@Autowired
 	private OrderRepository orderRepository;
 	
+	@Autowired
+	private CoinManagementRepository coinRepository;
+	
 	public String addWallet(WalletDto walletDto) {
 		boolean flag = false;
 		User user;
+		System.out.println(walletDto.getCoinName()+", \t"+walletDto.getUserId()+",\t"+walletDto.getWalletType());
+		
+		//walletDto.getWalletType().toUpperCase();
+		
+		
+		if(!(walletDto.getWalletType().equalsIgnoreCase(WalletType.CRYPTO.toString())))
+		{
+			return "invalid wallet type.";
+		}	
+		
 		try
 		{
 		user = userRepository.findByUserId(walletDto.getUserId());
@@ -43,6 +56,20 @@ public class WalletService {
 		{
 			return "user does not exist.";
 		}
+		
+		String tempCoinName = walletDto.getCoinName();
+		
+		if(tempCoinName == null || tempCoinName.equals(""))
+		{
+			return "please enter coin name.";
+		}
+		
+		boolean tflag = coinRepository.existsByCoinName(tempCoinName);
+			if(!tflag)
+			{
+				return "invalid coin name";
+			}
+			
 		if(user.getUserStatus().equals(UserStatus.ACTIVE))
 		{
 		Set<Wallet> walletSet = user.getWallets();
@@ -50,9 +77,14 @@ public class WalletService {
 		while(walletIterator.hasNext())
 		{
 			Wallet tempwallet = walletIterator.next();
-			if(tempwallet.getWalletType().equals(walletDto.getWalletType()) && tempwallet.getCoinName().equals(walletDto.getCoinName()))
+				System.out.println(tempwallet.getCoinName()+",\t"+tempwallet.getWalletType()+",\t"+tempwallet.getWalletId()+",\t"+tempwallet.getUser());
+			if(tempwallet.getCoinName() != null)	
 			{
-				flag = true;
+				if(tempwallet.getWalletType().equals(walletDto.getWalletType()) && (tempwallet.getCoinName().equals(walletDto.getCoinName())))
+				{
+					System.out.println(tempwallet);
+					flag = true;
+				}
 			}
 		}
 		if(!flag)
