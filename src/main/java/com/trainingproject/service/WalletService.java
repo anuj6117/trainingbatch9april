@@ -44,6 +44,7 @@ public class WalletService {
 		
 		
 		UserOrder userorder=userorderService.getUserOrderById(awb.getOrderId());
+		
 		if(userorder.getOrderStatus()==UserOrderStatus.APPROVED)
 			return "already approved";
 		//userorder.setOrderType(OrderType.DEPOSIT);
@@ -100,9 +101,9 @@ public class WalletService {
 		
 	}
 	
-	public Wallet walletHistory(Integer userId,CoinType coinType) {
+	public UserOrder walletHistory(Integer userId,CoinType coinType) {
 		
-		return walletRepository.findBycoinTypeAndUser(coinType, userService.getUserById(userId).get());
+		return userorderRepository.findBycoinTypeAndUser(coinType, userService.getUserById(userId).get());
 		
 	}
 }

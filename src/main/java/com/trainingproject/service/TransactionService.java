@@ -56,7 +56,11 @@ public class TransactionService implements Comparator<UserOrder> {
 	    			 break;
 	    		 }
 	    		 
-	    		// buyFromAdmin(admin,buyers.get(i));
+	    		 if(admin.getInitialSupply()==0) {
+	    				//admin dont have the currency to sell
+	    			 buyers.get(i).setOrderStatus(UserOrderStatus.PENDING);
+	    				return "no match";
+	    			}
 	    		 
 	    		
 	    		 Integer coinBuyed=buyers.get(i).getCoinQuantity()-admin.getInitialSupply();
@@ -106,8 +110,31 @@ public class TransactionService implements Comparator<UserOrder> {
 		            	break;
 		       
 		            }
-		            else {
+		            else { 
+		            	
+		            	//check if admins selling price is lower than buying price of buyer
+		            	if(buyers.get(i).getPrice()<admin.getPrice()) {
+		            		//order will be pending
+		            		
+		            		trans.setBuyer(buyers.get(i).getUser().getUserId());
+							trans.setSeller(admin.getId());
+							trans.setFee(fees);
+							trans.setDate(new Date());
+							trans.setCoinName(coinName);
+							trans.setCoinType(buyers.get(i).getCoinType());
+							trans.setStatus(TransactionStatus.FAILED);
+							trans.setAmount(totprice);
+							trans.setGrossAmount(grossAmount);
+							trans.setRemarks("no match");
+						    transactionRepository.save(trans);
+						    
+		            		 buyers.get(i).setOrderStatus(UserOrderStatus.PENDING);
+							    orderRepository.save(buyers.get(i));
+							    break;
+							    
+		            	}
 		            	//approve transaction
+		            	
 		            	
 		            	//update admin currency 
 		            	long adminprice= (admin.getPrice()*coinBuyed);
@@ -125,6 +152,7 @@ public class TransactionService implements Comparator<UserOrder> {
 						trans.setAmount(totprice);
 						trans.setGrossAmount(grossAmount);
 						trans.setRemarks("done");
+						trans.setExchangeRate(admin.getPrice());
 					    transactionRepository.save(trans);
 						
 					    Wallet buyerwallet=walletRepository.findBycoinNameAndUser(coinName, buyers.get(i).getUser());
@@ -189,6 +217,10 @@ public class TransactionService implements Comparator<UserOrder> {
 							 buyFromAdmin(admin,buyer);
 							 continue;
 						 }
+						 if(seller.getPrice()>buyer.getPrice()) {
+							 
+							 continue;
+						 }
 						 Wallet sellerFiatWallet=walletRepository.findBycoinTypeAndUser(CoinType.FIAT, seller.getUser());
 						 Wallet sellerWallet=walletRepository.findBycoinNameAndUser(coinName, seller.getUser());
 						 
@@ -237,6 +269,7 @@ public class TransactionService implements Comparator<UserOrder> {
 							trans.setStatus(TransactionStatus.FAILED);
 							trans.setAmount(totprice);
 							trans.setGrossAmount(grossAmount);
+							trans.setExchangeRate(buyer.getPrice());
 							trans.setRemarks("insufficient funds");
 						    transactionRepository.save(trans);
 							
@@ -301,11 +334,15 @@ public class TransactionService implements Comparator<UserOrder> {
 						trans.setStatus(TransactionStatus.APPROVED);
 						trans.setAmount(totprice);
 						trans.setGrossAmount(grossAmount);
+						trans.setExchangeRate(buyer.getPrice());
 						trans.setRemarks("done");
 					    transactionRepository.save(trans);
-						
+					    buyer.setGrossAmount(grossAmount);
 					    buyer.setCoinQuantity(buyer.getCoinQuantity()-coinBuyed);
+					  
 					    seller.setCoinQuantity(scq);
+					    seller.setGrossAmount(sellerprice);
+					  
 					    orderRepository.save(buyer);
 					    orderRepository.save(seller);
 						
@@ -321,8 +358,16 @@ public class TransactionService implements Comparator<UserOrder> {
 	private String  buyFromAdmin(Currency admin, UserOrder buyer) {
 		
 		
+		
+		
 		String coinName=buyer.getCoinName();
 		Integer coinBuyed=buyer.getCoinQuantity()-admin.getInitialSupply();
+		
+		if(admin.getInitialSupply()==0) {
+			//admin dont have the currency to sell
+			 buyer.setOrderStatus(UserOrderStatus.PENDING);
+			return "no match";
+		}
     	
     	if(coinBuyed<=0) {
     		//all coins will be buyed
@@ -361,6 +406,7 @@ public class TransactionService implements Comparator<UserOrder> {
 			trans.setAmount(totprice);
 			trans.setGrossAmount(grossAmount);
 			trans.setRemarks("insufficient funds");
+			trans.setExchangeRate(admin.getPrice());
 		    transactionRepository.save(trans);
 			
 		    buyer.setOrderStatus(UserOrderStatus.FAILED);
@@ -369,6 +415,29 @@ public class TransactionService implements Comparator<UserOrder> {
    
         }
         else {
+        	
+        	if(buyer.getPrice()<admin.getPrice()) {
+        		//order will be pending
+        		
+        		trans.setBuyer(buyer.getUser().getUserId());
+				trans.setSeller(admin.getId());
+				trans.setFee(fees);
+				trans.setDate(new Date());
+				trans.setCoinName(coinName);
+				trans.setCoinType(buyer.getCoinType());
+				trans.setStatus(TransactionStatus.FAILED);
+				trans.setAmount(totprice);
+				trans.setGrossAmount(grossAmount);
+				trans.setRemarks("no match");
+			    transactionRepository.save(trans);
+			    buyer.setGrossAmount(grossAmount);
+			    buyer.setOrderStatus(UserOrderStatus.PENDING);
+				    orderRepository.save(buyer);
+				   
+				    return "no match found";
+        	}
+        	
+        	
         	//approve transaction
         	
         	//update admin currency 
@@ -410,7 +479,7 @@ public class TransactionService implements Comparator<UserOrder> {
 		    }
 		    walletRepository.save(buyerwallet);
 		   
-		    
+		    buyer.setGrossAmount(grossAmount);
 		    orderRepository.save(buyer);
 			
 			

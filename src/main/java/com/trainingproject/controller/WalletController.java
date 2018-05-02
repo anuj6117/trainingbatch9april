@@ -1,7 +1,5 @@
 package com.trainingproject.controller;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -9,11 +7,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.trainingproject.domain.UserOrder;
 import com.trainingproject.domain.Wallet;
-import com.trainingproject.domain.WalletHistory;
 import com.trainingproject.dto.ApproveWalletBean;
 import com.trainingproject.enums.CoinType;
-import com.trainingproject.service.WalletHistoryService;
 import com.trainingproject.service.WalletService;
 
 @RestController
@@ -38,7 +35,7 @@ public class WalletController {
 	}
 	
 	@RequestMapping(value="walletHistory",method=RequestMethod.GET)
-	public Wallet walletHistory(@RequestParam Integer userId,CoinType coinType) {
+	public UserOrder walletHistory(@RequestParam Integer userId,CoinType coinType) {
 		
 		 return  walletService.walletHistory(userId,coinType);
 	}
