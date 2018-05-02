@@ -19,8 +19,10 @@ import com.example.demo.enums.OrderStatus;
 import com.example.demo.enums.OrderType;
 import com.example.demo.model.User;
 import com.example.demo.model.Wallet;
+import com.example.demo.model.CoinManagement;
 import com.example.demo.model.Order;
 import com.example.demo.model.Transaction;
+import com.example.demo.repository.CoinManagementRepository;
 import com.example.demo.repository.OrderRepository;
 import com.example.demo.repository.TransactionRepository;
 import com.example.demo.repository.UserRepository;
@@ -32,15 +34,15 @@ public class OrderService {
 	@Autowired
 	private UserRepository userRepository;
 	@Autowired
-	WalletRepository walletRepository;
-	
+	private WalletRepository walletRepository;
+	@Autowired
+	private CoinManagementRepository coinManagementRepository;
 	@Autowired
 	private TransactionRepository transactionRepository;
-	
 	@Autowired
-	private OrderRepository orderRepository;
+	private OrderRepository orderRepository;	
 	
-	private Order orderTable = new Order();
+	private Wallet wallet = null;
 
 	public Map<String, Object> approveDeposit(DepositAmountApprovalDTO depositAmountApprovalDTO) 
 	{
@@ -91,94 +93,129 @@ public class OrderService {
 		}	
 	}
 	
-	public Map<String, Object> buyOrder(OrderDTO orderDTO) {
-		Map<String, Object> result = new HashMap<String, Object>();
-		
-		User user=userRepository.findByUserId(orderDTO.getUserId());
-		
-		if(user.getWallets().contains(WalletType.CRYPTO))
-		{
-			Order userOrder=new Order();
-			userOrder.setUser(user);
-			userOrder.setCoinName(orderDTO.getCoinName());
-			userOrder.setCoinType(WalletType.CRYPTO);
-			userOrder.setOrderStatus(OrderStatus.PENDING);
-			userOrder.setTransactionType(TransactionType.BUYER);
-			userOrder.setCoinQuantity(orderDTO.getCoinQuantity());
-			userOrder.setFee(orderDTO.getFee());
-			userOrder.setPrice(orderDTO.getPrice());
-			userOrder.setDateCreated(new Date());
-			orderRepository.save(userOrder);
-			
-			result.put("isSuccess", true);
-			result.put("message", "Order is in pending status and has to be approved by admin.");
-			return result;	
-		}
-		if(!(user.getWallets().contains(WalletType.CRYPTO)))
-		{
-			Wallet wallet = new Wallet();
-			wallet.setWalletType(WalletType.CRYPTO);
-			wallet.setBalance(0.0);
-			wallet.setShadowBalance(0.0);
-			wallet.setCoinName(orderDTO.getCoinName());
-			wallet.setUser(user);
-			walletRepository.save(wallet);
-			
-			Order userOrder=new Order();
-			userOrder.setUser(user);
-			userOrder.setCoinName(orderDTO.getCoinName());
-			userOrder.setCoinType(WalletType.CRYPTO);
-			userOrder.setOrderStatus(OrderStatus.PENDING);
-			userOrder.setTransactionType(TransactionType.BUYER);
-			userOrder.setCoinQuantity(orderDTO.getCoinQuantity());
-			userOrder.setPrice(orderDTO.getPrice());
-			userOrder.setDateCreated(new Date());
-			orderRepository.save(userOrder);
-			
-			result.put("isSuccess", true);
-			result.put("message", "Order is in pending status and has to be approved by admin.");
-			return result;
-		}
-		else
-		{
-			result.put("isSuccess", false);
-			result.put("message", "order not completed.");
-			return result;
-		}	
-	}
-	
-	public Map<String, Object> sellOrder(OrderDTO orderDTO) 
+	public String buyOrder(OrderDTO orderDTO) 
 	{
-		Map<String, Object> result = new HashMap<String, Object>();
-		
-		User user=userRepository.findByUserId(orderDTO.getUserId());
-		if(user != null)
+		boolean flag = false;
+		if(orderDTO.getUserId() == null)
 		{
-			Order sellUserOrder=new Order();
-			sellUserOrder.setUser(user);
-			sellUserOrder.setCoinName(orderDTO.getCoinName());
-			sellUserOrder.setCoinType(WalletType.CRYPTO);
-			sellUserOrder.setOrderStatus(OrderStatus.PENDING);
-			sellUserOrder.setTransactionType(TransactionType.SELLER);
-			sellUserOrder.setCoinQuantity(orderDTO.getCoinQuantity());
-			sellUserOrder.setPrice(orderDTO.getPrice());
-			sellUserOrder.setDateCreated(new Date());
-			orderRepository.save(sellUserOrder);
+			return "User does not exist";
+		}
+		User user = userRepository.findByUserId(orderDTO.getUserId()); 
+		Double shadowBalance = null;
+		if(user==null)
+		{
+			return "null user";
+		}
+		for(Wallet wallet1 : user.getWallets())
+		{
+			if(wallet1.getCoinName().equals(orderDTO.getCoinName())) 
+			{
+				flag = true;
+				wallet = wallet1;
+			}
+			if(wallet1.getCoinName().equals("INR"))
+			{
+				shadowBalance = wallet1.getShadowBalance();
+			}
 			
-			result.put("isSuccess", false);
-			result.put("message", "Order is in pending status and has to be approved by admin.");
-			return result;
 		}
-	
-		else
+		if(flag) 
 		{
-			result.put("isSuccess", false);
-			result.put("message", "Order not completed");
-			return result;
+			CoinManagement coinManagementCoinName = coinManagementRepository.findByCoinName(orderDTO.getCoinName());
+			if(coinManagementCoinName!=null)
+			{
+				Double totalAmount = ((orderDTO.getPrice() * orderDTO.getCoinQuantity()*coinManagementCoinName.getFee())/100)+orderDTO.getPrice() * orderDTO.getCoinQuantity();
+										
+				if(shadowBalance >= totalAmount)
+				{
+					for(Wallet wallet1 : user.getWallets())
+					{
+						if(wallet1.getCoinName().equals("INR")) 
+						{
+						wallet1.setShadowBalance(shadowBalance - totalAmount);
+						walletRepository.save(wallet);
+						break;
+						}
+					}					
+					Order order = new Order();
+					order.setCoinType(WalletType.CRYPTO);
+					order.setCoinName(orderDTO.getCoinName());
+					order.setCoinQuantity(orderDTO.getCoinQuantity());
+					order.setPrice(orderDTO.getPrice());
+					order.setOrderType(OrderType.BUYER);
+					order.setOrderStatus(OrderStatus.PENDING);
+					order.setGrossAmount(totalAmount);
+					order.setFee(coinManagementCoinName.getFee());
+					order.setDateCreated(new Date());
+					order.setNetAmount(totalAmount);
+					order.setUser(user);
+				
+					orderRepository.save(order);
+					
+					return "Your order has been placed and need for approval.";
+				}
+				else
+				{
+					return "You don't have enough balance to buy.";
+				}
+			}
+			return "currency does not exist.";
 		}
+		return "user doesn't have that type of wallet.";
+	}
+		
+	public String sellOrder(OrderDTO orderDTO) 
+	{
+		boolean flag = false;
+	
+		if(orderDTO.getUserId() == null)
+		{
+			return "User does not exist";
+		}
+		User user = userRepository.findByUserId(orderDTO.getUserId());
+		if(user==null)
+		{
+			return "null user";
+		}
+		for(Wallet wallet1 : user.getWallets())
+		{
+			if(wallet1.getCoinName().equals(orderDTO.getCoinName())) {			
+				if(wallet1.getShadowBalance()>=orderDTO.getCoinQuantity()) {
+					wallet1.setShadowBalance(wallet1.getShadowBalance()-orderDTO.getCoinQuantity());
+					wallet1.setUser(user);
+					walletRepository.save(wallet1);
+					flag = true;
+					break;
+				}
+				else
+					return "insufficient coin";
+			}
+		}
+		if(flag)
+		{
+			double totalAmount = orderDTO.getCoinQuantity()*orderDTO.getPrice();
+			Order order = new Order();
+			order.setCoinType(WalletType.CRYPTO);
+			order.setCoinName(orderDTO.getCoinName());
+			order.setCoinQuantity(orderDTO.getCoinQuantity());
+			order.setPrice(orderDTO.getPrice());
+			order.setOrderType(OrderType.SELLER);
+			order.setOrderStatus(OrderStatus.PENDING);
+			order.setGrossAmount(totalAmount);
+			order.setFee(0.0);
+			order.setDateCreated(new Date());
+			order.setNetAmount(totalAmount);
+			order.setUser(user);
+		
+			orderRepository.save(order);
+		}
+		else
+			return "wallet not exist";
+		return null;
+		
 	}
 	
-	public String transactionManagement(@RequestParam("coinName") String coinName)
+	/*public String transactionManagement(@RequestParam("coinName") String coinName)
 	{
 		List<Order> orders=orderRepository.findByCoinName(coinName);
 		Iterator itr=orders.iterator();
@@ -188,5 +225,5 @@ public class OrderService {
 			
 		}
 		return null;
-	}
+	}*/
 }
