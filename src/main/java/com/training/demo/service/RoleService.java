@@ -35,14 +35,30 @@ public class RoleService{
 		{
 			return "please remove leading or trailing spaces.";
 		}
+
+		if(role.getRoleType().equalsIgnoreCase("user") || role.getRoleType().equalsIgnoreCase("manager") || role.getRoleType().equalsIgnoreCase("admin"))
+			{
+			roleRepository.save(roleArg);
+			return "Role is successfully added.";
+			}
+		else
+		{
+			return "invalid roleType.";
+		}
 		
-		roleRepository.save(roleArg);
-		return "Role is successfully added.";
 	}
 
-	public void deleteRole(Integer roleId) {
+	public String deleteRole(Integer roleId)
+	{
+		try {
 		Role tempRole = roleRepository.findByRoleId(roleId);
 		roleRepository.delete(tempRole);
+		return "Role is successfully added.";
+		}
+		catch(Exception e)
+		{
+			return "roleId does not exist.";
+		}
 	}
 
 	public List<Role> getAllRole() {

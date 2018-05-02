@@ -10,9 +10,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.training.demo.model.Role;
-import com.training.demo.model.User;
-import com.training.demo.repository.RoleRepository;
-import com.training.demo.repository.UserRepository;
 import com.training.demo.service.RoleService;
 
 @RestController
@@ -20,11 +17,6 @@ public class RoleController {
 	@Autowired
 	private RoleService roleService;
 	
-	@Autowired
-	private RoleRepository roleRepository;
-	
-	@Autowired
-	private UserRepository userRepository;
 	
 	@RequestMapping(value="/createrole", method=RequestMethod.POST)
 	public String insertRole(@RequestBody Role role)
@@ -66,14 +58,13 @@ public class RoleController {
 	@RequestMapping(value="/getrolebyid", method=RequestMethod.GET)
 	public List<Role> getRoleById(@RequestParam("roleId") Integer roleId)
 	{ 	
-		System.out.println("Role controller hit getRoleById api.");
 		if(roleId != null)
 		{
 			return roleService.getAllRole();
 		}
 		else
 		{
-			throw new NullPointerException("RoleId may not be null.");
+			throw new NullPointerException("Please enter roleId.");
 		}
 	}
 }

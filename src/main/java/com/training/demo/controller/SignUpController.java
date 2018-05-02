@@ -38,7 +38,7 @@ public class SignUpController
 		}
 	 }
 	
-	@RequestMapping(value = "/verify", method = RequestMethod.POST)
+	@RequestMapping(value = "/verifyuser", method = RequestMethod.POST)
 	public String userVerification(@RequestBody OtpVerification otpVerification)
 	{
 		if((otpVerification.getEmail()!=null) && (otpVerification.getTokenOTP()!=null))

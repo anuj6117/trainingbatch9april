@@ -36,7 +36,7 @@ public class User
 	@NotEmpty
 	@Size(min=2, max=30)	
 	@NotNull(message="Please enter your full name.")
-	private String fullName;
+	private String userName;
 	
 	@NotNull
 	@Email
@@ -44,7 +44,7 @@ public class User
 	private String email;
 	
 	@NotNull(message = "Please enter your mobile number.")
-	private String phoneNo;
+	private String phoneNumber;
 	
 	@NotNull
 	@NotEmpty(message = "Please enter your password.")
@@ -76,12 +76,12 @@ public class User
 		System.out.println("Default Constructor");
 	}
 	
-	public User(Integer userId, String fullName, String email, String phoneNo, String password, String country) {
+	public User(Integer userId, String userName, String email, String phoneNumber, String password, String country) {
 		super();
 		this.userId = userId;
-		this.fullName = fullName;
+		this.userName = userName;
 		this.email = email;
-		this.phoneNo = phoneNo;
+		this.phoneNumber = phoneNumber;
 		this.password = password;
 		this.country = country;
 	}
@@ -92,11 +92,11 @@ public class User
 	public void setUserId(Integer userId) {
 		this.userId = userId;
 	}
-	public String getFullName() {
-		return fullName;
+	public String getUserName() {
+		return userName;
 	}
-	public void setFullName(String fullName) {
-		this.fullName = fullName;
+	public void setUserName(String userName) {
+		this.userName = userName;
 	}
 	public String getEmail() {
 		return email;
@@ -104,11 +104,11 @@ public class User
 	public void setEmail(String email) {
 		this.email = email;
 	}
-	public String getPhoneNo() {
-		return phoneNo;
+	public String getPhoneNumber() {
+		return phoneNumber;
 	}
-	public void setPhoneNo(String phoneNo) {
-		this.phoneNo = phoneNo;
+	public void setPhoneNumber(String phoneNumber) {
+		this.phoneNumber = phoneNumber;
 	}
 	public String getPassword() {
 		return password;
@@ -161,7 +161,7 @@ public class User
 	
 	public String toString()
 	{
-				return userId+", \t"+fullName+", \t"+email+", \t"+country;
+				return userId+", \t"+userName+", \t"+email+", \t"+country;
 	}
 	
 }

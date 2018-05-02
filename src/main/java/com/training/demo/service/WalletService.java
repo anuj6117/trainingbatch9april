@@ -76,7 +76,16 @@ public class WalletService {
 		}
 	}
 	public String depositAmount(OrderDto orderDto) {
-		User user = userRepository.findByUserId(orderDto.getUserId());
+		User user ;
+		
+		try {
+		user = userRepository.findByUserId(orderDto.getUserId());
+		}
+		catch(Exception e)
+		{
+			return "invalid user id.";
+		}
+		
 		if(user.getUserStatus().equals(UserStatus.ACTIVE))
 		{
 			OrderTable tempOrderTable = new OrderTable();

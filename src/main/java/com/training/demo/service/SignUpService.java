@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Random;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -46,75 +48,53 @@ public class SignUpService
 	private OtpVerification otpVerification;
 	
 	EmailValidation emailValidation = new EmailValidation();		
-	
+
 	public String addUser(User user)
 	{
-		String userName=user.getFullName();
+		String userName=user.getUserName();
+		System.out.println(userName+"======================================");
 		String password = user.getPassword();
-		//password validation
 		
-		/*
-		
-		if(password.equals("") || password.isEmpty() || password == null)
-		{
-			return  "Password can't be null.";
-		}
-
-		if(!(password.length() >= 8 && password.length() <= 32))
-		{
-			System.out.println("Please, enter password  >> " +password);
-			return  "Please, enter password with minimum 8 characters.";			
-		}
-
-		boolean validatePassword=emailValidation.validateEmail(password);
-			if(!validatePassword)
-			{
-				return  "You password should have atleast 1 Upper Case 1 Lower Case, 1 Digit & 1 Special Character.";
-			}
-*/			
-
-		if(!(password.matches("(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\\S+$).{8,}")))
-		{
-			return "Please enter password with minimum 8 characters. Your password should have atleast 1 Uppercase, 1 Lowercase, 1 Digit & 1 Special character. Space is not allowed.";
-			
-		}
-		
-			if(userName.equals("") || userName.isEmpty() || userName == null)
-			{
-				return  "User Name can't be null.";
-			}
-			
-			if(userName.length() >= 26 || userName.length() <= 6)
-			{
-				return  "Maximum characters allowed for this field is 6 to 25.";			
-			}
-			
-			if(userName.trim().length() == 0)
-			{
-				return	"User Name must contain characters.";
-			}
-		
-		String tempEmail=user.getEmail();
-		
+		String tempEmail=user.getEmail();		
 		boolean validateEmail=emailValidation.validateEmail(tempEmail);
 		
 			if(!validateEmail)
 			{
 				return  "Please enter a valid email address.";
 			}
+
 		
-		String tempPhoneNo=user.getPhoneNo();
+		if(!(password.matches("(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\\S+$).{8,}")))
+		{
+			return "Please enter password with minimum 8 characters. Your password should have atleast 1 Uppercase, 1 Lowercase, 1 Digit & 1 Special character. Space is not allowed";
+		}
+			
+		if(userName.equals("") || userName.isEmpty() || userName == null)
+		{
+			return  "User Name can't be null.";
+		}
 		
-			if(!PhoneValidation.isValid(tempPhoneNo))
-			{
-				return  "Please enter a valid mobile number.";
-			}
+		if(userName.length() >= 26 || userName.length() <= 6)
+		{
+			return  "Maximum characters allowed for this field is 6 to 25.";			
+		}
+		
+		if(userName.trim().length() == 0)
+		{
+			return	"User Name must contain characters.";
+		}
+				
+		String tempPhoneNo=user.getPhoneNumber();
+		if(!PhoneValidation.isValid(tempPhoneNo))
+		{
+			return  "Please enter a valid mobile number.";
+		}
 
 		
 			if ((userRepository.findByEmail(user.getEmail()) == null)) 
 			{
 				//boolean emailFlag = userRepository.existsByEmail(user.getEmail());
-				boolean phoneNoFlag = userRepository.existsByPhoneNo(user.getPhoneNo());
+				boolean phoneNoFlag = userRepository.existsByPhoneNumber(user.getPhoneNumber());
 					if(phoneNoFlag == false)
 					{
 						System.out.println("service hit");
@@ -146,12 +126,12 @@ public class SignUpService
 						if( existingUser != null)
 						{
 							String email = user.getEmail();
-							String phoneNo = user.getPhoneNo();
+							String phoneNo = user.getPhoneNumber();
 							System.out.println("service hit inside if.");
 							//otpService.sendSms(tokenOTP, phoneNo);
 							try 
 							{
-								emailService.sendEmail(tokenOTP, email);
+								//emailService.sendEmail(tokenOTP, email);
 							}
 							catch (Exception e) 
 							{
@@ -235,7 +215,7 @@ public class SignUpService
 		}
 	}
 		public String updateUser(@RequestBody User user) {
-			String userName = user.getFullName();
+			String userName = user.getUserName();
 			String password = user.getPassword();
 			
 			if(!(password.matches("(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\\S+$).{8,}")))
@@ -268,7 +248,7 @@ public class SignUpService
 					return  "Please enter a valid email address.";
 				}
 			
-			String tempPhoneNo=user.getPhoneNo();
+			String tempPhoneNo=user.getPhoneNumber();
 			
 				if(!PhoneValidation.isValid(tempPhoneNo))
 				{
@@ -278,15 +258,15 @@ public class SignUpService
 			try {
 		     User tempUser = userRepository.findByUserId(user.getUserId());
 			 tempUser.setEmail(user.getEmail());
-			 tempUser.setFullName(user.getFullName());
-			 tempUser.setPhoneNo(user.getPhoneNo());
+			 tempUser.setUserName(user.getUserName());
+			 tempUser.setPhoneNumber(user.getPhoneNumber());
 			 tempUser.setCountry(user.getCountry());
 			 tempUser.setPassword(user.getPassword());	      
 			 userRepository.save(tempUser); 
 			}
 		catch (Exception ex)
 		{	 
-			return "Error while updating the user: " + ex.toString();
+			return "user does not exist";
 		}
 			
 		return "User succesfully updated!";
@@ -298,19 +278,23 @@ public class SignUpService
 		Role role;
 		try 
 		{
+			
 			user = userRepository.findByUserId(userRoleDto.getUserId());
-			role = roleRepository.findByRoleType(userRoleDto.getRoleType());
-		}	
+			System.out.println("1111111111111111111111111111111");
+			}	
 		catch(Exception e)
 		{
+			System.out.println("userrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr");
 				return "invalid userid";
 			}
 		try 
 		{
 			role = roleRepository.findByRoleType(userRoleDto.getRoleType());
-		}	
+			System.out.println("22222222222222222222222222222222222222222");
+			}	
 		catch(Exception e)
 		{
+			System.out.println("roleeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee");
 				return "invalid roleType";
 			}
 			if(user != null)
@@ -319,15 +303,19 @@ public class SignUpService
 					{
 						user.getRoles().add(role);
 						userRepository.save(user);
+
 						return "Role is successfully assigned to the given user.";
 					}	
-					else {
-						throw new NullPointerException("Given role doesn't exist");
+					else
+					{
+						return "invalid roleType";
 					}
+					
 				}
 			else
 			{
-				throw new NullPointerException("User id does not exist.");
+				return "invalid userId.";
 			}
-	}	
+			
+		}
 }
