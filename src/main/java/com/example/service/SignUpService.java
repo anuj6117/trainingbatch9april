@@ -74,6 +74,8 @@ public class SignUpService
 		 Wallet wallet = new Wallet();
 	     wallet.setWalletType(WalletType.FIAT);
 	     wallet.setWalletName("INR");
+	     wallet.setBalance(0);
+	     wallet.setShadowbalance(0);
 		 wallet.setUser(user);
 		 walletset.add(wallet);
 		 walletrepository.save(wallet);

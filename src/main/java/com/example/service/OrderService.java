@@ -40,7 +40,7 @@ public class OrderService
 	userorder.setCoinQuantity(userOrderDto.getCoinQuantity());
 	userorder.setPrice(userOrderDto.getPrice());
 	userorder.setFees(currency.getFees());
-	int netamount=userOrderDto.getCoinQuantity()*currency.getPrice();
+	int netamount=userOrderDto.getCoinQuantity()*userOrderDto.getPrice();
 	System.out.println(netamount+"..........netamount........");
 	userorder.setNetAmount(netamount);
 	int fee=currency.getFees();
