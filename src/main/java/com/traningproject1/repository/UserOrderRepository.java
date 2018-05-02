@@ -13,10 +13,10 @@ public interface UserOrderRepository extends JpaRepository<UserOrder,Integer> {
 
 	UserOrder findByuserorderId(Integer userorderId);
 	
-	@Query("select od from UserOrder od where UPPER(od.orderType)=UPPER(:orderType) order by price DESC")
+	@Query("select od from UserOrder od where UPPER(od.orderType)=UPPER(:orderType) and status = 'PENDING' order by price DESC")
 	public List<UserOrder> getBuyers(@Param("orderType") String type);
 	
-	@Query("select od from UserOrder od where UPPER(od.orderType)=UPPER(:orderType) order by price ASC")
+	@Query("select od from UserOrder od where UPPER(od.orderType)=UPPER(:orderType) and status = 'PENDING' order by price ASC")
 	public List<UserOrder> getSellers(@Param("orderType") String type);
 	
 	

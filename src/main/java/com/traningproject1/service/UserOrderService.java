@@ -1,8 +1,6 @@
 package com.traningproject1.service;
 
 import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -38,30 +36,31 @@ public class UserOrderService {
     	    	  return "Invalid User";
     	      }
     	      Wallet wallet=walletRepository.findByUserAndCoinTypeAndCoinName(user,CoinType.CRYPTO,buysellorderdto.getCoinName());
-    	      List<CurrencyClass>coinNameValue=currencyRepository.findAll();
-    	      Iterator<CurrencyClass>itr1=coinNameValue.iterator();
-    	      while(itr1.hasNext())
-    	    	{
-    	    		CurrencyClass cc=itr1.next();
-    	    		if(!(cc.getCoinName().equals(buysellorderdto.getCoinName())))
-    	    		{
-    	    			return "Invalid Coin Name";
-    	    		}
-    	    	}
     	      
-    	      double tempamount=buysellorderdto.getCoinQuantity()*buysellorderdto.getPrice();
+   	    		if(currencyRepository.findByCoinName(buysellorderdto.getCoinName()).getCoinName().equals(buysellorderdto.getCoinName()))
+    	    		{
+//    	    			return "Invalid Coin Name";
+    	    		   	      
+    	      double tempamount=buysellorderdto.getCoinQuantity();
     	      System.out.println("Wallet user id"+wallet.getBalance());
     	      if(wallet.getShadowBalance()>=tempamount)
     	      {
+    	       wallet.setShadowBalance(wallet.getShadowBalance()-buysellorderdto.getCoinQuantity());
     	       UserOrder userorder=new UserOrder();
                userorder.setCoinName(buysellorderdto.getCoinName());
     	       userorder.setCoinQuantity(buysellorderdto.getCoinQuantity());
     	       userorder.setPrice(buysellorderdto.getPrice());
+    	       userorder.setGrossAmount(buysellorderdto.getCoinQuantity()*buysellorderdto.getPrice());
+    	       userorder.setFees(0);
+    	       userorder.setUser(user);
     	       userorder.setDateCreated(new Date());
     	       userorder.setOrderType(UserOrderType.SELLER);
     	       userorder.setStatus(UserOrderStatus.PENDING);
                userorderRepository.save(userorder);
+               walletRepository.save(wallet);
+               
               return "Seller Order SuccessFully Submit";
+    	      }
     	     }
     	      return "Insufficient Fund in Cypto Wallet";
     }
@@ -75,12 +74,7 @@ public class UserOrderService {
     		return "Invalid User";
     	}
     	
-    	List<CurrencyClass>coinNameValue=currencyRepository.findAll();
-    	Iterator<CurrencyClass>itr1=coinNameValue.iterator();
-    	while(itr1.hasNext())
-    	{
-    		CurrencyClass cc=itr1.next();
-    		boolean f=(cc.getCoinName().equals(buysellorderdto.getCoinName()));
+    		boolean f=(currencyRepository.findByCoinName(buysellorderdto.getCoinName()).getCoinName().equals(buysellorderdto.getCoinName()));
     		if(f)
     		{
     			 double cal=buysellorderdto.getPrice()*buysellorderdto.getCoinQuantity();
@@ -107,13 +101,16 @@ public class UserOrderService {
     	    	    userorder.setFees(currency.getFees());
     	    	    userorder.setUser(user);
     	            userorder.setDateCreated(new Date());
-    	    	    userorderRepository.save(userorder);  
+    	    	    userorderRepository.save(userorder); 
+    	    	    walletRepository.save(wallet);
+    	    	    
     	    	    return "Buyer Order SuccessFully Submit";
-    	    	  }
-    		      return "Invalid Coin Name";
+    	    	  
+    		      }
+    		      return "Insufficent Fund";
     		}
-    	}
     
-	       return "Insufficent Fund";
+    
+	       return "Invalid Coin Name";
     }
 }

@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.traningproject1.domain.Transaction;
+import com.traningproject1.service.TransactionCalculation;
 import com.traningproject1.service.TransactionService;
 import com.traningproject1.service.WalletService;
 
@@ -17,6 +18,8 @@ public class TransactionController {
 	TransactionService transactionService;
 	@Autowired
 	WalletService walletService;
+	@Autowired
+	TransactionCalculation transactionCalculation;
 //	@MockBean
 //    private TransactionService transactionService;
 @RequestMapping(value="/showalltransaction",method=RequestMethod.GET)
@@ -30,9 +33,9 @@ public List<Transaction>getAllTransaction()
 //	transactionService.walletApproval(walletapprovaldto);
 //}
 @RequestMapping(value="/transaction",method=RequestMethod.POST)
-public String transactionApproval()
+public String transaction()
 {
-	transactionService.transactionApproval();
+	transactionCalculation.transaction();
  	return "Success";
 }
 }

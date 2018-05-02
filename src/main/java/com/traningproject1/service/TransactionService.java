@@ -82,114 +82,115 @@ public List<Transaction> getAllTransaction()
 //  userRepository.save(user);
 //  return "Success";	
 //}
- public String transactionApproval()
- {
-	 double total=0;
-	 Transaction transaction=new Transaction();
-	
-	List<UserOrder>listbuyer=userOrderRepository.getBuyers("BUYER");
-	
-	//List<UserOrder>listseller=userOrderRepository.getSellers("SELLER");
-	
-	List<CurrencyClass>tempcurrency=currencyRepoistory.findAll();
-	
-	  //Transaction When there is no seller in Order Table/////
-	 //////////////////////////////////////////////////////////
-	///////////////////////////////////////////////////////////
-	 
-	//if(listseller==null)
-//   	{ 	
-   	  	 Iterator<UserOrder>listbuy=listbuyer.iterator();
-   	  	while(listbuy.hasNext())
-   	  	{
-   	  		UserOrder buyer=listbuy.next();
-   	  		User user=buyer.getUser();
-   	  	    Wallet wallet=walletRepository.findByUserAndCoinType(user,CoinType.FIATE);
-   	    
-   	  	    Wallet wallet1=walletRepository.findByUserAndCoinTypeAndCoinName(user,CoinType.CRYPTO,buyer.getCoinName());
-   	  	    String coin=buyer.getCoinName();
-   	  	  
-   	  	 //Coding Start from here At 11.02am 1 may//		
-          
-   	  	  Iterator<CurrencyClass>supply=tempcurrency.iterator();
-   	  		while(supply.hasNext())
-   	  		{
-   	  			CurrencyClass currencycoin=supply.next();
-   	  			
-   	  		if(currencycoin.getCoinName().equals(coin))
-   	  			{
-//   	  			  if(list.getPrice()>currencycoin.getPrice())
+// public String transactionApproval()
+// {
+//	 double total=0;
+//	 Transaction transaction=new Transaction();
+//	
+//	List<UserOrder>listbuyer=userOrderRepository.getBuyers("BUYER");
+//	
+//	//List<UserOrder>listseller=userOrderRepository.getSellers("SELLER");
+//	
+//	List<CurrencyClass>tempcurrency=currencyRepoistory.findAll();
+//	
+//	  
+//	 
+//	//if(listseller==null)
+////   	{ 	
+//   	  	 Iterator<UserOrder>listbuy=listbuyer.iterator();
+//   	  	while(listbuy.hasNext())
+//   	  	{
+//   	  		UserOrder buyer=listbuy.next();
+//   	  		User user=buyer.getUser();
+//   	  	    Wallet wallet=walletRepository.findByUserAndCoinType(user,CoinType.FIATE);
+//   	    
+//   	  	    Wallet wallet1=walletRepository.findByUserAndCoinTypeAndCoinName(user,CoinType.CRYPTO,buyer.getCoinName());
+//   	  	    String coin=buyer.getCoinName();
+//   	  	  
+//   	  	 //Coding Start from here At 11.02am 1 may//		
+//          
+//   	  	  Iterator<CurrencyClass>supply=tempcurrency.iterator();
+//   	  		while(supply.hasNext())
+//   	  		{
+//   	  			CurrencyClass currencycoin=supply.next();
+//   	  			
+//   	  		if(currencycoin.getCoinName().equals(coin))
+//   	  			{
+////   	  			  if(list.getPrice()>currencycoin.getPrice())
+////   	  			  {
+////   	  				  double fee=currencycoin.getFees();
+////   	  				  double gross= list.getGrossAmount();
+////   	  			  }
+//   	  			  if(buyer.getPrice()==currencycoin.getPrice())
 //   	  			  {
-//   	  				  double fee=currencycoin.getFees();
-//   	  				  double gross= list.getGrossAmount();
+//   	  				 
+//   	  					 if(buyer.getCoinQuantity()>currencycoin.getInitialSupply())
+//   	  					 {
+//   	  						 
+//   	  					 }
+//     	      		 currencycoin.setCoinInINR(currencycoin.getCoinInINR());
+//   	  			     currencycoin.setProfit(buyer.getFees());
+//   	  				 currencycoin.setInitialSupply(0);
+//   	  			      
+//   	  				 	  				 
+//     				 wallet.setBalance((wallet.getBalance()-buyer.getGrossAmount()));
+//   	  				 wallet1.setBalance((buyer.getCoinQuantity()+wallet1.getBalance()));
+//   	  				 wallet1.setShadowBalance((buyer.getCoinQuantity()+wallet1.getShadowBalance()));
+//   	  			     
+//   	  				 
+//   	  			     
+//   	  				  }
+//   	  			  else if(buyer.getPrice()>currencycoin.getPrice())
+//   	  			   {
+//   	  				 
+//   	  			   }
+//   	  			
+//	  				 
+//   	  			
+//	  				 transaction.setBuyerId(user.getUserId());
+//	  				 transaction.setCoinType(CoinType.CRYPTO);
+//	  				 transaction.setCoinName(buyer.getCoinName());
+//	  				 transaction.setSellerId("admin");
+//	  				 transaction.setExchangeRate(buyer.getPrice());
+//	  				 transaction.setFees(buyer.getFees());
+//	  				 transaction.setGrossAmount(buyer.getGrossAmount());
+//	  				 transaction.setNetAmount(buyer.getCoinQuantity()*buyer.getPrice());
+//	  				 transaction.setDateCreated(new Date());
+//	  				 transaction.setMessage("Transaction Done");
+//	  				 transaction.setStatus(TransactionStatus.APPROVED);
+//	  				 transaction.setUserOrderType(buyer.getOrderType());
+//	  	             
+//	  				  transactionRepository.save(transaction);
+//	  				  walletRepository.save(wallet);
+//	  				  walletRepository.save(wallet1);
+//	  				  currencyRepoistory.save(currencycoin);
 //   	  			  }
-   	  			  if(buyer.getPrice()==currencycoin.getPrice())
-   	  			  {
-   	  				 
-   	  					 
-     	      		 currencycoin.setCoinInINR(currencycoin.getCoinInINR());
-   	  			     currencycoin.setProfit(buyer.getFees());
-   	  				 currencycoin.setInitialSupply(0);
-   	  			      
-   	  				 	  				 
-     				 wallet.setBalance((wallet.getBalance()-buyer.getGrossAmount()));
-   	  				 wallet1.setBalance((buyer.getCoinQuantity()+wallet1.getBalance()));
-   	  				 wallet1.setShadowBalance((buyer.getCoinQuantity()+wallet1.getShadowBalance()));
-   	  			     
-   	  				 
-   	  			     
-   	  				  }
-   	  			  else if(buyer.getPrice()>currencycoin.getPrice())
-   	  			   {
-   	  				 //tr 
-   	  			   }
-   	  			
-	  				 
-   	  			
-	  				 transaction.setBuyerId(user.getUserId());
-	  				 transaction.setCoinType(CoinType.CRYPTO);
-	  				 transaction.setCoinName(buyer.getCoinName());
-	  				 transaction.setSellerId(null);
-	  				 transaction.setExchangeRate(buyer.getPrice());
-	  				 transaction.setFees(buyer.getFees());
-	  				 transaction.setGrossAmount(buyer.getGrossAmount());
-	  				 transaction.setNetAmount(buyer.getCoinQuantity()*buyer.getPrice());
-	  				 transaction.setDateCreated(new Date());
-	  				 transaction.setMessage("Transaction Done");
-	  				 transaction.setStatus(TransactionStatus.APPROVED);
-	  				 transaction.setUserOrderType(buyer.getOrderType());
-	  	             
-	  				  transactionRepository.save(transaction);
-	  				  walletRepository.save(wallet);
-	  				  walletRepository.save(wallet1);
-	  				  currencyRepoistory.save(currencycoin);
-   	  			  }
-   	  			}
-   	  		}
-
-   	  	
-   	//}
-   	return "Success";	 
- }
-
- 
-private void transactionDetail(Wallet wallet, Wallet wallet1, User user, UserOrder buyer) {
-	         
-	       
-	
-}
-private void wallet(Wallet wallet,Wallet wallet1,UserOrder buyer)
- {
-
-		
- }
-private void coinManagement(CurrencyClass currencycoin,UserOrder order)
-{
-	 
-}
- private void userOrderTable(UserOrder order)
- {
-	 
- }
+//   	  			}
+//   	  		}
+//
+//   	  	
+//   	//}
+//   	return "Success";	 
+// }
+//
+// 
+//private void transactionDetail(Wallet wallet, Wallet wallet1, User user, UserOrder buyer) {
+//	         
+//	       
+//	
+//}
+//private void wallet(Wallet wallet,Wallet wallet1,UserOrder buyer)
+// {
+//
+//		
+// }
+//private void coinManagement(CurrencyClass currencycoin,UserOrder order)
+//{
+//	 
+//}
+// private void userOrderTable(UserOrder order)
+// {
+//	 
+// }
 }
 

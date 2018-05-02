@@ -55,26 +55,32 @@ public String addCurrency(@RequestBody CurrencyClass currency)
 	}
 	if(flag&&flag1)
 	{
-     if(currency.getCoinName().equals(""))
+     if(currency.getSymbol().equals(""))
+	 {
+	  return "Please enter the coin Symbol";
+     }
+    else if(currency.getSymbol().equals(" "))
+	{
+		return "Please enter the coin Symbol";
+     }
+    else if(currency.getCoinName().equals(""))
     {
     	return "put coin Name";
     }
-    if(currency.getCoinName().equals(" "))
+    else if(currency.getCoinName().equals(" "))
     {
     	return "put Valid coin Name";
     }
-    if(currency.getSymbol().equals(""))
-    {
-    	return "Please enter the coin Symbol";
-    }
-    if(currency.getSymbol().equals(" "))
-    {
-    	return "Please enter the coin Symbol";
-    }
-    if(currency.getInitialSupply()==null&&currency.getPrice()==null)
+ 
+    
+    else if(currency.getInitialSupply()==0&&currency.getPrice()==0)
     {
     	return "Provide Initial Supply Or Provide Some Price ";
     }
+//    else if()
+//    {
+//    	
+//    }
    List<CurrencyClass>getcurrency=currencyRepository.findAll();
    Iterator<CurrencyClass>itr=getcurrency.iterator();
    while(itr.hasNext())

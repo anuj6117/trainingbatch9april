@@ -109,6 +109,10 @@ public void setBuyerId(Integer buyerId) {
 	this.buyerId = buyerId;
 }
 
+
+
+
+
 public Integer getSellerId() {
 	return sellerId;
 }

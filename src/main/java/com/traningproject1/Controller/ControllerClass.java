@@ -36,6 +36,7 @@ public class ControllerClass {
 
 	private static Pattern pswNamePtrn = 
 	        Pattern.compile("((?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%]).{8,32})");
+	private static Pattern phone=Pattern.compile("(0/91)?[6-9][0-9]{9}");
 	     
 @RequestMapping(value="/signup",method=RequestMethod.POST)
 public String addUser(@RequestBody User user)
@@ -76,14 +77,10 @@ public String addUser(@RequestBody User user)
     	   return "Password Cannot be less Than 8 or Greater than 32";
        }
        
-//       String patternPhone="(?=.*[0-9]).{10,10}";
-//       String phone=user.getPhoneNumber();
-//       if(!(patternPhone.matches(phone)))
-//       {
-//    	   return "Please enter valid Phone number";
-//       }
-       
-      
+    
+          String phone1=user.getPhoneNumber();
+          java.util.regex.Matcher m=phone.matcher(phone1);
+            
        if(userRepository.findByphoneNumber(user.getPhoneNumber())!=null)
        {
     	   return "Oops Phone number already registration ";
