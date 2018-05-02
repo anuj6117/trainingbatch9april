@@ -10,39 +10,6 @@ public class TransactionService {
 	@Autowired
 	private TransactionRepository transactionRepository;
 	
-	/*public String transactionManagement()
-	{
-		
-	}*/
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	/*public Map<String,Object> transactionManagement()
-	{
-		Map<String, Object> result = new HashMap<String, Object>();
-		
-		
-		return result;
-		
-	}*/
 
 }
