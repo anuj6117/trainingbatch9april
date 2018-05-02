@@ -142,6 +142,7 @@ public class UserService {
 	  otpobj.setDate(new Date());
 	  otpobj.setEmail(user.getEmail());
 	  otpobj.setTokenOTP(otp);
+	 
 	  signupOTPRepository.save(otpobj);
 	 
 	  userRepository.save(user);
@@ -175,10 +176,12 @@ public class UserService {
 		if(!userRepository.existsById(user.getUserId()))
 			return "this user do not exist";
 		
-		if(user.getStatus()==null)
+		User cuser=userRepository.findById(user.getUserId()).get();
+		
+		if(cuser.getStatus()==null)
 			return "user is inactive";
 		
-		if(user.getStatus().equals(UserStatus.INACTIVE))
+		if(cuser.getStatus().equals(UserStatus.INACTIVE))
 			return "user is inactive";
 		
 		Pattern p = Pattern.compile("[^a-z0-9 ]", Pattern.CASE_INSENSITIVE);
@@ -213,6 +216,7 @@ public class UserService {
 		if(user.getPassword().length()>32)
 			return "Maximum characters allowed for this field is 32";
 		user.setCreatedOn(new Date());
+		user.setStatus(UserStatus.ACTIVE);
 		 userRepository.save(user);
 		 return "success";
 	}
@@ -422,44 +426,67 @@ public class UserService {
 	public String verifyUser(SignUpOTP userOtp) {
 		
 		SignUpOTP userOTP = signupOTPRepository.findBytokenOTP(userOtp.getTokenOTP());
-		User user=null;
-		if(userOtp.getEmail()!=null)
-		 user = userRepository.findByEmail(userOtp.getEmail());
-		else if(userOtp.getPhoneNumber()!=0)
-			 user = userRepository.findByphoneNumber(userOtp.getPhoneNumber());
+		User user = userRepository.findById(userOtp.getUserId()).get();
 		
-		if(userOTP != null) {
-			
-			if(userOtp.getEmail()!=null) {
-			if(userOtp.getEmail().equals(userOTP.getEmail())) {
+		if(user==null) {
+			return "not found";
+		}
+		else {
+			if(userOTP.getEmail().equals(user.getEmail())) {
+				
 				signupOTPRepository.delete(userOTP);
 				user.setStatus(UserStatus.ACTIVE);
 				userRepository.save(user);
 				return "success";
 			}
-				else
-					return "failure";
+			else return "failure";
 		}
-			else  if(userOtp.getPhoneNumber()!=0) {
-				
-				if(userOtp.getPhoneNumber()==userOTP.getPhoneNumber()) {
-					signupOTPRepository.delete(userOTP);
-					user.setStatus(UserStatus.ACTIVE);
-					userRepository.save(user);
-					return "success";
-				}
-					else
-						return "failure";
-				
-			}
-			return "not found..";
-		  }
-		
-		else return "not found";
 		
 	
 	}
+
 	
+//	public String verifyUser(SignUpOTP userOtp) {
+//		
+//		SignUpOTP userOTP = signupOTPRepository.findBytokenOTP(userOtp.getTokenOTP());
+//		User user=null;
+//		if(userOtp.getEmail()!=null)
+//		 user = userRepository.findByEmail(userOtp.getEmail());
+//		else if(userOtp.getPhoneNumber()!=0)
+//			 user = userRepository.findByphoneNumber(userOtp.getPhoneNumber());
+//		
+//		if(userOTP != null) {
+//			
+//			if(userOtp.getEmail()!=null) {
+//			if(userOtp.getEmail().equals(userOTP.getEmail())) {
+//				signupOTPRepository.delete(userOTP);
+//				user.setStatus(UserStatus.ACTIVE);
+//				userRepository.save(user);
+//				return "success";
+//			}
+//				else
+//					return "failure";
+//		}
+//			else  if(userOtp.getPhoneNumber()!=0) {
+//				
+//				if(userOtp.getPhoneNumber()==userOTP.getPhoneNumber()) {
+//					signupOTPRepository.delete(userOTP);
+//					user.setStatus(UserStatus.ACTIVE);
+//					userRepository.save(user);
+//					return "success";
+//				}
+//					else
+//						return "failure";
+//				
+//			}
+//			return "not found..";
+//		  }
+//		
+//		else return "not found";
+//		
+//	
+//	}
+//	
 
 	
 }

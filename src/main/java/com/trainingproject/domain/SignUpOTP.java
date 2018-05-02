@@ -15,11 +15,21 @@ public class SignUpOTP {
 	private String email;
 	private Date date;
 	private long phoneNumber;
+	private Integer userId;
 	
 	
+	public Integer getUserId() {
+		return userId;
+	}
+
+	public void setUserId(Integer userId) {
+		this.userId = userId;
+	}
+
 	public long getPhoneNumber() {
 		return phoneNumber;
 	}
+	
 	public void setPhoneNumber(long phoneNumber) {
 		this.phoneNumber = phoneNumber;
 	}
