@@ -28,9 +28,9 @@ public class CurrencyController {
 		//System.out.println("Done1");
 		return currencyservice.create(currency);
 	}
-	@GetMapping("/getbycurrencyid/{id}")
-	public Optional<Currency> getbyid(@PathVariable int id){
-		return currencyservice.searchbyid(id);
+	@GetMapping("/getbycurrencyid")
+	public Optional<Currency> getbyid(@RequestParam int coinId){
+		return currencyservice.searchbyid(coinId);
 	}
 	
 	

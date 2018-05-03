@@ -1,6 +1,5 @@
 package io.oodles.springboot1.model;
 
-import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
@@ -24,18 +23,13 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlRootElement;
-
-import org.springframework.transaction.support.ResourceHolderSupport;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import io.oodles.springboot1.enums.Status;
 
 @Entity
-@Table(name = "user", 
+@Table(name = "user",
 uniqueConstraints = @UniqueConstraint(name = "email_user_uc"
                                       ,columnNames = {"email","phoneNumber"}))
 //@XmlRootElement(name="users")
@@ -45,13 +39,16 @@ public class Users  {
 	@Column(name="userId")
 	@Id @GeneratedValue(strategy=GenerationType.AUTO)
 	public Integer userId;
-	@NotNull(message="UserName can't be null")
+	@NotNull
 	@javax.validation.constraints.NotEmpty
-	@Size(max=25,message="Maximun characters allowed for this field is 25")
+	@Size(max=25)
+	//@Pattern(regexp="^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[_-])(?=\\S+$)$",message="check username")
+	//@Pattern(regexp= "^[A-Za-z0-9_-][A-Za-z0-9_-]{24}$")
+
 	public String userName;
 	@javax.validation.constraints.NotEmpty
 	@NotNull
-	@Email(message="Please, enter a valid email address")
+	@Email
 	public String email;
 	@Size(min=10,max=10)
 	@Pattern(regexp="(^$|[0-9]{10})")
@@ -79,13 +76,7 @@ public class Users  {
 	@javax.validation.constraints.NotEmpty
 	public String country;
 	@Size(min=8,max=32)
-	@Pattern(regexp="^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\\S+$).{8,}$",message="\"Please, enter password \n" + 
-			"with minimum 8 characters.\n" + 
-			"You password should \n" + 
-			"have atleast 1 Upper \n" + 
-			"Case, 1 Lower Case, 1 \n" + 
-			"Digit & 1 Special \n" + 
-			"Character.\"")
+	//@Pattern(regexp="^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*()-_=+{[}]:;'<,.>?/|])(?=\\S+$)$")
 	public String password;
 	Date date;
 	@Enumerated(EnumType.STRING)

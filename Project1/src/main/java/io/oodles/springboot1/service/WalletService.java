@@ -223,6 +223,14 @@ public class WalletService {
 		return "No Approval";
 		}
 
+	public Wallet wallethistory(Integer userid, String coinname) {
+		// TODO Auto-generated method stub
+		Users user=usersRepository.findByUserId(userid);
+		Wallet wallet1=walletRepository.findByUsersAndCoinName(user,coinname);
+	    return walletRepository.getOne(wallet1.getId());
+	    
+	}
+
 	
 	}
 

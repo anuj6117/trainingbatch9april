@@ -21,7 +21,7 @@ public class Role_Service {
 	
 	
 	Users user=new Users();
-	Role role=new Role();
+	Role role1;
 
 	public List<Role> getallroles() {
 		// TODO Auto-generated method stub
@@ -35,10 +35,10 @@ public class Role_Service {
 
 	public Role update(Role role, int id) {
 		// TODO Auto-generated method stud
-		Role role1=roleRepository.getOne(id);
+		Role role2=roleRepository.getOne(id);
 		
-		role1.setRoleType(role.getRoleType());
-		return roleRepository.save(role1);
+		role2.setRoleType(role.getRoleType());
+		return roleRepository.save(role2);
 	}
 	
 
@@ -49,6 +49,7 @@ public class Role_Service {
 	public String create(Role role) {
 		// TODO Auto-generated method stub
 		//System.out.println("Done2");
+		
 		roleRepository.save(role);
 		return "Role Created";
 	}

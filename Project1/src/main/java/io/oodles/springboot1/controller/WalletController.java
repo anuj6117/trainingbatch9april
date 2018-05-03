@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.oodles.springboot1.DTO.AddWallet;
@@ -15,6 +16,7 @@ import io.oodles.springboot1.model.ApprovalDTO;
 import io.oodles.springboot1.model.Deposit;
 import io.oodles.springboot1.model.Users;
 import io.oodles.springboot1.model.Wallet;
+import io.oodles.springboot1.repository.WalletRepository;
 import io.oodles.springboot1.service.WalletService;
 
 @RestController
@@ -62,6 +64,10 @@ public String approvedeposit(@RequestBody ApprovalDTO approvalDTO ) {
 	    walletService.delete(id);
 	}
 	
+	@GetMapping("/walletHistory")
+		public Wallet getwallethistory(@RequestParam Integer userid,@RequestParam String coinname) {
+		return walletService.wallethistory(userid,coinname);
+	}
 	
 
 }

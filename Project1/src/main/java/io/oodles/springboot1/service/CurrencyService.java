@@ -11,6 +11,8 @@ import io.oodles.springboot1.repository.CurrencyRepository;
 
 @Service
 public class CurrencyService {
+	
+	Currency currency;
 	@Autowired
 	CurrencyRepository currencyRepository;
 
@@ -64,11 +66,16 @@ public class CurrencyService {
 
 	public Optional<Currency> searchbyid(Integer id) {
 		// TODO Auto-generated method stub
-		return  currencyRepository.findById(id); 
+		return currencyRepository.findById(id); 
+		
 	}
 
 	public String update(Currency currency) {
 		// TODO Auto-generated method stub
+		Currency currency1=currencyRepository.findById(currency.getCoinId()).get();
+		System.out.println(currency.getCoinId());
+		currency.setINRconversion(currency1.getINRconversion());
+		currency.setProfit(currency1.getProfit());
 		
 		currencyRepository.save(currency);
 		return "Currency Updated";

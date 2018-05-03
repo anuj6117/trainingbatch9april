@@ -55,7 +55,22 @@ public class Signupservice {
 	Date date = new Date();
 
 	public String addUser(Users users) {
-		
+		Users user=usersRepository.findByEmail(users.getEmail());
+		Users phone=usersRepository.findByPhoneNumber(users.getPhoneNumber());
+		Users name=usersRepository.findByUserName(users.getUserName());
+		role.setRoleType("USER");
+		rolerepository.save(role);
+		if(user!=null) {
+			return "Email already exists";
+		}
+		else if(phone!=null) {
+			return "phone number already exists";
+		}
+		else if(name!=null) {
+			return "Username already exists";
+		}
+		else {
+		System.out.println("////////////");
 
 		Random rnd = new Random();
 		
@@ -65,25 +80,41 @@ public class Signupservice {
         users.setDate(date);
         users.getDate();
         users.setStatus(Status.INACTIVE);
+        //System.out.println(":::::::::::::::");
         Users user1=usersRepository.save(users);
+        //System.out.println("------------------");
         Set<Wallet> wallet=new HashSet<Wallet>();
+        //System.out.println("------------------2");
         Wallet wallet1=new Wallet();
+        //System.out.println("------------------3");
         wallet1.setCoinName("INR");
+        //System.out.println("------------------4");
         wallet1.setCoinType(wallettype.FIAT);
+        //System.out.println("------------------5");
         wallet1.setUsers(user1);
+        //System.out.println("------------------6");
         wallet.add(wallet1);
+        //System.out.println("------------------7");
         walletRepository.save(wallet1);
+        //System.out.println("------------------8");
         users.setWallet(wallet);
+        //System.out.println("------------------9");
         List<Role> list=new ArrayList<Role>();
+        //System.out.println("------------------10");
+        
 		list.add(rolerepository.findByRoleType("USER"));
+		System.out.println("++++++++++++++++");
 	    users.setRoles(list);
+	    System.out.println("------------------");
         usersRepository.save(user1);
+        
+        System.out.println("????????????");
 		
 		
 			otpService.ValueMethod(users, otp1);
 			String email=users.getEmail();
 			
-		    
+		    System.out.println("}}}}}}}}}}}}}");
 		    
 		   
 		    
@@ -92,8 +123,8 @@ public class Signupservice {
 			mail.sendMail(otp1,email);
 			otpgenerate.sendSMS(otp1);
 			usersRepository.save(users);
-			
-			return "Your account has been successfully created. Please, verify it by using OTP.";
+			System.out.println("<<<<<<<<<<<<<<<<");
+			return "Your account has been successfully created. Please, verify it by using OTP.";}
 		}
 	
 
@@ -131,24 +162,25 @@ public class Signupservice {
 		return usersRepository.findById(id);
 	}
 
-	public String update(Users users) {
+	public String update(Users user) {
 		// TODO Auto-generated method stub
-		Users user=usersRepository.findByUserId(users.getUserId());
-		users.setDate(date);
-		if(user.getStatus()==Status.INACTIVE) {
-		
-		users.setStatus(Status.INACTIVE);}
-		else
-		{
-			users.setStatus(Status.ACTIVE);
-		}
-		usersRepository.save(users);
+		Users user1=usersRepository.findByUserId(user.getUserId());
+		System.out.println(":::::::::::::");
+		user.setStatus(user1.getStatus());
+		System.out.println("11111111111111");
+		Date date=new Date();
+		System.out.println("222222222222");
+		user.setDate(date);
+		System.out.println("33333333333333");
+		usersRepository.save(user);
+		System.out.println("444444444444444444");
 		return "User Updated";
 	}
 
-	public void delete(int id) {
+	public String delete(int id) {
 		// TODO Auto-generated method stub
 		 usersRepository.deleteById(id);
+		 return "User Deleted";
 	}
 
 	public String assign(AssignRole assignrole) {

@@ -51,12 +51,13 @@ public class SignUp {
 	
 	@PostMapping("/updateuser")
 	public String updateuser(@RequestBody Users users) {
+		System.out.println("???????????");
 		return signupservice.update(users);
 	}
 	
-	@GetMapping("/deleteuser/{id}")
-	public void deleteuser(@PathVariable int id) {
-		signupservice.delete(id);
+	@GetMapping("/deleteuser")
+	public String deleteuser(@RequestParam int userId) {
+		return signupservice.delete(userId);
 	}
 	@PostMapping("/assignrole")
 	public String assignRoleToUser(@RequestBody AssignRole assignrole ) {
