@@ -49,7 +49,7 @@ public class UserOrder {
 	
 	private Integer coinQuantity;
 
-	private Integer price;
+	private double price;
 
 //	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
 	private String orderCreatedOn;
@@ -57,7 +57,7 @@ public class UserOrder {
 	@Enumerated(EnumType.STRING)
 	private TransactionOrderStatus status;
 
-	private long fee;
+	private double fee;
 
 	@JsonIgnore
 	@ManyToOne(cascade = CascadeType.ALL)
@@ -72,11 +72,11 @@ public class UserOrder {
 		this.user = user;
 	}
 
-	public long getFee() {
+	public double getFee() {
 		return fee;
 	}
 
-	public void setFee(long fee) {
+	public void setFee(double fee) {
 		this.fee = fee;
 	}
 
@@ -108,11 +108,11 @@ public class UserOrder {
 		this.coinQuantity = coinQuantity;
 	}
 
-	public Integer getPrice() {
+	public double getPrice() {
 		return price;
 	}
 
-	public void setPrice(Integer price) {
+	public void setPrice(double price) {
 		this.price = price;
 	}
 

@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,6 +22,7 @@ import com.trading.dto.UserRoleDto;
 import com.trading.repository.RoleRepository;
 import com.trading.repository.UserOtpRepository;
 import com.trading.repository.UserRepository;
+import com.trading.utilities.CountryValidator;
 import com.trading.utilities.EmailValidator;
 import com.trading.utilities.NameValidator;
 import com.trading.utilities.PasswordValidator;
@@ -80,71 +83,73 @@ public class UserService {
 			result.put("message", "Oopss, this phoneNumber is already registered");
 			return result;
 		}
-		
-		String phoneNumber = user.getPhoneNumber()+"";
+		 String regex = "^[A-Z0-9._%+-]+@[A-Z0-9.]+\\.[A-Z]{2,6}$";
 
-	if(PhoneValidator.isValid(phoneNumber) && phoneNumber.trim().length()== 10 )	
-	{
-	if(NameValidator.isValid(user.getUserName())  && user.getUserName().trim().length() <= 25) 
-		{
-		if (EmailValidator.isValidEmailAddress(user.getEmail())) {
-			if (PasswordValidator.isValid(user.getPassword())) {
-				if (userRepository.save(user) != null) {
-					user.setDate(new Date().toString());
-					user.setStatus(UserStatus.INACTIVE);
-					String email = user.getEmail();
-					otpservice.sendSMS(otp);
-					emailservice.sendEmail(otp);
-					userotp.settokenOTP(otp);
-					userotp.setEmail(email);
-					userotpRepository.save(userotp);
-					Wallet wallet = new Wallet();
-					wallet.setCoinType(WalletType.FIAT);
-					wallet.setCoinName("INR");
-					wallet.setuser(user);
-					user.getWallet().add(wallet);
-					Role role = new Role();
-				
-					role.setRoleType(RoleType.USER);
-					
-					user.getRole().add(role);
-					userRepository.save(user);
-					result.put("isSuccess", true);
-					result.put("message", "Your account has been created, please verify your account");
-					return result;
-				} else {
+	      Pattern pattern = Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
+	      Matcher matcher = pattern.matcher(user.getEmail());
+
+		String phoneNumber = user.getPhoneNumber() + "";
+		if (CountryValidator.isValid(user.getCountry())) {
+			if (PhoneValidator.isValid(phoneNumber) && phoneNumber.trim().length() == 10) {
+				if (NameValidator.isValid(user.getUserName()) && user.getUserName().trim().length() <= 25) {
+					if (EmailValidator.isValidEmailAddress(user.getEmail()) && matcher.matches()) {
+						if (PasswordValidator.isValid(user.getPassword())) {
+							if (userRepository.save(user) != null) {
+								user.setDate(new Date().toString());
+								user.setStatus(UserStatus.INACTIVE);
+								String email = user.getEmail();
+								otpservice.sendSMS(otp);
+								emailservice.sendEmail(otp);
+								userotp.settokenOTP(otp);
+								userotp.setEmail(email);
+								userotpRepository.save(userotp);
+								Wallet wallet = new Wallet();
+								wallet.setCoinType(WalletType.FIAT);
+								wallet.setCoinName("INR");
+								wallet.setuser(user);
+								user.getWallet().add(wallet);
+								Role role = new Role();
+
+								role.setRoleType(RoleType.USER);
+
+								user.getRole().add(role);
+								userRepository.save(user);
+								result.put("isSuccess", true);
+								result.put("message", "Your account has been created, please verify your account");
+								return result;
+							} else {
+								result.put("isSuccess", false);
+								result.put("message", "Failed to create new account");
+								return result;
+							}
+						} else {
+							result.put("isSuccess", false);
+							result.put("message", "Please enter valid password");
+							return result;
+						}
+					} else {
+
+						result.put("isSuccess", false);
+						result.put("message", "Please enter valid email address");
+						return result;
+					}
+				}
+
+				else {
 					result.put("isSuccess", false);
-					result.put("message", "Failed to create new account");
+					result.put("message", "Please enter valid user name");
 					return result;
-				}}
-			else {
+				}
+			} else {
 				result.put("isSuccess", false);
-				result.put("message", "Please enter valid password");
+				result.put("message", "Enter valid phone Number");
 				return result;
-			}}
-		else {
-			
-			result.put("isSuccess", false);
-			result.put("message", "Please enter valid email address");
-			return result;
+			}
 		}
-		}
-		
-		else
-		{
-			result.put("isSuccess", false);
-			result.put("message", "Please enter valid user name");
-			return result;
-		}}
-	else {
 		result.put("isSuccess", false);
-		result.put("message", "Enter valid phone Number");
+		result.put("message", "Enter valid Country Name");
 		return result;
 	}
-		}
-		
-
-	
 
 	public List<User> getDetails() {
 		return (List<User>) userRepository.findAll();
@@ -173,56 +178,53 @@ public class UserService {
 			result.put("message", "Username can not be null");
 			return result;
 		}
-		
+
 		if (user.getEmail() == null || user.getEmail() == "") {
 			result.put("isSuccess", false);
 			result.put("message", "Email cannot be null");
 			return result;
 		}
 
-		
-		String phoneNumber = user.getPhoneNumber()+"";
-		if (phoneNumber.trim().length()!= 10  && PhoneValidator.isValid(phoneNumber)) {
+		String phoneNumber = user.getPhoneNumber() + "";
+		if (phoneNumber.trim().length() != 10 && PhoneValidator.isValid(phoneNumber)) {
 			result.put("isSuccess", false);
 			result.put("message", "Enter valid phone Number");
 			return result;
 		}
-		
-	if(NameValidator.isValid(user.getUserName())  && user.getUserName().trim().length() <= 25) 
-		{
-		if (EmailValidator.isValidEmailAddress(user.getEmail())) {
-			if (PasswordValidator.isValid(user.getPassword())) {
-		if (userdb != null) {
-			userdb.setUserName(user.getUserName());
-			userdb.setCountry(user.getCountry());
-			userdb.setEmail(user.getEmail());
-			userdb.setPassword(user.getPassword());
-			userdb.setPhoneNumber(user.getPhoneNumber());
-			userRepository.save(userdb);
-			result.put("isSuccess", true);
-			result.put("message", "Succesfully updated details");
-			return result;
-		} else {
 
-			result.put("isSuccess", false);
-			result.put("message", "User Id does not exist");
-			return result;
-		}}
-			else {
+		if (NameValidator.isValid(user.getUserName()) && user.getUserName().trim().length() <= 25) {
+			if (EmailValidator.isValidEmailAddress(user.getEmail())) {
+				if (PasswordValidator.isValid(user.getPassword())) {
+					if (userdb != null) {
+						userdb.setUserName(user.getUserName());
+						userdb.setCountry(user.getCountry());
+						userdb.setEmail(user.getEmail());
+						userdb.setPassword(user.getPassword());
+						userdb.setPhoneNumber(user.getPhoneNumber());
+						userRepository.save(userdb);
+						result.put("isSuccess", true);
+						result.put("message", "Succesfully updated details");
+						return result;
+					} else {
+
+						result.put("isSuccess", false);
+						result.put("message", "User Id does not exist");
+						return result;
+					}
+				} else {
+					result.put("isSuccess", false);
+					result.put("message", "Please enter valid password");
+					return result;
+				}
+			} else {
+
 				result.put("isSuccess", false);
-				result.put("message", "Please enter valid password");
+				result.put("message", "Please enter valid email address");
 				return result;
-			}}
+			}
+		}
+
 		else {
-			
-			result.put("isSuccess", false);
-			result.put("message", "Please enter valid email address");
-			return result;
-		}
-		}
-		
-		else
-		{
 			result.put("isSuccess", false);
 			result.put("message", "Please enter valid user name");
 			return result;
@@ -266,14 +268,13 @@ public class UserService {
 			result.put("message", "New role has been added and assigned");
 			return result;
 		} else {
-			
+
 			userdb.getRole().add(roledb);
 			userRepository.save(userdb);
 			result.put("isSuccess", true);
 			result.put("message", "Existing role has been assigned");
 			return result;
-		
-			
+
 		}
 	}
 }

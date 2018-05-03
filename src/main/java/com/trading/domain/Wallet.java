@@ -32,8 +32,8 @@ public class Wallet {
 		this.coinName = coinName;
 	}
 
-	private long balance;
-	private long shadowBalance;
+	private double balance;
+	private double shadowBalance;
 
 	@JsonIgnore
 	@ManyToOne(cascade = CascadeType.ALL)
@@ -67,19 +67,19 @@ public class Wallet {
 		this.coinType = coinType;
 	}
 
-	public long getBalance() {
+	public double getBalance() {
 		return balance;
 	}
 
-	public void setBalance(long balance) {
+	public void setBalance(double balance) {
 		this.balance = balance;
 	}
 
-	public long getShadowBalance() {
+	public double getShadowBalance() {
 		return shadowBalance;
 	}
 
-	public void setShadowBalance(long shadowBalance) {
+	public void setShadowBalance(double shadowBalance) {
 		this.shadowBalance = shadowBalance;
 	}
 }

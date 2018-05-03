@@ -44,7 +44,7 @@ public class CurrencyService {
 			result.put("message", "Initial supply can not be null");
 			return result;
 		}
-		if (currency.getPrice() == null) {
+		if (currency.getPrice() == 0L) {
 			result.put("isSuccess", false);
 			result.put("message", "Price can not be null");
 			return result;

@@ -52,10 +52,10 @@ public class OrderService {
 		Wallet wallet = new Wallet();
 		 wallet = walletRepository.findByCoinTypeAndUser(WalletType.FIAT, user);
 		 long coinQuantity = userOrderDto.getCoinQuantity();
-			long price = userOrderDto.getPrice();
-			long fee = currency.getFee();
-			long balance = wallet.getBalance();
-			long shadowBalance = (coinQuantity * fee) + (coinQuantity * price);
+			double price = userOrderDto.getPrice();
+			double fee = currency.getFee();
+			double balance = wallet.getBalance();
+			double shadowBalance = (coinQuantity * fee) + (coinQuantity * price);
 			if(balance > shadowBalance)
 			{
 		if (user != null && userOrderDto != null) {
@@ -102,8 +102,8 @@ public class OrderService {
 
 		User user = userRepository.findOneByUserId(userOrderDto.getUserId());
 		Wallet wallet = walletRepository.findByCoinTypeAndUser(WalletType.CRYPTO, user);
-		long balance = wallet.getBalance();
-		long shadowBalance = wallet.getBalance() - userOrderDto.getCoinQuantity();
+		double balance = wallet.getBalance();
+		double shadowBalance = wallet.getBalance() - userOrderDto.getCoinQuantity();
 		
 		if(balance >shadowBalance) {
 

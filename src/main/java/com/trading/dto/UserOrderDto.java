@@ -4,7 +4,7 @@ public class UserOrderDto {
 
 	private long userId;
 	private Integer coinQuantity;
-	private Integer price;
+	private double price;
 	private String coinName;
 	
 
@@ -24,11 +24,11 @@ public class UserOrderDto {
 		this.coinQuantity = coinQuantity;
 	}
 
-	public Integer getPrice() {
+	public double getPrice() {
 		return price;
 	}
 
-	public void setPrice(Integer price) {
+	public void setPrice(double price) {
 		this.price = price;
 	}
 

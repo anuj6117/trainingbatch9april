@@ -26,25 +26,25 @@ public class Transaction {
 	@Enumerated(EnumType.STRING)
 	private TransactionOrderStatus status;
 
-	private long transactionFee;
+	private double transactionFee;
 
-	private long netAmount;
+	private double netAmount;
 
-	private long exchangeRate;
+	private double exchangeRate;
 
 	private long buyerId;
 
-	public long getExchangeRate() {
+	public double getExchangeRate() {
 		return exchangeRate;
 	}
 
-	public void setExchangeRate(long exchangeRate) {
+	public void setExchangeRate(double exchangeRate) {
 		this.exchangeRate = exchangeRate;
 	}
 
 	private long sellerId;
 
-	private long grossAmount;
+	private double grossAmount;
 
 	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
 	private String transactionCreatedOn;
@@ -57,27 +57,27 @@ public class Transaction {
 		this.transactionId = transactionId;
 	}
 
-	public long getNetAmount() {
+	public double getNetAmount() {
 		return netAmount;
 	}
 
-	public void setNetAmount(long netAmount) {
+	public void setNetAmount(double netAmount) {
 		this.netAmount = netAmount;
 	}
 
-	public long getGrossAmount() {
+	public double getGrossAmount() {
 		return grossAmount;
 	}
 
-	public void setGrossAmount(long grossAmount) {
+	public void setGrossAmount(double grossAmount) {
 		this.grossAmount = grossAmount;
 	}
 
-	public long getTransactionFee() {
+	public double getTransactionFee() {
 		return transactionFee;
 	}
 
-	public void setTransactionFee(long transactionFee) {
+	public void setTransactionFee(double transactionFee) {
 		this.transactionFee = transactionFee;
 	}
 

@@ -8,6 +8,5 @@ public class PriceComparator implements Comparator <UserOrder>
 {
 	@Override
     public int compare(UserOrder ord1, UserOrder ord2) {
-        return ord1.getPrice().compareTo(ord2.getPrice());
-
+return Double.compare(ord1.getPrice(), ord2.getPrice());
 }}

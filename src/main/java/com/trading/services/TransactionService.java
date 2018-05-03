@@ -63,7 +63,7 @@ public class TransactionService {
 
 		for (UserOrder buy : buyer) {
 
-			long buyPrice = buy.getPrice();
+			double buyPrice = buy.getPrice();
 			currency = currencyRepository.findByCoinName(buy.getCoinName());
 			if (currency == null) {
 				result.put("isSuccess", false);
@@ -71,7 +71,7 @@ public class TransactionService {
 				return result;
 			}
 
-			long coinPrice = currency.getPrice();
+			double coinPrice = currency.getPrice();
 			List<UserOrder> seller = orderRepository.findByOrderTypeAndStatusAndCoinName(OrderType.SELLER,
 					TransactionOrderStatus.PENDING, buy.getCoinName());
 			Collections.sort(seller, new UserOrderComparator(new PriceComparator()));
@@ -122,10 +122,10 @@ public class TransactionService {
 					}
 				}
 			}
-			long fee = currency.getFee();
-			long coinQuantity = buy.getCoinQuantity();
-			long netAmount = (buyPrice * coinQuantity);
-			long grossAmount = (buyPrice * coinQuantity) + (coinQuantity * fee);
+			double fee = currency.getFee();
+			double coinQuantity = buy.getCoinQuantity();
+			double netAmount = (buyPrice * coinQuantity);
+			double grossAmount = (buyPrice * coinQuantity) + (coinQuantity * fee);
 			if (flag = true) {
 				if (admin = true) {
 
@@ -173,7 +173,7 @@ public class TransactionService {
 						transaction.setTransactionCreatedOn(new Date().toString());
 						transaction.setCoinQuantiy(currency.getInitialSupply());
 						transactionRepository.save(transaction);
-						long balance = currency.getInitialSupply() * buy.getPrice();
+						double balance = currency.getInitialSupply() * buy.getPrice();
 						walletFiat.setBalance(wallet.getBalance() - balance);
 						wallet.setBalance(wallet.getBalance() + currency.getInitialSupply());
 						wallet.setShadowBalance(wallet.getBalance() + currency.getInitialSupply());

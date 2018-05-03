@@ -168,4 +168,20 @@ public class User {
 		this.phoneNumber = phoneNumber;
 	}
 
+	public User()
+	{
+		
+	}
+
+	public User(User user) {
+		this.userId = userId;
+		this.userName = userName;
+		this.email = email;
+		this.password = password;
+		this.country = country;
+		this.phoneNumber = phoneNumber;
+		this.date = date;
+		this.status = status;
+	}
+	
 }

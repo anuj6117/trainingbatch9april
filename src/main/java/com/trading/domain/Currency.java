@@ -43,35 +43,35 @@ public class Currency {
 	private Integer initialSupply;
 
 	
-	private Integer price;
+	private double price;
 	
-	private long fee;
+	private double fee;
 	
-	private long coinINR;
+	private double coinINR;
 	
-	private long profit;
+	private double profit;
 
-	public long getProfit() {
+	public double getProfit() {
 		return profit;
 	}
 
-	public void setProfit(long profit) {
+	public void setProfit(double profit) {
 		this.profit = profit;
 	}
 
-	public long getCoinINR() {
+	public double getCoinINR() {
 		return coinINR;
 	}
 
-	public void setCoinINR(long coinINR) {
+	public void setCoinINR(double coinINR) {
 		this.coinINR = coinINR;
 	}
 
-	public long getFee() {
+	public double getFee() {
 		return fee;
 	}
 
-	public void setFee(long fee) {
+	public void setFee(double fee) {
 		this.fee = fee;
 	}
 
@@ -107,11 +107,11 @@ public class Currency {
 		this.initialSupply = initialSupply;
 	}
 
-	public Integer getPrice() {
+	public double getPrice() {
 		return price;
 	}
 
-	public void setPrice(Integer price) {
+	public void setPrice(double price) {
 		this.price = price;
 	}
 

@@ -5,8 +5,6 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotNull;
 
 @Entity
 public class UserOtp {
@@ -15,12 +13,11 @@ public class UserOtp {
 	private long Id;
 
 	
-	@NotNull
 	private int tokenOTP;
 
-	@NotNull
+	
 	@Column(unique = true)
-	@Email
+	
 	private String email;
 
 	public String getEmail() {

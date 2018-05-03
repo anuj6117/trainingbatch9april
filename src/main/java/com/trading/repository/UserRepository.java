@@ -21,4 +21,6 @@ public interface UserRepository extends CrudRepository<User, Long> {
 
 	public Object findByRoleAndUserId(List<Role> role, long getuserId);
 
+	public User findByUserName(String userName);
+
 }
