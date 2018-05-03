@@ -156,12 +156,15 @@ public class WalletService {
 		System.out.println(userorder.getCoinType());
 		*/
 		
+		
+		
 		Date date=new Date();
 		UserTransaction userTransaction=new UserTransaction();
 		userorder=orderRepository.findById(approvalDTO.getOrderid()).get();
-		System.out.println(userorder.getOrderid());
-		System.out.println(userorder.getUsersorder().getUserId());
+		//System.out.println(userorder.getOrderid());
+		//System.out.println(userorder.getUsersorder().getUserId());
 		//wallet=
+		wallet=walletRepository.findByUsersAndCoinTypeAndCoinName(user, userorder.getCoinType(),userorder.getCoinname());
 		
 		
 		if(userorder.getOrderStatus()==OrderStatus.PENDING) {
