@@ -43,7 +43,6 @@ public class CoinManagementService {
 	}
 
 	public void delete(Integer id) {
-
-		coinManagementRepository.deleteById(id.longValue());
+		coinManagementRepository.deleteById(id);
 	}
 }

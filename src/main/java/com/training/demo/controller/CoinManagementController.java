@@ -66,6 +66,7 @@ public class CoinManagementController {
 		} else {
 			return "coin name can not be null ";
 		}
+		//List<CoinManagement>currency=coinmanagementrepository.findAll();
 	}
 
 	@RequestMapping(value = "getallcurrency", method = RequestMethod.GET)
@@ -86,8 +87,11 @@ public class CoinManagementController {
 
 	@RequestMapping(value = "/deletecurrency", method = RequestMethod.GET)
 	public String delete(@RequestParam("coinId") Integer id) {
+		System.out.println(id);
 		if ((id != null)) {
+			System.out.println(id);
 			coinManagementService.delete(id);
+			System.out.println(id);
 			return "success";
 		}
 		return "fail";

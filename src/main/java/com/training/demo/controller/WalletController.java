@@ -1,15 +1,20 @@
 package com.training.demo.controller;
 
+import java.util.Set;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.training.demo.dto.UserDepositDto;
 import com.training.demo.dto.UserWalletDto;
 import com.training.demo.dto.WalletApprovalDto;
+import com.training.demo.model.UserOrder;
 import com.training.demo.model.Wallet;
+import com.training.demo.repository.UserOrderRepository;
 import com.training.demo.repository.WalletRepository;
 import com.training.demo.service.WalletService;
 
@@ -21,10 +26,12 @@ public class WalletController {
 
 	@Autowired
 	private WalletRepository walletRepository;
+	@Autowired
+	private UserOrderRepository userorderrepository;
 
 	private Wallet wallet;
 
-	@RequestMapping(value = "addWallet", method = RequestMethod.POST)
+	@RequestMapping(value = "addwallet", method = RequestMethod.POST)
 	public String addWallet(@RequestBody UserWalletDto userwalletdto) {
 		// userwalletdto.setUserId(1234);
 		// return
@@ -36,7 +43,7 @@ public class WalletController {
 		// throw new NullPointerException("Wallet type may not be null ");
 	}
 
-	@RequestMapping(value = "depositAmount", method = RequestMethod.POST)
+	@RequestMapping(value = "depositamount", method = RequestMethod.POST)
 
 	public String deposit(@RequestBody UserWalletDto userwalletdto) {
 		return walletService.depositAmount(userwalletdto);
@@ -51,6 +58,15 @@ public class WalletController {
 	return walletService.deposit(walletapprovaldto);
 	
 }
+	@RequestMapping(value="/walletHistory", method=RequestMethod.GET)
+	   public Set<UserOrder> walletHistory(@RequestParam("userId") Integer userId,@RequestParam("coinName") String coinName)
+	    {
+		   
+		 return userorderrepository.history(userId, coinName);
+	    }
+
+
+	
 }
 
 

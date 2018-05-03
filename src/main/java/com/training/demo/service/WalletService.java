@@ -18,7 +18,6 @@ import com.training.demo.model.Transection;
 import com.training.demo.model.User;
 import com.training.demo.model.UserOrder;
 import com.training.demo.model.Wallet;
-import com.training.demo.repository.OrderRepository;
 import com.training.demo.repository.TransectionRepository;
 import com.training.demo.repository.UserOrderRepository;
 import com.training.demo.repository.UserRepository;
@@ -33,7 +32,7 @@ public class WalletService {
 	@Autowired
 	private UserRepository userrepository;
 	@Autowired
-	private OrderRepository orderrepository;
+	private UserOrderRepository orderrepository;
 	@Autowired
 	private TransectionRepository transectionrepo;
 	
@@ -48,12 +47,16 @@ public class WalletService {
 	public String addWallet(UserWalletDto userWalletdto) {
 		System.out.println(userWalletdto.getUserId());
 		User user = userrepository.findByUserId(userWalletdto.getUserId());
+		
+		//wallet=walletRepository.findBycoinNameAndUser(coinName, user);
 		WalletType w=userWalletdto.getCoinType();
 		String c=userWalletdto.getCoinName();
 		
 		//wallet =walletRepository.findByCoinTypeAndCoinNameAndUser(w,c,user);
 		
 		//if(user.
+		if(user.getUserStatus()==UserStatus.ACTIVE)
+		{
 		if ((user != null)&&(wallet==null))
 				//&&(walletType==null))
 		{
@@ -72,6 +75,11 @@ public class WalletService {
 
 		} else {
 			return "failed to add new wallet, wallet already exist";
+		}
+		}
+		else
+		{
+			return "wallet can't be assign to unauthorized user";
 		}
 
 	}

@@ -83,7 +83,7 @@ public class SignUpService {
 
 			System.out.println("service hit");
 			Random random = new Random();
-			int otp = random.nextInt(5255);
+			int otp = random.nextInt(899000)+1000;
 			Date date;
 			System.out.println("service hit before if");
 			user.setUserStatus(UserStatus.INACTIVE);
@@ -178,7 +178,8 @@ public class SignUpService {
 		User user = userRepository.findByUserId(userRoleDto.getUserId());
 		Role role = roleRepository.findByRoleType(userRoleDto.getRoleType());
 
-		if (user != null) {
+		if ((user != null)&&(user.getUserStatus()==UserStatus.ACTIVE))
+		{
 			if (role != null) {
 				
 				user.getRoles().add(role);
@@ -188,7 +189,7 @@ public class SignUpService {
 				throw new NullPointerException("User role doesn't exist");
 			}
 		} else {
-			throw new NullPointerException("User id does not exist.");
+			throw new NullPointerException("User is INACTIVE.");
 		}
 	}
 

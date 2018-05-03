@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.training.demo.model.OtpVerification;
 import com.training.demo.model.Role;
+import com.training.demo.model.User;
 import com.training.demo.repository.OtpRepository;
 import com.training.demo.repository.RoleRepository;
 import com.training.demo.repository.UserRepository;
@@ -18,11 +19,17 @@ public class RoleService {
 
 	@Autowired
 	private RoleRepository roleRepository;
+	
+	@Autowired
+	UserRepository userRepository;
+	
 
 	@Autowired
 	private OtpRepository otpRepository;
 
 	public String addRole(Role roleArg) {
+		//User user=userRepository.findByUserId(roleArg.getUserId());
+		//User user=roleArg.getUser();
 		role=roleRepository.findByRoleType(roleArg.getRoleType());
 		if(role==null) {
 		roleRepository.save(roleArg);

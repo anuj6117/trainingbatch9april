@@ -17,25 +17,24 @@ public class CoinManagement {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Integer coinId;
-	
+
 	public void setCoinId(Integer coinId) {
 		this.coinId = coinId;
 	}
 
 	@Enumerated(EnumType.STRING)
 	private WalletType coinType;
-	//@NotNull(message = "coinName not null")
+	// @NotNull(message = "coinName not null")
 	private String coinName;
-	//@Column(unique = true)
-	//@NotNull(message = "symbol not null")
+	// @Column(unique = true)
+	// @NotNull(message = "symbol not null")
 	private String symbol;
 	@NotNull(message = "can not be null")
 	private long initialSupply;
-	
+
 	public long getInitialSupply() {
 		return initialSupply;
 	}
-
 
 	public void setInitialSupply(long initialSupply) {
 		this.initialSupply = initialSupply;
@@ -44,14 +43,12 @@ public class CoinManagement {
 	@NotNull(message = "price not null")
 	private Integer price;
 	private long fee;
-	
 
-	
 	private Integer INRconversion;
+
 	public Integer getINRconversion() {
 		return INRconversion;
 	}
-
 
 	public void setINRconversion(Integer iNRconversion) {
 		INRconversion = iNRconversion;
@@ -63,7 +60,6 @@ public class CoinManagement {
 		return profit;
 	}
 
-	
 	public void setProfit(Long profit) {
 		this.profit = profit;
 	}
@@ -84,15 +80,9 @@ public class CoinManagement {
 		this.fee = fee;
 	}
 
-
-	
-	
-
 	public Integer getCoinId() {
 		return coinId;
 	}
-	
-
 
 	public String getCoinName() {
 		return coinName;
@@ -110,7 +100,6 @@ public class CoinManagement {
 		this.symbol = symbol;
 	}
 
-	
 	public Integer getPrice() {
 		return price;
 	}

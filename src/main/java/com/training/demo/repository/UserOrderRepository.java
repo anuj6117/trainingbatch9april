@@ -2,8 +2,10 @@ package com.training.demo.repository;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 
 import com.training.demo.enums.OrderType;
 import com.training.demo.enums.UserOrderStatus;
@@ -29,6 +31,7 @@ public interface UserOrderRepository extends JpaRepository<UserOrder, Integer> {
 	
 	
 	
-		
+	@Query(value="SELECT * FROM userorder WHERE user_id=?1 AND coin_name=?2",nativeQuery=true)
+	Set<UserOrder> history(Integer id,String coinName);
 
 }

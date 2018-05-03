@@ -25,37 +25,41 @@ public class SignUpController {
 	@Autowired
 	private UserRepository userRepository;
 
-	// RegexUtilities util = new RegexUtilities();
-
 	@RequestMapping(value = "/signup", method = RequestMethod.POST)
 	public String insertUser(@RequestBody User user) {
 		String password = user.getPassword().trim();
-		String username = user.getuserName().trim();
-		// String upperCaseChars = "(.*[A-Z].*)";
-		// String lowerCaseChars = "(.*[a-z].*)";
+		String username = user.getuserName();
+		String username1 = user.getuserName().trim();
 
-		// String specialChars =
-		// "(.*[,~,!,@,#,$,%,^,&,*,(,),-,_,=,+,[,{,],},|,;,:,<,>,/,?].*$)";
-		// if (!password.matches(specialChars ))
 		int length = password.length();
 		int unamelength = username.length();
+		int uname1length = username1.length();
+		int phoneLength = user.getPhoneNo().length();
+		String phn = user.getPhoneNo().replaceAll("\\s+", "");
+		int l = phn.length();
+		if (user.getPhoneNo().length() == 10 && (user.getPhoneNo().matches("[0-9]+") && (phoneLength == l))) {
+			if ((unamelength != 0) && (unamelength == uname1length) && (user.getuserName() != null)) {
+				if (username.length() <= 25) {
 
-		if ((length != 0) && (unamelength <= 25)) {
+					if ((user.getCountry()!= null)&&(user.getCountry().length()!=0)) {
 
-			String newUser = signUpService.addUser(user);
-			if ((newUser != null) && (unamelength != 0)) {
-				return newUser;
-			}
+						if (length != 0) {
+							String newUser = signUpService.addUser(user);
+							if (newUser != null) {
+								return newUser;
+							} else
+								return "please enter valid entries";
+						} else
+							return "password can not be null";
 
-			else {
-				return "user can not be null and maximum charector allowed for this field 25";
-			}
-		}
-
-		else {
-			return "enter valid password or user name";
-
-		}
+					} else
+						return "country can't be null";
+				} else
+					return "maximum charector for user name is 25";
+			} else
+				return "user name can't be null or cannot contain inappropriate spaces";
+		} else
+			return "phone number should be length of 10 and  should contain numeric only";
 	}
 
 	@RequestMapping(value = "/verify", method = RequestMethod.POST)
