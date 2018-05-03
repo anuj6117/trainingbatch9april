@@ -17,6 +17,7 @@ import com.trainingproject.domain.UserOrder;
 import com.trainingproject.domain.Wallet;
 import com.trainingproject.dto.AssignRoleBean;
 import com.trainingproject.dto.AssignWalletBean;
+import com.trainingproject.dto.GetUserById;
 import com.trainingproject.dto.WithdrawDepositBean;
 import com.trainingproject.enums.CoinType;
 import com.trainingproject.enums.OrderType;
@@ -118,6 +119,7 @@ public class UserService {
 		List<Wallet> walletSet=new ArrayList<Wallet>();
 		Wallet wallet=new Wallet();
 		wallet.setCoinType(CoinType.FIAT);
+		wallet.setCoinName("Inr");
 		wallet.setUser(user);
 		walletSet.add(wallet);
 		walletRepository.save(wallet);
@@ -125,10 +127,10 @@ public class UserService {
 		
 		List<Role> roleList=new ArrayList<Role>();
 		Role role=new Role();
-		role.setRoleType("User");
+		role.setRoleType("USER");
 		roleList.add(role);      //todo
 		try {
-		if(roleRepository.findByroleType("User")==null)
+		if(roleRepository.findByroleType("USER")==null)
 		roleRepository.save(role);
 		}
 		catch(Exception e) {
@@ -164,9 +166,21 @@ public class UserService {
 	
 	}
 	
+//	public GetUserById getUserById(Integer userId) {
+//
+//		Optional<User> opt= userRepository.findById(userId);
+//		GetUserById bean=new GetUserById();
+//		if(opt.isPresent()) {
+//			bean.setOpt(opt);		
+//		}
+//		else bean.setMessage("User do not exist");
+//		return bean;
+//		
+//	}
+//	
 	public Optional<User> getUserById(Integer userId) {
 
-		return userRepository.findById(userId);
+		return userRepository.findById(userId);	
 		
 	}
 
@@ -221,9 +235,17 @@ public class UserService {
 		 return "success";
 	}
 
-	public void deleteData(Integer userId)
+	public String deleteUser(Integer userId)
 	{
+		try {
+		if(getUserById(userId).get()==null)
+			return "user does not exist ";
+		}
+		catch(Exception e) {
+			return "user does not exist ";
+		}
 		userRepository.deleteById(userId);
+		return "user deleted";
 	}
 
 
@@ -237,7 +259,13 @@ public class UserService {
 	      if(user.getStatus().equals(UserStatus.INACTIVE))
 		return "user is inactive";
 	      
+	      if(arb.getRoleType().equals("ADMIN")||arb.getRoleType().equals("USER")||arb.getRoleType().equals("MANAGER"))
+	      {
+	    	 
+	      
 		Role roleobj=roleRepository.findByroleType(arb.getRoleType());
+		if(roleobj==null)
+			return "role cannot be assigned";
 		List<Role> role=new ArrayList<Role>();
 		
 		role=user.getRoleType();
@@ -246,6 +274,8 @@ public class UserService {
 		user.setRoleType(role);
 		userRepository.save(user);
 		return "success";
+	      }
+	      else return "role cannot be assigned";
 		//System.out.println(rolelist.get(0).getRoleType()+"kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk");
 	
 		
@@ -257,12 +287,23 @@ public class UserService {
 		
 		User user=getUserById(awb.getUserId()).get();
 		
+		if(user==null)
+			return "no user present with thid id";
 		if(user.getStatus().equals(UserStatus.INACTIVE))
 			return "user is inactive";
+		if(awb.getCoinName()==null)
+			return "coin name cannot be null";
+		
+		if(awb.getCoinType()==null)
+			return "coin type cannot be null";
+		
+		if(awb.getCoinName().length()==0)
+			return "coin name cannot be empty";
 		
 		
 		Wallet cwallet=new Wallet();
-		cwallet.setCoinType(awb.getWalletType());
+		cwallet.setCoinType(awb.getCoinType());
+		cwallet.setCoinName(awb.getCoinName());
 		cwallet.setUser(user);
 		walletRepository.save(cwallet);
 		
@@ -276,9 +317,7 @@ public class UserService {
 		return "success";
 		
 		
-		
 	}
-
 
 
 	public String withdrawAmount(WithdrawDepositBean wb) {
@@ -300,7 +339,6 @@ public class UserService {
 		userorderRepository.save(userorder);
 		
 		return "success";
-		
 		
 	}
 
@@ -432,7 +470,7 @@ public class UserService {
 		User user = userRepository.findById(userOtp.getUserId()).get();
 		
 		if(user==null) {
-			return "not found";
+			return "Invalid OTP";
 		}
 		else {
 			if(userOTP.getEmail().equals(user.getEmail())) {
@@ -440,9 +478,9 @@ public class UserService {
 				signupOTPRepository.delete(userOTP);
 				user.setStatus(UserStatus.ACTIVE);
 				userRepository.save(user);
-				return "success";
+				return "your account is verified successfully";
 			}
-			else return "failure";
+			else return "invalid OTP";
 		}
 		
 	

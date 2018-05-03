@@ -1,6 +1,7 @@
 package com.trainingproject.controller;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -30,7 +31,7 @@ public class CurrencyController {
 	}
 	
 	@RequestMapping(value="/getcurrencybyid",method=RequestMethod.GET)
-	public List<Currency> getCurrencyById(@RequestParam Integer coinId) {
+	public Optional<Currency> getCurrencyById(@RequestParam Integer coinId) {
 		return currencyService.getCurrencyById(coinId);
 	}
 	

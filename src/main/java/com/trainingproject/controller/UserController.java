@@ -3,18 +3,12 @@ package com.trainingproject.controller;
 import java.util.List;
 import java.util.Optional;
 
-import javax.lang.model.type.UnknownTypeException;
-
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.InvalidMediaTypeException;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.trainingproject.domain.SignUpOTP;
@@ -51,7 +45,9 @@ public class UserController{
 	
 	@RequestMapping(value="getbyuserid",method=RequestMethod.GET)
 	public Optional<User> getById(@RequestParam Integer userId){
+		
 		return userservice.getUserById(userId);
+		
 	}
 	
 	
@@ -70,8 +66,8 @@ public class UserController{
 	@RequestMapping(value="deleteuser",method=RequestMethod.GET)
 	public String deleteData(Integer userId)
 	{
-		userservice.deleteData(userId);
-		return "success";
+		return userservice.deleteUser(userId);
+		
 	}
 	
 	@RequestMapping(value="assignrole",method=RequestMethod.POST)
@@ -84,8 +80,8 @@ public class UserController{
 	@RequestMapping(value="addwallet",method=RequestMethod.POST)
 	public String addWallet(@RequestBody AssignWalletBean awb) {
 		
-		userservice.addWallet(awb);
-		return "success";
+		return userservice.addWallet(awb);
+		
 	}
 	
 	@RequestMapping(value="withdrawamount",method=RequestMethod.POST)

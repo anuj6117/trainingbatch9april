@@ -67,6 +67,7 @@ public class Wallet {
 	public Wallet() {
 		balance=0l;
 		shadowBal=0l;
+		coinQuantity=0;
 	}
 	
 	public Integer getId() {

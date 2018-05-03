@@ -9,4 +9,5 @@ import com.trainingproject.domain.Role;
 public interface RoleRepository extends JpaRepository<Role,Integer>{
 
 	Role findByroleType(String roleType);
+	
 }
