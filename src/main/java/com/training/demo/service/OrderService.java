@@ -88,15 +88,21 @@ public class OrderService {
 			{
 				System.out.println("1111111111111111111111111111111111122222222222222222222222");
 				User user ;
-				try {
+				try 
+				{	System.out.println("USERrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr1111111111111111111111111111111111122222222222222222222222");
 					user = userRepository.findByUserId(orderApprovalDto.getUserId());
 				}
 				catch(Exception e)
 				{
 					return "invalid user id";
 				}
-				
-				if(orderTable != null || user !=null) 
+				System.out.println(user+"/t"+orderTable);
+				if(user == null)
+				{
+					return "invalid user id";
+				}
+				System.out.println(user+"/t"+orderTable);
+				if(orderTable != null && user !=null) 
 				{
 					System.out.println("111111111111111333333333333333333333333333333333");
 					boolean flag = false;

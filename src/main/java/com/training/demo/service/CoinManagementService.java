@@ -16,9 +16,9 @@ public class CoinManagementService {
 			CoinManagement tempCoinManagement;
 			tempCoinManagement = coinManagementRepository.findOneByCoinName(coinManagement.getCoinName());			
 			if(tempCoinManagement == null){
-			Double coinInInr = coinManagement.getPrice() * coinManagement.getInitialSupply();
+			//Double coinInInr = coinManagement.getPrice() * coinManagement.getInitialSupply();
 			coinManagement.setProfit(0.0);
-			coinManagement.setCoinInINR(coinInInr);
+			coinManagement.setCoinInINR(0.0);
 			coinManagementRepository.save(coinManagement);
 			return "Your Coin Has Been Added Successfully.";
 			}

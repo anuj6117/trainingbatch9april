@@ -319,10 +319,10 @@ public class TransactionService {
 					System.out.println(":::::::::::::::buyer crypto wallet balance "+buyerCryptoMainBal);
 					Double buyerCryptoShadowBal = buyerCryptoWallet.getShadowBalance();
 
-					Double fees = ((initSupply*buyerOrder.getPrice())*(coinManagement.getFees()/100));
-					Double AmountAndFee = initSupply * buyerOrder.getPrice()+fees;
+					//Double fees = ((initSupply*buyerOrder.getPrice())*(coinManagement.getFees()/100));
+					//Double AmountAndFee = initSupply * buyerOrder.getPrice()+fees;
 										
-					buyerFiatWallet.setBalance(buyerFiatMainBal - AmountAndFee);
+					buyerFiatWallet.setBalance(buyerFiatMainBal - buyerOrder.getGrossAmount());
 					buyerCryptoWallet.setBalance(buyerCryptoMainBal+buyerOrder.getCoinQuantity());
 					buyerCryptoWallet.setShadowBalance(buyerCryptoShadowBal+buyerOrder.getCoinQuantity());
 					
@@ -341,7 +341,7 @@ public class TransactionService {
 				}
 				
 			}
-		return "transaction failed";
+		return "Didn't find any matching transactions.";
 	}
 	
 	public void adminBuyerUpdate(Wallet buyerFiatWallet, Wallet buyerCryptoWallet, CoinManagement coinManagement,OrderTable buyerOrder)
