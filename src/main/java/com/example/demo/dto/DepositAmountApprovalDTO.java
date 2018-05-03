@@ -2,14 +2,16 @@ package com.example.demo.dto;
 
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-
 import com.example.demo.enums.OrderStatus;
 
-public class DepositAmountApprovalDTO {
+public class DepositAmountApprovalDTO
+{
 	private Integer orderId;
 	private String description;
+	
 	@Enumerated(EnumType.STRING)
 	private OrderStatus orderStatus;
+	
 	public Integer getOrderId() {
 		return orderId;
 	}

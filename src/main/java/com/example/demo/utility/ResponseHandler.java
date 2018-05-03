@@ -13,13 +13,12 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 
 public class ResponseHandler
 {
-	public static ResponseEntity<Object> generateResponse(HttpStatus status, boolean error, String message,
-			Object response) 
+	public static ResponseEntity<Object> generateResponse(HttpStatus status, boolean error, String message, Object response) 
 	{
 		Map<String, Object> map = new HashMap<String, Object>();
 		try 
 		{
-			map.put("timestamp", new Date().getTime());
+			map.put("timestamp", new Date().getTimezoneOffset());
 			map.put("status", status.value());
 			map.put("isSuccess", error);
 			map.put("message", message);
@@ -45,7 +44,6 @@ public class ResponseHandler
 			map.put("status", status.value());
 			map.put("isSuccess", error);
 			map.put("message", message);
-
 			return new ResponseEntity<Object>(map, status);
 		} 
 		catch (Exception e) 

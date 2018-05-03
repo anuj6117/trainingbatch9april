@@ -20,6 +20,10 @@ public class CoinManagement {
 	private Double coinInInr;
 	private Double profit;
 	private Double fee;
+	private Double exchangeRate;
+	
+	
+	
 
 	public Integer getCoinId() {
 		return coinId;
@@ -83,5 +87,13 @@ public class CoinManagement {
 
 	public void setFee(Double fee) {
 		this.fee = fee;
+	}
+
+	public Double getExchangeRate() {
+		return exchangeRate;
+	}
+
+	public void setExchangeRate(Double exchangeRate) {
+		this.exchangeRate = exchangeRate;
 	}
 }

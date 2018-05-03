@@ -55,7 +55,7 @@ public class CoinManagementService {
 			coinManagement.setSymbol(symbol);
 			Double fee=coinManagement.getFee();
 			Double initialSupply=coinManagement.getInitialSupply();
-			coinManagement.setCoinInInr(fee * initialSupply);
+			coinManagement.setCoinInInr(0.0);
 			coinManagementRepository.save(coinManagement);
 			return result;
 			

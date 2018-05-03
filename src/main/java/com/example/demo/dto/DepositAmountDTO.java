@@ -3,7 +3,8 @@ package com.example.demo.dto;
 import com.example.demo.enums.OrderType;
 import com.example.demo.enums.WalletType;
 
-public class DepositAmountDTO {
+public class DepositAmountDTO
+{
 	private Integer userId;
 	private WalletType walletType;
 	private Double amount;

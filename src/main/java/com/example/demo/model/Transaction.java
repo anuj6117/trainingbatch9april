@@ -5,6 +5,8 @@ import java.util.Date;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
@@ -17,8 +19,11 @@ import com.example.demo.enums.WalletType;
 public class Transaction {
 
 	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Integer transactionId;
 	private Double coinQuantity;
+	
+	private String coinName;
 	
 	@Enumerated(EnumType.STRING)
 	private WalletType coinType;
@@ -115,6 +120,12 @@ public class Transaction {
 	}
 	public void setOrderType(OrderType orderType) {
 		this.orderType = orderType;
+	}
+	public String getCoinName() {
+		return coinName;
+	}
+	public void setCoinName(String coinName) {
+		this.coinName = coinName;
 	}
 	
 	

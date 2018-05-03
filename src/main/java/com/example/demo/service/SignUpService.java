@@ -115,7 +115,7 @@ public class SignUpService
 			}
 			
 			String password=user.getPassword();
-			if(!(password.matches("(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\\S+$).{8,}")))
+			if(!(password.matches("(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=>])(?=\\S+$).{8,}")))
 			{
 				result.put("isSuccess", false);
 				result.put("message", "Please enter password with minimum 8 characters. Your password should have atleast 1 Uppercase, 1 Lowercase, 1 Digit & 1 Special character. Space is not allowed.");
@@ -140,6 +140,7 @@ public class SignUpService
 			wallet.setWalletType(WalletType.FIAT);
 			wallet.setBalance(0.0);
 			wallet.setShadowBalance(0.0);
+			wallet.setCoinName("INR");
 			wallet.setUser(newUser);
 			newUser.getWallets().add(wallet);
 			
@@ -161,8 +162,8 @@ public class SignUpService
 			if ((userRepository.save(newUser) != null))
 			{
 				walletRepository.save(wallet);
-				otpService.sendSms(tokenOtp);
-				mailService.sendMail(tokenOtp, user.getEmail());
+				//otpService.sendSms(tokenOtp);
+				//mailService.sendMail(tokenOtp, user.getEmail());
 
 				verifyOtp.setId(user.getUserId());
 				verifyOtp.setTokenOtp(tokenOtp);
@@ -191,21 +192,20 @@ public class SignUpService
 		}
 	}
 
-	public String verifyUserWithOtp(String emailId, Integer otp) {
+	public String verifyUserWithOtp(String emailId, Integer otp)
+	{
 
-		VerifyOtp vOtp = verifyOtpRepository.findByEmailId(emailId);
-		if (vOtp == null) 
+		VerifyOtp verifyOtpObject = verifyOtpRepository.findByEmailId(emailId);
+		if (verifyOtpObject == null) 
 		{
 			return "email does not exist.";
 		}
 		
-		Integer v_otp = vOtp.getTokenOtp();
-		
-		if (otp.equals(v_otp)) 
+		if (otp.equals(verifyOtpObject.getTokenOtp())) 
 		{
 			User user = userRepository.findByEmail(emailId);
 			user.setStatus(UserStatus.ACTIVE);
-			verifyOtpRepository.deleteById(vOtp.getId());
+			verifyOtpRepository.deleteById(verifyOtpObject.getId());
 			return "Otp verification successfull.";
 		} 
 		else
@@ -214,26 +214,28 @@ public class SignUpService
 		}
 	}
 
-	public Optional<User> getuserById(Integer id) {
-
-		Optional<User> usrid = userRepository.findById(id);
-		if (usrid != null) {
-			return usrid;
-		} else {
-			throw new NullPointerException("Id does not exist.");
-		}
-	}
-
 	public List<User> getAllUsers() 
 	{
 		return userRepository.findAll();
 
+	}
+	
+	public void delete(Integer id)
+	{
+
+		userRepository.deleteById(id);
+	}
+
+	public User getByUserId(Integer userId)
+	{
+		return userRepository.findOneByUserId(userId);		
 	}
 
 	public User update(User user) 
 	{
 		User userdb = null;
 		userdb = userRepository.findOneByUserId(user.getUserId());
+		
 		userdb.setUserName(user.getUserName());
 		userdb.setEmail(user.getEmail());
 		userdb.setPhoneNumber(user.getPhoneNumber());
@@ -243,8 +245,5 @@ public class SignUpService
 		return userRepository.save(userdb);
 	}
 
-	public void delete(Integer id) {
-
-		userRepository.deleteById(id);
-	}
+	
 }

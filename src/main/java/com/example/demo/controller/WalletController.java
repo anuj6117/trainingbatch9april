@@ -45,21 +45,6 @@ public class WalletController {
 		}
 	}
 	
-
-	/*@RequestMapping(value = "/addwallet", method = RequestMethod.POST)
-	public String addWallet(@RequestBody WalletDTO walletDTO)
-	{
-		if (walletDTO != null) 
-		{
-			walletService.addWalletToUser(walletDTO);
-			return "Successfully Added";
-		}
-		else
-		{
-			return "Wallet not added";
-		}
-	}*/
-	
 	@RequestMapping(value="/deposit", method=RequestMethod.POST)
 	public String deposit(@RequestBody DepositAmountDTO depositAmountDTO)
 	{
@@ -73,4 +58,6 @@ public class WalletController {
 			return "User Inactive deposit won't be complete.";
 		}
 	}
+	
+	//public 
 }

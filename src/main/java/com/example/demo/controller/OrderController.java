@@ -46,41 +46,16 @@ public class OrderController {
 	}
 	
 	@RequestMapping(value="/createbuyorder", method = RequestMethod.POST)
-	public ResponseEntity<Object> buyOrder(@RequestBody OrderDTO orderDTO)
+	public String buyOrder(@RequestBody OrderDTO orderDTO)
 	{
-		Map<String, Object> result = null;
-		try
-		{
-			result=orderService.buyOrder(orderDTO);
-			
-			if (result.get("isSuccess").equals(true)) {
-				return ResponseHandler.generateResponse(HttpStatus.OK, true, result.get("message").toString(), result);
-			} else {
-				return ResponseHandler.generateResponse(HttpStatus.OK, false, result.get("message").toString(), result);
-			}
-
-		} catch (Exception e) {
-			return ResponseHandler.generateResponse(HttpStatus.BAD_REQUEST, false, e.getMessage(), result);
-		}		
+		return orderService.buyOrder(orderDTO);			
 	}
 	
 	@RequestMapping(value="/createsellorder", method = RequestMethod.POST)
-	public ResponseEntity<Object> sellOrder(@RequestBody OrderDTO orderDTO)
+	public String sellOrder(@RequestBody OrderDTO orderDTO)
 	{
-		Map<String, Object> result = null;
-		try
-		{
-			result = orderService.sellOrder(orderDTO);
+		/*return "hello";*/
+			return orderService.sellOrder(orderDTO);
 			
-			if(result.get("isSuccess").equals(true))
-			{
-				return ResponseHandler.generateResponse(HttpStatus.OK, true, result.get("message").toString(), result);
-			} else {
-				return ResponseHandler.generateResponse(HttpStatus.OK, false, result.get("message").toString(), result);
-			}
-
-		} catch (Exception e) {
-			return ResponseHandler.generateResponse(HttpStatus.BAD_REQUEST, false, e.getMessage(), result);
-		}	
 	}
 }

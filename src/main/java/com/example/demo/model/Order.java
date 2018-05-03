@@ -14,7 +14,6 @@ import javax.persistence.Table;
 
 import com.example.demo.dto.OrderDTO;
 import com.example.demo.enums.OrderType;
-import com.example.demo.enums.TransactionType;
 import com.example.demo.enums.WalletType;
 import com.example.demo.enums.OrderStatus;
 
@@ -35,9 +34,6 @@ public class Order {
 	
 	@Enumerated(EnumType.STRING)
 	private WalletType walletType;
-
-	@Enumerated(EnumType.STRING)
-	private TransactionType transactionType;
 
 	@Enumerated(EnumType.STRING)
 	private WalletType coinType;
@@ -156,14 +152,6 @@ public class Order {
 
 	public void setCoinType(WalletType coinType) {
 		this.coinType = coinType;
-	}
-
-	public TransactionType getTransactionType() {
-		return transactionType;
-	}
-
-	public void setTransactionType(TransactionType transactionType) {
-		this.transactionType = transactionType;
 	}
 
 	public WalletType getWalletType() {
