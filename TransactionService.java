@@ -41,17 +41,17 @@ public class TransactionService {
 		Set<Wallet> walletSet = new HashSet<Wallet>();
 		public String startTransaction() {
 			
-			System.out.println("+++++++++++++++++++++Transaction function+++++++++++++++++++");
+			System.out.println("rrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrTransaction functionrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr");
 			ArrayList<UserOrder> buyers =  userOrderRepository.findAllByOrderTypeAndStatus(OrderType.Buyer,Status.PENDING);
 			if(buyers.isEmpty()) {
 				throw new RuntimeException("Buyer are not available");
 			}
 			ArrayList<UserOrder> sellers =  userOrderRepository.findAllByOrderTypeAndStatus(OrderType.Seller,Status.PENDING);
-			 //try {
 				if(sellers.isEmpty()) {
 					for(UserOrder allBuyers:buyers) {
 						currency = currencyRepository.findByCoinName(allBuyers.getCoinName());
-					  if(currency.getInitialSupply() > allBuyers.getCoinQuantity()) {
+					  if(currency.getInitialSupply() >= allBuyers.getCoinQuantity()) {
+						System.out.println("sssssssssssssssssssssssssssss (currency >=) ssssssssssssssssssssssssssssss");
 						Transaction transaction = new Transaction();
 						transaction.setCoinType(allBuyers.getCoinType());
 						transaction.setCoinName(allBuyers.getCoinName());
@@ -72,15 +72,15 @@ public class TransactionService {
 						wallet = walletRepository.findByCoinTypeAndCoinNameAndUser(CoinType.FIAT, "INR", user); 
 						//wallet.getBalance() - ((allBuyers.getCoinQuantity() * allBuyers.getPrice()) + 
 				         //((allBuyers.getCoinQuantity() * allBuyers.getPrice() * currency.getFees()) / 100))
-						wallet.setBalance(wallet.getBalance() + transaction.getGrossAmount());
-						wallet.setShadowBalance(wallet.getShadowBalance() + transaction.getGrossAmount());
+						wallet.setShadowBalance(wallet.getBalance() - transaction.getGrossAmount());
+						wallet.setBalance(wallet.getBalance() - transaction.getGrossAmount());
 						walletSet.add(wallet);
 						walletRepository.save(wallet);
 						
 						// Buyer CRYPTO wallet
 						wallet = walletRepository.findByCoinTypeAndCoinNameAndUser(allBuyers.getCoinType(), allBuyers.getCoinName(), user);
+						wallet.setShadowBalance(wallet.getBalance() + allBuyers.getCoinQuantity());
 						wallet.setBalance(wallet.getBalance() + allBuyers.getCoinQuantity()); 
-						wallet.setShadowBalance(wallet.getShadowBalance() + allBuyers.getCoinQuantity());
 						walletSet.add(wallet);
 						walletRepository.save(wallet);
 						
@@ -92,12 +92,10 @@ public class TransactionService {
 						currencyRepository.save(currency);
 						
 						allBuyers.setStatus(Status.APPROVED);
-						userOrderRepository.save(allBuyers);
-						
-						
-						
+						userOrderRepository.save(allBuyers);	
 					}
 					else if(currency.getInitialSupply() < allBuyers.getCoinQuantity()) {
+						System.out.println("tttttttttttttttttttttttttttttttt (currency <) ttttttttttttttttttttttttttttttttttt");
 						Transaction transaction = new Transaction();
 						transaction.setCoinType(allBuyers.getCoinType());
 						transaction.setCoinName(allBuyers.getCoinName());
@@ -117,15 +115,15 @@ public class TransactionService {
 						user = allBuyers.getUser();
 						wallet = walletRepository.findByCoinTypeAndCoinNameAndUser(CoinType.FIAT, "INR", user); 
 						//((currency.getInitialSupply() * allBuyers.getPrice()) + ((currency.getInitialSupply() * allBuyers.getPrice() * currency.getFees()) / 100))
+						wallet.setShadowBalance(wallet.getBalance() - transaction.getGrossAmount());
 						wallet.setBalance(wallet.getBalance() - transaction.getGrossAmount());
-						wallet.setShadowBalance(wallet.getShadowBalance() - transaction.getGrossAmount());
 						walletSet.add(wallet);
 						walletRepository.save(wallet);
 						
 						// Buyer CRYPTO wallet
 						wallet = walletRepository.findByCoinTypeAndCoinNameAndUser(allBuyers.getCoinType(), allBuyers.getCoinName(), user);
+						wallet.setShadowBalance(wallet.getBalance() + currency.getInitialSupply());
 						wallet.setBalance(wallet.getBalance() + currency.getInitialSupply()); 
-						wallet.setShadowBalance(wallet.getShadowBalance() + currency.getInitialSupply());
 						walletSet.add(wallet);
 						walletRepository.save(wallet);
 						
@@ -171,6 +169,7 @@ public class TransactionService {
 						         && allBuyers.getCoinName().equals(allSellers.getCoinName())) {
 
 					 if(allBuyers.getCoinQuantity() >= allSellers.getCoinQuantity()) {
+						System.out.println("uuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuu (buyerQuantity >= sellerQuantity) uuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuu");
 						Transaction transaction = new Transaction();
 						transaction.setCoinType(allBuyers.getCoinType());
 						transaction.setCoinName(allBuyers.getCoinName());
@@ -190,30 +189,30 @@ public class TransactionService {
 						user = allBuyers.getUser();
 						wallet = walletRepository.findByCoinTypeAndCoinNameAndUser(CoinType.FIAT, "INR", user); 
 						//((allSellers.getCoinQuantity() * allBuyers.getPrice()) + ((allSellers.getCoinQuantity() * allBuyers.getPrice() * currency.getFees()) / 100))
+						wallet.setShadowBalance(wallet.getBalance() - transaction.getGrossAmount());
 						wallet.setBalance(wallet.getBalance() - transaction.getGrossAmount());
-						wallet.setShadowBalance(wallet.getShadowBalance() - transaction.getGrossAmount());
 						walletSet.add(wallet);
 						walletRepository.save(wallet);
 						
 						// Buyer CRYPTO wallet
 						wallet = walletRepository.findByCoinTypeAndCoinNameAndUser(allBuyers.getCoinType(), allBuyers.getCoinName(), user);
+						wallet.setShadowBalance(wallet.getBalance() + allSellers.getCoinQuantity());
 						wallet.setBalance(wallet.getBalance() + allSellers.getCoinQuantity()); 
-						wallet.setShadowBalance(wallet.getShadowBalance() + allSellers.getCoinQuantity());
 						walletSet.add(wallet);
 						walletRepository.save(wallet);
 						
 						// Seller FIAT wallet
 						user = allSellers.getUser();
 						wallet = walletRepository.findByCoinTypeAndCoinNameAndUser(CoinType.FIAT, "INR", user);
+						wallet.setShadowBalance(wallet.getBalance() + (allSellers.getCoinQuantity() * allSellers.getPrice()));
 						wallet.setBalance(wallet.getBalance() + (allSellers.getCoinQuantity() * allSellers.getPrice()));
-						wallet.setShadowBalance(wallet.getShadowBalance() + (allSellers.getCoinQuantity() * allSellers.getPrice()));
 						walletSet.add(wallet);
 						walletRepository.save(wallet);
 						
 						// Seller CRYPTO wallet
 						wallet = walletRepository.findByCoinTypeAndCoinNameAndUser(allSellers.getCoinType(), allSellers.getCoinName(), user);
+						wallet.setShadowBalance(wallet.getBalance() - allSellers.getCoinQuantity());
 						wallet.setBalance(wallet.getBalance() - allSellers.getCoinQuantity()); 
-						wallet.setShadowBalance(wallet.getShadowBalance() - allSellers.getCoinQuantity());
 						walletSet.add(wallet);
 						walletRepository.save(wallet);
 						
@@ -223,13 +222,19 @@ public class TransactionService {
 								(allSellers.getCoinQuantity() * allSellers.getPrice())));
 						currencyRepository.save(currency);
 						
-						allBuyers.setCoinQuantity(allBuyers.getCoinQuantity() - allSellers.getCoinQuantity());
-						allBuyers.setStatus(Status.PENDING);
+						if(allBuyers.getCoinQuantity() == allSellers.getCoinQuantity()) {
+							allBuyers.setStatus(Status.APPROVED);
+						}
+						  else {
+							  allBuyers.setCoinQuantity(allBuyers.getCoinQuantity() - allSellers.getCoinQuantity());
+							  allBuyers.setStatus(Status.PENDING);
+						}
 						allSellers.setStatus(Status.APPROVED);
 						userOrderRepository.save(allBuyers);
 						userOrderRepository.save(allSellers);
 					}
 					else if(allBuyers.getCoinQuantity() < allSellers.getCoinQuantity()) {
+						System.out.println("vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv (buyerQuantity < sellerQuantity) vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv");
 						Transaction transaction = new Transaction();
 						transaction.setCoinType(allBuyers.getCoinType());
 						transaction.setCoinName(allBuyers.getCoinName());
@@ -249,30 +254,30 @@ public class TransactionService {
 						user = allBuyers.getUser();
 						wallet = walletRepository.findByCoinTypeAndCoinNameAndUser(CoinType.FIAT, "INR", user); 
                         //((allBuyers.getCoinQuantity() * allBuyers.getPrice()) + ((allBuyers.getCoinQuantity() * allBuyers.getPrice() * currency.getFees()) / 100))
+						wallet.setShadowBalance(wallet.getBalance() - transaction.getGrossAmount());
 						wallet.setBalance(wallet.getBalance() - transaction.getGrossAmount());
-						wallet.setShadowBalance(wallet.getShadowBalance() - transaction.getGrossAmount());
 						walletSet.add(wallet);
 						walletRepository.save(wallet);
 						
 						// Buyer CRYPTO wallet
 						wallet = walletRepository.findByCoinTypeAndCoinNameAndUser(allBuyers.getCoinType(), allBuyers.getCoinName(), user);
+						wallet.setShadowBalance(wallet.getBalance() + allBuyers.getCoinQuantity());
 						wallet.setBalance(wallet.getBalance() + allBuyers.getCoinQuantity()); 
-						wallet.setShadowBalance(wallet.getShadowBalance() + allBuyers.getCoinQuantity());
 						walletSet.add(wallet);
 						walletRepository.save(wallet);
 						
 						// Seller FIAT wallet
 						user = allSellers.getUser();
 						wallet = walletRepository.findByCoinTypeAndCoinNameAndUser(CoinType.FIAT, "INR", user);
+						wallet.setShadowBalance(wallet.getBalance() + (allBuyers.getCoinQuantity() * allSellers.getPrice()));
 						wallet.setBalance(wallet.getBalance() + (allBuyers.getCoinQuantity() * allSellers.getPrice()));
-						wallet.setShadowBalance(wallet.getShadowBalance() + (allBuyers.getCoinQuantity() * allSellers.getPrice()));
 						walletSet.add(wallet);
 						walletRepository.save(wallet);
 						
 						// Seller CRYPTO wallet
 						wallet = walletRepository.findByCoinTypeAndCoinNameAndUser(allSellers.getCoinType(), allSellers.getCoinName(), user);
+						wallet.setShadowBalance(wallet.getBalance() - allBuyers.getCoinQuantity());
 						wallet.setBalance(wallet.getBalance() - allBuyers.getCoinQuantity()); 
-						wallet.setShadowBalance(wallet.getShadowBalance() - allBuyers.getCoinQuantity());
 						walletSet.add(wallet);
 						walletRepository.save(wallet);
 						
@@ -290,9 +295,8 @@ public class TransactionService {
 					}
 				}	  
 				  else	if(currency.getPrice() < allSellers.getPrice() && currency.getPrice() <= allBuyers.getPrice()) {
-						System.out.println("+++++++++++++++++++++++++++++++++++++NotEqual++++++++++++++++++++++++++++++");
-						
-						if(currency.getInitialSupply() > allBuyers.getCoinQuantity()) {
+						if(currency.getInitialSupply() >= allBuyers.getCoinQuantity()) {
+							System.out.println("wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww( currency >= )wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww");
 							Transaction transaction = new Transaction();
 							transaction.setCoinType(allBuyers.getCoinType());
 							transaction.setCoinName(allBuyers.getCoinName());
@@ -311,15 +315,15 @@ public class TransactionService {
 							// Buyer FIAT wallet
 							user = allBuyers.getUser();
 							wallet = walletRepository.findByCoinTypeAndCoinNameAndUser(CoinType.FIAT, "INR", user); 
+							wallet.setShadowBalance(wallet.getBalance() - transaction.getGrossAmount());
 							wallet.setBalance(wallet.getBalance() - transaction.getGrossAmount());
-							wallet.setShadowBalance(wallet.getShadowBalance() - transaction.getGrossAmount());
 							walletSet.add(wallet);
 							walletRepository.save(wallet);
 							
 							// Buyer CRYPTO wallet
 							wallet = walletRepository.findByCoinTypeAndCoinNameAndUser(allBuyers.getCoinType(), allBuyers.getCoinName(), user);
+							wallet.setShadowBalance(wallet.getBalance() + allBuyers.getCoinQuantity());
 							wallet.setBalance(wallet.getBalance() + allBuyers.getCoinQuantity()); 
-							wallet.setShadowBalance(wallet.getShadowBalance() + allBuyers.getCoinQuantity());
 							walletSet.add(wallet);
 							walletRepository.save(wallet);
 							
@@ -335,6 +339,7 @@ public class TransactionService {
 							
 						}
 						else if(currency.getInitialSupply() < allBuyers.getCoinQuantity()) {
+							System.out.println("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx( currency < )xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
 							Transaction transaction = new Transaction();
 							transaction.setCoinType(allBuyers.getCoinType());
 							transaction.setCoinName(allBuyers.getCoinName());
@@ -353,15 +358,15 @@ public class TransactionService {
 							// Buyer FIAT wallet
 							user = allBuyers.getUser();
 							wallet = walletRepository.findByCoinTypeAndCoinNameAndUser(CoinType.FIAT, "INR", user); 
+							wallet.setShadowBalance(wallet.getBalance() - transaction.getGrossAmount());
 							wallet.setBalance(wallet.getBalance() - transaction.getGrossAmount());
-							wallet.setShadowBalance(wallet.getShadowBalance() - transaction.getGrossAmount());
 							walletSet.add(wallet);
 							walletRepository.save(wallet);
 							
 							// Buyer CRYPTO wallet
 							wallet = walletRepository.findByCoinTypeAndCoinNameAndUser(allBuyers.getCoinType(), allBuyers.getCoinName(), user);
+							wallet.setShadowBalance(wallet.getBalance() + currency.getInitialSupply());
 							wallet.setBalance(wallet.getBalance() + currency.getInitialSupply()); 
-							wallet.setShadowBalance(wallet.getShadowBalance() + currency.getInitialSupply());
 							walletSet.add(wallet);
 							walletRepository.save(wallet);
 							
