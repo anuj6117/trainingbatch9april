@@ -64,15 +64,16 @@ public class CoinManagementService {
 		{
 			return "Price Can Not Be Negative.";
 		}
-		
-		
-		try {
-		coinManagementData=coinManagementRepository.findOneByCoinId(coinManagement.getCoinId());
+				
+		try 
+		{
+			coinManagementData=coinManagementRepository.findOneByCoinId(coinManagement.getCoinId());
 		}
 		catch(Exception e)
 		{
 			return "invalid coinId.";
 		}
+		
 		coinManagementData.setCoinName(coinManagement.getCoinName());
 		coinManagementData.setSymbol(coinManagement.getSymbol());
 		coinManagementData.setInitialSupply(coinManagement.getInitialSupply());
@@ -89,7 +90,7 @@ public class CoinManagementService {
 		{
 			return  "Coin Name Can Not Be Null Or Empty Or Zero.";
 		}
-		 coinManagementRepository.deleteById(id);
+			coinManagementRepository.deleteById(id);
 		 return "Your Coin Has Been Deleted Successfully.";
 	}
 }

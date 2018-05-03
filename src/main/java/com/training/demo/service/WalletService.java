@@ -1,6 +1,7 @@
 package com.training.demo.service;
 import java.util.Date;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -168,10 +169,15 @@ public class WalletService {
 		 }
 		 return "Successfully withdrawn.";
 	 }
-/*	
-	public Set<OrderTable> showWalletHistoryByUserIdAndCoinName(Integer userId, String coinName){
+
+	public Object showWalletHistoryByUserIdAndCoinName(Integer userId, String coinName){
+		
 		try {
 			User user = userRepository.findByUserId(userId);
+			if(user == null)
+			{
+				return "Invalid User Name";
+			}
 		}
 		catch(Exception e) {
 			System.out.println("user does not exist with the given id........... showWalletHistory.");
@@ -179,13 +185,20 @@ public class WalletService {
 		
 		try {
 			CoinManagement cm= coinRepository.findAllByCoinName(coinName);
+			if(cm == null)
+			{
+				return "Invalid Coin Name";
+			}
 		}
 		catch(Exception e) {
 			System.out.println("coinName does not exist with the given coinName........... showWalletHistory.");
 			}
 				
-		Set<OrderTable> userWalletHistory = orderRepository.getWalletHistoryByUserIdAndCoinName(userId, coinName);
+		List<OrderTable> userWalletHistory = orderRepository.getWalletHistory(userId,coinName);
+		if(userWalletHistory.isEmpty())
+		{
+			return "There is no any wallet history for the given user id and coin name.";
+		}
 		return userWalletHistory;
-
 	}
-*/}
+}

@@ -1,5 +1,7 @@
 package com.training.demo.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -8,6 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.training.demo.dto.OrderDto;
 import com.training.demo.dto.WalletDto;
+import com.training.demo.model.OrderTable;
 import com.training.demo.service.WalletService;
 
 @RestController
@@ -51,4 +54,11 @@ public class WalletController {
 				throw new NullPointerException("Please provide complete details");
 			}
 	}
+	
+	@RequestMapping(value="/walletHistory", method = RequestMethod.GET)
+	public Object showWalletHistoryByUserIdAndCoinName(Integer userId, String coinName){
+		return walletService.showWalletHistoryByUserIdAndCoinName(userId, coinName);
+		
+	}
 }
+	
