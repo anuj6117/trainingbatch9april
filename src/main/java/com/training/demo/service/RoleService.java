@@ -1,42 +1,48 @@
 package com.training.demo.service;
 
 import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import com.training.demo.dto.UserRoleDto;
 import com.training.demo.model.Role;
 import com.training.demo.model.User;
 import com.training.demo.repository.RoleRepository;
-import com.training.demo.repository.UserRepository;
 
 @Service
 public class RoleService{
 
-	private Role role;
+
 	
 	@Autowired
 	private RoleRepository roleRepository;
-	
-	@Autowired
-	private UserRepository userRepository;
+		
 	User user;	
 	
 	public String addRole(Role roleArg)
 	{
 		String roleName = roleArg.getRoleType();
+		List<Role> roles = roleRepository.findAll();
+		for(Role r : roles)
+		{
+			if(r.getRoleType().equalsIgnoreCase(roleArg.getRoleType())) 
+			{
+				return "roleType already exists.";
+				
+			}
+		}
+	
 		if(roleName.equals("") || roleName.isEmpty() || roleName == null)
 		{
-			return  "Role type can't be null.";
+			return  "Role type can't be null or empty.";
 		}
 		String trimmedRole = roleName.trim();
 		if(!roleName.equals(trimmedRole))
 		{
 			return "please remove leading or trailing spaces.";
 		}
-
-		if(role.getRoleType().equalsIgnoreCase("user") || role.getRoleType().equalsIgnoreCase("manager") || role.getRoleType().equalsIgnoreCase("admin"))
+		
+		System.out.println(roleArg.getRoleType());
+		
+		if(roleArg.getRoleType().equalsIgnoreCase("user") || roleArg.getRoleType().equalsIgnoreCase("manager") || roleArg.getRoleType().equalsIgnoreCase("admin"))
 			{
 			roleRepository.save(roleArg);
 			return "Role is successfully added.";

@@ -205,13 +205,13 @@ public class SignUpService
 	}
 		public Optional<User> getUserById(Integer userId)
 		{
-		Optional<User> usrid = userRepository.findById(userId);
-		if (usrid != null) {
-			return usrid;
-		} else {
-			throw new NullPointerException("Id does not exist.");
+			Optional<User> usrid = userRepository.findById(userId);
+			if (usrid != null) {
+				return usrid;
+			} else {
+				throw new NullPointerException("Id does not exist.");
+			}
 		}
-	}
 		public String updateUser(@RequestBody User user) {
 			String userName = user.getUserName();
 			String password = user.getPassword();

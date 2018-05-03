@@ -12,6 +12,7 @@ import com.training.demo.enums.OrderStatus;
 import com.training.demo.enums.OrderType;
 import com.training.demo.enums.UserStatus;
 import com.training.demo.enums.WalletType;
+import com.training.demo.model.CoinManagement;
 import com.training.demo.model.OrderTable;
 import com.training.demo.model.User;
 import com.training.demo.model.Wallet;
@@ -167,4 +168,24 @@ public class WalletService {
 		 }
 		 return "Successfully withdrawn.";
 	 }
-}
+/*	
+	public Set<OrderTable> showWalletHistoryByUserIdAndCoinName(Integer userId, String coinName){
+		try {
+			User user = userRepository.findByUserId(userId);
+		}
+		catch(Exception e) {
+			System.out.println("user does not exist with the given id........... showWalletHistory.");
+			}
+		
+		try {
+			CoinManagement cm= coinRepository.findAllByCoinName(coinName);
+		}
+		catch(Exception e) {
+			System.out.println("coinName does not exist with the given coinName........... showWalletHistory.");
+			}
+				
+		Set<OrderTable> userWalletHistory = orderRepository.getWalletHistoryByUserIdAndCoinName(userId, coinName);
+		return userWalletHistory;
+
+	}
+*/}

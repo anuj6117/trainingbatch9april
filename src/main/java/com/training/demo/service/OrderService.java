@@ -67,21 +67,22 @@ public class OrderService {
 		List<CoinManagement> currencyList = coinRepository.findAll();
 		System.out.println("curency listtttttttttttttt "+currencyList);
 		if(currencyList != null) {
-		Iterator<CoinManagement> currencyIterator = currencyList.iterator();
-		while(currencyIterator.hasNext())
-		{
-			System.out.println("in currency whileeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee");
-			CoinManagement tempCoinManagement= currencyIterator.next();
-			if(tempCoinManagement.getCoinName().equals(orderTable.getCoinName())){
-				System.out.println("in currency ifffffffffffffffffffffffffffffffffffff");
-				currencyFlag = true;
-				System.out.println("curency flag set trueeeeeeeeeeeeeeeeeeeeeeeee");
+			Iterator<CoinManagement> currencyIterator = currencyList.iterator();
+			while(currencyIterator.hasNext())
+			{
+				System.out.println("in currency whileeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee");
+				CoinManagement tempCoinManagement= currencyIterator.next();
+				if(tempCoinManagement.getCoinName().equals(orderTable.getCoinName())){
+					System.out.println("in currency ifffffffffffffffffffffffffffffffffffff");
+					currencyFlag = true;
+					System.out.println("curency flag set trueeeeeeeeeeeeeeeeeeeeeeeee");
+				}
+			}
+			if(currencyFlag) {
+				System.out.println("order can not be approved........................its not fiat.");
+				return "you can only approve FIAT orders but not CRYPTO orders.";
 			}
 		}
-		if(currencyFlag) {
-			System.out.println("order can not be approved........................its not fiat.");
-			return "you can only approve FIAT orders but not CRYPTO orders.";
-		}}
 		
 			System.out.println("11111111111111111111111111111111111");
 			if(orderTable.getOrderStatus().equals(OrderStatus.PENDING))
@@ -133,6 +134,11 @@ public class OrderService {
 								System.out.println("11111111111111111111111111111111111ffffffffffffffff");
 								transaction.setGrossAmount(orderTable.getNetAmount());
 								System.out.println("11111111111111111111111111111111111ggggggggggggggggg");
+		
+								//TodayUpgradations
+								transaction.setExchangeRate(0d);
+								transaction.setFees(0d);
+								
 								transaction.setNetAmount(orderTable.getNetAmount());
 								System.out.println("11111111111111111111111111111111111hhhhhhhhhhhhhhhhhhhhh");
 								transaction.setDescription(orderApprovalDto.getDescription());	
@@ -168,7 +174,9 @@ public class OrderService {
 	
 	public String createBuyOrder(SellBuyTransactionDto sellBuyTransactionDto)
 	{
-	//userId, coinQuantity, price, coinName
+	
+			boolean flag = false;
+
 			Integer userId = sellBuyTransactionDto.getUserId();
 			System.out.println("user iddddddddddddddddddddddddddddddddddddddddd >> "+sellBuyTransactionDto.getUserId());
 			User user;
@@ -177,6 +185,7 @@ public class OrderService {
 			Wallet tempWallet = null;
 			Set<Wallet> wallets ;
 			Iterator<Wallet> iterator ;
+			
 			try {
 				System.out.println(sellBuyTransactionDto.getUserId()+"///////////////////");
 				user = userRepository.findByUserId(userId);
@@ -185,17 +194,26 @@ public class OrderService {
 				iterator = wallets.iterator();
 				while(iterator.hasNext()) {
 				 tempWallet = iterator.next();
+
+					if(tempWallet.getWalletType().equals(WalletType.CRYPTO.toString()) && tempWallet.getCoinName().equals(sellBuyTransactionDto.getCoinName())) 
+					{
+						flag  = true;
+					}
+				 
 					if(tempWallet.getWalletType().equals(WalletType.FIAT.toString()))
 					{
 						shadowBalance = tempWallet.getShadowBalance();
 						System.out.println("11111111111111111111111111111111111"+shadowBalance);
-						break;
 					}					
 				}
 			}
 			catch(Exception e)
 			{
 				return "invalid user id.";
+			}
+			if(!flag)
+			{
+				return "create wallet first.";
 			}
 			try 
 			{
@@ -304,7 +322,12 @@ public class OrderService {
 		
 	}
 	
-	public Set<OrderTable> showalldata(Integer userId) {
+	public List<OrderTable> showalldata(Integer userId) {
+		List<OrderTable> allOrders = orderRepository.findAll();
+		return allOrders;
+	}
+
+	public Set<OrderTable> getUserOrderById(Integer userId) {
 		User user = userData.findByUserId(userId);
 		Set<OrderTable> allOrders = user.getOrderTable();
 		return allOrders;

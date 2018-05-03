@@ -22,10 +22,10 @@ public class RoleController {
 	public String insertRole(@RequestBody Role role)
 	{ 
 		System.out.println("Role controller hit addRole api");
+		System.out.println(role.getRoleType());
 		if(role != null)
 		{
-			roleService.addRole(role);
-			return "Role Added Successfully.";
+			return roleService.addRole(role);
 		}
 		else
 		{
@@ -39,12 +39,12 @@ public class RoleController {
 		System.out.println("Role controller hit delete api.");
 		if(roleId != null)
 		{
-			roleService.deleteRole(roleId);
-			return "Role Added Successfully.";
+			return roleService.deleteRole(roleId);
+			
 		}
 		else
 		{
-			return "Role Addition Failure.";
+			return "insufficient information.";
 		}
 	}
 

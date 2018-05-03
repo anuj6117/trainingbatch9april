@@ -400,5 +400,13 @@ public class TransactionService {
 			transaction.setTransactionStatus(buyerOrder.getOrderStatus());
 			transactionRepository.save(transaction);		
 		}	
+		
+
+		
+		public List<Transaction> getAllTransactions(){
+			List<Transaction> transactions = transactionRepository.findAll();
+			return transactions;			
+		}
+		
 	
 }			
