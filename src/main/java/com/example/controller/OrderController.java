@@ -1,12 +1,14 @@
 package com.example.controller;
 
 
+import java.util.List;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.dto.UserOrderDto;
@@ -26,7 +28,7 @@ import com.example.service.OrderService;
 public class OrderController
 {
  private User user;
- private UserOrder userorder=new UserOrder();
+ 
  @Autowired
  private UserRepository userRepository;
  @Autowired
@@ -42,7 +44,7 @@ public class OrderController
    @RequestMapping(value="/createbuyorder",method=RequestMethod.POST)
 	public String createBuyOrder(@RequestBody UserOrderDto userOrderDto )
 	{
-	     
+	   UserOrder userorder=new UserOrder();
 	   user=userRepository.findByUserId(userOrderDto.getUserId());
 	   
 	   if(user.getStatus()==UserStatus.ACTIVE)
@@ -105,17 +107,21 @@ public class OrderController
 	public String createSellOrder(@RequestBody UserOrderDto userOrderDto )
 	{
 	
-	   
+	   UserOrder userorder=new UserOrder();
 	   user=userRepository.findByUserId(userOrderDto.getUserId());
 	   if(user.getStatus()==UserStatus.ACTIVE)
 	   { 
 		   Set<Wallet> list=user.getWallet();
 		   for(Wallet s:list)
 		     {
-		        if(s.getWalletName()==userOrderDto.getCoinName())
+			   
+		        if(s.getWalletName().equals(userOrderDto.getCoinName()))
 		        {
+		        	System.out.println("enterng here.........................1.......balance "+s.getBalance());
+		        	System.out.println("enterng here.........................1.......balance "+userOrderDto.getCoinQuantity());
 		        	if(s.getBalance()>=userOrderDto.getCoinQuantity())
 		        	{
+			        	System.out.println("enterng here.........................2");		        		
 		        		currency=currencyRepository.findByCoinName(userOrderDto.getCoinName());
 			    		   userorder.setUser(user);	
 			    		   return  orderService.createSELLORDER(userOrderDto, currency,userorder);
@@ -129,9 +135,11 @@ public class OrderController
 		        }
 		        else
 		         {
-		        	return "coin name not available with seller";
+		        	continue;
 		         }
 		     }
+		   
+		   return "coin name not available with seller";
 		 
 	  
 	   	  
@@ -139,8 +147,21 @@ public class OrderController
 	   else
 		return "Invalid User"; 
 	   
-	   return "";
+	  // return "";
 	}
    
+   @RequestMapping("/showallorder")
+   public List<UserOrder> showallorder()
+   {
+	   return orderrepository.findAll();
+	   
+   }   
   
+   /*@RequestMapping("/walletHistory")
+   public List<UserOrder> walletHistory(@RequestParam("userId") Integer userId,@RequestParam("coinName") String coinName)
+    {
+	   
+	   
+    }*/
+   
 }

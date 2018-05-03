@@ -58,18 +58,18 @@ public class SignUserController
 		int passwordLength1=passwordvalue.length();
 	    passwordvalue=passwordvalue.replaceAll("\\s+","");
 	    int passwordLength2=passwordvalue.length();
-	    String patternPhone="(?=.*[0-9]).{10,10}";
+	   // String patternPhone="(?=.*[0-9]).{10,10}";
 	    String pattern="(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\\S+$).{8,32}";
 	    if((passwordLength2!=0) && (passwordLength1==passwordLength2) && (passwordvalue.matches(pattern)))
 		{
 	    	 System.out.println("......................111111111122222");
-	    	 if(user.getPhoneNumber().length()==10 && (user.getPhoneNumber().matches(patternPhone)))
+	    	 if(user.getPhoneNumber().length()==10 && (user.getPhoneNumber().matches("[0-9]+")))
 	    	 {
 	    		 if((usernameLength!=0 )&& (usernameLength==usernameLength2) && (user.getUserName()!=null) )
 	    	   {
 	    		 if( (username1.length()<=25))
 	    		 {
-	    			if(user.getCountry()!=null)
+	    			if(user.getCountry().trim().length()!=0)
 	    			{
 			         String u=signupservice.addUser(user);
 			         if(u != null)
@@ -160,8 +160,15 @@ public class SignUserController
 	@RequestMapping(value="/depositamount",method=RequestMethod.POST)
 	public String depositamount(@RequestBody UserWalletDto userwalletdto )
 	{
-		
+		User user=userrepository.findByUserId(userwalletdto.getUserId());
+		if(user.getStatus()==UserStatus.ACTIVE)
+		{
 		return signupservice.depositamount(userwalletdto);
+		}
+		else
+		{
+			return "Invalid user, not Active";
+		}
 	}
 	
 	

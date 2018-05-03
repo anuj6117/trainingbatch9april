@@ -42,8 +42,8 @@ public class TransactionService
 	   }
 	   for(UserOrder buy:buyList)
 	   {
-		   int bPrice=buy.getPrice();
-		   int adminPrice=0; int adminQuantity = 0;
+		   Integer bPrice=buy.getPrice();
+		   Integer adminPrice=0; Integer adminQuantity = 0;
 		   Currency currency=currencyRepository.findByCoinName(buy.getCoinName());
 		   if(currency==null)
 		   {
@@ -58,16 +58,20 @@ public class TransactionService
 		   System.out.println("value of buyList..................................."+sellList);
 		   if(sellList.isEmpty())
 		   {
+			   System.out.println("11.....................................");
+			   if(bPrice>=adminPrice)
+			   {
+				   System.out.println("11.....................................");
 			  // throw new RuntimeException("Seller are not available");
-			    int quantityDone=buy.getCoinQuantity();
-       	        int quantityRemaining=adminQuantity-quantityDone;
+				   Integer quantityDone=buy.getCoinQuantity();
+				   Integer quantityRemaining=adminQuantity-quantityDone;
        		    buy.setStatusType(StatusType.APPROVED);
        	     	currency.setInitialSupply(quantityRemaining);
-       		    int fee=currency.getFees();
-       		    int netamount=quantityDone*buy.getPrice();
-       		    int feeAmount=((fee*netamount)/100);
-       		    int currencyNetAmount=quantityDone*currency.getPrice();
-       	    	int NetAmount=netamount-currencyNetAmount;
+       	        Integer fee=currency.getFees();
+       	        Integer netamount=quantityDone*buy.getPrice();
+       	        Integer feeAmount=((fee*netamount)/100);
+       	        Integer currencyNetAmount=quantityDone*currency.getPrice();
+       	        Integer NetAmount=netamount-currencyNetAmount;
         		currency.setCoinInINR(NetAmount);
         		currency.setProfit(feeAmount);
         		orderRepository.save(buy);
@@ -91,18 +95,18 @@ public class TransactionService
        		   User user1=buy.getUser();
        	       Set<Wallet> sett=user1.getWallet();
        	       for(Wallet w:sett)
-       	       {
+       	       {System.out.println("11.....................................11");
        	     	 if(w.getWalletType()==buy.getCoinType())
-       	     	  {
-       	     		 int balance=w.getBalance();
+       	     	  {System.out.println("11.....................................22");
+       	     		Integer balance=w.getBalance();
        	     		 balance+=quantityDone;
        	     		 w.setBalance(balance);
        	     		 w.setShadowbalance(balance);
        	     	  }
        	     	 if(w.getWalletType()==WalletType.FIAT)
-       	     	  {
-       	     		 int balance=buy.getGrossAmount();
-       	     		 int buyerBalance=w.getBalance();
+       	     	  {System.out.println("11.....................................33");
+       	     		Integer balance=buy.getGrossAmount();
+       	     	    Integer buyerBalance=w.getBalance();
        	     		 buyerBalance=buyerBalance-balance;
        	     		 w.setBalance(buyerBalance);
        	     		 w.setShadowbalance(buyerBalance);
@@ -110,32 +114,37 @@ public class TransactionService
        	     	 walletRepository.save(w);
        	     	 
        	       }
-       	    
+			   }else
+			    {
+				  // return "buyer in pending stage";
+			    }
 			  
 		   }
 		  else
 		  {	   
 		   for(UserOrder sell:sellList)
 		   {
-			   int sPrice=sell.getPrice();
+			   Integer sPrice=sell.getPrice();
 			   if(bPrice<sPrice && bPrice<adminPrice)
 			   {
 				  // return "buyer order will be in pending stage";
 			   }
-			   else if(adminPrice<=sPrice)
-			   {
+			   /*else if(adminPrice<=sPrice)*/
+			   else if(sPrice>=adminPrice)
+			   {   if((bPrice>=adminPrice))
+			       {
 				   // one case left here is that when admin quantity is insufficient
 				  
-		            	int quantityDone=buy.getCoinQuantity();
-		        	    int quantityRemaining=adminQuantity-quantityDone;
+		            	Integer quantityDone=buy.getCoinQuantity();
+		        	    Integer quantityRemaining=adminQuantity-quantityDone;
 		        		buy.setStatusType(StatusType.APPROVED);
 		        		currency.setInitialSupply(quantityRemaining);
-		        		int fee=currency.getFees();
-		        		int netamount=quantityDone*buy.getPrice();
-		        		int feeAmount=((fee*netamount)/100);
-		        		int currencyNetAmount=quantityDone*currency.getPrice();
-		        		int NetAmount=netamount-currencyNetAmount;
-		        		int initialINR=currency.getCoinInINR();
+		        		Integer fee=currency.getFees();
+		        		Integer netamount=quantityDone*buy.getPrice();
+		        		Integer feeAmount=((fee*netamount)/100);
+		        		Integer currencyNetAmount=quantityDone*currency.getPrice();
+		        		Integer NetAmount=netamount-currencyNetAmount;
+		        		Integer initialINR=currency.getCoinInINR();
 		        		initialINR+=NetAmount;
 		        		currency.setCoinInINR(initialINR);
 		        		currency.setProfit(feeAmount);
@@ -165,15 +174,15 @@ public class TransactionService
 		        	     	 if(w.getWalletType()==buy.getCoinType())
 		        	     	  {
 		        	     		 System.out.println("ssssssssssssssssssssssssss");
-		        	     		 int balance=w.getBalance();
+		        	     		 Integer balance=w.getBalance();
 		        	     		 balance+=quantityDone;
 		        	     		 w.setBalance(balance);
 		        	     		 w.setShadowbalance(balance);
 		        	     	  }
 		        	     	 if(w.getWalletType()==WalletType.FIAT)
 		        	     	  {
-		        	     		 int balance=buy.getGrossAmount();
-		        	     		 int buyerBalance=w.getBalance();
+		        	     		 Integer balance=buy.getGrossAmount();
+		        	     		 Integer buyerBalance=w.getBalance();
 		        	     		 buyerBalance=buyerBalance-balance;
 		        	     		 w.setBalance(buyerBalance);
 		        	     		 w.setShadowbalance(buyerBalance);
@@ -182,51 +191,106 @@ public class TransactionService
 		        	     	 
 		        	       }
 		        	     // return "admin is seller here";
+			       }
+			       else
+			        {
+			    	   //return "buyer is pendingg";
+			        }
 		        	       
 		        }
-			   else if(adminPrice>sPrice && sPrice<bPrice)
+			   /*else if(adminPrice>sPrice && sPrice<bPrice)*/
+			   else if(adminPrice>sPrice)
 			    {
-				   int buyerQuantity=buy.getCoinQuantity();
-				   int sellerQuantity=sell.getCoinQuantity();
+				   if(bPrice>sPrice)
+				   {
+					   System.out.println("22.....................................11");
+				   Integer buyerQuantity=buy.getCoinQuantity();
+				   Integer sellerQuantity=sell.getCoinQuantity();
 				   //buyer purchasing from seller
 				   if(buyerQuantity==sellerQuantity)
 				      {
+					   System.out.println("22.....................................2222");
 					    buy.setStatusType(StatusType.APPROVED);
 					    sell.setStatusType(StatusType.APPROVED);
 					    orderRepository.save(buy);
 					    orderRepository.save(sell);
-
+					    System.out.println("22.....................................2222"); 
+					    
+					    Integer buyerAmount=buyerQuantity*buy.getPrice();
+		        		Integer feeAmount=((currency.getFees()*buyerAmount)/100);
+		        		Integer sellerAmount=sellerQuantity*sell.getPrice();
+		        		Integer NetAmount=buyerAmount-sellerAmount;
+		        		Integer initialINR=currency.getCoinInINR();
+		        		System.out.println("intial value of coin INR............."+initialINR);
+		        		initialINR+=NetAmount;
+		        		currency.setCoinInINR(initialINR);
+		        		System.out.println("updated vlue of coin inr.............."+currency.getCoinInINR());
+		        		Integer InitialProfit=currency.getProfit();
+		        		System.out.println("intial value of coin INR............."+InitialProfit);
+		        		feeAmount+=InitialProfit;
+		        		currency.setProfit(feeAmount);
+		        		System.out.println("updated vlue of coin inr.............."+currency.getProfit());
+		        		currencyRepository.save(currency);
+					    
 					    setTransaction(buy, sell,buyerQuantity);// transaction table entry
 				        walletUpdation(buy, sell,buyerQuantity); // updation in wallet
 				         
 				       }
-				       else if(buyerQuantity>=sellerQuantity)
+				       else if(buyerQuantity>sellerQuantity)
 				       {
-					      int quantityDone=sellerQuantity;
-					      int quantityRemaining=buyerQuantity-sellerQuantity;
+					      Integer quantityDone=sellerQuantity;
+					      Integer quantityRemaining=buyerQuantity-sellerQuantity;
 		                  buy.setStatusType(StatusType.PENDING);
 		                  buy.setCoinQuantity(quantityRemaining);
 		                  orderRepository.save(buy);
 		                  sell.setStatusType(StatusType.APPROVED);
 		                  sell.setCoinQuantity(quantityDone);
 		                  orderRepository.save(sell);
+		                    Integer buyerAmount=quantityDone*buy.getPrice();
+			        		Integer feeAmount=((currency.getFees()*buyerAmount)/100);
+			        		Integer sellerAmount=quantityDone*sell.getPrice();
+			        		Integer NetAmount=buyerAmount-sellerAmount;
+			        		Integer initialINR=currency.getCoinInINR();
+			        		initialINR+=NetAmount;
+			        		currency.setCoinInINR(initialINR);
+			        		Integer InitialProfit=currency.getProfit();
+			        		feeAmount+=InitialProfit;
+			        		currency.setProfit(feeAmount);
+			        		currencyRepository.save(currency);
+						    
 					      setTransaction(buy, sell, quantityDone);
 					      walletUpdation(buy, sell, quantityDone);
 				       }
 				       else// seller quantity >buyer Quantity
 				       {
-				    	   int quantityDone=buyerQuantity;
-				    	   int quantityRemaining=sellerQuantity-buyerQuantity;
+				    	   Integer quantityDone=buyerQuantity;
+				    	   Integer quantityRemaining=sellerQuantity-buyerQuantity;
 				    	   buy.setStatusType(StatusType.APPROVED);
 				    	   buy.setCoinQuantity(quantityDone);
 				    	   sell.setStatusType(StatusType.PENDING);
 				    	   sell.setCoinQuantity(quantityRemaining);
 				    	   orderRepository.save(buy);
 				    	   orderRepository.save(sell);
+				    	   Integer buyerAmount=quantityDone*buy.getPrice();
+			        		Integer feeAmount=((currency.getFees()*buyerAmount)/100);
+			        		Integer sellerAmount=quantityDone*sell.getPrice();
+			        		Integer NetAmount=buyerAmount-sellerAmount;
+			        		Integer initialINR=currency.getCoinInINR();
+			        		initialINR+=NetAmount;
+			        		currency.setCoinInINR(initialINR);
+			        		Integer InitialProfit=currency.getProfit();
+			        		feeAmount+=InitialProfit;
+			        		currency.setProfit(feeAmount);
+			        		currencyRepository.save(currency);
+						    
 				    	   setTransaction(buy, sell, quantityDone);
 						   walletUpdation(buy, sell, quantityDone);
 				       }
-				      
+				   }
+				   else
+				   {
+					   // return "buyer is pending";
+				   }
                  //  return  "";
 				   
 			    }
@@ -240,8 +304,9 @@ public class TransactionService
 	   
  }
   
- public  void setTransaction(UserOrder userOrderBuy,UserOrder userOrderSell, int quantity)
+ public  void setTransaction(UserOrder userOrderBuy,UserOrder userOrderSell, Integer quantity)
  {
+	 System.out.println("setTransaction.....................................");
 	 String date =new Date()+" ";
     Transaction transaction=new Transaction();
      transaction.setBuyerId(userOrderBuy.getUser().getUserId());
@@ -255,60 +320,78 @@ public class TransactionService
      transaction.setDescription("purchase done");
      transaction.setStatus(StatusType.COMPLETED);
      transaction.setTransactionCreatedOn(date);
-     int grossAmount=userOrderBuy.getGrossAmount();
-     int netAmount=userOrderBuy.getNetAmount();
+     Integer grossAmount=userOrderBuy.getGrossAmount();
+     Integer netAmount=userOrderBuy.getNetAmount();
      transaction.setTransactionFee(grossAmount-netAmount);
     
      transactionRepository.save(transaction);
+     System.out.println("setTransaction.....................................end");
  }
  
  
-  public  void walletUpdation(UserOrder userOrderBuy,UserOrder userOrderSell,int quantity)
+  public  void walletUpdation(UserOrder userOrderBuy,UserOrder userOrderSell,Integer quantity)
    {
-	  
+	  System.out.println("wallet.....................................");
 	  User user1=userOrderBuy.getUser();
       Set<Wallet> sett=user1.getWallet();
       for(Wallet w:sett)
        {
      	 if(w.getWalletType()==userOrderBuy.getCoinType())
      	  {
-     		 int balance=w.getBalance();
+     		 System.out.println("userid for wallet.(buy)..................."+w.getUser().getUserId());
+     		Integer balance=w.getBalance();
      		 balance+=quantity;
      		 w.setBalance(balance);
+     		 w.setShadowbalance(balance);
+     		 System.out.println("\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ balance"+w.getBalance());
+     		 System.out.println("\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ shadowBalance"+w.getShadowbalance());
+     		 
+    		 
      		
      	  }
      	 else if(w.getWalletType()==WalletType.FIAT)
      	  {
-     		 int balance=userOrderBuy.getGrossAmount();
-     		 int buyerBalance=w.getBalance();
+     		 System.out.println("userid for wallet.(buy)..................."+w.getUser().getUserId());
+     		Integer balance=userOrderBuy.getGrossAmount();
+     		Integer buyerBalance=w.getBalance();
      		 buyerBalance=buyerBalance-balance;
      		 w.setBalance(buyerBalance);
      		 w.setShadowbalance(buyerBalance);
+     		 System.out.println("\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ balance"+w.getBalance());
+     		 System.out.println("\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ shadowBalance"+w.getShadowbalance());
      	  }
      	 walletRepository.save(w);
      	 
        }
       
       User user2=userOrderSell.getUser();
-      Set<Wallet> sset=user1.getWallet();
+      Set<Wallet> sset=user2.getWallet();
       for(Wallet w:sset)
        {
      	 if(w.getWalletType()==userOrderSell.getCoinType())
-     	  {  int balance=w.getBalance();
+     	  {  System.out.println("userid for wallet.(sell)..................."+w.getUser().getUserId());
+     		 Integer balance=w.getBalance();
      	      balance=balance-quantity;
      		 w.setBalance(balance);
+     		 w.setShadowbalance(balance);
+     		System.out.println("\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ balance"+w.getBalance());
+    		 System.out.println("\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ shadowBalance"+w.getShadowbalance());
      		
      	  }
      	 else if(w.getWalletType()==WalletType.FIAT)
      	  {
-     		 int balance=userOrderSell.getGrossAmount();
-     		 int sellerBalance=w.getBalance();
+     		System.out.println("userid for wallet.(sell)..................."+w.getUser().getUserId());
+     		Integer balance=userOrderSell.getGrossAmount();
+     		Integer sellerBalance=w.getBalance();
      		 sellerBalance=sellerBalance+balance;
      		 w.setBalance(sellerBalance);
      		 w.setShadowbalance(sellerBalance);
+     		System.out.println("\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ balance"+w.getBalance());
+    		 System.out.println("\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ shadowBalance"+w.getShadowbalance());
      	  }
      	 walletRepository.save(w);
        }
+      System.out.println("setTransaction.....................................end");
     
    }
  

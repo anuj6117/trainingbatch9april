@@ -43,6 +43,8 @@ public class WalletService
  public String addWallet(UserWalletDto userwalletdto)
  {
 	 user=userrepository.findByUserId(userwalletdto.getUserId());
+	 if(user.getStatus()==UserStatus.ACTIVE)
+	 {
 	 Wallet wallet=new Wallet();
 	 wallet.setWalletType(userwalletdto.getWalletType());
 	 wallet.setWalletName(userwalletdto.getWalletName());
@@ -51,6 +53,9 @@ public class WalletService
 	 wallet.setUser(user);
 	 walletrepository.save(wallet);
 	 return "wallet added in service";
+	 }
+	 else
+		 return "invalid user";
  }
  
  public String walletApprovalStatus(WalletApprovalDto walletApprovalDto)

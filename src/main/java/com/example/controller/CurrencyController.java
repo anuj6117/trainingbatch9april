@@ -57,7 +57,7 @@ private CurrencyRepository currencyrepository;
     }
 	catch(NullPointerException e)
 	{
-		String pattern="(?=.*[@#$%^&+=])(?=\\S+$).{1,1}";
+		String pattern="(?=.*[@#$%^&+=*])(?=\\S+$).{1,1}";
 		
 	
 		//here null pointer maeans we can insert

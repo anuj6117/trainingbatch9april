@@ -25,13 +25,10 @@ public class OrderService
 	private OrderRepository orderRepository;
 	private CurrencyRepository currencyRepository;
 	
-	ArrayList<UserOrder> buyList=new ArrayList<UserOrder>();
-	ArrayList<UserOrder> sellList=new ArrayList<UserOrder>();
  public String createBUYORDER(UserOrderDto userOrderDto,Currency currency,UserOrder userorder)
  {
 	try
-	{
-	buyList.add(userorder);	
+	{	
 	String date =new Date()+"";
 	userorder.setOrderType(OrderType.BUY);
 	userorder.setCoinName(userOrderDto.getCoinName());
@@ -76,15 +73,15 @@ public class OrderService
 	 
     try
     {
-     sellList.add(userorder);		
+     		
      String date =new Date()+"";
  	userorder.setOrderType(OrderType.SELL);
  	userorder.setCoinName(userOrderDto.getCoinName());
  	userorder.setCoinType(currency.getCoinType());
  	userorder.setStatusType(StatusType.PENDING);
  	userorder.setCoinQuantity(userOrderDto.getCoinQuantity());
- 	userorder.setPrice(currency.getPrice());
- 	int netamount=userOrderDto.getCoinQuantity()*currency.getPrice();
+ 	userorder.setPrice(userOrderDto.getPrice());
+ 	int netamount=userOrderDto.getCoinQuantity()*userOrderDto.getPrice();
  	userorder.setNetAmount(netamount);	
  	userorder.setGrossAmount(netamount);
  	userorder.setOrderCreatedOn(date);

@@ -27,12 +27,11 @@ public class RoleController
    @RequestMapping(value="/createrole",method=RequestMethod.POST)
   public String addUser(@RequestBody Role role)
   {   
-	   System.out.println("SOP...............1");
+	  
 	   if(!(role==null))
 	   {
-		   System.out.println("SOP...............2");
 		   roleRepository.save(role);
-		   return "Role Details";
+		   return "Role successfully created";
 	   }
 	   else
 	     return "repository object is null";

@@ -40,7 +40,7 @@ public class SignUpService
 	@Autowired
 	private OTPService otps;
 	
-	private UserOrder userorder=new UserOrder();
+    
 	private User user;
 	
 	@Autowired
@@ -126,6 +126,7 @@ public class SignUpService
 	
 	public String depositamount(UserWalletDto userwalletdto)
 	 {
+		UserOrder userorder=new UserOrder();
 		 
 		 if(userwalletdto==null)
 	   {return "userwalletdto is null";
