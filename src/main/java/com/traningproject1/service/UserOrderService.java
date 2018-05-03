@@ -39,7 +39,7 @@ public class UserOrderService {
     	      
    	    		if(currencyRepository.findByCoinName(buysellorderdto.getCoinName()).getCoinName().equals(buysellorderdto.getCoinName()))
     	    		{
-//    	    			return "Invalid Coin Name";
+   	    			
     	    		   	      
     	      double tempamount=buysellorderdto.getCoinQuantity();
     	      System.out.println("Wallet user id"+wallet.getBalance());
@@ -51,6 +51,7 @@ public class UserOrderService {
     	       userorder.setCoinQuantity(buysellorderdto.getCoinQuantity());
     	       userorder.setPrice(buysellorderdto.getPrice());
     	       userorder.setGrossAmount(buysellorderdto.getCoinQuantity()*buysellorderdto.getPrice());
+    	       userorder.setNetAmount(buysellorderdto.getCoinQuantity()*buysellorderdto.getPrice());
     	       userorder.setFees(0);
     	       userorder.setUser(user);
     	       userorder.setDateCreated(new Date());
@@ -98,6 +99,7 @@ public class UserOrderService {
     	    	    userorder.setOrderType(UserOrderType.BUYER);
     	    	    userorder.setStatus(UserOrderStatus.PENDING);
     	    	    userorder.setGrossAmount(calc);
+    	    	    userorder.setNetAmount(buysellorderdto.getCoinQuantity()*buysellorderdto.getPrice());
     	    	    userorder.setFees(currency.getFees());
     	    	    userorder.setUser(user);
     	            userorder.setDateCreated(new Date());

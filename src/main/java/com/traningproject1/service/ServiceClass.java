@@ -61,17 +61,16 @@ public User addUser(User user)
 	{
 	
 	    user.setCreatedOn(new Date());
-	   	  //  Role defaultrole=roleRepository.getRoleByid(1);
+	   	Role defaultrole=roleRepository.getRoleByid(1);
 		   	    
-		//ArrayList<Role> roleType=new ArrayList<>();
+		ArrayList<Role> roleType=new ArrayList<>();
 		
 		
-	  //roleType.add(defaultrole);
-		
-	   //user.setRole(roleType);	
+	    roleType.add(defaultrole);
+	   user.setRole(roleType);	
 	   Random random=new Random();
 	   otp=random.nextInt(20000);
-		//roleRepository.save(defaultrole);
+	   roleRepository.save(defaultrole);
 		
 		userRepository.save(user);
 		
@@ -150,18 +149,6 @@ public User assignRoleToUser(ClassDTO classDTO)
 	User user=userRepository.findByuserId(classDTO.getUserId());
 	
 	Role role=roleRepository.findByroleType(classDTO.getRoleType());
-	/*if(!(classDTO.getRoleType().equals(role1)))
-	{
-     role1.setRoleType(classDTO.getRoleType());
-     roleRepository.save(role1);
-	}
-	else
-	{
-		
-	}
-	/*else
-	{*/
-	
 	if(user!=null)
 	{
 		if(role!=null)
@@ -221,23 +208,25 @@ public User assignRoleToUser(ClassDTO classDTO)
 	 
 	  return "success";
   }
-  public String verifyOTP(VerifyUserDTO verifyuserdto)
+  public String verifyOTP(Integer otp, String email)
   {
-	  UserOTP userotp=userOTPRepository.findBytokenOTP(verifyuserdto.getTokenOTP());
-	  String email=userotp.getEmailId();
-	  User user=userRepository.findByemail(verifyuserdto.getEmailId());
-	  if(email.equals(user.getEmail()))
+	  UserOTP userotp=userOTPRepository.findByEmailId(email);
+	  User user=userRepository.findByEmail(email);
+	  if(userotp==null)
 	  {
+		  //System.out.println(user.getEmail()+"\t");
+		  return "Invalid User";
+		  
+	  }
+		  if(otp.equals(userotp.getTokenOTP()))
+	  {  
 		  user.setStatus(UserStatus.ACTIVE);
-		  UserOTP userdelete=userOTPRepository.findBytokenOTP(verifyuserdto.getTokenOTP());
+		  UserOTP userdelete=userOTPRepository.findBytokenOTP(userotp.getTokenOTP());
 		  userOTPRepository.delete(userdelete);
-		 
+		  userRepository.save(user);
+		  return "Your account verified Successfully";
 	  }
-	  else
-	  {
-		  return "Invalid OTP";
-	  }
-	  userRepository.save(user);
-	  return "Your account verified Successfully";
+		  return "Invalid OTP or Email";
+	  
    }
 }

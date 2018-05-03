@@ -4,13 +4,21 @@ public class VerifyUserDTO {
 // private Integer userId;
  private Integer tokenOTP;
  private String emailId;
-public String getEmailId() {
+ public String getEmailId() {
 	return emailId;
 }
 public void setEmailId(String emailId) {
 	this.emailId = emailId;
 }
+private Integer userId;
 
+
+public Integer getUserId() {
+	return userId;
+}
+public void setUserId(Integer userId) {
+	this.userId = userId;
+}
 public Integer getTokenOTP() {
 	return tokenOTP;
 }

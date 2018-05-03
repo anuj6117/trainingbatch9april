@@ -16,6 +16,10 @@ public interface UserOTPRepository extends JpaRepository<UserOTP,Integer> {
 
 	UserOTP findBytokenOTP(Integer tokenOTP);
 
+	UserOTP findByTokenOTP(Integer tokenOTP);
+
+	UserOTP findByEmailId(String email);
+
 	
 
 }

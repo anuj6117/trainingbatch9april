@@ -19,10 +19,7 @@ import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.Email;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.traningproject1.enumsclass.UserStatus;
@@ -36,16 +33,11 @@ public class User {
 private Integer userId;
 
 
-@NotBlank(message="Please Don't enter any leading and trailing space")
-@NotEmpty(message="Not null")
-@NotNull(message="UserName can't be Null")
-@Size(max=25,message="Maximum allowed Characters for this field is 25")
+
 private String userName;
 
 @Email
-@NotNull
-//@Size(min = 1, max = 100)
-//@Pattern(regexp="^([a-zA-Z0-9\\-\\.\\_]+)'+'(\\@)([a-zA-Z0-9\\-\\.]+)'+'(\\.)([a-zA-Z]{2,4})$")
+
 private String email;
 
 private String password;

@@ -24,77 +24,56 @@ public class CurrencyController {
 @RequestMapping(value="/addcurrency",method=RequestMethod.POST)
 public String addCurrency(@RequestBody CurrencyClass currency)
 {
-	boolean flag=false;
-	boolean flag1=false;
 	String coin=currency.getCoinName().trim();
 	String sym=currency.getSymbol().trim();
-	CurrencyClass currency1=currencyRepository.findByCoinName(coin);
-	CurrencyClass currency2=currencyRepository.findBySymbol(sym);
-	
 
-	try
-	{
-		currency1.getCoinId();
+	List<CurrencyClass>getcurrency=currencyRepository.findAll();
+	   Iterator<CurrencyClass>itr=getcurrency.iterator();
+	   while(itr.hasNext())
+	   {
+		CurrencyClass c=itr.next();
+		if((c.getCoinName().equalsIgnoreCase(currency.getCoinName()))||(c.getSymbol().equalsIgnoreCase(currency.getSymbol())))
+		{
+			return "CoinName Already Exist Or Coin Sysmbol Already exist";
+		}
+	   }
 		
-		return "Coin name already exist";
-	}
-	catch(Exception e)
-	{
-		flag=true;
-	}
-	
-	try
-	{
-		currency2.getSymbol();
-		
-		return "Symbol already exist";
-	}
-	catch(Exception e)
-	{
-		flag1=true;
-	}
-	if(flag&&flag1)
-	{
-     if(currency.getSymbol().equals(""))
+		if(currency.getCoinName().length()!=coin.length())
+		{
+			return "please remove the space from the coin name";
+		}
+		if(currency.getSymbol().length()!=sym.length())
+		{
+			return "please remove the space from the coin symbol";
+		}
+     if(sym.equals(""))
 	 {
 	  return "Please enter the coin Symbol";
      }
-    else if(currency.getSymbol().equals(" "))
+    else if(sym.equals(" "))
 	{
 		return "Please enter the coin Symbol";
      }
-    else if(currency.getCoinName().equals(""))
+    else if(coin.equals(""))
     {
     	return "put coin Name";
     }
-    else if(currency.getCoinName().equals(" "))
+    else if(coin.equals(" "))
     {
     	return "put Valid coin Name";
     }
- 
-    
-    else if(currency.getInitialSupply()==0&&currency.getPrice()==0)
-    {
-    	return "Provide Initial Supply Or Provide Some Price ";
+    String s=String.valueOf(currency.getInitialSupply());
+    try{
+    	Integer i=Integer.parseInt(s);
     }
-//    else if()
-//    {
-//    	
-//    }
-   List<CurrencyClass>getcurrency=currencyRepository.findAll();
-   Iterator<CurrencyClass>itr=getcurrency.iterator();
-   while(itr.hasNext())
-   {
-	CurrencyClass c=itr.next();
-	if((c.getCoinName().equalsIgnoreCase(currency.getCoinName()))||(c.getSymbol().equalsIgnoreCase(currency.getSymbol())))
-	{
-		return "CoinName Already Exist Or Coin Sysmbol Already exist";
-	}
-   }
-	
+    catch(Exception e)
+    {
+    	return "invalid initial supply";
+    }
+     
 	if(currencyService.addCurrency(currency)!=null)
 	return"Your Coin Has been Added Successfully";
-	}
+	//}
 		return "fail";
 	}
 @RequestMapping(value="/getallcurrency",method=RequestMethod.GET)

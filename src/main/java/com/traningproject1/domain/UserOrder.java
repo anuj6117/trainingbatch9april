@@ -46,6 +46,10 @@ private String coinName;
 
 private Integer coinQuantity; 
  
+private double netAmount;
+ 
+
+
 private long price;
 
 private double grossAmount;
@@ -122,6 +126,12 @@ public long getPrice() {
 
 public void setPrice(long price) {
 	this.price = price;
+}
+public double getNetAmount() {
+	return netAmount;
+}
+public void setNetAmount(double netAmount) {
+	this.netAmount = netAmount;
 }
 
 }
