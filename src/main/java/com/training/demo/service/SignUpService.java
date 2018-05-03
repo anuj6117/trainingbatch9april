@@ -67,19 +67,14 @@ public class SignUpService
 			return "Please enter password with minimum 8 characters. Your password should have atleast 1 Uppercase, 1 Lowercase, 1 Digit & 1 Special character. Space is not allowed";
 		}
 			
-		if(userName.equals("") || userName.isEmpty() || userName == null)
+		if(userName.equals("") || userName.isEmpty() || userName == null || userName.trim().length() == 0)
 		{
-			return  "User Name can't be null.";
+			return  "User Name can not be null or empty.";
 		}
 		
 		if(userName.length() >= 26 || userName.length() <= 6)
 		{
 			return  "Maximum characters allowed for this field is 6 to 25.";			
-		}
-		
-		if(userName.trim().length() == 0)
-		{
-			return	"User Name must contain characters.";
 		}
 				
 		String tempPhoneNo=user.getPhoneNumber();
