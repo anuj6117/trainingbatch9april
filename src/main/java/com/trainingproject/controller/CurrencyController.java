@@ -43,8 +43,8 @@ public class CurrencyController {
 	
 	@RequestMapping(value="/deletecurrency",method=RequestMethod.GET)
 	public String deleteCurrency(@RequestParam Integer coinId) {
-		currencyService.deleteCurrency(coinId);
-		return "success";
+		return currencyService.deleteCurrency(coinId);
+		
 	}
 	
 }

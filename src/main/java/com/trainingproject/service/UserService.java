@@ -1,9 +1,11 @@
 package com.trainingproject.service;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.TimeZone;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -17,7 +19,6 @@ import com.trainingproject.domain.UserOrder;
 import com.trainingproject.domain.Wallet;
 import com.trainingproject.dto.AssignRoleBean;
 import com.trainingproject.dto.AssignWalletBean;
-import com.trainingproject.dto.GetUserById;
 import com.trainingproject.dto.WithdrawDepositBean;
 import com.trainingproject.enums.CoinType;
 import com.trainingproject.enums.OrderType;
@@ -99,11 +100,19 @@ public class UserService {
 		if(user.getCountry()==null||user.getCountry().length()==0)
 			return "county cannot be null";
 		
-		p = Pattern.compile("^[a-zA-Z]{1,}$", Pattern.CASE_INSENSITIVE);
+		p = Pattern.compile("^[a-zA-Z]{2,}$", Pattern.CASE_INSENSITIVE);
 		m = p.matcher(user.getCountry());
 		  if(!m.matches())
 		    return "Invalid country name";
-		user.setCreatedOn(new Date());
+		
+		  SimpleDateFormat sdf = new SimpleDateFormat("M/d/yy h:mm a Z");
+		  TimeZone istTimeZone = TimeZone.getTimeZone("Asia/Kolkata");
+		  Date d = new Date();
+		  sdf.setTimeZone(istTimeZone);
+		  String strtime = sdf.format(d);
+		
+		
+		 user.setCreatedOn(strtime);
 		user.setStatus(UserStatus.INACTIVE);
 		
 		String regex = "^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$";
@@ -119,23 +128,21 @@ public class UserService {
 		List<Wallet> walletSet=new ArrayList<Wallet>();
 		Wallet wallet=new Wallet();
 		wallet.setCoinType(CoinType.FIAT);
-		wallet.setCoinName("Inr");
+		wallet.setCoinName("INR");
 		wallet.setUser(user);
 		walletSet.add(wallet);
 		walletRepository.save(wallet);
 		user.setUserWallet(walletSet);
 		
 		List<Role> roleList=new ArrayList<Role>();
-		Role role=new Role();
-		role.setRoleType("USER");
-		roleList.add(role);      //todo
-		try {
-		if(roleRepository.findByroleType("USER")==null)
-		roleRepository.save(role);
+		Role role=roleRepository.findByRoleType("user");
+		if(role==null) {
+			role=new Role();
+			role.setRoleType("USER");
+			roleRepository.save(role);
 		}
-		catch(Exception e) {
-			
-		}
+		roleList.add(role);    
+		
 		user.setRoleType(roleList);
 		
 		otp= smsOTP.sendSMS();
@@ -187,6 +194,17 @@ public class UserService {
 
 	public String update(User user) {
 	
+		if(user.getUserId()==null)
+			return "user id cannot be null";
+		if(user.getUserName()==null)
+			return "username cannot be null";
+		if(user.getEmail()==null)
+			return "email cannot be null";
+		if(user.getPassword()==null)
+			return "password cannot be null";
+		if(user.getPhoneNumber()==null)
+			return "phone number cannot be null";
+		
 		if(!userRepository.existsById(user.getUserId()))
 			return "this user do not exist";
 		
@@ -229,9 +247,12 @@ public class UserService {
 		
 		if(user.getPassword().length()>32)
 			return "Maximum characters allowed for this field is 32";
-		user.setCreatedOn(new Date());
-		user.setStatus(UserStatus.ACTIVE);
-		 userRepository.save(user);
+		//user.setCreatedOn(new Date());
+		  cuser.setUserName(user.getUserName());
+		  cuser.setEmail(user.getEmail());
+		  cuser.setPhoneNumber(user.getPhoneNumber());
+		  cuser.setPassword(user.getPassword());
+		 userRepository.save(cuser);
 		 return "success";
 	}
 
@@ -259,11 +280,18 @@ public class UserService {
 	      if(user.getStatus().equals(UserStatus.INACTIVE))
 		return "user is inactive";
 	      
-	      if(arb.getRoleType().equals("ADMIN")||arb.getRoleType().equals("USER")||arb.getRoleType().equals("MANAGER"))
+	   List<Role> roles=user.getRoleType();
+	   
+	   for(int i=0;i<roles.size();i++) {
+		   if(roles.get(i).getRoleType().equalsIgnoreCase(arb.getRoleType()))
+                     return "role type already assigned";
+	   }
+	     
+	      if(arb.getRoleType().equalsIgnoreCase("ADMIN")||arb.getRoleType().equalsIgnoreCase("MANAGER"))
 	      {
 	    	 
-	      
-		Role roleobj=roleRepository.findByroleType(arb.getRoleType());
+
+		Role roleobj=roleRepository.findByRoleType(arb.getRoleType());
 		if(roleobj==null)
 			return "role cannot be assigned";
 		List<Role> role=new ArrayList<Role>();
@@ -347,6 +375,12 @@ public class UserService {
 	public String depositAmount(WithdrawDepositBean wdb) {
 	   
 		
+		Pattern p = Pattern.compile("^[a-zA-Z]{1,}$", Pattern.CASE_INSENSITIVE);
+		Matcher m = p.matcher(wdb.getCoinName());
+		
+		 if(!m.find())
+			 return "invalid coin name";
+		 
 	    if(wdb.getAmount()==0||wdb.getAmount()<0)
 	    	return "please enter a valid amount to deposit";
 	    
@@ -366,7 +400,7 @@ public class UserService {
 		userorder.setUserId(user.getUserId());
 		userorder.setPrice(wdb.getAmount());
 		userorder.setGrossAmount(wdb.getAmount());
-		userorder.setCoinQuantity((int)wdb.getAmount());
+		userorder.setCoinQuantity(wdb.getAmount());
 		userorder.setCoinType(wdb.getCoinType());
 		userorder.setCoinName(wdb.getCoinName());
 		userorderRepository.save(userorder);

@@ -29,20 +29,20 @@ public class UserOrder {
  private UserOrderStatus orderStatus;
  @Enumerated(EnumType.STRING)
   private CoinType coinType;
- private long price;
+ private double price;
 
-private long grossAmount;
- private Integer coinQuantity;
+private double grossAmount;
+ private double coinQuantity;
  private Date date;
- private Long fee=2l;
+ private double fee=2l;
  private Integer userId;
  
 
- public long getGrossAmount() {
+ public double getGrossAmount() {
 	return grossAmount;
 }
 
-public void setGrossAmount(long grossAmount) {
+public void setGrossAmount(double grossAmount) {
 	this.grossAmount = grossAmount;
 }
  @ManyToOne
@@ -66,11 +66,11 @@ public void setOrderStatus(UserOrderStatus orderStatus) {
 	this.orderStatus = orderStatus;
 }
 
-public Integer getCoinQuantity() {
+public double getCoinQuantity() {
 	return coinQuantity;
 }
  
-public void setCoinQuantity(Integer coinQuantity) {
+public void setCoinQuantity(double coinQuantity) {
 	this.coinQuantity = coinQuantity;
 }
 
@@ -89,11 +89,11 @@ public void setUserId(Integer userId) {
 	this.userId = userId;
 }
 
-public Long getFee() {
+public double getFee() {
 	return fee;
 }
 
-public void setFee(Long fee) {
+public void setFee(double fee) {
 	this.fee = fee;
 }
 
@@ -116,10 +116,10 @@ public void setCoinName(String coinName) {
 	this.coinName = coinName;
 }
 
-public long getPrice() {
+public double getPrice() {
 	return price;
 }
-public void setPrice(long price) {
+public void setPrice(double price) {
 	this.price = price;
 }
 public Date getDate() {

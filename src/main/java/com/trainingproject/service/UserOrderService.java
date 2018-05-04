@@ -57,9 +57,9 @@ public class UserOrderService {
 		 if(bsb.getCoinQuantity()==0)
 	    	 return "0 quantity to buy";
 		
-		Integer totamount=bsb.getCoinQuantity()*bsb.getPrice();
-		long fee=currencyRepository.findBycoinName(bsb.getCoinName()).getFee();
-		long gross=(totamount*fee)/100+totamount;
+		 double totamount=bsb.getCoinQuantity()*bsb.getPrice();
+		 double fee=currencyRepository.findBycoinName(bsb.getCoinName()).getFee();
+		 double gross=(totamount*fee)/100+totamount;
 		Wallet buyerWallet=walletRepository.findBycoinTypeAndUser(CoinType.FIAT, user);
 		
 	  if(buyerWallet.getShadowBal()<gross)

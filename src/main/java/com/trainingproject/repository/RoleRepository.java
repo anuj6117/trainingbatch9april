@@ -8,6 +8,6 @@ import com.trainingproject.domain.Role;
 @Repository
 public interface RoleRepository extends JpaRepository<Role,Integer>{
 
-	Role findByroleType(String roleType);
+	Role findByRoleType(String roleType);
 	
 }

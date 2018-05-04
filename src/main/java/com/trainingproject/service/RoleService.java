@@ -18,16 +18,16 @@ public class RoleService {
 	RoleRepository roleRepository;
 
 	public String createRole(Role role) {
-		if(roleRepository.findByroleType(role.getRoleType())!=null)
+		if(roleRepository.findByRoleType(role.getRoleType())!=null)
 			return "this role already exists!";
 		if(getAllRoles().size()==3)
 			return "cannot create any more roles";
 		
-		if(role.getRoleType().equals("ADMIN"))
+		if(role.getRoleType().equalsIgnoreCase("ADMIN"))
 		 roleRepository.save(role);
-		else if(role.getRoleType().equals("USER"))
+		else if(role.getRoleType().equalsIgnoreCase("USER"))
 			 roleRepository.save(role);
-		else if(role.getRoleType().equals("MANAGER"))
+		else if(role.getRoleType().equalsIgnoreCase("MANAGER"))
 			 roleRepository.save(role);
 		else {
 			return "role cannot be created";

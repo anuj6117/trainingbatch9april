@@ -19,13 +19,13 @@ public class Transaction {
 	@Id
 	@GeneratedValue
 	private Integer transactionId;
-	private long amount;
+	private double amount;
 	 @Enumerated(EnumType.STRING)
 	private CoinType coinType;
 	private String coinName;
-	private long fee;
-	private long exchangeRate;
-	private long grossAmount;
+	private double fee;
+	private double exchangeRate;
+	private double grossAmount;
 	private Integer buyer;
 	private Integer seller;
 	 @Enumerated(EnumType.STRING)
@@ -47,10 +47,10 @@ public class Transaction {
 	public void setTransactionId(Integer transactionId) {
 		this.transactionId = transactionId;
 	}
-	public long getAmount() {
+	public double getAmount() {
 		return amount;
 	}
-	public void setAmount(long amount) {
+	public void setAmount(double amount) {
 		this.amount = amount;
 	}
 	public CoinType getCoinType() {
@@ -65,22 +65,22 @@ public class Transaction {
 	public void setCoinName(String coinName) {
 		this.coinName = coinName;
 	}
-	public long getFee() {
+	public double getFee() {
 		return fee;
 	}
-	public void setFee(long fee) {
+	public void setFee(double fee) {
 		this.fee = fee;
 	}
-	public long getExchangeRate() {
+	public double getExchangeRate() {
 		return exchangeRate;
 	}
-	public void setExchangeRate(long exchangeRate) {
+	public void setExchangeRate(double exchangeRate) {
 		this.exchangeRate = exchangeRate;
 	}
-	public long getGrossAmount() {
+	public double getGrossAmount() {
 		return grossAmount;
 	}
-	public void setGrossAmount(long grossAmount) {
+	public void setGrossAmount(double grossAmount) {
 		this.grossAmount = grossAmount;
 	}
 	public Integer getBuyer() {

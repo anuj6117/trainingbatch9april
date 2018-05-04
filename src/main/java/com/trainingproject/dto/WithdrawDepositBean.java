@@ -7,12 +7,12 @@ public class WithdrawDepositBean {
 	Integer userId;
 	CoinType coinType;
 	String coinName;
-	long amount;
+	double amount;
 	
-	public long getAmount() {
+	public double getAmount() {
 		return amount;
 	}
-	public void setAmount(long amount) {
+	public void setAmount(double amount) {
 		this.amount = amount;
 	}
 	public String getCoinName() {

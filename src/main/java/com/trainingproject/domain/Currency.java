@@ -1,6 +1,8 @@
 package com.trainingproject.domain;
 
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -16,13 +18,14 @@ public class Currency {
 	private Integer coinId;
     
 	private String coinName;
+	 @Enumerated(EnumType.STRING)
 	private CoinType coinType;
 	private String symbol;
-	private Integer initialSupply;
-	private Integer price; 
-	private long fee; 
-	private Integer profit; 
-	private Integer coinInINR; 
+	private double initialSupply;
+	private double price; 
+	private double fee; 
+	private double profit; 
+	private double coinInINR; 
 	
 	public Currency () {
 		coinInINR=0;
@@ -44,46 +47,41 @@ public class Currency {
 	public void setCoinId(Integer coinId) {
 		this.coinId = coinId;
 	}
-	public Integer getInitialSupply() {
+	public double getInitialSupply() {
 		return initialSupply;
 	}
-	public void setInitialSupply(Integer initialsupply) {
+	public void setInitialSupply(double initialsupply) {
 		this.initialSupply = initialsupply;
 	}
-	public long getFee() {
+	public double getFee() {
 		return fee;
 	}
-	public void setFee(long fee) {
+	public void setFee(double fee) {
 		this.fee = fee;
 	}
-	public Integer getProfit() {
+	public double getProfit() {
 		return profit;
 	}
-	public void setProfit(Integer profit) {
+	public void setProfit(double profit) {
 		this.profit = profit;
 	}
-	public Integer getCoinInINR() {
+	public double getCoinInINR() {
 		return coinInINR;
 	}
-	public void setCoinInINR(Integer coinInINR) {
+	public void setCoinInINR(double coinInINR) {
 		this.coinInINR = coinInINR;
 	}
-	public Integer getId(){
-		return coinId;
-	}
-	public void setId(Integer id) {
-		this.coinId = id;
-	}
-	public Integer getSupply() {
+	
+	public double getSupply() {
 		return initialSupply;
 	}
-	public void setSupply(Integer supply) {
+	public void setSupply(double supply) {
 		this.initialSupply = supply;
 	}
-	public Integer getPrice() {
+	public double getPrice() {
 		return price;
 	}
-	public void setPrice(Integer price) {
+	public void setPrice(double price) {
 		this.price = price;
 	}
 	public String getCoinName() {

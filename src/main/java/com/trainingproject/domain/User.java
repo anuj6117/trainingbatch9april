@@ -40,7 +40,7 @@ public class User {
  
     private Long phoneNumber;
     private String password;
-    private Date createdOn;
+    private String createdOn;
 
     
     @ManyToMany(fetch = FetchType.EAGER,cascade = {CascadeType.PERSIST,CascadeType.MERGE})
@@ -66,7 +66,7 @@ public class User {
 	}
 
 
-	public Date getCreatedOn() {
+	public String getCreatedOn() {
 		return createdOn;
 	}
 
@@ -91,7 +91,7 @@ public class User {
 	}
 
 
-	public void setCreatedOn(Date createdOn) {
+	public void setCreatedOn(String createdOn) {
 		this.createdOn = createdOn;
 	}
 		
