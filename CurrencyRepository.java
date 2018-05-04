@@ -9,4 +9,6 @@ public interface CurrencyRepository extends JpaRepository<Currency,Integer> {
 
 	Currency findByCoinName(String coinName);
 
+	Currency findBySymbol(String symbol);
+
 }
