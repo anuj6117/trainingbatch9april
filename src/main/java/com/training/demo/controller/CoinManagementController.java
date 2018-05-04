@@ -55,14 +55,6 @@ public class CoinManagementController {
 	@RequestMapping(value="/deletecurrency", method=RequestMethod.GET)
 	public String delete(@RequestParam("coinId") Integer coinId)
 	{
-		if(coinId != null)
-		{
-			coinManagementService.delete(coinId);
-			return "Your Coin Has Been Deleted Successfully ";
-		}
-		else
-		{
-			throw new NullPointerException("insufficient information");
-		}	
+			return coinManagementService.delete(coinId);	
 	}
 }

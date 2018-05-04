@@ -1,5 +1,7 @@
 package com.training.demo.repository;
 
+import java.util.Set;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.training.demo.model.CoinManagement;
@@ -14,5 +16,8 @@ public interface CoinManagementRepository extends JpaRepository<CoinManagement,I
 
 	public CoinManagement findByCoinName(String coinName);
 	
+	public Set<CoinManagement> findAllBySymbol(String symbol);
+	
 	boolean existsByCoinName(String coinName);
+	
 }

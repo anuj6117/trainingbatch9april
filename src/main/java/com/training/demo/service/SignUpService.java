@@ -54,6 +54,8 @@ public class SignUpService
 		String password = user.getPassword();
 		
 		String tempEmail=user.getEmail();		
+		String countryName = user.getCountry();
+		
 		boolean validateEmail=emailValidation.validateEmail(tempEmail);
 		
 			if(!validateEmail)
@@ -67,14 +69,24 @@ public class SignUpService
 			return "Please enter password with minimum 8 characters. Your password should have atleast 1 Uppercase, 1 Lowercase, 1 Digit & 1 Special character. Space is not allowed";
 		}
 			
+		if(countryName.equals("") || countryName.isEmpty() || countryName == null || countryName.trim().length() == 0)
+		{
+			return  "Country Name can not be null or empty.";
+		}
+		
+		if(!(countryName.matches("^[a-zA-Z]{2,}$"))){
+			return "country name can not be null or its length should be more than 2 characters.";
+		}
+		
+		
+		if(!(userName.matches("^[a-z0-9_-]{6,25}$"))){
+			return "Maximun charaters allowed for userName field is 6 to 25 and User name can not contain any special character.";
+		}
+		
+		
 		if(userName.equals("") || userName.isEmpty() || userName == null || userName.trim().length() == 0)
 		{
 			return  "User Name can not be null or empty.";
-		}
-		
-		if(userName.length() >= 26 || userName.length() <= 6)
-		{
-			return  "Maximum characters allowed for this field is 6 to 25.";			
 		}
 				
 		String tempPhoneNo=user.getPhoneNumber();
@@ -100,17 +112,22 @@ public class SignUpService
 						
 						System.out.println("Default roleType assigned to user = ");
 						//Default Role Creation
-						Role roles = roleRepository.findByRoleId(1);
-						HashSet<Role> roleHashSet = new HashSet<Role>();
-						roleHashSet.add(roles);
-						user.setRoles(roleHashSet);
-			
-						//Default Wallet Creation 
+
+						Role role = null; 
+						if((role = roleRepository.findByRoleType("user")) == null)
+						{
+							role = new Role();
+							role.setRoleType("USER");
+						}
+						user.getRoles().add(role);
+				
+						///Default Wallet Creation 
 						Wallet wallet  = new Wallet();
 						wallet.setWalletType(WalletType.FIAT);
 						wallet.setUser(user);
 						wallet.setBalance(0.0);
 						wallet.setShadowBalance(0.0);
+						wallet.setCoinName("");
 						Set<Wallet> walletHashSet = new HashSet<Wallet>();
 						walletHashSet.add(wallet);
 						user.setWallets(walletHashSet);
@@ -154,6 +171,12 @@ public class SignUpService
 	{
 		OtpVerification tempOtpVerification;
 		User t_user;
+		
+		String tempTokenOTP = tokenOTP.toString();
+		if(tokenOTP == null ||  tempTokenOTP.length()<4)
+		{
+			return  "invalid otp";
+		}
 		try 
 		{			
 			tempOtpVerification = otpRepository.findByEmail(email);
@@ -209,30 +232,11 @@ public class SignUpService
 		}
 		public String updateUser(@RequestBody User user) {
 			String userName = user.getUserName();
+			System.out.println(userName+"======================================");
 			String password = user.getPassword();
 			
-			if(!(password.matches("(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\\S+$).{8,}")))
-			{
-				return "Please enter password with minimum 8 characters. Your password should have atleast 1 Uppercase, 1 Lowercase, 1 Digit & 1 Special character. Space is not allowed.";
-				
-			}
-			
-				if(userName.equals("") || userName.isEmpty() || userName == null)
-				{
-					return  "User Name can't be null.";
-				}
-				
-				if(userName.length() >= 26 || userName.length() <= 6)
-				{
-					return  "Maximum characters allowed for this User Name field is 6 to 25.";			
-				}
-				
-				if(userName.trim().length() == 0)
-				{
-					return	"User Name must contain characters.";
-				}
-			
-			String tempEmail=user.getEmail();
+			String tempEmail=user.getEmail();		
+			String countryName = user.getCountry();
 			
 			boolean validateEmail=emailValidation.validateEmail(tempEmail);
 			
@@ -240,13 +244,38 @@ public class SignUpService
 				{
 					return  "Please enter a valid email address.";
 				}
+
 			
+			if(!(password.matches("^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-<>~`)(_+=}[{]':;/]).{8,}$")))
+			{
+				return "Please enter password with minimum 8 characters. Your password should have atleast 1 Uppercase, 1 Lowercase, 1 Digit & 1 Special character. Space is not allowed";
+			}
+				
+			if(countryName.equals("") || countryName.isEmpty() || countryName == null || countryName.trim().length() == 0)
+			{
+				return  "Country Name can not be null or empty.";
+			}
+			
+			if(!(countryName.matches("^[a-zA-Z]{2,}$"))){
+				return "country name can not be null or its length should be more than 2 characters.";
+			}
+			
+			
+			if(!(userName.matches("^[a-z0-9_-]{6,25}$"))){
+				return "Maximun charaters allowed for userName field is 6 to 25 and User name can not contain any special character.";
+			}
+			
+			
+			if(userName.equals("") || userName.isEmpty() || userName == null || userName.trim().length() == 0)
+			{
+				return  "User Name can not be null or empty.";
+			}
+					
 			String tempPhoneNo=user.getPhoneNumber();
-			
-				if(!PhoneValidation.isValid(tempPhoneNo))
-				{
-					return  "Please enter a valid mobile number.";
-				}
+			if(!PhoneValidation.isValid(tempPhoneNo))
+			{
+				return  "Please enter a valid mobile number.";
+			}
 
 			try {
 		     User tempUser = userRepository.findByUserId(user.getUserId());

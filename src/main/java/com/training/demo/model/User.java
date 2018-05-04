@@ -61,7 +61,7 @@ public class User
 	@JoinTable(name = "user_role", 
 	joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "userId"), 
 	inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "roleId"))
-	private Set<Role> roles;
+	private Set<Role> roles =new HashSet<Role>();
 	
 
 	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL)

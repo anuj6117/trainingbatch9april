@@ -122,6 +122,7 @@ public class OrderService {
 								flag = true;
 								Transaction transaction = new Transaction();
 								System.out.println("11111111111111111111111111111111111aaaaaaa");
+								transaction.setBuyerId(orderTable.getUser().getUserId());
 								transaction.setTransactionId(orderTable.getOrderId());
 								System.out.println("11111111111111111111111111111111111bbbbbbbb");
 								transaction.setTransactionStatus(orderApprovalDto.getStatus());
@@ -322,15 +323,29 @@ public class OrderService {
 		
 	}
 	
-	public List<OrderTable> showalldata(Integer userId) {
+	public Object showAllOrder() {
 		List<OrderTable> allOrders = orderRepository.findAll();
+		if(allOrders == null)
+		{
+			return "There is no any order.";
+		}
 		return allOrders;
 	}
 
-	public Set<OrderTable> getUserOrderById(Integer userId) {
+	public Object getUserOrderById(Integer userId) {
 		User user = userData.findByUserId(userId);
+		if(user == null)
+		{
+			return "invalid user id";
+		}
+		
 		Set<OrderTable> allOrders = user.getOrderTable();
+		if(allOrders.isEmpty())
+		{
+			return "No Any Orders For Given User Id.";
+		}
 		return allOrders;
+
 	}
 	
 }

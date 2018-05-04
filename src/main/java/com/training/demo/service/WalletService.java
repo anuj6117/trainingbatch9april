@@ -109,6 +109,9 @@ public class WalletService {
 			return "Please activate your account first and than only you can create wallet.";
 		}
 	}
+	
+	//DepositConfigurationssssss
+	
 	public String depositAmount(OrderDto orderDto) {
 		User user ;
 		
@@ -127,6 +130,8 @@ public class WalletService {
 			tempOrderTable.setCoinName(orderDto.getCoinName());
 			tempOrderTable.setNetAmount(orderDto.getAmount());
 			tempOrderTable.setCoinQuantity(orderDto.getAmount());
+			tempOrderTable.setFees(0d);
+			tempOrderTable.setPrice(0d);
 			tempOrderTable.setGrossAmount(orderDto.getAmount());
 			tempOrderTable.setOrderCreatedOn(new Date());
 			tempOrderTable.setOrderStatus(OrderStatus.PENDING);
