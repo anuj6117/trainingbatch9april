@@ -49,10 +49,12 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 		
 		http.
 			csrf().disable();
-		http.authorizeRequests().antMatchers("/signup").permitAll()
+		http.authorizeRequests().antMatchers("/signup","/verifyuser").permitAll()
+		.antMatchers("/getallusers").hasAnyRole("ADMIN")
 		.anyRequest().authenticated()
 		.and()
-	    .formLogin().permitAll();
+	    .formLogin().permitAll()
+	    .and().logout().permitAll();
 	}
 	
 	/*@Override
