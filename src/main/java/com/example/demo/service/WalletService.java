@@ -7,8 +7,10 @@ import org.springframework.stereotype.Service;
 
 import com.example.demo.dto.UserWalletDTO;
 import com.example.demo.enums.CoinType;
+import com.example.demo.model.OrderDetails;
 import com.example.demo.model.User;
 import com.example.demo.model.Wallet;
+import com.example.demo.repository.OrderRepository;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.repository.WalletRepository;
 
@@ -21,6 +23,9 @@ public class WalletService {
 	
 	@Autowired
 	private UserRepository userRepository;
+	
+	@Autowired
+	private OrderRepository orderRepository;
 	
 	public String addWallet(UserWalletDTO userWalletDto) {
 		String coinName = userWalletDto.getCoinName().toLowerCase();
@@ -44,6 +49,11 @@ public class WalletService {
 
 	public List<Wallet> getAllWallet() {
 		return walletRepository.findAll();
+	}
+
+	public List<OrderDetails> getWalletHistory(UserWalletDTO userWallet) {
+		User user = userRepository.findOneByUserId(userWallet.getUserId());
+		return orderRepository.walletHistory(user, userWallet.getCoinName());
 	}
 
 }

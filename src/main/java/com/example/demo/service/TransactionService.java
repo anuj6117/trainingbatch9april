@@ -1,12 +1,10 @@
 package com.example.demo.service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.example.demo.dto.UserTransactionDTO;
 import com.example.demo.enums.OrderStatus;
 import com.example.demo.enums.OrderType;
 import com.example.demo.model.CurrencyModel;
@@ -17,8 +15,6 @@ import com.example.demo.model.Wallet;
 import com.example.demo.repository.CurrencyRepository;
 import com.example.demo.repository.OrderRepository;
 import com.example.demo.repository.TransactionRepository;
-import com.example.demo.repository.UserRepository;
-import com.example.demo.repository.WalletRepository;
 
 @Service
 public class TransactionService {
@@ -27,23 +23,12 @@ public class TransactionService {
 	private TransactionRepository transactionRepository;
 	
 	@Autowired
-	private UserRepository userRepository;
-	
-	@Autowired
-	private OrderRepository orderRepository;
-	
-	@Autowired
-	private WalletRepository walletRepository;
+	private OrderRepository orderRepository;	
 	
 	@Autowired
 	private CurrencyRepository currencyRepository;
 	
-	private CurrencyModel currency;
-	
-	
-	
-	private List<Wallet> walletSet = new ArrayList<>(); 
-	
+	private CurrencyModel currency;	
 	
 	public List<Transaction> showAllTransaction(){
 		List<Transaction> list =  transactionRepository.findAll();
@@ -75,7 +60,7 @@ public class TransactionService {
 			}
 		}
 	}
-
+			
 	
 	
 	public void makeTransaction(OrderDetails buyerOrder, OrderDetails sellerOrder, String flag) {
@@ -131,7 +116,7 @@ public class TransactionService {
 							buyerWallet.setShadowBalance(buyerWallet.getBalance()+buyerOrder.getCoinQuantity());
 							buyerWallet.setBalance(buyerWallet.getShadowBalance());
 							Double profit = (currency.getFee()*buyerOrder.getPrice()*buyerOrder.getCoinQuantity())/100.0;
-							Double priceDiff = (sellerOrder.getPrice()*sellerOrder.getCoinQuantity())-(buyerOrder.getPrice()*buyerOrder.getCoinQuantity());
+							Double priceDiff = (buyerOrder.getPrice()*buyerOrder.getCoinQuantity())-(sellerOrder.getPrice()*buyerOrder.getCoinQuantity());
 							if(currency.getProfit()!=null)
 								currency.setProfit(currency.getProfit()+profit);
 							else

@@ -9,12 +9,13 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.dto.UserWalletDTO;
+import com.example.demo.model.OrderDetails;
 import com.example.demo.model.Wallet;
 import com.example.demo.service.WalletService;
 
 
 @RestController
-//@RequestMapping("wallet")
+
 public class WalletController {
 	
 	@Autowired
@@ -26,8 +27,20 @@ public class WalletController {
 	}
 	
 	@RequestMapping("/getallwallet")
-	public List<Wallet> getAllWallet(){		
-		return walletService.getAllWallet();		
+	public Object getAllWallet(){		
+		List<Wallet> list = walletService.getAllWallet();
+		if(list.isEmpty())
+			return "no wallet available";
+		return list;
+	}			
+	
+	@RequestMapping(value = "/wallethistory" , method = RequestMethod.POST)
+	public Object getWalletHistory(@RequestBody UserWalletDTO userWallet) {
+		List<OrderDetails> list =  walletService.getWalletHistory(userWallet);
+		if(list.isEmpty())
+			return "no wallet history available";
+		return list;
 	}
-
+	
+	
 }
