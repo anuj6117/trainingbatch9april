@@ -51,7 +51,7 @@ public class Users  {
 	@Email
 	public String email;
 	@Size(min=10,max=10)
-	@Pattern(regexp="(^$|[0-9]{10})")
+	
 	public String phoneNumber;
 	public String getUserName() {
 		return userName;

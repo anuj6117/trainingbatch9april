@@ -20,8 +20,9 @@ public class Currency {
 	private String coinName;
 	
 	private String symbol;
+	@NotNull
 	private Integer initialSupply;
-	
+	@NotNull
 	private Integer price;
 	private Integer fees;
 	private Integer INRconversion;

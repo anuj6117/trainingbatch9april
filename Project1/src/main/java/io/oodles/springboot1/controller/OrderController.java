@@ -47,7 +47,7 @@ public class OrderController {
 	
 	@GetMapping("/transaction")
 	public void maketransaction() {
-		System.out.println(">>>>>>>>>>>>>");
+		
 		orderService.transaction();
 	}
 	@GetMapping("/showalltransaction")

@@ -1,6 +1,7 @@
 package io.oodles.springboot1.controller;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import javax.validation.Valid;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import io.oodles.springboot1.ResponseHandler.ResponseHandler;
 import io.oodles.springboot1.model.AssignRole;
 import io.oodles.springboot1.model.StoreOTP;
 import io.oodles.springboot1.model.Users;
@@ -31,6 +33,25 @@ public class SignUp {
 		return signupservice.addUser(users);
 		
 	}
+	
+	/*@PostMapping("/signup")   //correct
+	public ResponseEntity<Object> insertUser(@RequestBody Users users){
+		Map<String,Object> result=null;
+		try {
+			result=signupservice.addUser(users);
+			if(result.get("isSuccess").equals(true)) {
+				return ResponseHandler.generateResponse(HttpStatus.OK, true, result.get("message").toString(), result);
+			}
+			else {
+				return ResponseHandler.generateResponse(HttpStatus.OK, false, result.get("message").toString(), result);
+			}
+			
+		}catch (Exception e) {
+			// TODO: handle exception
+			return ResponseHandler.generateResponse(HttpStatus.BAD_REQUEST, false, e.getMessage(), result);
+		}
+	}*/
+	
 	
 	@PostMapping("/verifyuser")
 	public String verify(@RequestBody StoreOTP otp) {

@@ -49,10 +49,20 @@ public class Role_Service {
 	public String create(Role role) {
 		// TODO Auto-generated method stub
 		//System.out.println("Done2");
+		//System.out.println(role.getRoleType());
+		Role role1=roleRepository.findByRoleType(role.getRoleType());
+	    //System.out.println(role1);
+		if(role1==null) {
+			
+		if(role.getRoleType().equalsIgnoreCase("USER")||role.getRoleType().equalsIgnoreCase("ADMIN")||role.getRoleType().equalsIgnoreCase("MANAGER")){
 		
 		roleRepository.save(role);
-		return "Role Created";
-	}
+	
+		return "Role Created";}
+		
+		}
+	
+		return "Role Already Present";}
 	
 	    
 	  

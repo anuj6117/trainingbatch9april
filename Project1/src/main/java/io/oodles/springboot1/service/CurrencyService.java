@@ -59,9 +59,24 @@ public class CurrencyService {
 
 	public String create(Currency currency) {
 		// TODO Auto-generated method stub
+		Currency currency1=currencyRepository.findByCoinName(currency.getCoinName());
+		Currency currencySymbol=currencyRepository.findBySymbol(currency.getSymbol());
+		if(currency.getCoinName().length()==0) {
+			return "Coin Name can't be null.";
+		}
+		else if(currency.getSymbol().length()==0) {
+			return "Symbol can't be null";
+		}else if(currency1!=null) {
+			return "Coin Name already present";
+		}else if(currencySymbol!=null) {
+			return "Symbol already present";
+		}
 		
+		
+		
+		else {
 		currencyRepository.save(currency);
-		return "Currency Added";
+		return "Currency Added";}
 	}
 
 	public Optional<Currency> searchbyid(Integer id) {

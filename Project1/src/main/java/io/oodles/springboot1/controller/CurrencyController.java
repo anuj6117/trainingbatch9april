@@ -25,7 +25,7 @@ public class CurrencyController {
 	}
 	@PostMapping("/addcurrency")
 	public String createCurrency(@RequestBody Currency currency) {
-		//System.out.println("Done1");
+		
 		return currencyservice.create(currency);
 	}
 	@GetMapping("/getbycurrencyid")

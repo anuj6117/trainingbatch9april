@@ -2,11 +2,14 @@ package io.oodles.springboot1.service;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Random;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -53,24 +56,94 @@ public class Signupservice {
 	Wallet wallet=new Wallet();
 	StoreOTP storeOTP;
 	Date date = new Date();
+	
+	/*public Map<String,Object> addUser(Users user){
+		Map<String,Object> result=new HashMap<String,Object>();
+		if((usersRepository.findByEmail(user.getEmail()) == null)) {
+		if(user.getEmail().equals("")) {
+			result.put("isSuccess", false);
+			result.put("message", "email id not empty.");
+			return result;
+		}
+		}
+		else {
+			result.put("isSuccess", false);
+			result.put("message", "Email id already exists.");
+			return result;
+		}
+		return result;
+	}*/  //Correct
+	/*public Map<String,Object> addUser(Users user){
+		Map<String,Object> result=new HashMap<String,Object>();
+		Users user1=usersRepository.findByEmail(user.getEmail());
+		if(user1!=null) {
+			result.put("isSuccess", false);
+			result.put("message", "email id already exists.");
+			return result;
+		}
+		return result;
+	}*/
+	
 
 	public String addUser(Users users) {
+		//System.out.println("???????????");
 		Users user=usersRepository.findByEmail(users.getEmail());
+		//System.out.println("???????????");
 		Users phone=usersRepository.findByPhoneNumber(users.getPhoneNumber());
+		//System.out.println("???????????");
 		Users name=usersRepository.findByUserName(users.getUserName());
+		//System.out.println("???????????");
+		String s=users.getUserName();
+		//System.out.println("???????????");
+		String mob=users.getPhoneNumber();
+		//System.out.println("???????????");
+		Users mobpresent=usersRepository.findByPhoneNumber(users.getPhoneNumber());
+		//System.out.println("???????????");
+		
+          
+			
+		
+		//System.out.println(";;;;;;;;;;;");
+		Role role1=rolerepository.findByRoleType("USER");
+		if(role1==null) {
+		if(!role.getRoleType().equalsIgnoreCase("user")) {
+			//System.out.println("???????????");
 		role.setRoleType("USER");
-		rolerepository.save(role);
+		//System.out.println("???????????");
+		rolerepository.save(role);}}
+		//System.out.println("???????????");
+			
 		if(user!=null) {
-			return "Email already exists";
+			//System.out.println("???????????");
+			return "Oops,this Email id is already registered";
+			
 		}
 		else if(phone!=null) {
+			//System.out.println("???????????");
 			return "phone number already exists";
 		}
 		else if(name!=null) {
+			//System.out.println("???????????");
 			return "Username already exists";
 		}
+		else if(s.length()>25) {
+			return "Maximum Characters allowed for this field is 25";
+		}
+		else if(mob.length()>10){
+			return "Please,enter a valid mobile number.";
+		}
+		else if(mobpresent!=null) {
+			return "Oops,this number is already registered";
+		}
+		else if(!Pattern.matches("(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%]).{8,32}", users.getPassword())) {
+			return "Please enter password with minimum 8 characters.You password should have atleast 1 Upper Case, 1 Lower Case, 1 Digit & 1 Special Character.";
+		}
+		else if(!Pattern.matches("\\d{10}", users.getPhoneNumber())) {
+			return "Phone Number incorrect";
+		}
+		
 		else {
-		System.out.println("////////////");
+		//System.out.println("////////////");
 
 		Random rnd = new Random();
 		
@@ -126,6 +199,8 @@ public class Signupservice {
 			System.out.println("<<<<<<<<<<<<<<<<");
 			return "Your account has been successfully created. Please, verify it by using OTP.";}
 		}
+	
+	
 	
 
 	public List<Users> getallusers() {
