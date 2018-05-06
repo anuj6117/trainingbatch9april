@@ -1,9 +1,11 @@
 package com.trainingproject.service;
 
+import java.text.SimpleDateFormat;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
+import java.util.TimeZone;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -93,12 +95,21 @@ public class TransactionService implements Comparator<UserOrder> {
 		            if(buyerFiatwallet.getShadowBal()<grossAmount) {
 		            	//transaction will be failed
 		            	
-		            	
 		            	trans.setBuyer(buyers.get(i).getUser().getUserId());
 		            	
 						trans.setSeller(admin.getCoinId());
 						trans.setFee(fees);
-						trans.setDate(new Date());
+						
+						 SimpleDateFormat sdf = new SimpleDateFormat("M/d/yy h:mm a Z");
+						  TimeZone istTimeZone = TimeZone.getTimeZone("Asia/Kolkata");
+						  Date d = new Date();
+						  sdf.setTimeZone(istTimeZone);
+						  String strtime = sdf.format(d);
+						  trans.setDate(strtime);
+						
+						
+						
+						//trans.setDate(new Date());
 						trans.setCoinName(coinName);
 						trans.setCoinType(buyers.get(i).getCoinType());
 						trans.setStatus(TransactionStatus.FAILED);
@@ -122,7 +133,16 @@ public class TransactionService implements Comparator<UserOrder> {
 		            		trans.setBuyer(buyers.get(i).getUser().getUserId());
 							trans.setSeller(admin.getCoinId());
 							trans.setFee(fees);
-							trans.setDate(new Date());
+							
+							 SimpleDateFormat sdf = new SimpleDateFormat("M/d/yy h:mm a Z");
+							  TimeZone istTimeZone = TimeZone.getTimeZone("Asia/Kolkata");
+							  Date d = new Date();
+							  sdf.setTimeZone(istTimeZone);
+							  String strtime = sdf.format(d);
+							  trans.setDate(strtime);
+							  
+							  
+							//trans.setDate(new Date());
 							trans.setCoinName(coinName);
 							trans.setCoinType(buyers.get(i).getCoinType());
 							trans.setStatus(TransactionStatus.FAILED);
@@ -149,7 +169,16 @@ public class TransactionService implements Comparator<UserOrder> {
 						trans.setBuyer(buyers.get(i).getUser().getUserId());
 						trans.setSeller(admin.getCoinId());
 						trans.setFee(fees);
-						trans.setDate(new Date());
+						
+						 SimpleDateFormat sdf = new SimpleDateFormat("M/d/yy h:mm a Z");
+						  TimeZone istTimeZone = TimeZone.getTimeZone("Asia/Kolkata");
+						  Date d = new Date();
+						  sdf.setTimeZone(istTimeZone);
+						  String strtime = sdf.format(d);
+						  trans.setDate(strtime);
+						  
+						  
+						//trans.setDate(new Date());
 						trans.setCoinName(coinName);
 						trans.setCoinType(buyers.get(i).getCoinType());
 						trans.setStatus(TransactionStatus.APPROVED);
@@ -268,7 +297,15 @@ public class TransactionService implements Comparator<UserOrder> {
 			            	trans.setBuyer(buyer.getUser().getUserId());
 							trans.setSeller(seller.getUserId());
 							trans.setFee(fees);
-							trans.setDate(new Date());
+							
+							 SimpleDateFormat sdf = new SimpleDateFormat("M/d/yy h:mm a Z");
+							  TimeZone istTimeZone = TimeZone.getTimeZone("Asia/Kolkata");
+							  Date d = new Date();
+							  sdf.setTimeZone(istTimeZone);
+							  String strtime = sdf.format(d);
+							  trans.setDate(strtime);
+							  
+						//	trans.setDate(new Date());
 							trans.setCoinName(coinName);
 							trans.setCoinType(buyers.get(i).getCoinType());
 							trans.setStatus(TransactionStatus.FAILED);
@@ -332,7 +369,15 @@ public class TransactionService implements Comparator<UserOrder> {
 			            trans.setBuyer(buyer.getUser().getUserId());
 						trans.setSeller(seller.getUserId());
 						trans.setFee(fees);
-						trans.setDate(new Date());
+						//trans.setDate(new Date());
+						
+						 SimpleDateFormat sdf = new SimpleDateFormat("M/d/yy h:mm a Z");
+						  TimeZone istTimeZone = TimeZone.getTimeZone("Asia/Kolkata");
+						  Date d = new Date();
+						  sdf.setTimeZone(istTimeZone);
+						  String strtime = sdf.format(d);
+						  trans.setDate(strtime);
+						  
 						trans.setCoinName(coinName);
 						trans.setCoinType(buyer.getCoinType());
 						trans.setStatus(TransactionStatus.APPROVED);
@@ -385,7 +430,6 @@ public class TransactionService implements Comparator<UserOrder> {
     		buyer.setOrderStatus(UserOrderStatus.PENDING);
     	}
     	
-    	
 	 
 	 //check if buyer has that kind of money or not for purchasing
     	double fees=currencyRepository.findBycoinName(coinName).getFee();
@@ -403,7 +447,16 @@ public class TransactionService implements Comparator<UserOrder> {
         	trans.setBuyer(buyer.getUser().getUserId());
 			trans.setSeller(admin.getCoinId());
 			trans.setFee(fees);
-			trans.setDate(new Date());
+		//	trans.setDate(new Date());
+			
+			 SimpleDateFormat sdf = new SimpleDateFormat("M/d/yy h:mm a Z");
+			  TimeZone istTimeZone = TimeZone.getTimeZone("Asia/Kolkata");
+			  Date d = new Date();
+			  sdf.setTimeZone(istTimeZone);
+			  String strtime = sdf.format(d);
+			  trans.setDate(strtime);
+			  
+			  
 			trans.setCoinName(coinName);
 			trans.setCoinType(buyer.getCoinType());
 			trans.setStatus(TransactionStatus.FAILED);
@@ -426,7 +479,15 @@ public class TransactionService implements Comparator<UserOrder> {
         		trans.setBuyer(buyer.getUser().getUserId());
 				trans.setSeller(admin.getCoinId());
 				trans.setFee(fees);
-				trans.setDate(new Date());
+				//trans.setDate(new Date());
+				
+				 SimpleDateFormat sdf = new SimpleDateFormat("M/d/yy h:mm a Z");
+				  TimeZone istTimeZone = TimeZone.getTimeZone("Asia/Kolkata");
+				  Date d = new Date();
+				  sdf.setTimeZone(istTimeZone);
+				  String strtime = sdf.format(d);
+				  trans.setDate(strtime);
+				  
 				trans.setCoinName(coinName);
 				trans.setCoinType(buyer.getCoinType());
 				trans.setStatus(TransactionStatus.FAILED);
@@ -453,7 +514,15 @@ public class TransactionService implements Comparator<UserOrder> {
 			trans.setBuyer(buyer.getUser().getUserId());
 			trans.setSeller(admin.getCoinId());
 			trans.setFee(fees);
-			trans.setDate(new Date());
+			//trans.setDate(new Date());
+			
+			 SimpleDateFormat sdf = new SimpleDateFormat("M/d/yy h:mm a Z");
+			  TimeZone istTimeZone = TimeZone.getTimeZone("Asia/Kolkata");
+			  Date d = new Date();
+			  sdf.setTimeZone(istTimeZone);
+			  String strtime = sdf.format(d);
+			  trans.setDate(strtime);
+			  
 			trans.setCoinName(coinName);
 			trans.setCoinType(buyer.getCoinType());
 			trans.setStatus(TransactionStatus.APPROVED);
@@ -490,7 +559,6 @@ public class TransactionService implements Comparator<UserOrder> {
         }
         return "success :: admin is only seller";
  }
- 
  
 	
 

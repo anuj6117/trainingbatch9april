@@ -33,7 +33,7 @@ public class UserOrder {
 
 private double grossAmount;
  private double coinQuantity;
- private Date date;
+ private String date;
  private double fee=2l;
  private Integer userId;
  
@@ -122,10 +122,10 @@ public double getPrice() {
 public void setPrice(double price) {
 	this.price = price;
 }
-public Date getDate() {
+public String getDate() {
 	return date;
 }
-public void setDate(Date date) {
+public void setDate(String date) {
 	this.date = date;
 }
  

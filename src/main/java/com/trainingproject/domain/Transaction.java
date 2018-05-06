@@ -30,7 +30,7 @@ public class Transaction {
 	private Integer seller;
 	 @Enumerated(EnumType.STRING)
 	private TransactionStatus status;
-	private Date date;
+	private String date;
 	private String remarks;
 	
 	
@@ -102,10 +102,10 @@ public class Transaction {
 	public void setStatus(TransactionStatus status) {
 		this.status = status;
 	}
-	public Date getDate() {
+	public String getDate() {
 		return date;
 	}
-	public void setDate(Date date) {
+	public void setDate(String date) {
 		this.date = date;
 	}
 	

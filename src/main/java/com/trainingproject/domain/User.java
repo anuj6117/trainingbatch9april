@@ -56,7 +56,19 @@ public class User {
     private List<UserOrder> userOrder;
     
 
-    public List<UserOrder> getUserOrder() {
+    public User() {
+		
+   	}
+    
+    public User(User user) {
+		this.userName=user.getUserName();
+		this.password=user.getPassword();
+		this.userId=user.getUserId();
+		this.roleType=user.getRoleType();
+	}
+
+
+	public List<UserOrder> getUserOrder() {
 		return userOrder;
 	}
 

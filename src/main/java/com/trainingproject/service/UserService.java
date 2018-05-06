@@ -216,7 +216,7 @@ public class UserService {
 		if(cuser.getStatus().equals(UserStatus.INACTIVE))
 			return "user is inactive";
 		
-		Pattern p = Pattern.compile("[^a-z0-9 ]", Pattern.CASE_INSENSITIVE);
+		Pattern p = Pattern.compile("^[a-zA-Z0-9._-]{3,}$", Pattern.CASE_INSENSITIVE);
 		Matcher m = p.matcher(user.getUserName());
 	     if(m.find())
 	    	 return "your name cannot have a special character";
@@ -357,7 +357,13 @@ public class UserService {
 		
         UserOrder userorder=new UserOrder();
 		
-		userorder.setDate(new Date());
+        SimpleDateFormat sdf = new SimpleDateFormat("M/d/yy h:mm a Z");
+		  TimeZone istTimeZone = TimeZone.getTimeZone("Asia/Kolkata");
+		  Date d = new Date();
+		  sdf.setTimeZone(istTimeZone);
+		  String strtime = sdf.format(d);
+		userorder.setDate(strtime);
+		
 		userorder.setOrderType(OrderType.WITHDRAW);
 		userorder.setOrderStatus(UserOrderStatus.PENDING);
 		userorder.setUser(user);
@@ -393,7 +399,13 @@ public class UserService {
 		
 		UserOrder userorder=new UserOrder();
 		
-		userorder.setDate(new Date());
+		 SimpleDateFormat sdf = new SimpleDateFormat("M/d/yy h:mm a Z");
+		  TimeZone istTimeZone = TimeZone.getTimeZone("Asia/Kolkata");
+		  Date d = new Date();
+		  sdf.setTimeZone(istTimeZone);
+		  String strtime = sdf.format(d);
+		userorder.setDate(strtime);
+		
 		userorder.setOrderType(OrderType.DEPOSIT);
 		userorder.setOrderStatus(UserOrderStatus.PENDING);
 		userorder.setUser(user);

@@ -1,6 +1,8 @@
 package com.trainingproject.service;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.TimeZone;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -68,7 +70,12 @@ public class UserOrderService {
 		UserOrder userorder=new UserOrder();
 		userorder.setCoinName(bsb.getCoinName());
 		userorder.setCoinQuantity(bsb.getCoinQuantity());
-		userorder.setDate(new Date());
+		 SimpleDateFormat sdf = new SimpleDateFormat("M/d/yy h:mm a Z");
+		  TimeZone istTimeZone = TimeZone.getTimeZone("Asia/Kolkata");
+		  Date d = new Date();
+		  sdf.setTimeZone(istTimeZone);
+		  String strtime = sdf.format(d);
+		userorder.setDate(strtime);
 		userorder.setOrderType(OrderType.BUY);
 		userorder.setOrderStatus(UserOrderStatus.PENDING);
 		userorder.setUser(user);
@@ -116,7 +123,12 @@ public class UserOrderService {
 			UserOrder userorder=new UserOrder();
 			userorder.setCoinName(bsb.getCoinName());
 			userorder.setCoinQuantity(bsb.getCoinQuantity());
-			userorder.setDate(new Date());
+			 SimpleDateFormat sdf = new SimpleDateFormat("M/d/yy h:mm a Z");
+			  TimeZone istTimeZone = TimeZone.getTimeZone("Asia/Kolkata");
+			  Date d = new Date();
+			  sdf.setTimeZone(istTimeZone);
+			  String strtime = sdf.format(d);
+			userorder.setDate(strtime);
 			userorder.setOrderType(OrderType.SELL);
 			userorder.setOrderStatus(UserOrderStatus.PENDING);
 			userorder.setUser(user);

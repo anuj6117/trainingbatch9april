@@ -1,6 +1,9 @@
 package com.trainingproject.service;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
+import java.util.TimeZone;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -64,6 +67,7 @@ public class WalletService {
 	 	     transaction.setFee(0);
 	 	     transaction.setCoinType(CoinType.FIAT);
 	 	   
+	 	 
 	 	     transaction.setDate(userorder.getDate());
 	 	     transaction.setExchangeRate(0);
 	 	    transaction.setCoinName(userorder.getCoinName());
@@ -98,7 +102,6 @@ public class WalletService {
 	     }
 	     return "";
 	   
-		
 	}
 	
 	public UserOrder walletHistory(Integer userId,CoinType coinType) {
