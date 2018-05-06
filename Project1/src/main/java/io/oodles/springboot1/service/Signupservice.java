@@ -57,25 +57,12 @@ public class Signupservice {
 	StoreOTP storeOTP;
 	Date date = new Date();
 	
+	 //Correct
 	/*public Map<String,Object> addUser(Users user){
-		Map<String,Object> result=new HashMap<String,Object>();
-		if((usersRepository.findByEmail(user.getEmail()) == null)) {
-		if(user.getEmail().equals("")) {
-			result.put("isSuccess", false);
-			result.put("message", "email id not empty.");
-			return result;
-		}
-		}
-		else {
-			result.put("isSuccess", false);
-			result.put("message", "Email id already exists.");
-			return result;
-		}
-		return result;
-	}*/  //Correct
-	/*public Map<String,Object> addUser(Users user){
+		
 		Map<String,Object> result=new HashMap<String,Object>();
 		Users user1=usersRepository.findByEmail(user.getEmail());
+		System.out.println(user1.getEmail());
 		if(user1!=null) {
 			result.put("isSuccess", false);
 			result.put("message", "email id already exists.");
@@ -84,120 +71,142 @@ public class Signupservice {
 		return result;
 	}*/
 	
+	public Map<String,Object> update(Users user) {
+		// TODO Auto-generated method stub
+		Map<String,Object> result=new HashMap<String,Object>();
+		Users user1=usersRepository.findByUserId(user.getUserId());
+		user.setStatus(user1.getStatus());
+		Date date=new Date();
+	    user.setDate(date);
+		usersRepository.save(user);
+		result.put("isSuccess", true);
+		result.put("message","Success");
+		result.put("timestamp",date );
+		return result;
+		
+	}
 
-	public String addUser(Users users) {
-		//System.out.println("???????????");
+	public Map<String,Object> delete(int id) {
+		// TODO Auto-generated method stub
+		Map<String,Object> result=new HashMap<String,Object>();
+		 usersRepository.deleteById(id);
+		 result.put("isSuccess", true);
+			result.put("message","Success");
+			result.put("timestamp",date );
+			return result;
+	}
+	
+
+	public Map<String,Object> addUser(Users users) {
+		Map<String,Object> result=new HashMap<String,Object>();
+		Date date=new Date();
+		
 		Users user=usersRepository.findByEmail(users.getEmail());
-		//System.out.println("???????????");
 		Users phone=usersRepository.findByPhoneNumber(users.getPhoneNumber());
-		//System.out.println("???????????");
 		Users name=usersRepository.findByUserName(users.getUserName());
-		//System.out.println("???????????");
 		String s=users.getUserName();
-		//System.out.println("???????????");
 		String mob=users.getPhoneNumber();
-		//System.out.println("???????????");
 		Users mobpresent=usersRepository.findByPhoneNumber(users.getPhoneNumber());
-		//System.out.println("???????????");
 		
-          
-			
-		
-		//System.out.println(";;;;;;;;;;;");
 		Role role1=rolerepository.findByRoleType("USER");
 		if(role1==null) {
 		if(!role.getRoleType().equalsIgnoreCase("user")) {
-			//System.out.println("???????????");
 		role.setRoleType("USER");
-		//System.out.println("???????????");
 		rolerepository.save(role);}}
-		//System.out.println("???????????");
-			
+		
 		if(user!=null) {
-			//System.out.println("???????????");
-			return "Oops,this Email id is already registered";
+			result.put("isSuccess", false);
+			result.put("message","Oops,this Email id is already registered");
+			result.put("timestamp",date );
+			return result;
 			
-		}
+			}
 		else if(phone!=null) {
-			//System.out.println("???????????");
-			return "phone number already exists";
+			result.put("isSuccess", false);
+			result.put("message","phone number already exists");
+			result.put("timestamp",date );
+			return result;
+			
 		}
 		else if(name!=null) {
-			//System.out.println("???????????");
-			return "Username already exists";
+			result.put("isSuccess", false);
+			result.put("message","Username already exists");
+			result.put("timestamp",date );
+			return result;
+			
 		}
 		else if(s.length()>25) {
-			return "Maximum Characters allowed for this field is 25";
+			result.put("isSuccess", false);
+			result.put("message","Maximum Characters allowed for this field is 25");
+			result.put("timestamp",date );
+			return result;
+
+			
 		}
 		else if(mob.length()>10){
-			return "Please,enter a valid mobile number.";
+			result.put("isSuccess", false);
+			result.put("message","Please,enter a valid mobile number.");
+			result.put("timestamp",date );
+			return result;
+
+			
 		}
 		else if(mobpresent!=null) {
-			return "Oops,this number is already registered";
+			result.put("isSuccess", false);
+			result.put("message","Oops,this number is already registered");
+			result.put("timestamp",date );
+			return result;
+
+			
 		}
 		else if(!Pattern.matches("(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%]).{8,32}", users.getPassword())) {
-			return "Please enter password with minimum 8 characters.You password should have atleast 1 Upper Case, 1 Lower Case, 1 Digit & 1 Special Character.";
+			result.put("isSuccess", false);
+			result.put("message","Please enter password with minimum 8 characters.You password should have atleast 1 Upper Case, 1 Lower Case, 1 Digit & 1 Special Character.");
+			result.put("timestamp",date );
+			return result;
+
+			
 		}
 		else if(!Pattern.matches("\\d{10}", users.getPhoneNumber())) {
-			return "Phone Number incorrect";
-		}
-		
-		else {
-		//System.out.println("////////////");
+			result.put("isSuccess", false);
+			result.put("message","Phone Number incorrect");
+			result.put("timestamp",date );
+			return result;
 
+			
+		}
+		else {
 		Random rnd = new Random();
-		
 		int otp1 = rnd.nextInt(10000);
-		
-		
-        users.setDate(date);
+	    users.setDate(date);
         users.getDate();
         users.setStatus(Status.INACTIVE);
-        //System.out.println(":::::::::::::::");
         Users user1=usersRepository.save(users);
-        //System.out.println("------------------");
         Set<Wallet> wallet=new HashSet<Wallet>();
-        //System.out.println("------------------2");
         Wallet wallet1=new Wallet();
-        //System.out.println("------------------3");
         wallet1.setCoinName("INR");
-        //System.out.println("------------------4");
         wallet1.setCoinType(wallettype.FIAT);
-        //System.out.println("------------------5");
         wallet1.setUsers(user1);
-        //System.out.println("------------------6");
         wallet.add(wallet1);
-        //System.out.println("------------------7");
         walletRepository.save(wallet1);
-        //System.out.println("------------------8");
         users.setWallet(wallet);
-        //System.out.println("------------------9");
         List<Role> list=new ArrayList<Role>();
-        //System.out.println("------------------10");
+        list.add(rolerepository.findByRoleType("USER"));
+		users.setRoles(list);
+	   usersRepository.save(user1);
         
-		list.add(rolerepository.findByRoleType("USER"));
-		System.out.println("++++++++++++++++");
-	    users.setRoles(list);
-	    System.out.println("------------------");
-        usersRepository.save(user1);
-        
-        System.out.println("????????????");
-		
-		
-			otpService.ValueMethod(users, otp1);
+            otpService.ValueMethod(users, otp1);
 			String email=users.getEmail();
 			
-		    System.out.println("}}}}}}}}}}}}}");
 		    
-		   
-		    
-		   
-		    
-			mail.sendMail(otp1,email);
+		    mail.sendMail(otp1,email);
 			otpgenerate.sendSMS(otp1);
 			usersRepository.save(users);
-			System.out.println("<<<<<<<<<<<<<<<<");
-			return "Your account has been successfully created. Please, verify it by using OTP.";}
+			result.put("isSuccess", true);
+			result.put("message","Your account has been successfully created. Please, verify it by using OTP.");
+			result.put("timestamp",date );
+			return result;
+			}
 		}
 	
 	
@@ -237,26 +246,8 @@ public class Signupservice {
 		return usersRepository.findById(id);
 	}
 
-	public String update(Users user) {
-		// TODO Auto-generated method stub
-		Users user1=usersRepository.findByUserId(user.getUserId());
-		System.out.println(":::::::::::::");
-		user.setStatus(user1.getStatus());
-		System.out.println("11111111111111");
-		Date date=new Date();
-		System.out.println("222222222222");
-		user.setDate(date);
-		System.out.println("33333333333333");
-		usersRepository.save(user);
-		System.out.println("444444444444444444");
-		return "User Updated";
-	}
+	
 
-	public String delete(int id) {
-		// TODO Auto-generated method stub
-		 usersRepository.deleteById(id);
-		 return "User Deleted";
-	}
 
 	public String assign(AssignRole assignrole) {
 		// TODO Auto-generated method stub

@@ -28,17 +28,19 @@ public class SignUp {
 	Signupservice signupservice;
 	
 
-	@PostMapping("/signup")
+	/*@PostMapping("/signup")
 	public String insertUser( @RequestBody Users users) {
 		return signupservice.addUser(users);
 		
-	}
+	}*/
 	
-	/*@PostMapping("/signup")   //correct
+	@PostMapping("/signup")   
 	public ResponseEntity<Object> insertUser(@RequestBody Users users){
+		
 		Map<String,Object> result=null;
 		try {
 			result=signupservice.addUser(users);
+			
 			if(result.get("isSuccess").equals(true)) {
 				return ResponseHandler.generateResponse(HttpStatus.OK, true, result.get("message").toString(), result);
 			}
@@ -50,7 +52,47 @@ public class SignUp {
 			// TODO: handle exception
 			return ResponseHandler.generateResponse(HttpStatus.BAD_REQUEST, false, e.getMessage(), result);
 		}
-	}*/
+	}
+	
+	@PostMapping("/updateuser")
+	public ResponseEntity<Object> updateuser(@RequestBody Users users) {
+		Map<String,Object> result=null;
+		try {
+			result=signupservice.update(users);
+			
+			if(result.get("isSuccess").equals(true)) {
+				return ResponseHandler.generateResponse(HttpStatus.OK, true, result.get("message").toString(), result);
+			}
+			else {
+				return ResponseHandler.generateResponse(HttpStatus.OK, false, result.get("message").toString(), result);
+			}
+			
+		}catch (Exception e) {
+			// TODO: handle exception
+			return ResponseHandler.generateResponse(HttpStatus.BAD_REQUEST, false, e.getMessage(), result);
+		}
+		
+		 
+	}
+	@GetMapping("/deleteuser")
+	public ResponseEntity<Object> deleteuser(@RequestParam int userId) {
+		Map<String,Object> result=null;
+		try {
+			result=signupservice.delete(userId);
+			
+			if(result.get("isSuccess").equals(true)) {
+				return ResponseHandler.generateResponse(HttpStatus.OK, true, result.get("message").toString(), result);
+			}
+			else {
+				return ResponseHandler.generateResponse(HttpStatus.OK, false, result.get("message").toString(), result);
+			}
+			
+		}catch (Exception e) {
+			// TODO: handle exception
+			return ResponseHandler.generateResponse(HttpStatus.BAD_REQUEST, false, e.getMessage(), result);
+		}
+		
+	}
 	
 	
 	@PostMapping("/verifyuser")
@@ -70,16 +112,9 @@ public class SignUp {
 		return signupservice.searchbyid(userId);
 	}
 	
-	@PostMapping("/updateuser")
-	public String updateuser(@RequestBody Users users) {
-		System.out.println("???????????");
-		return signupservice.update(users);
-	}
 	
-	@GetMapping("/deleteuser")
-	public String deleteuser(@RequestParam int userId) {
-		return signupservice.delete(userId);
-	}
+	
+	
 	@PostMapping("/assignrole")
 	public String assignRoleToUser(@RequestBody AssignRole assignrole ) {
 		return signupservice.assign(assignrole);
