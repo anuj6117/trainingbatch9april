@@ -18,7 +18,7 @@ public class ResponseHandler
 		Map<String, Object> map = new HashMap<String, Object>();
 		try 
 		{
-			map.put("timestamp", new Date().getTimezoneOffset());
+			map.put("timestamp", new Date().getTime());
 			map.put("status", status.value());
 			map.put("isSuccess", error);
 			map.put("message", message);

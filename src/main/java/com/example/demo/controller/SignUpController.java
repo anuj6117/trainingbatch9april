@@ -39,8 +39,9 @@ public class SignUpController {
 			else
 			{
 				String newMessage=result.get("message").toString();
-				result.remove(result.get("message"));
-				result.remove(result.get("isSuccess"));
+				result.remove("message");
+				result.remove("isSuccess");
+				System.out.println(":::::::::::"+result);
 				return ResponseHandler.generateResponse(HttpStatus.OK, false, newMessage, result);
 			}
 		} 

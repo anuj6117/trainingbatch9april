@@ -3,25 +3,22 @@ package com.example.demo.service;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import com.example.demo.dto.DepositAmountApprovalDTO;
 import com.example.demo.dto.OrderDTO;
-import com.example.demo.enums.TransactionType;
-import com.example.demo.enums.WalletType;
 import com.example.demo.enums.OrderStatus;
 import com.example.demo.enums.OrderType;
-import com.example.demo.model.User;
-import com.example.demo.model.Wallet;
+import com.example.demo.enums.WalletType;
 import com.example.demo.model.CoinManagement;
 import com.example.demo.model.Order;
 import com.example.demo.model.Transaction;
+import com.example.demo.model.User;
+import com.example.demo.model.Wallet;
 import com.example.demo.repository.CoinManagementRepository;
 import com.example.demo.repository.OrderRepository;
 import com.example.demo.repository.TransactionRepository;
@@ -147,7 +144,7 @@ public class OrderService {
 					order.setGrossAmount(totalAmount);
 					order.setFee(coinManagementCoinName.getFee());
 					order.setDateCreated(new Date());
-					order.setNetAmount(totalAmount);
+					order.setNetAmount(orderDTO.getCoinQuantity()*orderDTO.getPrice());
 					order.setUser(user);
 				
 					orderRepository.save(order);

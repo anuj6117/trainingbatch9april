@@ -34,7 +34,11 @@ public class CoinManagementService {
 			result.put("message", "Coin Name must contain characters.");
 			return result;
 		}
+		
+		
+		
 		String symbol=coinManagement.getSymbol();
+		
 		if(symbol.equals("") || symbol.isEmpty() || symbol == null)
 		{
 			result.put("isSuccess", false);
@@ -47,6 +51,21 @@ public class CoinManagementService {
 			result.put("message", "Symbol must contain characters.");
 			return result;
 		}
+		
+		Double initialSupply = coinManagement.getInitialSupply();
+		Integer price = coinManagement.getPrice();
+		if(initialSupply == null)
+		{
+			result.put("isSuccess", false);
+			result.put("message", "initialSuppy should not be null.");
+			return result;
+		}
+		if(price == null)
+		{
+			result.put("isSuccess", false);
+			result.put("message", "price should not be null.");
+			return result;
+		}
 		else
 		{
 			result.put("isSuccess", true);
@@ -54,7 +73,7 @@ public class CoinManagementService {
 			coinManagement.setCoinName(coinName);
 			coinManagement.setSymbol(symbol);
 			Double fee=coinManagement.getFee();
-			Double initialSupply=coinManagement.getInitialSupply();
+			Double initialSupply1=coinManagement.getInitialSupply();
 			coinManagement.setCoinInInr(0.0);
 			coinManagementRepository.save(coinManagement);
 			return result;

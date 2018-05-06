@@ -107,11 +107,15 @@ public class TransactionService
 					}	
 				}
 				
+				
+				
+				/////////////////////////////////////////////////////////
+				
 				while(sellerIterator.hasNext())
 				{
 					sellerOrder = sellerIterator.next();
 					
-					if((sellerOrder.getPrice() <= coinManagement.getPrice()) && sellerOrder.getPrice() <= buyerOrder.getPrice())
+					if((sellerOrder.getPrice() <= coinManagement.getPrice()) && sellerOrder.getPrice() <= buyerOrder.getPrice()&&sellerOrder.getUser().getUserId()!=buyerOrder.getUser().getUserId())
 					{
 						if(sellerOrder.getCoinQuantity() == buyerOrder.getCoinQuantity())
 						{
@@ -140,7 +144,7 @@ public class TransactionService
 							coinManagement.setExchangeRate(buyerOrder.getPrice());
 							coinManagement.setProfit(fees);
 							
-							buyerOrder.setCoinQuantity(buyerOrder.getCoinQuantity()-sellerOrder.getCoinQuantity());
+							//buyerOrder.setCoinQuantity(buyerOrder.getCoinQuantity()-sellerOrder.getCoinQuantity());
 							buyerOrder.setOrderStatus(OrderStatus.COMPLETED);
 							sellerOrder.setOrderStatus(OrderStatus.COMPLETED);
 							
@@ -311,7 +315,7 @@ public class TransactionService
 					
 					buyerOrder.setOrderStatus(OrderStatus.COMPLETED);
 					
-					coinManagement.setCoinInInr(buyerOrder.getPrice()*buyerOrder.getCoinQuantity() - coinManagement.getPrice()*buyerOrder.getCoinQuantity());
+					coinManagement.setCoinInInr(((buyerOrder.getPrice()*buyerOrder.getCoinQuantity())- (coinManagement.getPrice()*buyerOrder.getCoinQuantity()))+coinManagement.getCoinInInr());
 					initSupply = initSupply - buyerOrder.getCoinQuantity();
 					coinManagement.setInitialSupply(initSupply);
 					coinManagement.setExchangeRate(buyerOrder.getPrice());
@@ -322,7 +326,7 @@ public class TransactionService
 					
 					return "Buyer transaction is completed from coinManagement because it has enough coins.";
 				}
-				
+			
 			}
 		return "No matching transaction is there.";
 	}

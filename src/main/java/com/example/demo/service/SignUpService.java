@@ -62,6 +62,14 @@ public class SignUpService
 		{
 			
 			String userName=user.getUserName();
+			
+			if((!userName.matches("^[a-zA-Z\\s]{1,25}$")))
+			{
+				result.put("isSuccess", false);
+				result.put("message", "Special Character is not allowed in username.");
+				return result;
+			}
+			
 			if(userName.equals("") || userName.isEmpty() || userName == null)
 			{
 				result.put("isSuccess", false);
@@ -91,6 +99,14 @@ public class SignUpService
 			{
 				result.put("isSuccess", false);
 				result.put("message", "User Name must contain characters.");
+				return result;
+			}
+			
+			String country = user.getCountry();
+			if(country.length() == 0)
+			{
+				result.put("isSuccess", false);
+				result.put("message", "Country should not be empty.");
 				return result;
 			}
 			
@@ -210,7 +226,7 @@ public class SignUpService
 		} 
 		else
 		{
-			return "Sorry, invalid email or otp";
+			return "Sorry, invalid otp";
 		}
 	}
 
