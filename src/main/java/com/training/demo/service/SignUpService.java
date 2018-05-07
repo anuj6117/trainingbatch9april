@@ -1,5 +1,6 @@
 package com.training.demo.service;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
@@ -7,6 +8,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Random;
 import java.util.Set;
+import java.util.TimeZone;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -46,9 +48,19 @@ public class SignUpService
 	private OtpVerification otpVerification;
 	
 	EmailValidation emailValidation = new EmailValidation();		
+		
 
 	public String addUser(User user)
 	{
+	
+	    SimpleDateFormat sd = new SimpleDateFormat(
+	            "yyyy.MM.dd G 'at' HH:mm:ss z");
+	       
+		
+		
+		
+		
+		
 		String userName=user.getUserName();
 		System.out.println(userName+"======================================");
 		String password = user.getPassword();
@@ -78,8 +90,9 @@ public class SignUpService
 			return "country name can not be null or its length should be more than 2 characters.";
 		}
 		
+//USERNAME VALIDATIONS
 		
-		if(!(userName.matches("^[a-z0-9_-]{6,25}$"))){
+		if(!(userName.matches("^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[-_]).{6,25}$"))){
 			return "Maximun charaters allowed for userName field is 6 to 25 and User name can not contain any special character.";
 		}
 		
@@ -88,7 +101,8 @@ public class SignUpService
 		{
 			return  "User Name can not be null or empty.";
 		}
-				
+		
+//PHONE NUMBER VALIDATION
 		String tempPhoneNo=user.getPhoneNumber();
 		if(!PhoneValidation.isValid(tempPhoneNo))
 		{
@@ -105,10 +119,12 @@ public class SignUpService
 						System.out.println("service hit");
 						Random random=new Random();
 						int tokenOTP=random.nextInt(99777)+1432;
-						Date date;
+						
+						Date date = new Date();						
+				        user.setDate(date);
+				        
 						System.out.println("service hit before if");
 						user.setUserStatus(UserStatus.INACTIVE);
-						user.setDate(new Date());
 						
 						System.out.println("Default roleType assigned to user = ");
 						//Default Role Creation
@@ -279,12 +295,19 @@ public class SignUpService
 
 			try {
 		     User tempUser = userRepository.findByUserId(user.getUserId());
-			 tempUser.setEmail(user.getEmail());
-			 tempUser.setUserName(user.getUserName());
-			 tempUser.setPhoneNumber(user.getPhoneNumber());
-			 tempUser.setCountry(user.getCountry());
-			 tempUser.setPassword(user.getPassword());	      
-			 userRepository.save(tempUser); 
+		     	if(tempUser.getUserStatus().equals(UserStatus.ACTIVE))
+		     	{
+		    	 tempUser.setEmail(user.getEmail());
+		    	 tempUser.setUserName(user.getUserName());
+		    	 tempUser.setPhoneNumber(user.getPhoneNumber());
+		    	 tempUser.setCountry(user.getCountry());
+		    	 tempUser.setPassword(user.getPassword());	      
+		    	 userRepository.save(tempUser); 
+		     	}
+		     	else 
+		     	{
+		     		return "please activate your account first.";
+		     	}
 			}
 		catch (Exception ex)
 		{	 
