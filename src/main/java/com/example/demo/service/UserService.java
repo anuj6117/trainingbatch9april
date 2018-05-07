@@ -145,15 +145,19 @@ public class UserService {
 	public String checkUser(UserOtp userOtp) {
 		UserOtp userotp = null;
 		try {
-			int i = Integer.valueOf(userOtp.getOtp());
+			@SuppressWarnings("unused")
+			int i = Integer.valueOf(userOtp.getTokenOTP());
+			i++;
 		}catch(Exception e ) {return "invalid userid";}
 		try {
+			@SuppressWarnings("unused")
 			int m = Integer.valueOf(userOtp.getUserId());
+			m++;
 		}catch(Exception e) {return "invalid otp";}
 		if(userOtp.getUserId()>0) {
 			if((user = userRepository.findOneByUserId(userOtp.getUserId()))!=null){
 				try {
-					userotp = userOtpRepository.findByOtp(userOtp.getOtp());
+					userotp = userOtpRepository.findByTokenOTP(userOtp.getTokenOTP());
 				}catch(Exception e) {
 				System.out.print("invalid otp "+e);
 				return "invalid otp";
@@ -213,9 +217,9 @@ public class UserService {
 							i.doubleValue();
 						}
 						catch(Exception e) {return "invalid Phone Number";}
-						if((userRepository.findByEmail(user.getEmail()))!=null)
+						if((userRepository.findByEmail(updateUser.getEmail()))!=null)
 							return "Oopss, this email is already registered";							
-						else if ((userRepository.findByPhoneNumber(user.getPhoneNumber()))!=null)
+						else if ((userRepository.findByPhoneNumber(updateUser.getPhoneNumber()))!=null)
 							return "Oopss, this number is already register";	
 						else {
 							user.setCountry(updateUser.getCountry());
@@ -253,7 +257,7 @@ public class UserService {
 		if(user.getStatus().equals(UserStatus.ACTIVE)) {
 			Role role = null;
 			if((role=roleRepository.findOneByRoleType(userRoleDto.getRoleType()))==null)
-				role = roleService.createRole(userRoleDto.getRoleType());		
+				role = (Role) roleService.createRole(userRoleDto.getRoleType());		
 			user.getRole().add(role);
 			return (userRepository.save(user)!=null)?"success":"failure";
 		}
@@ -265,36 +269,44 @@ public class UserService {
 	}
 	
 
-	public String deposit(UserDepositWithdrawDTO userDeposit) {		
-		user = userRepository.findOneByUserId(userDeposit.getUserId());
-		try {
-		if(user.getStatus().equals(UserStatus.ACTIVE)) {
-			for(Wallet wallet : user.getWallet()) {
-				if(wallet.getCoinName().equals(userDeposit.getCoinName())) {
-					OrderDetails orderDetails = new OrderDetails(userDeposit, user);
-					return orderRepository.save(orderDetails)!=null?"request submitted":"request failed to submit";	
-				}				
+	public String deposit(UserDepositWithdrawDTO userDeposit) {			
+		if(userDeposit.getCoinName().equalsIgnoreCase("inr")){
+			user = userRepository.findOneByUserId(userDeposit.getUserId());
+			try {
+			if(user.getStatus().equals(UserStatus.ACTIVE)) {
+				for(Wallet wallet : user.getWallet()) {
+					if(wallet.getCoinName().equals(userDeposit.getCoinName())) {
+						OrderDetails orderDetails = new OrderDetails(userDeposit, user);
+						return orderRepository.save(orderDetails)!=null?"request submitted":"request failed to submit";	
+					}				
+				}
+				return "wallet not exist";			
 			}
-			return "wallet not exist";			
+			else
+				return "please verify your account";
+			}catch(Exception e) {return "invalid userId";}
 		}
 		else
-			return "please verify your account";
-		}catch(Exception e) {return "invalid userId";}
+			return "deposit must be inr";
 	}
 
 
 	public String withdraw(UserDepositWithdrawDTO userWithdraw) {
-		user = userRepository.findOneByUserId(userWithdraw.getUserId());
-		if(user!=null) {
-			if(user.getStatus().equals(UserStatus.ACTIVE)) {
-				userWithdraw.setOrderType(OrderType.WITHDRAW);
-				OrderDetails orderDetails = new OrderDetails(userWithdraw, user);
-				return orderRepository.save(orderDetails)!=null?"request submitted":"request failed to submit";	
-			}	
-			else
-				return "please verify your account";
+		if(userWithdraw.getCoinName().equalsIgnoreCase("inr")){
+			user = userRepository.findOneByUserId(userWithdraw.getUserId());
+			if(user!=null) {
+				if(user.getStatus().equals(UserStatus.ACTIVE)) {
+					userWithdraw.setOrderType(OrderType.WITHDRAW);
+					OrderDetails orderDetails = new OrderDetails(userWithdraw, user);
+					return orderRepository.save(orderDetails)!=null?"request submitted":"request failed to submit";	
+				}	
+				else
+					return "please verify your account";
+			}
+			else 
+				return "user not exist";
 		}
 		else 
-			return "user not exist";
+			return "withdraw must be from inr";
 	}
 }

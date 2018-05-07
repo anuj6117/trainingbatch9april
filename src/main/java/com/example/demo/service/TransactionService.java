@@ -29,23 +29,24 @@ public class TransactionService {
 	private CurrencyRepository currencyRepository;
 	
 	private CurrencyModel currency;	
-	
+		
 	public List<Transaction> showAllTransaction(){
 		List<Transaction> list =  transactionRepository.findAll();
 		return list;
 	}
-
+	
 	public void approvedDepositTransaction() {
 		List<OrderDetails> buyer = orderRepository.getBuyer(OrderType.BUYER.toString(),OrderStatus.PENDING.toString());
 		List<OrderDetails> seller = orderRepository.getSeller(OrderType.SELLER.toString(),OrderStatus.PENDING.toString());
 		if(!buyer.isEmpty())
 		for(OrderDetails buyerOrder : buyer) {
 			currency = currencyRepository.findOneByCoinName(buyerOrder.getCoinName().toLowerCase());
-			OrderDetails sellerOrder = new OrderDetails(currency);
+			OrderDetails sellerOrder = new OrderDetails(currency,buyerOrder.getOrderId());
 			if(seller.isEmpty()) {
 				String flag="Admin";
 				makeTransaction(buyerOrder,sellerOrder, flag);
-			}else {				
+			}
+			else {				
 				for(OrderDetails sellOrder : seller) {
 					String flag="seller";
 					if(sellOrder.getPrice() > currency.getPrice()){
@@ -68,6 +69,8 @@ public class TransactionService {
 		if(buyerOrder.getCoinName().equalsIgnoreCase(sellerOrder.getCoinName())) {
 			if(buyerOrder.getPrice()>sellerOrder.getPrice()){						
 				if((buyerOrder.getCoinQuantity())==(sellerOrder.getCoinQuantity())) {
+					boolean cryptoFlag=false;
+					boolean inrFlag=false;
 					User buyUser = buyerOrder.getUser();
 					if(flag.equals("seller"))
 						sellUser = sellerOrder.getUser();	
@@ -79,12 +82,17 @@ public class TransactionService {
 							Double priceDiff = (sellerOrder.getPrice()*sellerOrder.getCoinQuantity())-(buyerOrder.getPrice()*buyerOrder.getCoinQuantity());
 							currency.setProfit(currency.getProfit()+profit);
 							currency.setCoinInINR(priceDiff);
+							cryptoFlag = true;
 						}
-						if(buyerWallet.getCoinName().equalsIgnoreCase("INR"))
+						if(buyerWallet.getCoinName().equalsIgnoreCase("INR")) {
 							buyerWallet.setBalance(buyerWallet.getShadowBalance());
+							inrFlag = true;
+						}
+						if(inrFlag&&cryptoFlag)
+							break;
 					}
 					if(flag.equals("seller")){
-						for(Wallet sellerWallet : sellUser.getWallet()) {			
+						for(Wallet sellerWallet : sellUser.getWallet()){			
 							if(sellerWallet.getCoinName().equals(sellerOrder.getCoinName())) {
 								sellerWallet.setShadowBalance(sellerWallet.getBalance()-sellerOrder.getCoinQuantity());
 								sellerWallet.setBalance(sellerWallet.getShadowBalance());
@@ -95,12 +103,13 @@ public class TransactionService {
 							}								
 						}
 						sellerOrder.setOrderStatus(OrderStatus.APPROVED);
-						transactionRepository.save(new Transaction(sellerOrder));
-						transactionRepository.save(new Transaction(buyerOrder));
+						//transactionRepository.save(new Transaction(sellerOrder));
+						transactionRepository.save(new Transaction(buyerOrder,sellerOrder.getUser().getUserId(),"buyer"));
 						orderRepository.save(sellerOrder);
 					}
 					else if(flag.equals("Admin")) {
 						currency.setInitialSupply(currency.getInitialSupply()-buyerOrder.getCoinQuantity());
+						transactionRepository.save(new Transaction(buyerOrder,0,"buyer"));
 					}
 					buyerOrder.setOrderStatus(OrderStatus.APPROVED);					
 					currencyRepository.save(currency);
@@ -108,26 +117,39 @@ public class TransactionService {
 					
 				}	
 				if((buyerOrder.getCoinQuantity())<(sellerOrder.getCoinQuantity())) {
+					boolean cryptoFlag=false;
+					boolean inrFlag=false;
 					User buyUser = buyerOrder.getUser();
+					Double priceDiff = 0.0;
+					Double profit = 0.0;
 					if(flag.equals("seller"))
 						sellUser = sellerOrder.getUser();
 					for(Wallet buyerWallet : buyUser.getWallet()) {
 						if(buyerWallet.getCoinName().equalsIgnoreCase(sellerOrder.getCoinName())) {
 							buyerWallet.setShadowBalance(buyerWallet.getBalance()+buyerOrder.getCoinQuantity());
-							buyerWallet.setBalance(buyerWallet.getShadowBalance());
-							Double profit = (currency.getFee()*buyerOrder.getPrice()*buyerOrder.getCoinQuantity())/100.0;
-							Double priceDiff = (buyerOrder.getPrice()*buyerOrder.getCoinQuantity())-(sellerOrder.getPrice()*buyerOrder.getCoinQuantity());
-							if(currency.getProfit()!=null)
-								currency.setProfit(currency.getProfit()+profit);
-							else
-								currency.setProfit(profit);
-							if(currency.getCoinInINR()!=null)
-								currency.setCoinInINR(currency.getCoinInINR()+priceDiff);
-							else
-								currency.setCoinInINR(priceDiff);
+							buyerWallet.setBalance(buyerWallet.getShadowBalance()+buyerOrder.getCoinQuantity());
+							profit = (currency.getFee()*buyerOrder.getPrice()*buyerOrder.getCoinQuantity())/100.0;
+							if(flag.equals("seller"))
+									priceDiff = (buyerOrder.getPrice()*buyerOrder.getCoinQuantity())-(sellerOrder.getPrice()*buyerOrder.getCoinQuantity());
+							else {
+								priceDiff = buyerOrder.getPrice()*buyerOrder.getCoinQuantity();
+								if(currency.getProfit()!=null)
+									currency.setProfit(currency.getProfit()+profit);
+								else
+									currency.setProfit(currency.getProfit()+profit);
+								if(currency.getCoinInINR()!=null)
+									currency.setCoinInINR(currency.getCoinInINR()+priceDiff);
+								else
+									currency.setCoinInINR(priceDiff);
+								}
+							cryptoFlag = true;
 						}
-						if(buyerWallet.getCoinName().equals("INR"))
-							buyerWallet.setBalance(buyerWallet.getShadowBalance());							
+						if(buyerWallet.getCoinName().equals("INR")) {
+							buyerWallet.setBalance(buyerWallet.getShadowBalance());
+							inrFlag = true;
+						}
+						if(cryptoFlag&&inrFlag)
+							break;
 					}
 					if(flag.equals("seller")) {
 						for(Wallet sellerWallet : sellUser.getWallet()) {
@@ -140,21 +162,24 @@ public class TransactionService {
 								sellerWallet.setBalance(sellerWallet.getShadowBalance());
 							}							
 						}
-						sellerOrder.setCoinQuantity(sellerOrder.getCoinQuantity()-buyerOrder.getCoinQuantity());
-						sellerOrder.setOrderStatus(OrderStatus.PENDING);
+						sellerOrder.setCoinQuantity(sellerOrder.getCoinQuantity()-buyerOrder.getCoinQuantity());				
+						//sellerOrder.setOrderStatus(OrderStatus.PENDING);
+						buyerOrder.setOrderStatus(OrderStatus.APPROVED);
+						transactionRepository.save(new Transaction(buyerOrder,sellerOrder.getUser().getUserId(),"buyer"));
 						orderRepository.save(sellerOrder);
 					}
 					else if(flag.equals("Admin")) {
 						currency.setInitialSupply(currency.getInitialSupply()-buyerOrder.getCoinQuantity());
-						
-					}
-					buyerOrder.setOrderStatus(OrderStatus.APPROVED);
-					transactionRepository.save(new Transaction(buyerOrder));
-					orderRepository.save(buyerOrder);
-					currencyRepository.save(currency);
-					
+						currency.setProfit(currency.getProfit()+profit);
+						buyerOrder.setOrderStatus(OrderStatus.APPROVED);
+						transactionRepository.save(new Transaction(buyerOrder,0,"buyer"));						
+						currencyRepository.save(currency);
+					}					
+					orderRepository.save(buyerOrder);					
 				}
 				if((buyerOrder.getCoinQuantity())>(sellerOrder.getCoinQuantity())) {
+					boolean cryptoFlag=false;
+					boolean inrFlag=false;
 					User buyUser = buyerOrder.getUser();
 					if(flag.equals("seller"))
 						sellUser = sellerOrder.getUser();
@@ -164,11 +189,21 @@ public class TransactionService {
 							buyerWallet.setBalance(buyerWallet.getShadowBalance());
 							Double profit = (currency.getFee()*buyerOrder.getPrice()*buyerOrder.getCoinQuantity())/100.0;
 							Double priceDiff = (sellerOrder.getPrice()*sellerOrder.getCoinQuantity())-(buyerOrder.getPrice()*buyerOrder.getCoinQuantity());
-							currency.setProfit(currency.getProfit()+profit);
-							currency.setCoinInINR(priceDiff);
+							if(flag.equals("Admin")) {
+								currency.setProfit(currency.getProfit()+profit);
+								currency.setCoinInINR(priceDiff);
+								sellerOrder.setProfit(profit);
+								sellerOrder.setAmount((buyerOrder.getPrice()*sellerOrder.getCoinQuantity())+((buyerOrder.getPrice()*sellerOrder.getCoinQuantity()*currency.getFee())/100));
+							}
+							
+							cryptoFlag = true;
 						}
-						if(buyerWallet.getCoinName().equals("INR"))
-							buyerWallet.setBalance(buyerWallet.getShadowBalance());							
+						if(buyerWallet.getCoinName().equals("INR")) {
+							buyerWallet.setBalance(buyerWallet.getShadowBalance());	
+							inrFlag = true;
+						}
+						if(inrFlag&&cryptoFlag)
+							break;
 					}
 					if(flag.equals("seller")) {
 						for(Wallet sellerWallet : sellUser.getWallet()) {
@@ -182,16 +217,17 @@ public class TransactionService {
 							}							
 						}
 						sellerOrder.setOrderStatus(OrderStatus.APPROVED);
+						transactionRepository.save(new Transaction(sellerOrder,buyerOrder.getUser().getUserId(),"seller"));
 						orderRepository.save(sellerOrder);
 					}
 					else if(flag.equals("Admin")) {
 						currency.setInitialSupply(currency.getInitialSupply()-sellerOrder.getCoinQuantity());						
+						transactionRepository.save(new Transaction(sellerOrder,buyerOrder.getUser().getUserId(),"seller"));
+						currencyRepository.save(currency);
 					}
 					buyerOrder.setOrderStatus(OrderStatus.PENDING);	
-					buyerOrder.setCoinQuantity(buyerOrder.getCoinQuantity()-sellerOrder.getCoinQuantity());
-					transactionRepository.save(new Transaction(sellerOrder));
-					orderRepository.save(buyerOrder);	
-					currencyRepository.save(currency);
+					buyerOrder.setCoinQuantity(buyerOrder.getCoinQuantity()-sellerOrder.getCoinQuantity());					
+					orderRepository.save(buyerOrder);						
 				}
 			}
 		}

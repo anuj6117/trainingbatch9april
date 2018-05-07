@@ -50,18 +50,12 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 		http.
 			csrf().disable();
 		http.authorizeRequests().antMatchers("/signup","/verifyuser").permitAll()
-		.antMatchers("/getallusers").hasAnyRole("ADMIN")
+		.antMatchers("/getallusers","showalltransaction").hasAnyRole("ADMIN")
 		.anyRequest().authenticated()
 		.and()
 	    .formLogin().permitAll()
 	    .and().logout().permitAll();
 	}
 	
-	/*@Override
-	public void configure(WebSecurity web) throws Exception {
-	    web
-	       .ignoring()
-	       .antMatchers("/resources/**", "/static/**", "/css/**", "/js/**", "/images/**");
-	}
-*/
+	
 }
