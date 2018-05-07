@@ -3,10 +3,9 @@ package com.training.demo.dto;
 import com.training.demo.enums.WalletType;
 
 public class UserWalletDto {
-	
-	
+
 	private Integer userId;
-	//@Enumerated(EnumType.STRING)
+	// @Enumerated(EnumType.STRING)
 	private WalletType coinType;
 	private long amount;
 	private String coinName;
@@ -19,8 +18,6 @@ public class UserWalletDto {
 		this.coinType = coinType;
 	}
 
-	
-	
 	public String getCoinName() {
 		return coinName;
 	}
@@ -28,8 +25,6 @@ public class UserWalletDto {
 	public void setCoinName(String coinName) {
 		this.coinName = coinName;
 	}
-
-	
 
 	public Integer getUserId() {
 		return userId;
@@ -39,7 +34,6 @@ public class UserWalletDto {
 		this.userId = userId;
 	}
 
-	
 	public long getAmount() {
 		return amount;
 	}
@@ -47,7 +41,5 @@ public class UserWalletDto {
 	public void setAmount(long amount) {
 		this.amount = amount;
 	}
-
-	
 
 }

@@ -6,7 +6,6 @@ public class DtoUser {
 	Integer userId;
 	RoleType roleType;
 
-	
 	public RoleType getRoleType() {
 		return roleType;
 	}
@@ -23,5 +22,4 @@ public class DtoUser {
 		this.userId = userId;
 	}
 
-	
 }

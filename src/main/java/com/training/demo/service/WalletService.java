@@ -51,13 +51,15 @@ public class WalletService {
 		//wallet=walletRepository.findBycoinNameAndUser(coinName, user);
 		WalletType w=userWalletdto.getCoinType();
 		String c=userWalletdto.getCoinName();
+		Wallet wallet1=new Wallet();
+		wallet1 = walletRepository.findByCoinTypeAndCoinNameAndUser(w,c,user);
 		
 		//wallet =walletRepository.findByCoinTypeAndCoinNameAndUser(w,c,user);
 		
 		//if(user.
 		if(user.getUserStatus()==UserStatus.ACTIVE)
 		{
-		if ((user != null)&&(wallet==null))
+		if ((user != null)&&(wallet1==null))
 				//&&(walletType==null))
 		{
 			Set<Wallet>walletset=new HashSet<Wallet>();
@@ -80,8 +82,9 @@ public class WalletService {
 		else
 		{
 			return "wallet can't be assign to unauthorized user";
-		}
+		
 
+	}
 	}
 
 	

@@ -114,7 +114,7 @@ public class SignUpService {
 
 				otpVerification = new OtpVerification();
 				otpVerification.setUserId(user.getUserId());
-				otpVerification.setOtp(otp);
+				otpVerification.setTokenOTP(otp);
 				otpVerification.setEmail(user.getEmail());
 				date = new Date();
 				otpVerification.setDate(date);
@@ -132,12 +132,12 @@ public class SignUpService {
 
 	public String verifyUserWithOtp(String email, Integer otp) {
 		String t_email = otpVerification.getEmail();
-		Integer t_otp = otpVerification.getOtp();
+		Integer t_otp = otpVerification.getTokenOTP();
 		try {
 
 			OtpVerification tempOtpVerification = otpRepository.findByEmail(email);
 			String v_email = tempOtpVerification.getEmail();
-			int v_otp = tempOtpVerification.getOtp();
+			int v_otp = tempOtpVerification.getTokenOTP();
 			User t_user = userRepository.findByEmail(email);
 
 			if (t_email.equals(v_email)) {

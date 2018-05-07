@@ -38,7 +38,7 @@ public class UserOrder {
 	private Long grossAmmount;
 	@Enumerated(EnumType.STRING)
 	private UserOrderStatus status;
-	
+
 	public WalletType getCoinType() {
 		return coinType;
 	}
@@ -66,7 +66,6 @@ public class UserOrder {
 	public void setGrossAmmount(Long grossAmmount) {
 		this.grossAmmount = grossAmmount;
 	}
-	
 
 	public String getCoinName() {
 		return coinName;
@@ -76,17 +75,16 @@ public class UserOrder {
 		this.coinName = coinName;
 	}
 
-
 	private long fee;
-	 public void setFee(long fee) {
+
+	public void setFee(long fee) {
 		this.fee = fee;
 	}
 
-
 	@ManyToOne
-	 @JoinColumn(name = "userId")
-	 @JsonIgnore
-      private User user;
+	@JoinColumn(name = "userId")
+	@JsonIgnore
+	private User user;
 
 	public OrderType getOrderType() {
 		return orderType;
@@ -112,7 +110,6 @@ public class UserOrder {
 		this.userOrderId = userOrderId;
 	}
 
-	
 	public Long getCoinQuantity() {
 		return coinQuantity;
 	}
@@ -145,5 +142,4 @@ public class UserOrder {
 		this.status = status;
 	}
 
-	
 }

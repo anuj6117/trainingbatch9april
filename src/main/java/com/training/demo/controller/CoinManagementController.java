@@ -1,5 +1,6 @@
 package com.training.demo.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,16 +25,18 @@ public class CoinManagementController {
 	
 	CoinManagement coinmanagement;
 	CoinManagement coin;
-
+	List<CoinManagement> list = new ArrayList<>();
 
 	@RequestMapping(value = "/addcurrency", method = RequestMethod.POST)
 	public String addCoin(@RequestBody CoinManagement data) {
 	//	String result = coinManagementService.addAllCoin(data);
 		String sm=data.getSymbol();
-		coinmanagement=coinmanagementrepository.findByCoinName(data.getCoinName());
-		coin=coinmanagementrepository.findBySymbol(data.getSymbol());
+		//list.add(coinmanagementrepository.findByCoinName(data.getCoinName()));
+		//if(!list.isEmpty())
+			//return "qwerty";
 		String s=data.getCoinName();
-		//String sm=data.getSymbol();
+		coinmanagement=coinmanagementrepository.findByCoinName(s);
+		coin=coinmanagementrepository.findBySymbol(data.getSymbol());
 		int sml=sm.length();
 		int l=s.length();
 		double d=data.getInitialSupply();
@@ -53,9 +56,13 @@ public class CoinManagementController {
 			{
 				return "price can not be null";
 			}
-			if((coinmanagement!=null)&&(coin!=null))
+			if(coinmanagement!=null)
 			{
-				return"coin or symbol already exist";
+				return"coin Name already exist";
+			}
+			if(coin!=null)
+			{
+				return "symbol already exist";
 			}
 			
 			

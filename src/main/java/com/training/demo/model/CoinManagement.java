@@ -18,10 +18,6 @@ public class CoinManagement {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Integer coinId;
 
-	public void setCoinId(Integer coinId) {
-		this.coinId = coinId;
-	}
-
 	@Enumerated(EnumType.STRING)
 	private WalletType coinType;
 	// @NotNull(message = "coinName not null")
@@ -31,6 +27,7 @@ public class CoinManagement {
 	private String symbol;
 	@NotNull(message = "can not be null")
 	private long initialSupply;
+	private Long profit;
 
 	public long getInitialSupply() {
 		return initialSupply;
@@ -54,7 +51,9 @@ public class CoinManagement {
 		INRconversion = iNRconversion;
 	}
 
-	private Long profit;
+	public void setCoinId(Integer coinId) {
+		this.coinId = coinId;
+	}
 
 	public Long getProfit() {
 		return profit;

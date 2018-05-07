@@ -16,6 +16,16 @@ import com.training.demo.enums.WalletType;
 @Entity
 @Table(name = "transaction")
 public class Transection {
+
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	private long transactionId;
+	private long netAmount;
+	@Enumerated(EnumType.STRING)
+	private WalletType walletType;
+	private Long fee;
+	private String coinName;
+
 	public long getExchangeRate() {
 		return exchangeRate;
 	}
@@ -35,15 +45,6 @@ public class Transection {
 	public void setExchangeRate(Integer exchangeRate) {
 		this.exchangeRate = exchangeRate;
 	}
-
-	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
-	private long transactionId;
-	private long netAmount;
-	@Enumerated(EnumType.STRING)
-	private WalletType walletType;
-	private Long fee;
-	private String coinName;
 
 	public String getCoinName() {
 		return coinName;

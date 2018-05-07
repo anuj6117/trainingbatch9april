@@ -30,6 +30,10 @@ public class SignUpController {
 		String password = user.getPassword().trim();
 		String username = user.getuserName();
 		String username1 = user.getuserName().trim();
+		String countryname=user.getCountry();
+		String countryname1=user.getCountry().trim();
+		int countrylength=countryname.length();
+		int countrylength1=countryname1.length();
 
 		int length = password.length();
 		int unamelength = username.length();
@@ -41,7 +45,7 @@ public class SignUpController {
 			if ((unamelength != 0) && (unamelength == uname1length) && (user.getuserName() != null)) {
 				if (username.length() <= 25) {
 
-					if ((user.getCountry()!= null)&&(user.getCountry().length()!=0)) {
+					if ((user.getCountry()!= null)&&(user.getCountry().length()!=0)&&(countrylength==countrylength1)) {
 
 						if (length != 0) {
 							String newUser = signUpService.addUser(user);
@@ -64,10 +68,10 @@ public class SignUpController {
 
 	@RequestMapping(value = "/verify", method = RequestMethod.POST)
 	public String userVerification(@RequestBody OtpVerification otpVerification) {
-		if ((otpVerification.getEmail() == null) || (otpVerification.getOtp() == null)) {
+		if ((otpVerification.getEmail() == null) || (otpVerification.getTokenOTP() == null)) {
 			return "otp not found";
 		} else {
-			return signUpService.verifyUserWithOtp(otpVerification.getEmail(), otpVerification.getOtp());
+			return signUpService.verifyUserWithOtp(otpVerification.getEmail(), otpVerification.getTokenOTP());
 
 		}
 	}

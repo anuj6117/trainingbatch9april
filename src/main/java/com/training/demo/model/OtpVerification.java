@@ -13,7 +13,9 @@ public class OtpVerification {
 	@Id
 	Integer userId;
 	String email;
-	Integer otp;
+	Integer tokenOTP;
+	
+
 	Date date;
 
 	public Integer getUserId() {
@@ -22,6 +24,13 @@ public class OtpVerification {
 
 	public void setUserId(Integer userId) {
 		this.userId = userId;
+	}
+	public Integer getTokenOTP() {
+		return tokenOTP;
+	}
+
+	public void setTokenOTP(Integer tokenOTP) {
+		this.tokenOTP = tokenOTP;
 	}
 
 	public String getEmail() {
@@ -32,13 +41,7 @@ public class OtpVerification {
 		this.email = email;
 	}
 
-	public Integer getOtp() {
-		return otp;
-	}
-
-	public void setOtp(Integer otp) {
-		this.otp = otp;
-	}
+	
 
 	public Date getDate() {
 		return date;
