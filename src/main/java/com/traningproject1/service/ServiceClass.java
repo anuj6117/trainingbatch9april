@@ -3,6 +3,7 @@ package com.traningproject1.service;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
 import java.util.Random;
 import java.util.Set;
@@ -57,21 +58,31 @@ MailService mailService;
 UserOTPRepository userOTPRepository;
 
 UserOTP userOTP;
-public User addUser(User user)
-	{
+   public User addUser(User user)
+	   {
 	
-	    user.setCreatedOn(new Date());
-	   	Role defaultrole=roleRepository.getRoleByid(1);
-		   	    
-		ArrayList<Role> roleType=new ArrayList<>();
-		
-		
-	    roleType.add(defaultrole);
-	   user.setRole(roleType);	
+	      user.setCreatedOn(new Date());
+          List<Role>roleType=new ArrayList<>();
+          Role role=new Role();
+          Role roleObject1=new Role();
+          
+          role=roleRepository.findByRoleType("user");
+	      if(role!=null)
+	      {
+	    	  roleType.add(role);
+	      }
+	      else
+	      {
+	    	  roleObject1.setRoleType("user");
+	    	  roleType.add(roleObject1);
+	    	  roleRepository.save(roleObject1);
+	      } 
+	   
+	   
 	   Random random=new Random();
 	   otp=random.nextInt(20000);
-	   roleRepository.save(defaultrole);
-		
+	  
+
 		userRepository.save(user);
 		
 		
@@ -208,10 +219,10 @@ public User assignRoleToUser(ClassDTO classDTO)
 	 
 	  return "success";
   }
-  public String verifyOTP(Integer otp, String email)
+  public String verifyOTP(VerifyUserDTO verifyuserdto )
   {
-	  UserOTP userotp=userOTPRepository.findByEmailId(email);
-	  User user=userRepository.findByEmail(email);
+	  UserOTP userotp=userOTPRepository.findByEmailId(verifyuserdto.getEmailId());
+	  User user=userRepository.findByEmail(verifyuserdto.getEmailId());
 	  if(userotp==null)
 	  {
 		  //System.out.println(user.getEmail()+"\t");

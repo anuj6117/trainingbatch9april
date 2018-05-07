@@ -1,6 +1,8 @@
 package com.traningproject1.service;
 
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,8 +39,18 @@ public class CurrencyService {
 	}
 	public String deleteCurrency(Integer id)
 	{
-		currencyRepository.deleteById(id);
-		return "Your Coin has been deleted Successfully";
+		List<CurrencyClass> currencyclass=currencyRepository.findAll();
+		Iterator<CurrencyClass>itr=currencyclass.iterator();
+	   while(itr.hasNext())
+	   {
+		   if(itr.next().getCoinId()==id)
+		   {
+			   currencyRepository.deleteById(id);
+			   return "Your Coin has been deleted Successfully";
+			   
+		   }
+	   }
+	   return "Invalid Coin id";
 	}
 	public String updateCurrency(CurrencyClass currency) {
 		if(currency!=null)

@@ -45,9 +45,9 @@ private String password;
 
 private String  country;
 
-@JsonIgnore
-@OneToMany(mappedBy="user")
-private List<UserOrder>userOrder;
+//@JsonIgnore
+//@OneToMany(mappedBy="user")
+//private List<UserOrder>userOrder;
 
 private Date createdOn;
 @Enumerated(value=EnumType.STRING)
@@ -120,12 +120,12 @@ public void setConfirmPassword(String confirmPassword) {
 
 
 
-public List<UserOrder> getUserOrder() {
-	return userOrder;
-}
-public void setUserOrder(List<UserOrder> userOrder) {
-	this.userOrder = userOrder;
-}
+//public List<UserOrder> getUserOrder() {
+//	return userOrder;
+//}
+//public void setUserOrder(List<UserOrder> userOrder) {
+//	this.userOrder = userOrder;
+//}
 public String getPhoneNumber() {
 	return phoneNumber;
 }

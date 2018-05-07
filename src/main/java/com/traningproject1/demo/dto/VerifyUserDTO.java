@@ -10,15 +10,7 @@ public class VerifyUserDTO {
 public void setEmailId(String emailId) {
 	this.emailId = emailId;
 }
-private Integer userId;
 
-
-public Integer getUserId() {
-	return userId;
-}
-public void setUserId(Integer userId) {
-	this.userId = userId;
-}
 public Integer getTokenOTP() {
 	return tokenOTP;
 }

@@ -1,5 +1,6 @@
 package com.traningproject1.Controller;
 
+import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 import java.util.regex.Matcher;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.traningproject1.demo.dto.ClassDTO;
 import com.traningproject1.demo.dto.DepositAmountDTO;
 import com.traningproject1.demo.dto.VerifyUserDTO;
+import com.traningproject1.domain.CurrencyClass;
 import com.traningproject1.domain.User;
 import com.traningproject1.enumsclass.UserStatus;
 import com.traningproject1.repository.UserRepository;
@@ -130,8 +132,18 @@ public Optional<User> getUserById( Integer userId)
 @RequestMapping(value="/deleteuser",method=RequestMethod.GET)
 public String deleteUser(Integer userId)
 {
-  serviceClass.deleteUser(userId);
-  return "Success";
+	List<User> userlist=userRepository.findAll();
+	Iterator<User>itr=userlist.iterator();
+   while(itr.hasNext())
+   {
+	   if(itr.next().getUserId()==userId)
+	   {
+		   serviceClass.deleteUser(userId);
+		   return "Deletion Of user is successfully";
+		   
+	   }
+   }
+   return "Invalid User id";
 }
 
 
@@ -181,7 +193,7 @@ public String depositAmount(@RequestBody DepositAmountDTO depositamountdto)
 public String verifyOTP(@RequestBody VerifyUserDTO verifyuserdto)
 {
 	System.out.println(verifyuserdto.getTokenOTP()+"\t"+verifyuserdto.getEmailId());
-	return serviceClass.verifyOTP(verifyuserdto.getTokenOTP(),verifyuserdto.getEmailId());
+	return serviceClass.verifyOTP(verifyuserdto);
 
 }
 //@RequestMapping(value="/withdrawamount",method=RequestMethod.POST)
