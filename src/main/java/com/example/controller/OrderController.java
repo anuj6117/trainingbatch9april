@@ -72,14 +72,16 @@ public class OrderController
 				 int netamount=userOrderDto.getCoinQuantity()*userOrderDto.getPrice();
 			     int grossamount=((currency.getFees()*netamount)/100)+netamount; 
 			     
-			     System.out.println("7777777777777777777777"+ fiatWallet.getShadowbalance());
+			     System.out.println("createBuyOrder // ................................ ");
 				   if(fiatWallet.getShadowbalance()>=grossamount)
+					   
 				    {   Integer updateShadowBalance=fiatWallet.getShadowbalance();
-				    
+				        System.out.println("createBuyOrder // ................................ ");
 				         updateShadowBalance=updateShadowBalance-grossamount;
 					      fiatWallet.setShadowbalance(updateShadowBalance);
 				         System.out.println(",,,,,,,,,,,,,,,,,,,,,,,,"+fiatWallet.getShadowbalance());
 					    userorder.setUser(user);
+					    System.out.println("createBuyOrder // ................................END END ");
 					    return  orderService.createBUYORDER(userOrderDto, currency,userorder);
 					 
 				    }
@@ -117,13 +119,18 @@ public class OrderController
 			   
 		        if(s.getWalletName().equals(userOrderDto.getCoinName()))
 		        {
-		        	System.out.println("enterng here.........................1.......balance "+s.getBalance());
-		        	System.out.println("enterng here.........................1.......balance "+userOrderDto.getCoinQuantity());
+		        	System.out.println("createSellOrder // balance.........................1.......balance "+s.getBalance());
+		        	System.out.println("createSellOrder // shadowBalance.........................1.......balance "+userOrderDto.getCoinQuantity());
 		        	if(s.getBalance()>=userOrderDto.getCoinQuantity())
 		        	{
-			        	System.out.println("enterng here.........................2");		        		
+			        	System.out.println("enterng in createSellOrder.........................2");		        		
 		        		currency=currencyRepository.findByCoinName(userOrderDto.getCoinName());
 			    		   userorder.setUser(user);	
+			    		   Integer updateShadowBalnce=s.getShadowbalance();
+			    		   updateShadowBalnce=updateShadowBalnce-userOrderDto.getCoinQuantity();
+			    		   s.setShadowbalance(updateShadowBalnce);
+			    		   System.out.println("updated shadow balnce in createSellOrder.........."+s.getShadowbalance());
+			    		   System.out.println("createSellOrder ends here...................END END");
 			    		   return  orderService.createSELLORDER(userOrderDto, currency,userorder);
 			        	
 		        	}
@@ -157,11 +164,11 @@ public class OrderController
 	   
    }   
   
-   /*@RequestMapping("/walletHistory")
-   public List<UserOrder> walletHistory(@RequestParam("userId") Integer userId,@RequestParam("coinName") String coinName)
+   @RequestMapping("/walletHistory")
+   public Set<UserOrder> walletHistory(@RequestParam("userId") Integer userId,@RequestParam("coinName") String coinName)
     {
 	   
-	   
-    }*/
+	 return orderrepository.history(userId, coinName);
+    }
    
 }

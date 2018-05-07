@@ -80,8 +80,22 @@ public class SignUpService
 		 walletset.add(wallet);
 		 walletrepository.save(wallet);
 		 Set<Role> rolelist=new HashSet<Role>();
-		 rolelist.add(rolerepository.findByType("User"));
+		 Role role1=rolerepository.findByType("user");
+		 Role role2=new Role();
+		 if(role1!=null)
+		 {
+			 rolelist.add(role1);
+		 }
+		 else
+		 {
+			 role2.setType("user");
+			 rolerepository.save(role2);
+		 rolelist.add(role2);
+		 }
+		 
+		 
 		 user.setRoles(rolelist);
+		 
 		
 		
 		 if( !(userrepository.save(user) == null))

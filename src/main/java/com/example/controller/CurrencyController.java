@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.model.Currency;
 import com.example.repository.CurrencyRepository;
+import com.example.repository.UserRepository;
 import com.example.service.CurrencyService;
 
 @RestController
@@ -20,6 +21,8 @@ public class CurrencyController
 {
 @Autowired
 private CurrencyService currencyservice;
+@Autowired
+private UserRepository userRepository;
 
 @Autowired
 private CurrencyRepository currencyrepository;
@@ -126,9 +129,18 @@ private CurrencyRepository currencyrepository;
 @RequestMapping(value="/updatecurrency",method=RequestMethod.POST)
  public String updatecurrency(@RequestBody Currency currency)
  {
-	
-	currencyrepository.save(currency);
-	return "Your currency has been updated successfully";
+	Currency currency1=currencyrepository.findByCoinId(currency.getCoinId());
+	if(currency1!=null)
+	{
+		String coinName=currency.getCoinName().trim();
+		if(coinName.length()!=0)
+		{
+	     currencyrepository.save(currency);
+	     return "Your currency has been updated successfully";
+	    }else
+	    	return "coin name is null";
+	}else
+		return "Coin Id do not exist";
  }
 
 @GetMapping("/deletecurrency")

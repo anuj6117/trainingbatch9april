@@ -28,13 +28,14 @@ public class RoleController
   public String addUser(@RequestBody Role role)
   {   
 	  
-	   if(!(role==null))
+	   if(role.getType().equalsIgnoreCase("admin") || role.getType().equalsIgnoreCase("manager"))
 	   {
+		   
 		   roleRepository.save(role);
 		   return "Role successfully created";
 	   }
 	   else
-	     return "repository object is null";
+	     return "invalid role type";
   }
    
    @RequestMapping(value="/assignrole",method=RequestMethod.POST)
