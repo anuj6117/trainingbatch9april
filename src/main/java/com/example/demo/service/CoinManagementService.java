@@ -3,6 +3,7 @@ package com.example.demo.service;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,66 +22,109 @@ public class CoinManagementService {
 		Map<String, Object> result = new HashMap<String, Object>();
 		
 		String coinName=coinManagement.getCoinName();
-		
-		if(coinName.equals("") || coinName.isEmpty() || coinName == null)
-		{
-			result.put("isSuccess", false);
-			result.put("message", "Coin Name can't be null.");
-			return result;
-		}
-		if(coinName.trim().length() == 0)
-		{
-			result.put("isSuccess", false);
-			result.put("message", "Coin Name must contain characters.");
-			return result;
-		}
-		
-		
-		
-		String symbol=coinManagement.getSymbol();
-		
-		if(symbol.equals("") || symbol.isEmpty() || symbol == null)
-		{
-			result.put("isSuccess", false);
-			result.put("message", "Symbol can't be null.");
-			return result;
-		}
-		if(symbol.trim().length() == 0)
-		{
-			result.put("isSuccess", false);
-			result.put("message", "Symbol must contain characters.");
-			return result;
-		}
-		
 		Double initialSupply = coinManagement.getInitialSupply();
-		Integer price = coinManagement.getPrice();
-		if(initialSupply == null)
+		Double price = coinManagement.getPrice();
+		String symbol=coinManagement.getSymbol();
+		Double fee = coinManagement.getFee();
+		
+		CoinManagement coinManagementObject = coinManagementRepository.findByCoinName(coinName);
+		
+		if(coinManagementObject == null)
 		{
-			result.put("isSuccess", false);
-			result.put("message", "initialSuppy should not be null.");
-			return result;
-		}
-		if(price == null)
-		{
-			result.put("isSuccess", false);
-			result.put("message", "price should not be null.");
+			if(coinName.length() == 0)
+			{
+				result.put("isSuccess", false);
+				result.put("message", "Coin Name should not be empty.");
+				return result;
+			}
+			if(coinName.startsWith(" "))
+			{
+				result.put("isSuccess", false);
+				result.put("message", "Coin Name should not have leading space.");
+				return result;
+			}
+			if(coinName.endsWith(" "))
+			{
+				result.put("isSuccess", false);
+				result.put("message", "Coin Name should not have trailing space.");
+				return result;
+			}
+			if(!(Pattern.compile("^[a-zA-Z0-9\\s\\\\._\\\\-]{3,15}$").matcher(coinName).matches())) 
+			{
+				result.put("isSuccess", false);
+				result.put("message", "Special character is not allowed in Coin Name or length should not exceed 15 character.");
+				return result;
+			}	
+			if(symbol.length() == 0)
+			{
+				result.put("isSuccess", false);
+				result.put("message", "symbol should not be empty.");
+				return result;
+			}
+			if(symbol.startsWith(" "))
+			{
+				result.put("isSuccess", false);
+				result.put("message", "symbol should not have leading space.");
+				return result;
+			}
+			if(symbol.endsWith(" "))
+			{
+				result.put("isSuccess", false);
+				result.put("message", "symbol should not have trailing space.");
+				return result;
+			}
+			
+			if(!(Pattern.compile("^[a-zA-Z0-9\\s\\\\._\\\\-]{3,15}$").matcher(symbol).matches())) 
+			{
+				result.put("isSuccess", false);
+				result.put("message", "Special character is not allowed in symbol or length should not exceed 15 character.");
+				return result;
+			}
+			if(initialSupply == null)
+			{
+				result.put("isSuccess", false);
+				result.put("message", "initialSuppy should not be null.");
+				return result;
+			}
+			if(initialSupply < 0)
+			{
+				result.put("isSuccess", false);
+				result.put("message", "initialSuppy should not less than zero.");
+				return result;
+			}
+			if(price == null)
+			{
+				result.put("isSuccess", false);
+				result.put("message", "price should not be null.");
+				return result;
+			}
+			if(price < 0)
+			{
+				result.put("isSuccess", false);
+				result.put("message", "price should not less than zero.");
+				return result;
+			}
+			coinManagement.setCoinName(coinName);
+			coinManagement.setSymbol(symbol);
+			coinManagement.setPrice(price);
+			coinManagement.setInitialSupply(initialSupply);
+			coinManagement.setFee(fee);
+			Double initialSupply1=coinManagement.getInitialSupply();
+			coinManagement.setCoinInInr(price * initialSupply);
+			coinManagementRepository.save(coinManagement);
+			
+			result.put("isSuccess", true);
+			result.put("message", "coin added successfully.");
 			return result;
 		}
 		else
 		{
-			result.put("isSuccess", true);
-			result.put("message", "success");
-			coinManagement.setCoinName(coinName);
-			coinManagement.setSymbol(symbol);
-			Double fee=coinManagement.getFee();
-			Double initialSupply1=coinManagement.getInitialSupply();
-			coinManagement.setCoinInInr(0.0);
-			coinManagementRepository.save(coinManagement);
+			result.put("isSuccess", false);
+			result.put("message", "Coin already exist.");
 			return result;
-			
 		}
 	}
-	
+		
 	public Map<String, Object> updateCurrency(CoinManagement coinManagement)
 	{
 		Map<String, Object> result = new HashMap<String, Object>();
@@ -124,7 +168,6 @@ public class CoinManagementService {
 				return result;
 			}
 			
-			
 			newCoinManagement.setSymbol(symbol);
 			newCoinManagement.setCoinInInr(coinManagement.getCoinInInr());
 			
@@ -146,17 +189,17 @@ public class CoinManagementService {
 	{
 		Map<String,Object> result = new HashMap<String, Object>();
 		
-		if(coinId != null && coinId != 0)
+		try
 		{
 			coinManagementRepository.deleteById(coinId);
 			result.put("isSuccess", true);
-			result.put("message", "success");
+			result.put("message", "coin deleted successfully.");
 			return result;
 		}
-		else
+		catch(Exception e)
 		{
-			result.put("isSuccess", false);
-			result.put("message", "coinId does not exist.");
+			result.put("isSuccess", true);
+			result.put("message", "coin does not exist of given id.");
 			return result;
 		}
 	}

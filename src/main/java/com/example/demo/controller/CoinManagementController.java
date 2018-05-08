@@ -85,5 +85,4 @@ public class CoinManagementController {
 		List<CoinManagement> list = coinManagementService.getAllCurrencies();
 		return list;
 	}
-
 }

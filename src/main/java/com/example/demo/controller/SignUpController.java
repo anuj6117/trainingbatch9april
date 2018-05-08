@@ -41,7 +41,7 @@ public class SignUpController {
 				String newMessage=result.get("message").toString();
 				result.remove("message");
 				result.remove("isSuccess");
-				System.out.println(":::::::::::"+result);
+				//System.out.println(":::::::::::"+result);
 				return ResponseHandler.generateResponse(HttpStatus.OK, false, newMessage, result);
 			}
 		} 
@@ -57,7 +57,6 @@ public class SignUpController {
 		if (((obj.getEmailId() != null) && (obj.getTokenOtp() != null)))
 		{
 			return signUpService.verifyUserWithOtp(obj.getEmailId(), obj.getTokenOtp());
-
 		} 
 		else
 		{
@@ -69,30 +68,24 @@ public class SignUpController {
 	public List<User> getAllUsers() 
 	{
 		return signUpService.getAllUsers();
-		
 	}
 	
 	@RequestMapping(value = "/getbyuserid", method = RequestMethod.GET)
-	public User getByUserId(@RequestParam("userId") Integer userId)
+	public Object getByUserId(@RequestParam("userId") Integer userId)
 	{
 		return signUpService.getByUserId(userId);
 	}
 
 	@RequestMapping(value = "/updateuser", method = RequestMethod.POST)
-	public User updateUserById(@RequestBody User user) {
+	public Object updateUserById(@RequestBody User user) 
+	{
 		return signUpService.update(user);
 	}
 
 	@RequestMapping(value = "/deleteuser", method = RequestMethod.GET)
 	public String delete(@RequestParam("userId") Integer id) 
 	{
-		if (id != null)
-		{
-			signUpService.delete(id);
-			return "User deleted of given id.";
-			
-		}
-		return "User does not exist of given id.";
+		return signUpService.delete(id);
 	}
 	
 	

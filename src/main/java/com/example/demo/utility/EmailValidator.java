@@ -6,14 +6,14 @@ import java.util.regex.Pattern;
 import org.springframework.stereotype.Service;
 
 @Service
-public class EmailValidator {
-
+public class EmailValidator 
+{
 	private static final String EMAIL_REGEX = "^[\\w-\\+]+(\\.[\\w]+)*@[\\w-]+(\\.[\\w]+)*(\\.[a-z]{2,})$";
 	private static Pattern pattern;
 	private Matcher matcher;
 	
-	public EmailValidator() {
-		
+	public EmailValidator() 
+	{
 		pattern = Pattern.compile(EMAIL_REGEX, Pattern.CASE_INSENSITIVE);
 	}
 	

@@ -16,15 +16,12 @@ public class CoinManagement {
 	private String coinName;
 	private String symbol;
 	private Double initialSupply;
-	private Integer price;
+	private Double price;
 	private Double coinInInr;
 	private Double profit;
 	private Double fee;
 	private Double exchangeRate;
 	
-	
-	
-
 	public Integer getCoinId() {
 		return coinId;
 	}
@@ -57,11 +54,11 @@ public class CoinManagement {
 		this.initialSupply = initialSupply;
 	}
 
-	public Integer getPrice() {
+	public Double getPrice() {
 		return price;
 	}
 
-	public void setPrice(Integer price) {
+	public void setPrice(Double price) {
 		this.price = price;
 	}
 

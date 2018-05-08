@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Random;
+import java.util.regex.Pattern;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -63,17 +64,10 @@ public class SignUpService
 			
 			String userName=user.getUserName();
 			
-			if((!userName.matches("^[a-zA-Z\\s]{1,25}$")))
+			if(userName.length() == 0)
 			{
 				result.put("isSuccess", false);
-				result.put("message", "Special Character is not allowed in username.");
-				return result;
-			}
-			
-			if(userName.equals("") || userName.isEmpty() || userName == null)
-			{
-				result.put("isSuccess", false);
-				result.put("message", "User Name can't be null.");
+				result.put("message", "User Name should not be empty.");
 				return result;
 			}
 			if(userName.startsWith(" "))
@@ -89,24 +83,42 @@ public class SignUpService
 				return result;
 			}
 			
-			if(userName.length() >= 26)
+			if(!(Pattern.compile("^[a-zA-Z0-9\\s\\\\._\\\\-]{3,25}$").matcher(userName).matches())) 
 			{
 				result.put("isSuccess", false);
-				result.put("message", "Maximum characters allowed for this field is 25.");
+				result.put("message", "Special character is not allowed in username or length should not exceed 25 character.");
 				return result;
-			}
-			if(userName.trim().length() == 0)
-			{
-				result.put("isSuccess", false);
-				result.put("message", "User Name must contain characters.");
-				return result;
-			}
+			}			
 			
 			String country = user.getCountry();
 			if(country.length() == 0)
 			{
 				result.put("isSuccess", false);
 				result.put("message", "Country should not be empty.");
+				return result;
+			}
+			if(country.startsWith(" "))
+			{
+				result.put("isSuccess", false);
+				result.put("message", "Country should not have leading space.");
+				return result;
+			}
+			if(country.endsWith(" "))
+			{
+				result.put("isSuccess", false);
+				result.put("message", "country should not have trailing space.");
+				return result;
+			}
+			if(country.length() == 0)
+			{
+				result.put("isSuccess", false);
+				result.put("message", "Country should not be empty.");
+				return result;
+			}
+			if(country.length() < 2)
+			{
+				result.put("isSuccess", false);
+				result.put("message", "Country should have atleast two characters.");
 				return result;
 			}
 			
@@ -236,29 +248,119 @@ public class SignUpService
 
 	}
 	
-	public void delete(Integer id)
+	public String delete(Integer id)
 	{
-
-		userRepository.deleteById(id);
-	}
-
-	public User getByUserId(Integer userId)
-	{
-		return userRepository.findOneByUserId(userId);		
-	}
-
-	public User update(User user) 
-	{
-		User userdb = null;
-		userdb = userRepository.findOneByUserId(user.getUserId());
+		try 
+		{
+			userRepository.deleteById(id);
+			return "User deleted successfully.";
+		}
+		catch(Exception e)
+		{
+			return "User does not exist of given id.";
+		}
 		
-		userdb.setUserName(user.getUserName());
+	}
+
+	public Object getByUserId(Integer userId)
+	{
+		User user = userRepository.findOneByUserId(userId);
+		if(user != null)
+		{
+			return user;
+		}
+		else
+		{
+			return "User does not exist of given id.";
+		}
+	}
+
+	public Object update(User user) 
+	{
+		User userdb = userRepository.findOneByUserId(user.getUserId());
+		if(userdb != null)
+		{
+			String userName = user.getUserName();
+			if(userName.length() == 0)
+			{
+				return "User Name should not be empty.";
+			}
+			if(userName.startsWith(" "))
+			{
+				return "User Name should not have leading space.";
+			}
+			if(userName.endsWith(" "))
+			{
+				return "User Name should not have trailing space.";
+			}
+			if(!(Pattern.compile("^[a-zA-Z0-9\\s\\\\._\\\\-]{3,25}$").matcher(userName).matches())) 
+			{
+				return "Special character is not allowed in username or length should not exceed 25 character.";
+			}
+			
+			String email=user.getEmail();
+			boolean b=emailValidator.validateEmail(email);
+			if(!b)
+			{
+				return "Please enter a valid email address.";
+			}
+			
+			String phoneNumber=user.getPhoneNumber();
+			if(!mobileNumberValidator.isValid(phoneNumber))
+			{
+				return "Please enter a valid mobile number.";
+			}
+			
+			String country = user.getCountry();
+			if(country.length() == 0)
+			{
+				return "Country should not be empty.";
+			}
+			if(country.startsWith(" "))
+			{
+			return "Country should not have leading space.";
+			}
+			if(country.endsWith(" "))
+			{
+				return "country should not have trailing space.";
+			}
+			if(country.length() == 0)
+			{
+				return"Country should not be empty.";
+			}
+			if(country.length() < 2)
+			{
+				return "Country should have atleast two characters.";
+			}
+			
+			String password=user.getPassword();
+			if(!(password.matches("(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=>])(?=\\S+$).{8,}")))
+			{
+				return "Please enter password with minimum 8 characters. Your password should have atleast 1 Uppercase, 1 Lowercase, 1 Digit & 1 Special character. Space is not allowed.";
+			}
+			
+			userdb.setUserName(userName);
+			userdb.setEmail(email);
+			userdb.setPhoneNumber(phoneNumber);
+			userdb.setCountry(country);
+			userdb.setPassword(password);
+			userRepository.save(userdb);
+			
+			return "User updated successfully.";
+			
+		}
+		else
+		{
+			return "User does not exist of given id.";
+		}
+		
+		/*userdb.setUserName(user.getUserName());
 		userdb.setEmail(user.getEmail());
 		userdb.setPhoneNumber(user.getPhoneNumber());
 		userdb.setCountry(user.getCountry());
 		userdb.setPassword(user.getPassword());
 
-		return userRepository.save(userdb);
+		return userRepository.save(userdb);*/
 	}
 
 	
