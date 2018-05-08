@@ -112,7 +112,7 @@ public class TransactionService
        	     		 buyerBalance=buyerBalance-balance;
        	     		 w.setBalance(buyerBalance);
        	     		System.out.println("balance(crypto)333........."+w.getBalance());
-       	     		 w.setShadowbalance(buyerBalance);
+       	     		 //w.setShadowbalance(buyerBalance);
        	     		System.out.println("balance(crypto)444........."+w.getShadowbalance());
        	     	  }
        	     	 walletRepository.save(w);
@@ -191,7 +191,7 @@ public class TransactionService
 		        	     		 Integer buyerBalance=w.getBalance();
 		        	     		 buyerBalance=buyerBalance-balance;
 		        	     		 w.setBalance(buyerBalance);
-		        	     		 w.setShadowbalance(buyerBalance);
+		        	     		// w.setShadowbalance(buyerBalance);
 		        	     	  }
 		        	     	 walletRepository.save(w);
 		        	     	 
@@ -211,9 +211,7 @@ public class TransactionService
 				   if(bPrice>sPrice)
 				   {System.out.println("Seller is a user here not admin//..........................");
 					   System.out.println("22.....................................11");
-				  // Integer buyerQuantity=buy.getCoinQuantity();
-				  // Integer sellerQuantity=sell.getCoinQuantity();
-				   //buyer purchasing from seller
+					   
 				   if(buy.getCoinQuantity()==sell.getCoinQuantity())
 				      {
 					   System.out.println("Seller is a user here not admin//buyerQUANt=sellerQUANT..........................");
@@ -234,19 +232,23 @@ public class TransactionService
 		        		currency.setCoinInINR(initialINR);
 		        		System.out.println("updated vlue of coin inr.............."+currency.getCoinInINR());
 		        		Integer InitialProfit=currency.getProfit();
-		        		System.out.println("intial value of coin INR............."+InitialProfit);
+		        		System.out.println("intial value of profit............."+InitialProfit);
 		        		feeAmount+=InitialProfit;
 		        		currency.setProfit(feeAmount);
-		        		System.out.println("updated vlue of coin inr.............."+currency.getProfit());
+		        		System.out.println("updated vlue of profit.............."+currency.getProfit());
 		        		currencyRepository.save(currency);
 					    
-					    setTransaction(buy, sell,buy.getCoinQuantity());// transaction table entry
-				        walletUpdation(buy, sell,buy.getCoinQuantity()); // updation in wallet
+					    setTransaction(buy, sell,buy.getCoinQuantity(),currency);// transaction table entry
+				        walletUpdation(buy, sell,buy.getCoinQuantity(),currency); // updation in wallet
+				        orderRepository.save(buy);
+				        orderRepository.save(sell);
 				         
 				       }
 				       else if(buy.getCoinQuantity()>sell.getCoinQuantity())
-				       {  System.out.println("Seller is a user here not admin//buyerQUANt > sellerQUANT..........................");
-					      Integer quantityDone=sell.getCoinQuantity();
+				       {  System.out.println("Seller is a user here not admin//buyerQUANt > sellerQUANT.........................");
+				          System.out.println("BUYER'S QUANT HERE:::::::::::::::::::::::::"+buy.getCoinQuantity());
+				          System.out.println("SELLER'S QUANT HERE:::::::::::::::::::::::::"+sell.getCoinQuantity());
+				          Integer quantityDone=sell.getCoinQuantity();
 					      Integer quantityRemaining=buy.getCoinQuantity()-sell.getCoinQuantity();
 		                  buy.setStatusType(StatusType.PENDING);
 		                 // buy.setCoinQuantity(quantityRemaining);          number 007
@@ -267,7 +269,7 @@ public class TransactionService
 			        		currency.setProfit(feeAmount);
 			        		currencyRepository.save(currency);
 						    
-					      setTransaction(buy, sell, quantityDone);
+					      setTransaction(buy, sell, quantityDone,currency);
 					      System.out.println("wallet.....................................");
 						  User user1=buy.getUser();
 					      Set<Wallet> sett=user1.getWallet();
@@ -279,6 +281,8 @@ public class TransactionService
 					     		Integer balance=w.getBalance();
 					     		 balance+=quantityDone;
 					     		 w.setBalance(balance);
+					     		 Integer BuyQuantity=buy.getCoinQuantity();
+					     		 buy.setCoinQuantity(BuyQuantity-balance);
 					     		 w.setShadowbalance(balance);
 					     		 System.out.println("\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ balance"+w.getBalance());
 					     		 System.out.println("\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ shadowBalance"+w.getShadowbalance());
@@ -300,14 +304,15 @@ public class TransactionService
 					     		 System.out.println("||||||||||||||||||| shadow balance is........"+w.getShadowbalance());
 					     		 System.out.println("||||||||||||||||||| buy.getGrossAmount........"+buy.getGrossAmount());
 					     		 System.out.println("||||||||||||||||||| moneyToBeDeducted.........."+moneyToBeDeducted);
-					     		 Integer addShadowBalance=buy.getGrossAmount()-moneyToBeDeducted;
+					     		 /*Integer addShadowBalance=buy.getGrossAmount()-moneyToBeDeducted;
 					     		 Integer shadowBalance=w.getShadowbalance();
 					     		shadowBalance+=addShadowBalance;
-					     		 w.setShadowbalance(shadowBalance);
+					     		 w.setShadowbalance(shadowBalance);*/
 					     		 System.out.println("\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ balance"+w.getBalance());
 					     		 System.out.println("\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ shadowBalance"+w.getShadowbalance());
 					     	  }
 					     	 walletRepository.save(w);
+					     	 
 					       }
 					      
 					      User user2=sell.getUser();
@@ -324,6 +329,7 @@ public class TransactionService
 					     	    	break aa;  
 					     	      }
 					     		 w.setBalance(balance);
+					     		 sell.setCoinQuantity(balance);
 					     		// w.setShadowbalance(balance);
 					     		System.out.println("\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ balance"+w.getBalance());
 					    		 System.out.println("\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ shadowBalance"+w.getShadowbalance());
@@ -340,15 +346,21 @@ public class TransactionService
 					    		 System.out.println("\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ shadowBalance"+w.getShadowbalance());
 					     	  }
 					     	 walletRepository.save(w);
+					     	 
 					       }
+					      orderRepository.save(buy);
+					      orderRepository.save(sell);
 					      System.out.println("setTransaction.....................................end");
 					     // walletUpdation(buy, sell, quantityDone);
 				       }
 				       else// seller quantity >buyer Quantity
 				       {   
 				    	   System.out.println("Seller is a user here not admin//buyerQUANt < sellerQUANT..........................");
+				    	   System.out.println("Buyer quantity:::::::::::::::::::::"+buy.getCoinQuantity());
+				    	   System.out.println("Seller quantity:::::::::::::::::::::"+sell.getCoinQuantity());
 				    	   Integer quantityDone=buy.getCoinQuantity();
 				    	   Integer quantityRemaining=sell.getCoinQuantity()-buy.getCoinQuantity();
+				    	   System.out.println("quantityRemaining:::::::::::::::::::"+quantityRemaining);
 				    	   buy.setStatusType(StatusType.APPROVED);
 				    	   buy.setCoinQuantity(quantityDone);
 				    	   sell.setStatusType(StatusType.PENDING);
@@ -367,7 +379,7 @@ public class TransactionService
 			        		currency.setProfit(feeAmount);
 			        		currencyRepository.save(currency);
 						    
-				    	   setTransaction(buy, sell, quantityDone);
+				    	   setTransaction(buy, sell, quantityDone,currency);
 				    	   System.out.println("wallet.....................................");
 				    		  User user1=buy.getUser();
 				    	      Set<Wallet> sett=user1.getWallet();
@@ -379,6 +391,14 @@ public class TransactionService
 				    	     		Integer balance=w.getBalance();
 				    	     		 balance+=quantityDone;
 				    	     		 w.setBalance(balance);
+				    	     		Integer BuyQuantity=buy.getCoinQuantity();
+						     		 
+						     		 if((BuyQuantity-balance)<0)
+						     		 {
+						     			 buy.setCoinQuantity(0);
+						     		 }else
+						     			buy.setCoinQuantity(BuyQuantity-balance);
+				    	     		 //buy.setCoinQuantity(balance);
 				    	     		 w.setShadowbalance(balance);
 				    	     		 System.out.println("\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ balance"+w.getBalance());
 				    	     		 System.out.println("\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ shadowBalance"+w.getShadowbalance());
@@ -386,7 +406,9 @@ public class TransactionService
 				    	     	 else if(w.getWalletType()==WalletType.FIAT) // money deduct hogi
 				    	     	  {
 				    	     		 System.out.println("userid for wallet.(buy)..................."+w.getUser().getUserId());
-				    	     		Integer balance=buy.getGrossAmount();
+				    	     		Integer balance=quantityDone*buy.getPrice();
+				    	     		Integer fee=currency.getFees();
+				    	     		balance=balance+((fee*balance)/100);
 				    	     		Integer buyerBalance=w.getBalance();
 				    	     		 buyerBalance=buyerBalance-balance;
 				    	     		 if(buyerBalance<0)
@@ -395,6 +417,7 @@ public class TransactionService
 				    	     			 break aa;
 				    	     		 }
 				    	     		 w.setBalance(buyerBalance);
+				    	    
 				    	     		// w.setShadowbalance(buyerBalance);
 				    	     		 System.out.println("\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ balance"+w.getBalance());
 				    	     		 System.out.println("\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ shadowBalance"+w.getShadowbalance());
@@ -411,9 +434,10 @@ public class TransactionService
 				    	     		 Integer balance=w.getBalance();
 				    	     	      balance=balance-quantityDone;
 				    	     		 w.setBalance(balance);
-				    	     		 Integer shadowBalance=w.getShadowbalance();
+				    	     		 sell.setCoinQuantity(balance);
+				    	     		/* Integer shadowBalance=w.getShadowbalance();
 				    	     		   shadowBalance+=quantityRemaining;
-				    	     		 w.setShadowbalance(shadowBalance);
+				    	     		 w.setShadowbalance(shadowBalance);*/
 				    	     		System.out.println("\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ balance"+w.getBalance());
 				    	    		 System.out.println("\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ shadowBalance"+w.getShadowbalance());
 				    	     	  }
@@ -437,6 +461,8 @@ public class TransactionService
 				    	       }
 				    	      System.out.println("setTransaction.....................................end");
 						  // walletUpdation(buy, sell, quantityDone);
+				    	      orderRepository.save(buy);
+				    	      orderRepository.save(sell);
 				       }
 				   }
 				   else
@@ -450,7 +476,7 @@ public class TransactionService
 	   }   
  }
   
- public  void setTransaction(UserOrder userOrderBuy,UserOrder userOrderSell, Integer quantity)
+ public  void setTransaction(UserOrder userOrderBuy,UserOrder userOrderSell, Integer quantity,Currency currency)
  {
 	 System.out.println("setTransaction.....................................");
 	 String date =new Date()+" ";
@@ -460,56 +486,70 @@ public class TransactionService
      transaction.setCoinName(userOrderBuy.getCoinName());
      transaction.setCoinType(userOrderBuy.getCoinType());
      transaction.setExchangeRate(userOrderBuy.getPrice());
-     transaction.setNetAmount(userOrderBuy.getNetAmount());
-     transaction.setGrossAmount(userOrderBuy.getGrossAmount());
+     Integer netamount=quantity*userOrderBuy.getPrice();
+     transaction.setNetAmount(/*userOrderBuy.getNetAmount()*/netamount);
+     Integer fee=currency.getFees();
+     Integer grossamount=((fee*netamount)/100)+netamount;
+     transaction.setGrossAmount(grossamount);
      transaction.setCoinQuantity(quantity);
      transaction.setDescription("purchase done");
      transaction.setStatus(StatusType.COMPLETED);
      transaction.setTransactionCreatedOn(date);
-     Integer grossAmount=userOrderBuy.getGrossAmount();
-     Integer netAmount=userOrderBuy.getNetAmount();
-     transaction.setTransactionFee(grossAmount-netAmount);
+     //Integer grossAmount=userOrderBuy.getGrossAmount();
+     //Integer netAmount=userOrderBuy.getNetAmount();
+     transaction.setTransactionFee(grossamount-netamount);
     
      transactionRepository.save(transaction);
      System.out.println("setTransaction.....................................end");
  }
  
  
-  public  void walletUpdation(UserOrder userOrderBuy,UserOrder userOrderSell,Integer quantity)
+  public  void walletUpdation(UserOrder userOrderBuy,UserOrder userOrderSell,Integer quantity,Currency currency)
    {
-	  System.out.println("wallet.....................................");
+	  System.out.println("walletUpdation METHOD.....................................");
 	  User user1=userOrderBuy.getUser();
       Set<Wallet> sett=user1.getWallet();
       bb:
       for(Wallet w:sett)
        {
+    	  System.out.println("w.getWalletType()..................."+w.getWalletType());
+    	  System.out.println("userOrderBuy.getCoinType()............."+userOrderBuy.getCoinType());
      	 if(w.getWalletType()==userOrderBuy.getCoinType())// crypto add hoga
-     	  {
-     		 System.out.println("userid for wallet.(buy)..................."+w.getUser().getUserId());
+     	  {System.out.println("entering into crypto................");
+     		 System.out.println("userid for wallet.(buy)(CRYPTO)..................."+w.getUser().getUserId());
      		Integer balance=w.getBalance();
      		 balance+=quantity;
      		 w.setBalance(balance);
+     		 userOrderBuy.setCoinQuantity(balance);
      		 w.setShadowbalance(balance);
      		 System.out.println("\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ balance"+w.getBalance());
      		 System.out.println("\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ shadowBalance"+w.getShadowbalance());
      	  }
      	 else if(w.getWalletType()==WalletType.FIAT) // money deduct hogi
      	  {
-     		 System.out.println("userid for wallet.(buy)..................."+w.getUser().getUserId());
-     		Integer balance=userOrderBuy.getGrossAmount();
+     		 System.out.println("userid for wallet.(buy)(FIAT)..................."+w.getUser().getUserId());
+     		 System.out.println("Quantity:::::::::::::::::::::::::::::"+quantity);
+     		 
+     		Integer updatedAmount=quantity*userOrderBuy.getPrice();
+     		System.out.println("updateAmount:::::::::::::::::::::::::::::"+updatedAmount);
+     		updatedAmount=(((currency.getFees()*updatedAmount)/100)+updatedAmount);
+     		System.out.println("balance is::::::::::::::::::::"+updatedAmount);
      		Integer buyerBalance=w.getBalance();
-     		 buyerBalance=buyerBalance-balance;
+     		System.out.println("buyer balance is::::::::::::::::::::"+buyerBalance);
+     		 buyerBalance=buyerBalance-updatedAmount;
+     		System.out.println("buyer balance is::::::::::::::::::::"+buyerBalance);
      		 if(buyerBalance<0)
      		 {
      			System.out.println("balance negative....................99");
      			 break bb;
      		 }
      		 w.setBalance(buyerBalance);
-     		// w.setShadowbalance(buyerBalance);
+     		//w.setShadowbalance(buyerBalance);
      		 System.out.println("\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ balance"+w.getBalance());
      		 System.out.println("\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ shadowBalance"+w.getShadowbalance());
      	  }
      	 walletRepository.save(w);
+     	 orderRepository.save(userOrderBuy);
        }
       
       User user2=userOrderSell.getUser();
@@ -518,7 +558,7 @@ public class TransactionService
       for(Wallet w:sset)
        {
      	 if(w.getWalletType()==userOrderSell.getCoinType())
-     	  {  System.out.println("userid for wallet.(sell)..................."+w.getUser().getUserId());
+     	  {  System.out.println("userid for wallet.(sell)(CRYPTO)..................."+w.getUser().getUserId());
      		 Integer balance=w.getBalance();
      	      balance=balance-quantity;
      	      if(balance<0)
@@ -528,13 +568,14 @@ public class TransactionService
      	    	  break cc;
      	      }
      		 w.setBalance(balance);
+     		 userOrderSell.setCoinQuantity(balance);
      		// w.setShadowbalance(balance);
      		System.out.println("\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ balance"+w.getBalance());
     		 System.out.println("\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ shadowBalance"+w.getShadowbalance());
      	  }
      	 else if(w.getWalletType()==WalletType.FIAT)
      	  {
-     		System.out.println("userid for wallet.(sell)..................."+w.getUser().getUserId());
+     		System.out.println("userid for wallet.(sell)(FIAT)..................."+w.getUser().getUserId());
      		Integer balance=userOrderSell.getGrossAmount();
      		Integer sellerBalance=w.getBalance();
      		 sellerBalance=sellerBalance+balance;
@@ -544,6 +585,7 @@ public class TransactionService
     		 System.out.println("\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ shadowBalance"+w.getShadowbalance());
      	  }
      	 walletRepository.save(w);
+     	 orderRepository.save(userOrderSell);
        }
       System.out.println("setTransaction.....................................end");
     

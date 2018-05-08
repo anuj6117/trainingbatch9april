@@ -95,7 +95,7 @@ public class OrderController
 		 }
 		 else
 		 {
-			return "coin not available"; 
+			return "Wallet for the coin which you want to buy is not available"; 
 		 }
 		
 	   }

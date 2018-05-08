@@ -46,7 +46,7 @@ public class OrderService
 	userorder.setGrossAmount(percentValue);
 	userorder.setOrderCreatedOn(date);
 	orderRepository.save(userorder);
-   return "Order Table entry created";
+   return "Order is placed";
 	}
 	catch(NullPointerException e)
 	{
@@ -87,7 +87,7 @@ public class OrderService
  	userorder.setOrderCreatedOn(date);
  	orderRepository.save(userorder);
      
-	 return "Details in order table is inserted for sell";
+	 return "Sell order is placed";
     }
     catch(NullPointerException e)
     {

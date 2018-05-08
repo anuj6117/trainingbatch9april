@@ -160,7 +160,7 @@ public class SignUpService
 		 //userorder.setId(1);
 		 orderRepository.save(userorder);
 		 
-		 return "All value inserted";
+		 return "Deposit has done. Waiting for approval";
 	   }
 		 /*
 		 user=userrepository.findByUserId(userwalletdto.getUserId());

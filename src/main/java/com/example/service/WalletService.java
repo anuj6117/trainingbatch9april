@@ -70,7 +70,7 @@ public class WalletService
 	 if(user.getStatus().equals(UserStatus.ACTIVE))
 	 {
 		
-		 if(walletApprovalDto.getStatusType()==StatusType.APPROVED)
+		 if(walletApprovalDto.getStatusType()==StatusType.COMPLETED)
 		 {
 			 Set<Wallet> walletlist=user1.getWallet();
 		     for(Wallet s:walletlist)
@@ -96,6 +96,7 @@ public class WalletService
 			 transactionRepository.save(transaction);
 			 userorder.setStatusType(StatusType.APPROVED);
 			 orderrepository.save(userorder);
+			 return "Deposit is approved";
 		 }
 		 else if(walletApprovalDto.getStatusType()==StatusType.REJECTED)
 		  {
@@ -109,12 +110,13 @@ public class WalletService
 			 transactionRepository.save(transaction);
 			 userorder.setStatusType(StatusType.REJECTED);
 			 orderrepository.save(userorder);
-			 
+			 return "Diposit is rejected";
 		  }
-		 return "user is active";
+		 
 	 }
 	 else
 	    return "user is not active"; 
+    return "";
  }
  
  public  void addBalance()
