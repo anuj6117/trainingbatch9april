@@ -100,19 +100,18 @@ public class Signupservice {
 	public Map<String,Object> addUser(Users users) {
 		Map<String,Object> result=new HashMap<String,Object>();
 		Date date=new Date();
-		
+		Long count=usersRepository.count();
 		Users user=usersRepository.findByEmail(users.getEmail());
 		Users phone=usersRepository.findByPhoneNumber(users.getPhoneNumber());
 		Users name=usersRepository.findByUserName(users.getUserName());
 		String s=users.getUserName();
 		String mob=users.getPhoneNumber();
 		Users mobpresent=usersRepository.findByPhoneNumber(users.getPhoneNumber());
+		if(count==0) {
+			role.setRoleType("USER");
+			rolerepository.save(role);
+		}
 		
-		Role role1=rolerepository.findByRoleType("USER");
-		if(role1==null) {
-		if(!role.getRoleType().equalsIgnoreCase("user")) {
-		role.setRoleType("USER");
-		rolerepository.save(role);}}
 		
 		if(user!=null) {
 			result.put("isSuccess", false);
@@ -174,8 +173,16 @@ public class Signupservice {
 			return result;
 
 			
+		}else if(users.getCountry().length()<2){
+			result.put("isSuccess", false);
+			result.put("message","Minimum 2 characters required");
+			result.put("timestamp",date );
+			return result;
+			
 		}
 		else {
+			
+			
 		Random rnd = new Random();
 		int otp1 = rnd.nextInt(10000);
 	    users.setDate(date);
@@ -207,6 +214,7 @@ public class Signupservice {
 			result.put("timestamp",date );
 			return result;
 			}
+		
 		}
 	
 	

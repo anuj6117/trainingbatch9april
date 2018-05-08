@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import io.oodles.springboot1.comparator.Sortbyprice;
 import io.oodles.springboot1.enums.OrderStatus;
 import io.oodles.springboot1.enums.OrderType;
+import io.oodles.springboot1.enums.Status;
 import io.oodles.springboot1.enums.WalletType;
 import io.oodles.springboot1.model.BuyOrder;
 import io.oodles.springboot1.model.Currency;
@@ -29,6 +30,7 @@ public class OrderService {
 	Users user;
 	UserOrder userOrder;
 	Currency currency;
+	Wallet wallet;
 	List<UserOrder> listBuyOrder=new ArrayList<UserOrder>();
 	List<UserOrder> listSellOrder=new ArrayList<UserOrder>();
 	
@@ -46,17 +48,21 @@ public class OrderService {
 	@Autowired
 	WalletRepository walletRepository;
 	public String buy(BuyOrder buyOrder) {
-	
+            Users user=usersRepository.findByUserId(buyOrder.getUserid());
+            Wallet wallet=walletRepository.findByUsersAndCoinTypeAndCoinName(user, WalletType.FIAT, "INR");
+            if(user.getStatus().equals(Status.ACTIVE))
+            {
 		Date date=new Date();
 		currency=currencyRepository.findByCoinName(buyOrder.getCoinname());
 		
 		
-		
+	
 		
 		
 		Integer netAmount=buyOrder.getPrice()*buyOrder.getCoinQuantity();
 		
 	    Integer grossAmount=(netAmount+((netAmount*currency.getFees())/100));
+	    Integer sb=wallet.getBalance()-grossAmount;
 	    
 		// TODO Auto-generated method stub
 		user=usersRepository.findByUserId(buyOrder.getUserid());
@@ -90,14 +96,21 @@ public class OrderService {
 	    orderRepository.save(userOrder);
 	    //System.out.println("????????????????");
 	    listBuyOrder.add(userOrder);
+	    wallet.setShadowbalance(sb);
+	    walletRepository.save(wallet);
 	    //System.out.println("<<<<<<<<<<<<<<<"+listBuyOrder);
-	    return "Success";
+	    return "Success";}
+            else {
+            	return "User Not Active";
+            }
 		
 		
 		
 	}
 	public String sell(BuyOrder buyOrder) {
 		// TODO Auto-generated method stub
+		Users user=usersRepository.findByUserId(buyOrder.getUserid());
+		if(user.getStatus().equals(Status.ACTIVE)) {
         currency=currencyRepository.findByCoinName(buyOrder.getCoinname());
         Date date=new Date();
 		
@@ -142,7 +155,10 @@ public class OrderService {
 	    listSellOrder.add(userOrder);
 	   // System.out.println(">>>>>>>>>>>>>>>>>>>>>>>");
 	   // System.out.println("<<<<<<<<<<<<<<<<"+listSellOrder);
-	    return "Success";
+	    return "Success";}
+		else {
+			return "User Not Active";
+		}
 		
 	}
 	public Optional<UserOrder> get(int id) {
@@ -165,16 +181,19 @@ public class OrderService {
 	 List<UserOrder> sellerlist=orderRepository.findByOrdertype();
 		
      Collections.sort(sellerlist,new Sortbyprice());
+   
+     
      if(sellerlist.size()!=0) {
-    	 System.out.println(">>>>>>>>>>>>>>>>>>>");
+    	 //System.out.println(">>>>>>>>>>>>>>>>>>>");
     	 for(UserOrder b:buyerlist) {
-    		 System.out.println("------------");
+    		// System.out.println("------------");
     	for(UserOrder s:sellerlist) {	 
     	 
     	 
     	 currency=currencyRepository.findByCoinNameAndCoinType(b.getCoinname(),b.getCoinType());
     	 
-    	 if(s.getPrice()>currency.getPrice()) {
+    	 if(s.getPrice()<currency.getPrice()) {
+    		 System.out.println("111111111111");
     		 if(b.getPrice()>currency.getPrice()) {
     			 if(b.getCoinname().equals(currency.getCoinName())&& b.getCoinType().equals(currency.getCoinType())) {
         			 UserTransaction userTransaction=new UserTransaction();
@@ -182,7 +201,7 @@ public class OrderService {
          	    	     		userTransaction.setCoinName(b.getCoinname());
          	    	     		userTransaction.setCoinType(b.getCoinType());
          	    	     		userTransaction.setDateCreated(date);
-         	    	     		userTransaction.setDescription("Approveds");
+         	    	     		userTransaction.setDescription("Approved");
          	    	     		userTransaction.setFees(b.getFee());
          	    	     		Integer netAmount1=b.getPrice()*b.getCoinQuantity();
          	    				
@@ -192,18 +211,56 @@ public class OrderService {
          	    	     		userTransaction.setTransactionstatus(OrderStatus.APPROVE);
          	    	     		transactionRepository.save(userTransaction);
          	    	     		
-         	    	     		Integer sellercoin=s.getCoinQuantity()-b.getCoinQuantity();
-         	    	     		Integer currencycoin=currency.getInitialSupply()-b.getCoinQuantity();
-         	    	     		//System.out.println("//////////"+currencycoin);
-         	    	     		Integer buyercoin=currency.getInitialSupply()-currencycoin;
-         	    	     		//System.out.println(">>>>>>>>>>"+ buyercoin+b.getCoinQuantity());
-         	    	     		b.setCoinQuantity(b.getCoinQuantity()-buyercoin);
-         	    				b.setOrderStatus(OrderStatus.APPROVE);
-         	    				s.setCoinQuantity(sellercoin);
-         	    				s.setOrderStatus(OrderStatus.APPROVE);
-         	    				orderRepository.save(b);
          	    	     		
-         	    	     		Integer inrconversion=(currency.getInitialSupply()*currency.getPrice())-(b.getCoinQuantity()*b.getPrice());
+         	    	     		
+         	    	     		
+         	    				
+         	    				
+         	    				//For FIAT
+         	    				Users user=b.getUsersorder();
+         	    				//System.out.println(">>>>>>>>>>>>>"+user.getUserId());
+         	    				wallet=walletRepository.findByUsersAndCoinTypeAndCoinName(user,WalletType.FIAT,"INR");;
+         	    				Integer bal=wallet.getBalance()-b.getGrossAmount();
+         	    				System.out.println(bal);
+         	    				wallet.setBalance(bal);
+         	    				wallet.setShadowbalance(bal);
+         	    				walletRepository.save(wallet);
+         	    				
+         	    				//For CRYPTO
+         	    				
+         	    				
+         	    				String s1=b.getCoinname();
+         	    				//System.out.println(">>>>>>>>>>"+s1);
+          wallet=walletRepository.findByUsersAndCoinTypeAndCoinName(user, WalletType.CRYPTO,b.getCoinname());
+         	    				//System.out.println(">>>>>>>>>>"+wallet1.getId()+wallet1.getCoinName());
+          wallet.setShadowbalance(wallet.getBalance()+b.getCoinQuantity());
+         	    				wallet.setBalance(wallet.getBalance()+b.getCoinQuantity());
+         	    				
+         	    				walletRepository.save(wallet);
+         	    				
+         	    				//For FIAT
+         	    				Users user1=s.getUsersorder();
+         	    				//System.out.println(">>>>>>>>>>>>>"+user.getUserId());
+         	    				wallet=walletRepository.findByUsersAndCoinTypeAndCoinName(user1,WalletType.FIAT,"INR");;
+         	    				Integer bal1=wallet.getBalance()+s.getGrossAmount();
+         	    				System.out.println(bal1);
+         	    				wallet.setBalance(bal1);
+         	    				wallet.setShadowbalance(bal1);
+         	    				walletRepository.save(wallet);
+         	    				
+         	    				//For CRYPTO
+         	    				//Users user3=s.getUsersorder();
+         	    				//System.out.println(user1.getUserId());
+         	    				//String s2=b.getCoinname()
+         	    				//System.out.println(">>>>>>>>>>"+s1);
+         wallet=walletRepository.findByUsersAndCoinTypeAndCoinName(user1, WalletType.CRYPTO,s.getCoinname());
+         	    				//System.out.println(">>>>>>>>>>"+wallet1.getId()+wallet1.getCoinName());
+         wallet.setShadowbalance(wallet.getBalance()-s.getCoinQuantity());
+         	    				wallet.setBalance(wallet.getBalance()-s.getCoinQuantity());
+         	    				
+         	    				walletRepository.save(wallet);
+         	    				
+         	    				Integer inrconversion=((b.getPrice()*b.getCoinQuantity())-s.getPrice()*s.getCoinQuantity());
          	    				//System.out.println(inrconversion);
          	    	     		currency.setINRconversion(inrconversion);
          	    				Integer initial=currency.getInitialSupply()-b.getCoinQuantity();
@@ -214,42 +271,124 @@ public class OrderService {
          	    				currency.setProfit(profit);
          	    				currencyRepository.save(currency);
          	    				
-         	    				
-         	    				//For FIAT
-         	    				Users user=b.getUsersorder();
-         	    				//System.out.println(">>>>>>>>>>>>>"+user.getUserId());
-         	    				Wallet wallet=walletRepository.findByUsersAndCoinTypeAndCoinName(user,WalletType.FIAT,"INR");;
-         	    				Integer bal=wallet.getBalance()-b.getGrossAmount();
-         	    				System.out.println(bal);
-         	    				wallet.setBalance(bal);
-         	    				wallet.setShadowbalance(bal);
-         	    				walletRepository.save(wallet);
-         	    				
-         	    				//For CRYPTO
-         	    				Users user1=b.getUsersorder();
-         	    				System.out.println(user1.getUserId());
-         	    				String s1=b.getCoinname();
-         	    				//System.out.println(">>>>>>>>>>"+s1);
-         Wallet wallet1=walletRepository.findByUsersAndCoinTypeAndCoinName(user1, WalletType.CRYPTO,b.getCoinname());
-         	    				//System.out.println(">>>>>>>>>>"+wallet1.getId()+wallet1.getCoinName());
-         	    				wallet1.setBalance(b.getCoinQuantity());
-         	    				wallet1.setShadowbalance(b.getCoinQuantity());
-         	    				walletRepository.save(wallet1);
+         	    				Integer sellercoin=s.getCoinQuantity()-b.getCoinQuantity();
+         	    	     		Integer currencycoin=currency.getInitialSupply()-b.getCoinQuantity();
+         	    	     		//System.out.println("//////////"+currencycoin);
+         	    	     		Integer buyercoin=currency.getInitialSupply()-currencycoin;
+         	    	     		//System.out.println(">>>>>>>>>>"+ buyercoin+b.getCoinQuantity());
+         	    	     		b.setCoinQuantity(b.getCoinQuantity()-buyercoin);
+         	    				b.setOrderStatus(OrderStatus.APPROVE);
+         	    				s.setCoinQuantity(sellercoin);
+         	    				s.setOrderStatus(OrderStatus.APPROVE);
+         	    				orderRepository.save(b);
+         	    				orderRepository.save(s);
 
         		 }
+    			 
+    		 }else { if(b.getCoinname().equals(currency.getCoinName())&& b.getCoinType().equals(currency.getCoinType())) {
+    			 UserTransaction userTransaction=new UserTransaction();
+      	    	userTransaction.setBuyer_id(b.getOrderid());
+      	    	     		userTransaction.setCoinName(b.getCoinname());
+      	    	     		userTransaction.setCoinType(b.getCoinType());
+      	    	     		userTransaction.setDateCreated(date);
+      	    	     		userTransaction.setDescription("Approved");
+      	    	     		userTransaction.setFees(b.getFee());
+      	    	     		Integer netAmount1=b.getPrice()*b.getCoinQuantity();
+      	    				
+      	    			    Integer grossAmount1=(netAmount1+((netAmount1*b.getFee())/100));
+      	    	     		userTransaction.setGrossAmount(grossAmount1);
+      	    	     		userTransaction.setNetAmount(netAmount1);
+      	    	     		userTransaction.setTransactionstatus(OrderStatus.APPROVE);
+      	    	     		transactionRepository.save(userTransaction);
+      	    	     		
+      	    	     		
+      	    	     		
+      	    	     		
+      	    				
+      	    				
+      	    				//For FIAT
+      	    				Users user=b.getUsersorder();
+      	    				//System.out.println(">>>>>>>>>>>>>"+user.getUserId());
+      	    				wallet=walletRepository.findByUsersAndCoinTypeAndCoinName(user,WalletType.FIAT,"INR");;
+      	    				Integer bal=wallet.getBalance()-b.getGrossAmount();
+      	    				System.out.println(bal);
+      	    				wallet.setBalance(bal);
+      	    				wallet.setShadowbalance(bal);
+      	    				walletRepository.save(wallet);
+      	    				
+      	    				//For CRYPTO
+      	    				
+      	    				
+      	    				String s1=b.getCoinname();
+      	    				//System.out.println(">>>>>>>>>>"+s1);
+       wallet=walletRepository.findByUsersAndCoinTypeAndCoinName(user, WalletType.CRYPTO,b.getCoinname());
+      	    				//System.out.println(">>>>>>>>>>"+wallet1.getId()+wallet1.getCoinName());
+       wallet.setShadowbalance(wallet.getBalance()+b.getCoinQuantity());
+      	    				wallet.setBalance(wallet.getBalance()+b.getCoinQuantity());
+      	    				
+      	    				walletRepository.save(wallet);
+      	    				
+      	    				//For FIAT
+      	    				Users user1=s.getUsersorder();
+      	    				//System.out.println(">>>>>>>>>>>>>"+user.getUserId());
+      	    				wallet=walletRepository.findByUsersAndCoinTypeAndCoinName(user1,WalletType.FIAT,"INR");;
+      	    				Integer bal1=wallet.getBalance()+s.getGrossAmount();
+      	    				System.out.println(bal1);
+      	    				wallet.setBalance(bal1);
+      	    				wallet.setShadowbalance(bal1);
+      	    				walletRepository.save(wallet);
+      	    				
+      	    				//For CRYPTO
+      	    				//Users user3=s.getUsersorder();
+      	    				//System.out.println(user1.getUserId());
+      	    				//String s2=b.getCoinname()
+      	    				//System.out.println(">>>>>>>>>>"+s1);
+      wallet=walletRepository.findByUsersAndCoinTypeAndCoinName(user1, WalletType.CRYPTO,s.getCoinname());
+      	    				//System.out.println(">>>>>>>>>>"+wallet1.getId()+wallet1.getCoinName());
+      wallet.setShadowbalance(wallet.getBalance()-s.getCoinQuantity());
+      	    				wallet.setBalance(wallet.getBalance()-s.getCoinQuantity());
+      	    				
+      	    				walletRepository.save(wallet);
+      	    				
+      	    				Integer inrconversion=((b.getPrice()*b.getCoinQuantity())-s.getPrice()*s.getCoinQuantity());
+      	    				//System.out.println(inrconversion);
+      	    	     		currency.setINRconversion(inrconversion);
+      	    				Integer initial=currency.getInitialSupply()-b.getCoinQuantity();
+      	    				//System.out.println(initial);
+      	    				currency.setInitialSupply(initial);
+      	    				Integer profit=b.getGrossAmount()-b.getNetAmount();
+      	    				//System.out.println(profit);
+      	    				currency.setProfit(profit);
+      	    				currencyRepository.save(currency);
+      	    				
+      	    				Integer sellercoin=s.getCoinQuantity()-b.getCoinQuantity();
+      	    	     		Integer currencycoin=currency.getInitialSupply()-b.getCoinQuantity();
+      	    	     		//System.out.println("//////////"+currencycoin);
+      	    	     		Integer buyercoin=currency.getInitialSupply()-currencycoin;
+      	    	     		//System.out.println(">>>>>>>>>>"+ buyercoin+b.getCoinQuantity());
+      	    	     		b.setCoinQuantity(b.getCoinQuantity()-buyercoin);
+      	    				b.setOrderStatus(OrderStatus.APPROVE);
+      	    				s.setCoinQuantity(sellercoin);
+      	    				s.setOrderStatus(OrderStatus.APPROVE);
+      	    				orderRepository.save(b);
+      	    				orderRepository.save(s);
+
+     		 }
+    			 
     			 
     		 }
     		 
     		 
     	 }else {
          if(b.getCoinQuantity()>s.getCoinQuantity()) {
+        	 System.out.println("2222222222222");
         	 if(b.getCoinname().equals(currency.getCoinName())&& b.getCoinType().equals(currency.getCoinType())) {
     			 UserTransaction userTransaction=new UserTransaction();
      	    	userTransaction.setBuyer_id(b.getOrderid());
      	    	     		userTransaction.setCoinName(b.getCoinname());
      	    	     		userTransaction.setCoinType(b.getCoinType());
      	    	     		userTransaction.setDateCreated(date);
-     	    	     		userTransaction.setDescription("Approveds");
+     	    	     		userTransaction.setDescription("Approved");
      	    	     		userTransaction.setFees(b.getFee());
      	    	     		Integer netAmount1=b.getPrice()*b.getCoinQuantity();
      	    				
@@ -259,27 +398,9 @@ public class OrderService {
      	    	     		userTransaction.setTransactionstatus(OrderStatus.APPROVE);
      	    	     		transactionRepository.save(userTransaction);
      	    	     		
-     	    	     		Integer sellercoin=s.getCoinQuantity()-b.getCoinQuantity();
-     	    	     		Integer currencycoin=currency.getInitialSupply()-b.getCoinQuantity();
-     	    	     		//System.out.println("//////////"+currencycoin);
-     	    	     		Integer buyercoin=currency.getInitialSupply()-currencycoin;
-     	    	     		//System.out.println(">>>>>>>>>>"+ buyercoin+b.getCoinQuantity());
-     	    	     		b.setCoinQuantity(b.getCoinQuantity()-buyercoin);
-     	    				b.setOrderStatus(OrderStatus.APPROVE);
-     	    				s.setCoinQuantity(sellercoin);
-     	    				s.setOrderStatus(OrderStatus.APPROVE);
-     	    				orderRepository.save(b);
      	    	     		
-     	    	     		Integer inrconversion=(currency.getInitialSupply()*currency.getPrice())-(b.getCoinQuantity()*b.getPrice());
-     	    				//System.out.println(inrconversion);
-     	    	     		currency.setINRconversion(inrconversion);
-     	    				Integer initial=currency.getInitialSupply()-b.getCoinQuantity();
-     	    				//System.out.println(initial);
-     	    				currency.setInitialSupply(initial);
-     	    				Integer profit=b.getGrossAmount()-b.getNetAmount();
-     	    				//System.out.println(profit);
-     	    				currency.setProfit(profit);
-     	    				currencyRepository.save(currency);
+     	    	     		
+     	    	     		
      	    				
      	    				
      	    				//For FIAT
@@ -293,27 +414,74 @@ public class OrderService {
      	    				walletRepository.save(wallet);
      	    				
      	    				//For CRYPTO
-     	    				Users user1=b.getUsersorder();
-     	    				System.out.println(user1.getUserId());
-     	    				String s1=b.getCoinname();
+     	    				//Users user1=b.getUsersorder();
+     	    				//System.out.println(user1.getUserId());
+     	    				//String s1=b.getCoinname();
      	    				//System.out.println(">>>>>>>>>>"+s1);
-     Wallet wallet1=walletRepository.findByUsersAndCoinTypeAndCoinName(user1, WalletType.CRYPTO,b.getCoinname());
+      wallet=walletRepository.findByUsersAndCoinTypeAndCoinName(user, WalletType.CRYPTO,b.getCoinname());
      	    				//System.out.println(">>>>>>>>>>"+wallet1.getId()+wallet1.getCoinName());
-     	    				wallet1.setBalance(b.getCoinQuantity());
-     	    				wallet1.setShadowbalance(b.getCoinQuantity());
-     	    				walletRepository.save(wallet1);
+      wallet.setShadowbalance(wallet.getBalance()+b.getCoinQuantity());	    				
+      wallet.setBalance(wallet.getBalance()+b.getCoinQuantity());
+     	    				
+     	    				walletRepository.save(wallet);
+     	    				
+     	    				//For FIAT
+     	    				Users user1=s.getUsersorder();
+     	    				//System.out.println(">>>>>>>>>>>>>"+user.getUserId());
+     	    				wallet=walletRepository.findByUsersAndCoinTypeAndCoinName(user,WalletType.FIAT,"INR");;
+     	    				Integer bal1=wallet.getBalance()+b.getGrossAmount();
+     	    				//System.out.println(bal);
+     	    				wallet.setBalance(bal1);
+     	    				wallet.setShadowbalance(bal1);
+     	    				walletRepository.save(wallet);
+     	    				
+     	    				//For CRYPTO
+     	    				//Users user1=b.getUsersorder();
+     	    				//System.out.println(user1.getUserId());
+     	    				//String s1=b.getCoinname();
+     	    				//System.out.println(">>>>>>>>>>"+s1);
+     wallet=walletRepository.findByUsersAndCoinTypeAndCoinName(user, WalletType.CRYPTO,s.getCoinname());
+     	    				//System.out.println(">>>>>>>>>>"+wallet1.getId()+wallet1.getCoinName());
+     wallet.setShadowbalance(wallet.getBalance()-s.getCoinQuantity());	    				
+     wallet.setBalance(wallet.getBalance()-s.getCoinQuantity());
+     	    				
+     	    				walletRepository.save(wallet);
+     	    				
+     	    				Integer inrconversion=((b.getPrice()*b.getCoinQuantity())-s.getPrice()*s.getCoinQuantity());
+     	    				//System.out.println(inrconversion);
+     	    	     		currency.setINRconversion(inrconversion);
+     	    				Integer initial=currency.getInitialSupply()-b.getCoinQuantity();
+     	    				//System.out.println(initial);
+     	    				currency.setInitialSupply(initial);
+     	    				Integer profit=b.getGrossAmount()-b.getNetAmount();
+     	    				//System.out.println(profit);
+     	    				currency.setProfit(profit);
+     	    				currencyRepository.save(currency);
+     	    				
+     	    				Integer sellercoin=s.getCoinQuantity()-b.getCoinQuantity();
+     	    	     		Integer currencycoin=currency.getInitialSupply()-b.getCoinQuantity();
+     	    	     		//System.out.println("//////////"+currencycoin);
+     	    	     		Integer buyercoin=currency.getInitialSupply()-currencycoin;
+     	    	     		//System.out.println(">>>>>>>>>>"+ buyercoin+b.getCoinQuantity());
+     	    	     		b.setCoinQuantity(b.getCoinQuantity()-buyercoin);
+     	    				b.setOrderStatus(OrderStatus.APPROVE);
+     	    				s.setCoinQuantity(sellercoin);
+     	    				s.setOrderStatus(OrderStatus.APPROVE);
+     	    				orderRepository.save(b);
+     	    				orderRepository.save(s);
 
     		 }
         	 
     			 
     		 }else if(b.getCoinQuantity() == s.getCoinQuantity()) {
+    			 System.out.println("3333333333333333");
     			 if(b.getCoinname().equals(currency.getCoinName())&& b.getCoinType().equals(currency.getCoinType())) {
         			 UserTransaction userTransaction=new UserTransaction();
          	    	userTransaction.setBuyer_id(b.getOrderid());
          	    	     		userTransaction.setCoinName(b.getCoinname());
          	    	     		userTransaction.setCoinType(b.getCoinType());
          	    	     		userTransaction.setDateCreated(date);
-         	    	     		userTransaction.setDescription("Approveds");
+         	    	     		userTransaction.setDescription("Approved");
          	    	     		userTransaction.setFees(b.getFee());
          	    	     		Integer netAmount1=b.getPrice()*b.getCoinQuantity();
          	    				
@@ -323,18 +491,56 @@ public class OrderService {
          	    	     		userTransaction.setTransactionstatus(OrderStatus.APPROVE);
          	    	     		transactionRepository.save(userTransaction);
          	    	     		
-         	    	     		Integer sellercoin=s.getCoinQuantity()-b.getCoinQuantity();
-         	    	     		Integer currencycoin=currency.getInitialSupply()-b.getCoinQuantity();
-         	    	     		//System.out.println("//////////"+currencycoin);
-         	    	     		Integer buyercoin=currency.getInitialSupply()-currencycoin;
-         	    	     		//System.out.println(">>>>>>>>>>"+ buyercoin+b.getCoinQuantity());
-         	    	     		b.setCoinQuantity(b.getCoinQuantity()-buyercoin);
-         	    				b.setOrderStatus(OrderStatus.APPROVE);
-         	    				s.setCoinQuantity(sellercoin);
-         	    				s.setOrderStatus(OrderStatus.APPROVE);
-         	    				orderRepository.save(b);
          	    	     		
-         	    	     		Integer inrconversion=(currency.getInitialSupply()*currency.getPrice())-(b.getCoinQuantity()*b.getPrice());
+         	    	     		
+         	    				
+         	    				
+         	    				//For FIAT
+         	    				Users user=b.getUsersorder();
+         	    				//System.out.println(">>>>>>>>>>>>>"+user.getUserId());
+         	    				Wallet wallet=walletRepository.findByUsersAndCoinTypeAndCoinName(user,WalletType.FIAT,"INR");;
+         	    				Integer bal=wallet.getBalance()-b.getGrossAmount();
+         	    				//System.out.println(bal);
+         	    				wallet.setShadowbalance(bal);
+         	    				wallet.setBalance(bal);
+         	    				
+         	    				walletRepository.save(wallet);
+         	    				
+         	    				//For CRYPTO
+         	    				//Users user1=b.getUsersorder();
+         	    				//System.out.println(user1.getUserId());
+         	    				//String s1=b.getCoinname();
+         	    				//System.out.println(">>>>>>>>>>"+s1);
+          wallet=walletRepository.findByUsersAndCoinTypeAndCoinName(user, WalletType.CRYPTO,b.getCoinname());
+         	    				//System.out.println(">>>>>>>>>>"+wallet1.getId()+wallet1.getCoinName());
+          wallet.setShadowbalance(wallet.getBalance()+b.getCoinQuantity());	    				
+          wallet.setBalance(wallet.getBalance()+b.getCoinQuantity());
+         	    				
+         	    				walletRepository.save(wallet);
+         	    				
+         	    				//For FIAT
+         	    				Users user1=s.getUsersorder();
+         	    				//System.out.println(">>>>>>>>>>>>>"+user.getUserId());
+         	    				wallet=walletRepository.findByUsersAndCoinTypeAndCoinName(user1,WalletType.FIAT,"INR");;
+         	    				Integer bal1=wallet.getBalance()+b.getGrossAmount();
+         	    				//System.out.println(bal);
+         	    				wallet.setBalance(bal1);
+         	    				wallet.setShadowbalance(bal1);
+         	    				walletRepository.save(wallet);
+         	    				
+         	    				//For CRYPTO
+         	    				//Users user1=b.getUsersorder();
+         	    				//System.out.println(user1.getUserId());
+         	    				String s1=b.getCoinname();
+         	    				//System.out.println(">>>>>>>>>>"+s1);
+         wallet=walletRepository.findByUsersAndCoinTypeAndCoinName(user1, WalletType.CRYPTO,s.getCoinname());
+         	    				//System.out.println(">>>>>>>>>>"+wallet1.getId()+wallet1.getCoinName());
+         wallet.setShadowbalance(wallet.getBalance()-s.getCoinQuantity());	    				
+         wallet.setBalance(wallet.getBalance()-s.getCoinQuantity());
+         	    				
+         	    				walletRepository.save(wallet);
+         	    				
+         	    				Integer inrconversion=((b.getPrice()*b.getCoinQuantity())-s.getPrice()*s.getCoinQuantity());
          	    				//System.out.println(inrconversion);
          	    	     		currency.setINRconversion(inrconversion);
          	    				Integer initial=currency.getInitialSupply()-b.getCoinQuantity();
@@ -345,38 +551,32 @@ public class OrderService {
          	    				currency.setProfit(profit);
          	    				currencyRepository.save(currency);
          	    				
+         	    				Integer sellercoin=s.getCoinQuantity()-b.getCoinQuantity();
+         	    	     		Integer currencycoin=currency.getInitialSupply()-b.getCoinQuantity();
+         	    	     		//System.out.println("//////////"+currencycoin);
+         	    	     		Integer buyercoin=currency.getInitialSupply()-currencycoin;
+         	    	     		//System.out.println(">>>>>>>>>>"+ buyercoin+b.getCoinQuantity());
+         	    	     		b.setCoinQuantity(b.getCoinQuantity()-buyercoin);
+         	    				b.setOrderStatus(OrderStatus.APPROVE);
+         	    				s.setCoinQuantity(sellercoin);
+         	    				s.setOrderStatus(OrderStatus.APPROVE);
+         	    				orderRepository.save(b);
+         	    	     		orderRepository.save(s);
+
+
          	    				
-         	    				//For FIAT
-         	    				Users user=b.getUsersorder();
-         	    				//System.out.println(">>>>>>>>>>>>>"+user.getUserId());
-         	    				Wallet wallet=walletRepository.findByUsersAndCoinTypeAndCoinName(user,WalletType.FIAT,"INR");;
-         	    				Integer bal=wallet.getBalance()-b.getGrossAmount();
-         	    				//System.out.println(bal);
-         	    				wallet.setBalance(bal);
-         	    				wallet.setShadowbalance(bal);
-         	    				walletRepository.save(wallet);
-         	    				
-         	    				//For CRYPTO
-         	    				Users user1=b.getUsersorder();
-         	    				//System.out.println(user1.getUserId());
-         	    				String s1=b.getCoinname();
-         	    				//System.out.println(">>>>>>>>>>"+s1);
-         Wallet wallet1=walletRepository.findByUsersAndCoinTypeAndCoinName(user1, WalletType.CRYPTO,b.getCoinname());
-         	    				//System.out.println(">>>>>>>>>>"+wallet1.getId()+wallet1.getCoinName());
-         	    				wallet1.setBalance(b.getCoinQuantity());
-         	    				wallet1.setShadowbalance(b.getCoinQuantity());
-         	    				walletRepository.save(wallet1);
 
         		 }
     			 
     		 }else{
+    			 System.out.println("44444444444444");
     			 if(b.getCoinname().equals(currency.getCoinName())&& b.getCoinType().equals(currency.getCoinType())) {
         			 UserTransaction userTransaction=new UserTransaction();
          	    	userTransaction.setBuyer_id(b.getOrderid());
          	    	     		userTransaction.setCoinName(b.getCoinname());
          	    	     		userTransaction.setCoinType(b.getCoinType());
          	    	     		userTransaction.setDateCreated(date);
-         	    	     		userTransaction.setDescription("Approveds");
+         	    	     		userTransaction.setDescription("Approved");
          	    	     		userTransaction.setFees(b.getFee());
          	    	     		Integer netAmount1=b.getPrice()*b.getCoinQuantity();
          	    				
@@ -386,27 +586,8 @@ public class OrderService {
          	    	     		userTransaction.setTransactionstatus(OrderStatus.APPROVE);
          	    	     		transactionRepository.save(userTransaction);
          	    	     		
-         	    	     		Integer sellercoin=s.getCoinQuantity()-b.getCoinQuantity();
-         	    	     		Integer currencycoin=currency.getInitialSupply()-b.getCoinQuantity();
-         	    	     		//System.out.println("//////////"+currencycoin);
-         	    	     		Integer buyercoin=currency.getInitialSupply()-currencycoin;
-         	    	     		//System.out.println(">>>>>>>>>>"+ buyercoin+b.getCoinQuantity());
-         	    	     		b.setCoinQuantity(b.getCoinQuantity()-buyercoin);
-         	    				b.setOrderStatus(OrderStatus.APPROVE);
-         	    				s.setCoinQuantity(sellercoin);
-         	    				s.setOrderStatus(OrderStatus.APPROVE);
-         	    				orderRepository.save(b);
          	    	     		
-         	    	     		Integer inrconversion=(currency.getInitialSupply()*currency.getPrice())-(b.getCoinQuantity()*b.getPrice());
-         	    				//System.out.println(inrconversion);
-         	    	     		currency.setINRconversion(inrconversion);
-         	    				Integer initial=currency.getInitialSupply()-b.getCoinQuantity();
-         	    				//System.out.println(initial);
-         	    				currency.setInitialSupply(initial);
-         	    				Integer profit=b.getGrossAmount()-b.getNetAmount();
-         	    				//System.out.println(profit);
-         	    				currency.setProfit(profit);
-         	    				currencyRepository.save(currency);
+         	    	     		
          	    				
          	    				
          	    				//For FIAT
@@ -420,15 +601,63 @@ public class OrderService {
          	    				walletRepository.save(wallet);
          	    				
          	    				//For CRYPTO
-         	    				Users user1=b.getUsersorder();
-         	    				System.out.println(user1.getUserId());
-         	    				String s1=b.getCoinname();
+         	    				//Users user1=b.getUsersorder();
+         	    				//System.out.println(user1.getUserId());
+         	    				//String s1=b.getCoinname();
          	    				//System.out.println(">>>>>>>>>>"+s1);
-         Wallet wallet1=walletRepository.findByUsersAndCoinTypeAndCoinName(user1, WalletType.CRYPTO,b.getCoinname());
+         wallet=walletRepository.findByUsersAndCoinTypeAndCoinName(user, WalletType.CRYPTO,b.getCoinname());
          	    				//System.out.println(">>>>>>>>>>"+wallet1.getId()+wallet1.getCoinName());
-         	    				wallet1.setBalance(b.getCoinQuantity());
-         	    				wallet1.setShadowbalance(b.getCoinQuantity());
-         	    				walletRepository.save(wallet1);
+         	    				wallet.setBalance(b.getCoinQuantity());
+         	    				wallet.setShadowbalance(b.getCoinQuantity());
+         	    				walletRepository.save(wallet);
+         	    				
+         	    				
+         	    				
+         	    				//For FIAT
+         	    				Users user1=s.getUsersorder();
+         	    				//System.out.println(">>>>>>>>>>>>>"+user.getUserId());
+         	    				wallet=walletRepository.findByUsersAndCoinTypeAndCoinName(user,WalletType.FIAT,"INR");;
+         	    				Integer bal1=wallet.getBalance()+b.getGrossAmount();
+         	    				//System.out.println(bal);
+         	    				wallet.setBalance(bal1);
+         	    				wallet.setShadowbalance(bal1);
+         	    				walletRepository.save(wallet);
+         	    				
+         	    				//For CRYPTO
+         	    				//Users user1=b.getUsersorder();
+         	    				//System.out.println(user1.getUserId());
+         	    				//String s1=b.getCoinname();
+         	    				//System.out.println(">>>>>>>>>>"+s1);
+         wallet=walletRepository.findByUsersAndCoinTypeAndCoinName(user1, WalletType.CRYPTO,s.getCoinname());
+         	    				//System.out.println(">>>>>>>>>>"+wallet1.getId()+wallet1.getCoinName());
+         wallet.setShadowbalance(wallet.getBalance()-s.getCoinQuantity());	    				
+         wallet.setBalance(wallet.getBalance()-s.getCoinQuantity());
+         	    				
+         	    				walletRepository.save(wallet);
+         	    				
+         	    				Integer inrconversion=((b.getPrice()*b.getCoinQuantity())-s.getPrice()*s.getCoinQuantity());
+         	    				//System.out.println(inrconversion);
+         	    	     		currency.setINRconversion(inrconversion);
+         	    				Integer initial=currency.getInitialSupply()-b.getCoinQuantity();
+         	    				//System.out.println(initial);
+         	    				currency.setInitialSupply(initial);
+         	    				Integer profit=b.getGrossAmount()-b.getNetAmount();
+         	    				//System.out.println(profit);
+         	    				currency.setProfit(profit);
+         	    				currencyRepository.save(currency);
+         	    				
+         	    				Integer sellercoin=s.getCoinQuantity()-b.getCoinQuantity();
+         	    	     		Integer currencycoin=currency.getInitialSupply()-b.getCoinQuantity();
+         	    	     		//System.out.println("//////////"+currencycoin);
+         	    	     		Integer buyercoin=currency.getInitialSupply()-currencycoin;
+         	    	     		//System.out.println(">>>>>>>>>>"+ buyercoin+b.getCoinQuantity());
+         	    	     		b.setCoinQuantity(b.getCoinQuantity()-buyercoin);
+         	    				b.setOrderStatus(OrderStatus.APPROVE);
+         	    				s.setCoinQuantity(sellercoin);
+         	    				s.setOrderStatus(OrderStatus.APPROVE);
+         	    				orderRepository.save(b);
+         	    	     		orderRepository.save(s);
+ 
 
         		 }
     			 
@@ -437,7 +666,7 @@ public class OrderService {
     	 
      else {
     	 //admin transaction
-    	 System.out.println(";;;;;;;;;;;;;;;;;");
+    	 System.out.println("5555555555555");
     	 
     	 
     	 for(UserOrder b:buyerlist) {
@@ -452,7 +681,7 @@ public class OrderService {
      	    	     		userTransaction.setCoinName(b.getCoinname());
      	    	     		userTransaction.setCoinType(b.getCoinType());
      	    	     		userTransaction.setDateCreated(date);
-     	    	     		userTransaction.setDescription("Approveds");
+     	    	     		userTransaction.setDescription("Approved");
      	    	     		userTransaction.setFees(b.getFee());
      	    	     		Integer netAmount1=b.getPrice()*b.getCoinQuantity();
      	    				
@@ -463,30 +692,15 @@ public class OrderService {
      	    	     		transactionRepository.save(userTransaction);
      	    	     		
      	    	     		
-     	    	     		Integer currencycoin=currency.getInitialSupply()-b.getCoinQuantity();
-     	    	     		System.out.println("//////////"+currencycoin);
-     	    	     		Integer buyercoin=currency.getInitialSupply()-currencycoin;
-     	    	     		System.out.println(">>>>>>>>>>"+ buyercoin+b.getCoinQuantity());
-     	    	     		//b.setCoinQuantity(b.getCoinQuantity()-buyercoin);
-     	    				b.setOrderStatus(OrderStatus.APPROVE);
-     	    				orderRepository.save(b);
      	    	     		
-     	    	     		Integer inrconversion=(currency.getInitialSupply()*currency.getPrice())-(b.getCoinQuantity()*b.getPrice());
-     	    				//System.out.println(inrconversion);
-     	    	     		currency.setINRconversion(inrconversion);
-     	    				Integer initial=currency.getInitialSupply()-b.getCoinQuantity();
-     	    				//System.out.println(initial);
-     	    				currency.setInitialSupply(initial);
-     	    				Integer profit=b.getGrossAmount()-b.getNetAmount();
-     	    				//System.out.println(profit);
-     	    				currency.setProfit(profit);
-     	    				currencyRepository.save(currency);
+     	    	     		
+     	    	     		
      	    				
      	    				
      	    				//For FIAT
      	    				Users user=b.getUsersorder();
      	    				System.out.println(">>>>>>>>>>>>>"+user.getUserId());
-     	    				Wallet wallet=walletRepository.findByUsersAndCoinTypeAndCoinName(user,WalletType.FIAT,"INR");;
+          	    				Wallet wallet=walletRepository.findByUsersAndCoinTypeAndCoinName(user,WalletType.FIAT,"INR");;
      	    				Integer bal=wallet.getBalance()-b.getGrossAmount();
      	    				System.out.println(bal);
      	    				wallet.setBalance(bal);
@@ -503,6 +717,26 @@ public class OrderService {
      	    				wallet1.setBalance(b.getCoinQuantity());
      	    				wallet1.setShadowbalance(b.getCoinQuantity());
      	    				walletRepository.save(wallet1);
+     	    				
+     	    				Integer inrconversion=((b.getPrice()*b.getCoinQuantity())-currency.getPrice()*b.getCoinQuantity());
+     	    				//System.out.println(inrconversion);
+     	    	     		currency.setINRconversion(inrconversion);
+     	    				Integer initial=currency.getInitialSupply()-b.getCoinQuantity();
+     	    				//System.out.println(initial);
+     	    				currency.setInitialSupply(initial);
+     	    				Integer profit=b.getGrossAmount()-b.getNetAmount();
+     	    				//System.out.println(profit);
+     	    				currency.setProfit(profit);
+     	    				currencyRepository.save(currency);
+     	    				
+     	    				
+     	    				Integer currencycoin=currency.getInitialSupply()-b.getCoinQuantity();
+     	    	     		System.out.println("//////////"+currencycoin);
+     	    	     		Integer buyercoin=currency.getInitialSupply()-currencycoin;
+     	    	     		System.out.println(">>>>>>>>>>"+ buyercoin+b.getCoinQuantity());
+     	    	     		//b.setCoinQuantity(b.getCoinQuantity()-buyercoin);
+     	    				b.setOrderStatus(OrderStatus.APPROVE);
+     	    				orderRepository.save(b);
 
     		 }
     	 }

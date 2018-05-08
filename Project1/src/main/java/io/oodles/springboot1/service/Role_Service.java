@@ -58,10 +58,12 @@ public class Role_Service {
 		
 		roleRepository.save(role);
 	
-		return "Role Created";}
-		
+		return "Role Created";}else {
+			return "Role can't be created";
 		}
 	
+		
+		}
 		return "Role Already Present";}
 	
 	    
