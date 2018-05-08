@@ -26,8 +26,9 @@ public String addCurrency(@RequestBody CurrencyClass currency)
 {
 	String coin=currency.getCoinName().trim();
 	String sym=currency.getSymbol().trim();
+	
 
-	List<CurrencyClass>getcurrency=currencyRepository.findAll();
+   	List<CurrencyClass>getcurrency=currencyRepository.findAll();
 	   Iterator<CurrencyClass>itr=getcurrency.iterator();
 	   while(itr.hasNext())
 	   {
@@ -62,13 +63,18 @@ public String addCurrency(@RequestBody CurrencyClass currency)
     {
     	return "put Valid coin Name";
     }
-    String s=String.valueOf(currency.getInitialSupply());
-    try{
-    	Integer i=Integer.parseInt(s);
-    }
-    catch(Exception e)
+     if(currency.getPrice()<0)
     {
-    	return "invalid initial supply";
+    	return "Price Can't be negative";
+    }
+    else if(currency.getInitialSupply()<0)
+    {
+    	return "InitialSupply Can't be negative";
+    }
+    
+    else if(currency.getFees()<0)
+    {
+    	return "Fees Can't be negative";
     }
      
 	if(currencyService.addCurrency(currency)!=null)
@@ -82,19 +88,32 @@ public List<CurrencyClass> getAllCurrency()
 	return currencyService.getAllCurrency();
 	
 }
-/*@RequestMapping(value="/getbyuserid",method=RequestMethod.GET)
-public Optional<User> getUserById( Integer id)
-{
- return serviceClass.getByUserId(id);	
-}*/
+
 @RequestMapping(value="/deletecurrency",method=RequestMethod.GET)
 public String deleteCurrcency(@RequestParam("coinId") Integer coinId)
 {
+	CurrencyClass currency=currencyRepository.findByCoinId(coinId);
+	if(currency==null)
+	{
+		return "Invalid Coin Id";
+	}
   return currencyService.deleteCurrency(coinId);
 }
 @RequestMapping(value="/updatecurrency",method=RequestMethod.POST)
 public  String updateCurrency(@RequestBody CurrencyClass currency)
 {
- return  currencyService.updateCurrency(currency);	
+	
+	CurrencyClass currencyid=currencyRepository.findByCoinId(currency.getCoinId());
+	if(currencyid==null)
+	{
+		return "invalid Coin Id";
+	}
+	CurrencyClass currencyname=currencyRepository.findByCoinName(currency.getCoinName());
+	CurrencyClass currencysym=currencyRepository.findBySymbol(currency.getSymbol());
+	if(currencyname!=null||currencysym!=null)
+	{
+		return "currency Coin Name or Symbol Already Exist";
+	}
+  return  currencyService.updateCurrency(currency);	
 }	
 }

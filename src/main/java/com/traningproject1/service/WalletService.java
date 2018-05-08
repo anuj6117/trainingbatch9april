@@ -105,6 +105,10 @@ public class WalletService
   {
 	  boolean flag=false;
 	  UserOrder userorder=userOrderRepository.findByuserorderId(walletapprovaldto.getUserorderId());
+	  if(userorder==null)
+	  {
+		  return "Invalid UserOrder";
+	  }
 	  User user=userorder.getUser();
 	
 	  if(userorder.getOrderType().equals(UserOrderType.DEPOSIT))
@@ -112,10 +116,8 @@ public class WalletService
 		  flag=true;
 	  }
 	  System.out.println("1111111111111111111111111"+userorder.getOrderType());
-	   if(user.getStatus().equals(UserStatus.INACTIVE))
-	   {
-		  return "User is Not Authorized or Inactive";
-	   }
+	  
+	   
 	   if(flag)
 	   {
 	    Transaction transaction=new Transaction();
@@ -143,10 +145,7 @@ public class WalletService
 	  else
 	  {
 		  userorder.setStatus(UserOrderStatus.FAILED);
-	  }
-       
-       
-       
+	  } 
 	  transaction.setStatus(walletapprovaldto.getTransactionStatus());
 	  transaction.setMessage(walletapprovaldto.getMessage());
 	  transaction.setCoinType(CoinType.FIATE);

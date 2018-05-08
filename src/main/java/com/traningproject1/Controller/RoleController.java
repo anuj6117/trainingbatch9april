@@ -2,7 +2,6 @@ package com.traningproject1.Controller;
 
 import java.util.Iterator;
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -45,16 +44,16 @@ private RoleService roleService;
 	{
 		return roleService.getAllRole();
 	}
-	@RequestMapping(value="/getrolebyid",method=RequestMethod.GET)
-	public Optional<Role>getRoleById(Integer id)
-	{
-		return roleService.getRoleById(id);
-	}
-	@RequestMapping(value="/deleterole",method=RequestMethod.GET)
-	public void deleteRoleById(Integer id)
-	{
-		roleService.deleteRoleById(id);
-	}
+//	@RequestMapping(value="/getrolebyid",method=RequestMethod.GET)
+//	public Optional<Role>getRoleById(Integer id)
+//	{
+//		return roleService.getRoleById(id);
+//	}
+//	@RequestMapping(value="/deleterole",method=RequestMethod.GET)
+//	public void deleteRoleById(Integer id)
+//	{
+//		roleService.deleteRoleById(id);
+//	}
 	/*@RequestMapping(value="/assignrole",method=RequestMethod.POST)
 	public Role updateRole(@RequestBody Role role)
 	{

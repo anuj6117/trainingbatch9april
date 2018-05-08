@@ -30,12 +30,16 @@ public class TransactionCalculation {
 	WalletRepository walletRepository;
 	@Autowired
 	TransactionRepository transactionRepository;
-	public void transaction()
+	public String transaction()
 	{
 		
 		List<UserOrder> listbuyer=userOrderRepository.getBuyers("BUYER");
 		
 		List<UserOrder> listseller=userOrderRepository.getSellers("SELLER");
+		if(listbuyer.isEmpty())
+		{
+			return "Buyer Not Exist";
+		}
 
 		if(listseller.isEmpty())
 		{
@@ -682,5 +686,6 @@ public class TransactionCalculation {
 		     }
 	      }
 	   }
+		return "Transaction Action has been Approved";
 	}
  }

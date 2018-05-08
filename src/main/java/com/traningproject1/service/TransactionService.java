@@ -1,19 +1,11 @@
 package com.traningproject1.service;
 
-import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.traningproject1.domain.CurrencyClass;
 import com.traningproject1.domain.Transaction;
-import com.traningproject1.domain.User;
-import com.traningproject1.domain.UserOrder;
-import com.traningproject1.domain.Wallet;
-import com.traningproject1.enumsclass.CoinType;
-import com.traningproject1.enumsclass.TransactionStatus;
 import com.traningproject1.repository.CurrencyRepository;
 import com.traningproject1.repository.TransactionRepository;
 import com.traningproject1.repository.UserOrderRepository;

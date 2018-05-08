@@ -23,14 +23,14 @@ public class CurrencyClass {
 	@NotNull(message="symbol Should Not Accept null")
 	private Integer price;
 	
-	private double fees;
-	private double profit;
-	private double coinInINR;
+	private Double fees;
+	private Double profit;
+	private Double coinInINR;
 	public CurrencyClass()
 	{
-		fees=0;
-		profit=0;
-		coinInINR=0;
+		fees=0.0;
+		profit=0.0;
+		coinInINR=0.0;
 	}
 	public Integer getCoinId() {
 		return coinId;

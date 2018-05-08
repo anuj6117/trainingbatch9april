@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.traningproject1.demo.dto.ClassDTO;
 import com.traningproject1.demo.dto.DepositAmountDTO;
 import com.traningproject1.demo.dto.VerifyUserDTO;
-import com.traningproject1.domain.CurrencyClass;
 import com.traningproject1.domain.User;
 import com.traningproject1.enumsclass.UserStatus;
 import com.traningproject1.repository.UserRepository;
@@ -35,32 +34,40 @@ public class ControllerClass {
 	@Autowired
 	UserRepository userRepository;
 	
-
+   Optional<User>user=null;
 	private static Pattern pswNamePtrn = 
-	        Pattern.compile("((?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%]).{8,32})");
+	        Pattern.compile("((?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&-<>~`+-]).{8,32})");
 	private static final String EMAIL_PATTERN = 
-			"^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@"
+			"^[A-Za-z0-9\\+]+(\\.[A-Za-z0-9]+)*@"
 			+ "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
 
 	     
 @RequestMapping(value="/signup",method=RequestMethod.POST)
 public String addUser(@RequestBody User user)
 {   
-	String usertrim=user.getUserName().trim();
-	if(usertrim.length()!=user.getUserName().length())
-	{
-		return"Please Enter user name without using Leading and Trailing Space";
+	if(!(user.getUserName().matches("^([a-zA-Z0-9]{2,}\\s[a-zA-z0-9]{1,}'?-?[a-zA-Z0-9]{2,}\\s?([a-zA-Z0-9]{1,})?)"))){
+		return "User Name not valid";
 	}
-       if(user.getUserName().equals(" "))
-       {
-    	   return "Name cannot Be Null";
-       }
+	
+//	String usertrim=user.getUserName().trim();
+//	if(usertrim.length()!=user.getUserName().length())
+//	{
+//		return"Please Enter user name without using Leading and Trailing Space";
+//	}
+//       if(user.getUserName().equals(" "))
+//       {
+//    	   return "Name cannot Be Null";
+//       }
        String pass=user.getPassword();
        java.util.regex.Matcher mtch = pswNamePtrn.matcher(pass);
        if(!mtch.matches())
        {
     	   return "Password Must Contains one Uppercase Alphabet,one lower case ,on dgigt, one special symbol";
        }
+       if(!(user.getPassword().matches("^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-<>~`)(_+=}[{]':;/]).{8,}$")))
+		{
+			return "Please enter password with minimum 8 characters. Your password should have atleast 1 Uppercase, 1 Lowercase, 1 Digit & 1 Special character. Space is not allowed";
+		}
        if(user.getUserName().length()>25)
        {
     	   return "Name cannot be greater than 25";
@@ -74,6 +81,10 @@ public String addUser(@RequestBody User user)
        if(country1.length()!=user.getCountry().length())
        {
     	   return "Invalid input of Country Name";
+       }
+       if(country1.length()<2)
+       {
+    	   return "Invalid country Name";
        }
        
        if(user.getPassword().length()<8||user.getPassword().length()>32)
@@ -123,9 +134,22 @@ public List<User> getAllUser()
 
 
 @RequestMapping(value="/getbyuserid",method=RequestMethod.GET)
-public Optional<User> getUserById( Integer userId)
+public Object getUserById( Integer userId)
 {
- return serviceClass.getByUserId(userId);	
+	try
+	{
+		User user=userRepository.findByUserId(userId);
+		if(user==null)
+		{
+	    	throw new Exception("Invalid User");
+		}
+	}
+	catch(Exception e)
+	{
+		return "Invalid User";
+	}	
+	
+ return  serviceClass.getByUserId(userId);
 }
 
 
@@ -139,7 +163,7 @@ public String deleteUser(Integer userId)
 	   if(itr.next().getUserId()==userId)
 	   {
 		   serviceClass.deleteUser(userId);
-		   return "Deletion Of user is successfully";
+		   return "User is Successfully Deleted";
 		   
 	   }
    }
@@ -151,15 +175,18 @@ public String deleteUser(Integer userId)
 public  String updateUserData(@RequestBody User user)
 {
 	serviceClass.updateUserData(user);
- return  "Success";
+ return  "User has been updated successfully";
 		 	
 }
-
 
 @RequestMapping(value="/assignrole",method=RequestMethod.POST)
 public String assignRoleToUser(@RequestBody ClassDTO classDTO)
 {
 	User user=userRepository.findByuserId(classDTO.getUserId());
+	if(user==null)
+	{
+		return "Invalid User id";
+	}
 	if(user.getStatus().equals(UserStatus.INACTIVE))
 	{
 	 return "User is Not verified";
@@ -187,7 +214,7 @@ public String depositAmount(@RequestBody DepositAmountDTO depositamountdto)
 	 return "Amount can't be Zero or less than zero";
  }
   serviceClass.depositAmount(depositamountdto);
-  return "Success";	
+  return "Your Order Has Been  placed successfully Wait for Approval";	
 }
 @RequestMapping(value="/verifyuser",method=RequestMethod.POST)
 public String verifyOTP(@RequestBody VerifyUserDTO verifyuserdto)

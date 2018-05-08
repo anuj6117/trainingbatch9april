@@ -70,6 +70,7 @@ UserOTP userOTP;
 	      if(role!=null)
 	      {
 	    	  roleType.add(role);
+	    	  
 	      }
 	      else
 	      {
@@ -78,10 +79,10 @@ UserOTP userOTP;
 	    	  roleRepository.save(roleObject1);
 	      } 
 	   
-	   
+	      user.setRole(roleType);
 	   Random random=new Random();
-	   otp=random.nextInt(20000);
-	  
+	   otp=random.nextInt(988888);
+	   otp += 1000;
 
 		userRepository.save(user);
 		
@@ -101,7 +102,7 @@ UserOTP userOTP;
 	    user.setStatus(UserStatus.INACTIVE);
 		userRepository.save(user);
 		
-		 smsService.sendSms(otp);
+		 //smsService.sendSms(otp);
 		 mailService.sendMail(otp,user.getEmail());
 		 userOTP=new UserOTP(); 
 		 userOTP.setUserOTPId(user.getUserId());
@@ -131,7 +132,7 @@ public void deleteUser(Integer userId)
 }
 public String updateUserData(User user) {
 	User tempuser=userRepository.findByuserId(user.getUserId());
-	if(user!=null)
+	if(tempuser!=null)
 	{
 	 tempuser.setEmail(user.getEmail());
 	 tempuser.setUserName(user.getUserName());
@@ -139,9 +140,10 @@ public String updateUserData(User user) {
 	 tempuser.setPhoneNumber(user.getPhoneNumber());
 	 tempuser.setCountry(user.getCountry());
 	 userRepository.save(tempuser);
-	 return "success";
+	 return "User Has been updated Successfully";
 	}
-	 return "User not present";
+	else
+		return "Invalid UserId";
 }
 /*public void assignRole(Integer userId,Role roleType)
 {
@@ -217,27 +219,50 @@ public User assignRoleToUser(ClassDTO classDTO)
 	  
 	// userRepository.save(user);
 	 
-	  return "success";
+	  return "Your Order Has Been  placed successfully Wait for Approval";
   }
   public String verifyOTP(VerifyUserDTO verifyuserdto )
   {
-	  UserOTP userotp=userOTPRepository.findByEmailId(verifyuserdto.getEmailId());
-	  User user=userRepository.findByEmail(verifyuserdto.getEmailId());
-	  if(userotp==null)
+	  
+	  String otp=verifyuserdto.getTokenOTP().toString();
+	 
+	  
+	  if(verifyuserdto.getTokenOTP()==null||otp.length()<4)
 	  {
-		  //System.out.println(user.getEmail()+"\t");
-		  return "Invalid User";
+		  return "Invalid OTP";
 		  
 	  }
-		  if(otp.equals(userotp.getTokenOTP()))
-	  {  
-		  user.setStatus(UserStatus.ACTIVE);
-		  UserOTP userdelete=userOTPRepository.findBytokenOTP(userotp.getTokenOTP());
-		  userOTPRepository.delete(userdelete);
-		  userRepository.save(user);
-		  return "Your account verified Successfully";
-	  }
-		  return "Invalid OTP or Email";
+	  try
+	  {
+		  UserOTP userotp=userOTPRepository.findByEmailId(verifyuserdto.getEmailId());
+		  
+		  UserOTP user1=userOTPRepository.findByTokenOTP(verifyuserdto.getTokenOTP());
+		  
+		  User user=userRepository.findByEmail(verifyuserdto.getEmailId());
 	  
+		  if(verifyuserdto.getEmailId().equals(userotp.getEmailId()))
+	  {
+		  if(verifyuserdto.getTokenOTP().equals(userotp.getTokenOTP()))
+	     {  
+		    user.setStatus(UserStatus.ACTIVE);
+		   UserOTP userdelete=userOTPRepository.findBytokenOTP(userotp.getTokenOTP());
+		   userOTPRepository.delete(userdelete);
+		   userRepository.save(user);
+		    return "Your account verified Successfully";
+	     }
+		  else
+		  {
+		   return "invalid OTP";
+	      }
+	  }
+	  else
+	  {	
+		  return "Invalid  Email";
+	  }
+	  }
+	  catch(Exception e)
+	  {
+		  return "Invalid Email";
+	  }
    }
 }

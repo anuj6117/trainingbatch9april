@@ -36,6 +36,6 @@ public List<Transaction>getAllTransaction()
 public String transaction()
 {
 	transactionCalculation.transaction();
- 	return "Success";
+ 	return "Transaction Action has been Approved";
 }
 }

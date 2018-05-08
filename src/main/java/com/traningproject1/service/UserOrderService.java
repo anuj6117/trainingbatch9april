@@ -1,6 +1,7 @@
 package com.traningproject1.service;
 
 import java.util.Date;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -115,4 +116,23 @@ public class UserOrderService {
     
 	       return "Invalid Coin Name";
     }
+    public List<UserOrder> getAllOrder()
+    {
+    	return userorderRepository.findAll();
+    }
+	public UserOrder getOrderByUserId(Integer userId) {
+		User user=userRepository.findByUserId(userId);
+		try
+		{
+			if(user==null)
+			{
+				throw new Exception("Invalid User");
+			}
+		}
+		catch(Exception e)
+		{
+		  	
+		}
+		return userorderRepository.findByuserorderId(user.getUserId());
+	}
 }
