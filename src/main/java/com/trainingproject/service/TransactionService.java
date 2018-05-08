@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,7 +51,8 @@ public class TransactionService {
 				if(sellers.isEmpty()) {
 					for(UserOrder allBuyers:buyers) {
 						currency = currencyRepository.findByCoinName(allBuyers.getCoinName());
-					  if(currency.getInitialSupply() >= allBuyers.getCoinQuantity() && allBuyers.getCoinQuantity() > 0d) {
+					if(currency != null) {
+					  if(currency.getPrice() <= allBuyers.getPrice() && currency.getInitialSupply() >= allBuyers.getCoinQuantity() && allBuyers.getCoinQuantity() > 0d) {
 						System.out.println("sssssssssssssssssssssssssssss (currency >=) ssssssssssssssssssssssssssssss");
 						Transaction transaction = new Transaction();
 						transaction.setCoinType(allBuyers.getCoinType());
@@ -95,7 +97,7 @@ public class TransactionService {
 						allBuyers.setStatus(Status.APPROVED);
 						userOrderRepository.save(allBuyers);	
 					}
-					else if(currency.getInitialSupply() < allBuyers.getCoinQuantity() && currency.getInitialSupply() > 0d) {
+					else if(currency.getPrice() <= allBuyers.getPrice() && currency.getInitialSupply() < allBuyers.getCoinQuantity() && currency.getInitialSupply() > 0d) {
 						System.out.println("tttttttttttttttttttttttttttttttt (currency <) ttttttttttttttttttttttttttttttttttt");
 						Transaction transaction = new Transaction();
 						transaction.setCoinType(allBuyers.getCoinType());
@@ -132,14 +134,19 @@ public class TransactionService {
 						currency.setProfit(currency.getProfit() + ((currency.getInitialSupply() * allBuyers.getPrice() * currency.getFees()) / 100));
 						currency.setCoinInINR(currency.getCoinInINR() + ((currency.getInitialSupply() * allBuyers.getPrice()) - 
 								(currency.getInitialSupply() * currency.getPrice())));
-						currency.setInitialSupply(0d);
-						currencyRepository.save(currency);
+						/*currency.setInitialSupply(0d);
+						currencyRepository.save(currency);*/
 						
 						allBuyers.setCoinQuantity(allBuyers.getCoinQuantity() - currency.getInitialSupply());
+						currency.setInitialSupply(0d);
+						currencyRepository.save(currency);
 						allBuyers.setStatus(Status.PENDING);
 						userOrderRepository.save(allBuyers);
 						
 					}
+				  }
+					else 
+						return "Currency can not be null";
 			   } 
 			}
 		
@@ -224,6 +231,7 @@ public class TransactionService {
 						currencyRepository.save(currency);
 						
 						if(allBuyers.getCoinQuantity() == allSellers.getCoinQuantity()) {
+							allBuyers.setCoinQuantity(0d);
 							allBuyers.setStatus(Status.APPROVED);
 						}
 						  else {
@@ -289,9 +297,9 @@ public class TransactionService {
 								(allBuyers.getCoinQuantity() * allSellers.getPrice())));
 						currencyRepository.save(currency);
 						
+						allSellers.setCoinQuantity(allSellers.getCoinQuantity() - allBuyers.getCoinQuantity());
 						allBuyers.setCoinQuantity(0d);
 						allBuyers.setStatus(Status.APPROVED);
-						allSellers.setCoinQuantity(allSellers.getCoinQuantity() - allBuyers.getCoinQuantity());
 						allSellers.setStatus(Status.PENDING);
 						userOrderRepository.save(allBuyers);
 						userOrderRepository.save(allSellers);
@@ -378,20 +386,28 @@ public class TransactionService {
 							currency.setProfit(currency.getProfit() + ((currency.getInitialSupply() * allBuyers.getPrice() * currency.getFees()) / 100));
 							currency.setCoinInINR(currency.getCoinInINR() + ((currency.getInitialSupply() * allBuyers.getPrice()) - 
 									(currency.getInitialSupply() * currency.getPrice())));
+							/*currency.setInitialSupply(0d);
+							currencyRepository.save(currency);
+							*/
+							allBuyers.setCoinQuantity(allBuyers.getCoinQuantity() - currency.getInitialSupply());
 							currency.setInitialSupply(0d);
 							currencyRepository.save(currency);
-							
-							allBuyers.setCoinQuantity(allBuyers.getCoinQuantity() - currency.getInitialSupply());
 							allBuyers.setStatus(Status.PENDING);
 							userOrderRepository.save(allBuyers);
 						}
 				   }   
 
 				}
+				else 
+					return "Currency can not be null";
 			}	           
 		}           	
 	}	
 						
 			return "Success";
+		}
+		
+		public List<Transaction> getAllTransaction() {
+			return transactionRepository.findAll();
 		}
 }
