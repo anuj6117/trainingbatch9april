@@ -23,10 +23,9 @@ public class WalletController {
 	
 	@RequestMapping(value="/createwallet",method=RequestMethod.POST)
 	public String createWallet(@RequestBody Wallet wallet) {
-		Wallet cwallet=walletService.createWallet(wallet);
-		if(cwallet==null)
-			return "failure";
-		else return "success";
+		
+		return walletService.createWallet(wallet);
+		
 	}
 	
 	@RequestMapping(value="approvewallet",method=RequestMethod.POST)

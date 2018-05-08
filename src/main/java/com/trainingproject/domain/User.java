@@ -51,7 +51,7 @@ public class User {
     
     @OneToMany(mappedBy="user")
     private List<Wallet> userWallet;
-    @JsonIgnore
+    //@JsonIgnore
     @OneToMany(mappedBy="user")
     private List<UserOrder> userOrder;
     
@@ -61,10 +61,17 @@ public class User {
    	}
     
     public User(User user) {
+    	this.userId=user.getUserId();
 		this.userName=user.getUserName();
 		this.password=user.getPassword();
 		this.userId=user.getUserId();
 		this.roleType=user.getRoleType();
+		this.country=user.getCountry();
+		this.phoneNumber=user.getPhoneNumber();
+		this.userWallet=user.getUserWallet();
+		this.userOrder=user.getUserOrder();
+		this.email=user.getEmail();
+		this.createdOn=user.getCreatedOn();
 	}
 
 

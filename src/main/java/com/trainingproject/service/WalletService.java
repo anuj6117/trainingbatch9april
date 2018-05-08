@@ -37,9 +37,13 @@ public class WalletService {
 	TransactionRepository transactionRepository;
 	
 	
-	public Wallet createWallet(Wallet wallet) {
-		Wallet createdWallet=walletRepository.save(wallet);
-		return createdWallet;
+	public String createWallet(Wallet wallet) {
+		
+		Wallet ewall=walletRepository.findBycoinNameAndCoinType(wallet.getCoinName(),wallet.getCoinType());
+		if(ewall!=null)
+			return "wallet already exists";
+		walletRepository.save(wallet);
+		return "success";
 	}
 
 
@@ -50,18 +54,32 @@ public class WalletService {
 		
 		if(userorder.getOrderStatus()==UserOrderStatus.APPROVED)
 			return "already approved";
-		//userorder.setOrderType(OrderType.DEPOSIT);
+		
+		
 		userorder.setOrderStatus(awb.getOrderStatus());
 		userorderRepository.save(userorder);
 		Integer userId=userorder.getUserId();
 		User user =userService.getUserById(userId).get();
 	     List<Wallet>walletlist=user.getUserWallet();
-	     Wallet fiatWallet=walletRepository.findBycoinTypeAndUser(CoinType.FIAT, user);
+	     Wallet fiatWallet=null;
+	    // fiatWallet=walletRepository.findBycoinTypeAndUser(CoinType.FIAT, user);
+	     for(int i=0;i<walletlist.size();i++) {
+	    	 if(walletlist.get(i).getCoinType()==CoinType.FIAT) {
+	    		 
+	    		 if(walletlist.get(i).getCoinName().equals(userorder.getCoinName())) {
+	    			 fiatWallet=walletlist.get(i);
+	    			 break;
+	    		 }
+	    	 }
+	     }
+	    
 	     OrderType orderType=userorder.getOrderType();
 	     
+	     
+	     Transaction transaction=new Transaction();
 	     if(orderType==OrderType.DEPOSIT) {
 	    	 
-	    	  Transaction transaction=new Transaction();
+	    	 
 	 	     transaction.setBuyer(null);
 	 	     transaction.setAmount(userorder.getPrice());
 	 	     transaction.setFee(0);

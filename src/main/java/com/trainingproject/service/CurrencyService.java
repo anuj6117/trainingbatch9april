@@ -68,12 +68,14 @@ public class CurrencyService {
 			return "symbol cannot be null";
 		if(cur.getInitialSupply()==0)
 			return "initial supply cannot be null";
+		if(cur.getFee()==0)
+			return "fee cannot be null";
 		if(cur.getPrice()==0)
 			return "price cannot be null";
-		if(currencyRepository.findBycoinName(cur.getCoinName())!=null)
-			return "coin name already exists!";
-		if(currencyRepository.findBysymbol(cur.getSymbol())!=null)
-			return "symbol already exists!";
+//		if(currencyRepository.findBycoinName(cur.getCoinName())!=null)
+//			return "coin name already exists!";
+//		if(currencyRepository.findBysymbol(cur.getSymbol())!=null)
+//			return "symbol already exists!";
 		
 		Pattern p = Pattern.compile("^[a-zA-Z]{1,}$", Pattern.CASE_INSENSITIVE);
 		Matcher m = p.matcher(cur.getCoinName());
@@ -85,7 +87,7 @@ public class CurrencyService {
 		 Currency currency=getCurrencyById(cur.getCoinId()).get();
 		 if(currency==null)
 			 return "currency not found";
-		  currency.setInitialSupply(currency.getInitialSupply()+cur.getInitialSupply());
+		  currency.setInitialSupply(cur.getInitialSupply());
 		  currency.setFee(cur.getFee());
 		  currency.setSymbol(cur.getSymbol());
 		  currency.setCoinName(cur.getCoinName());
@@ -93,7 +95,7 @@ public class CurrencyService {
 		  currency.setPrice(cur.getPrice());
 		  currency.setCoinInINR(cur.getCoinInINR());
 		 currencyRepository.save(currency);
-		 return "your coin has been updated successfully";
+		 return "currency has been updated successfully";
 		}
 		else return "invalid coin type";
 		
@@ -103,7 +105,7 @@ public class CurrencyService {
 		
 		Currency coin=currencyRepository.findById(coinId).get();
 		if(coin==null)
-			return "no currency to delete";
+			return "currency do not exist";
 		currencyRepository.deleteById(coinId);
 		return "success";
 	}

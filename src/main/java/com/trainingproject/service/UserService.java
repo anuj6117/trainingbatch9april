@@ -1,5 +1,7 @@
 package com.trainingproject.service;
 
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.forwardedUrl;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -56,19 +58,25 @@ public class UserService {
 	
 	public String createUser(User user) {
 		
+		String name=user.getUserName();
 		Pattern p = Pattern.compile("^[a-zA-Z0-9._-]{3,}$", Pattern.CASE_INSENSITIVE);
-		Matcher m = p.matcher(user.getUserName());
+		Matcher m = p.matcher(name);
 		
 		 if(!m.find())
 			 return "invalid username";
-		if(user.getUserName().charAt(0)==' ')
+		if(name.charAt(0)==' ')
 			return "your name canot have spaces";
 		
-		if(user.getUserName().charAt(0)==' ')
-			return "your name canot have spaces";
-		
-	     if(user.getUserName().charAt(user.getUserName().length()-1)==' ')
+	     if(name.charAt(name.length()-1)==' ')
 	    	 return "your name cannot have space";
+	     int i=0;
+	    for(i=0;i<name.length();i++) {
+	    	if(name.charAt(i)>=65&&name.charAt(i)<=90) {
+	    		break;
+	    	}
+	    }
+	     if(i==name.length())
+	    	 return "name should contain at least one uppercase";
 	     
 	     p = Pattern.compile("(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#/|()~`!$%^&+=])(?=\\S+$).{8,}$");
 		 m = p.matcher(user.getPassword());
@@ -123,7 +131,7 @@ public class UserService {
 	      if(matcher.matches())
 	      {
 	      
-	    	  userRepository.save(user);
+	  	  userRepository.save(user);
 		
 		List<Wallet> walletSet=new ArrayList<Wallet>();
 		Wallet wallet=new Wallet();
@@ -148,6 +156,7 @@ public class UserService {
 		otp= smsOTP.sendSMS();
 		smsOTP.sendMail(user.getEmail());
 	  SignUpOTP otpobj=new SignUpOTP();
+	  otpobj.setUserId(userRepository.findByEmail(user.getEmail()).getUserId());
 	  otpobj.setDate(new Date());
 	  otpobj.setEmail(user.getEmail());
 	  otpobj.setTokenOTP(otp);
@@ -194,6 +203,7 @@ public class UserService {
 
 	public String update(User user) {
 	
+		
 		if(user.getUserId()==null)
 			return "user id cannot be null";
 		if(user.getUserName()==null)
@@ -208,6 +218,8 @@ public class UserService {
 		if(!userRepository.existsById(user.getUserId()))
 			return "this user do not exist";
 		
+		String name=user.getUserName();
+		
 		User cuser=userRepository.findById(user.getUserId()).get();
 		
 		if(cuser.getStatus()==null)
@@ -217,9 +229,20 @@ public class UserService {
 			return "user is inactive";
 		
 		Pattern p = Pattern.compile("^[a-zA-Z0-9._-]{3,}$", Pattern.CASE_INSENSITIVE);
-		Matcher m = p.matcher(user.getUserName());
+		Matcher m = p.matcher(name);
 	     if(m.find())
 	    	 return "your name cannot have a special character";
+	     
+	     int i=0;
+		    for(i=0;i<name.length();i++) {
+		    	if(name.charAt(i)>=65&&name.charAt(i)<=90) {
+		    		break;
+		    	}
+		    }
+		     if(i==name.length())
+		    	 return "name should contain at least one uppercase";
+		     
+		     
 	     
 	     m = p.matcher(user.getPassword());
 	     if(!m.find())
@@ -328,6 +351,9 @@ public class UserService {
 		if(awb.getCoinName().length()==0)
 			return "coin name cannot be empty";
 		
+		Wallet ewall=walletRepository.findBycoinNameAndCoinType(awb.getCoinName(),awb.getCoinType());
+		if(ewall!=null)
+			return "wallet already exists";
 		
 		Wallet cwallet=new Wallet();
 		cwallet.setCoinType(awb.getCoinType());
@@ -519,6 +545,8 @@ public class UserService {
 			return "Invalid OTP";
 		}
 		else {
+			System.out.println(user.getEmail()+",,,,,,,,,,,,,,,,,,,,,,,,,user,,,,,,,,,,,,,,,,,,");
+			System.out.println(userOTP.getEmail()+",,,,,,,,,,,,,,,,,,,,,,,,userotp,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,");
 			if(userOTP.getEmail().equals(user.getEmail())) {
 				
 				signupOTPRepository.delete(userOTP);
