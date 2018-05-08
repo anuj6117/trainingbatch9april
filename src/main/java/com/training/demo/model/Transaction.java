@@ -23,11 +23,15 @@ public class Transaction {
 	private Integer transactionId;	
 	
 	private Double coinQuantity;
+	
 	@Enumerated(EnumType.STRING)
 	private WalletType coinType;
+	
 	private String coinName;
+	
 	@Enumerated(EnumType.STRING)
 	private OrderStatus transactionStatus;
+	
 	private Double fees;
 	private Double netAmount;
 	private Double grossAmount;

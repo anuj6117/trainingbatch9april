@@ -55,19 +55,24 @@ public class OrderService {
 	public String approveOrder(OrderApprovalDto orderApprovalDto)
 	{   
 		OrderTable orderTable;
-		try
-		{
-			orderTable = orderRepository.findOneByOrderId(orderApprovalDto.getOrderId());
-		}
-		catch(Exception e) {
-			return "invalid order id.";
-		}
-		
+			
+			if((orderTable = orderRepository.findOneByOrderId(orderApprovalDto.getOrderId()))==null){
+				return "Invalid Order Id.";
+			}
+			if(!(orderTable.getUser().getUserId() == orderApprovalDto.getUserId())) {
+				return "Invalid User Id.";
+			}
+			
+			if(!(orderApprovalDto.getStatus().equalsIgnoreCase("APPROVED") || orderApprovalDto.getStatus().equalsIgnoreCase("FAILED") || orderApprovalDto.getStatus().equalsIgnoreCase("REJECTED"))) { 
+				return "Invalid Order Status.";
+			}
+			
 		boolean currencyFlag = false;
 		List<CoinManagement> currencyList = coinRepository.findAll();
 		System.out.println("curency listtttttttttttttt "+currencyList);
 		if(currencyList != null) {
 			Iterator<CoinManagement> currencyIterator = currencyList.iterator();
+			
 			while(currencyIterator.hasNext())
 			{
 				System.out.println("in currency whileeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee");
@@ -125,7 +130,7 @@ public class OrderService {
 								transaction.setBuyerId(orderTable.getUser().getUserId());
 								transaction.setTransactionId(orderTable.getOrderId());
 								System.out.println("11111111111111111111111111111111111bbbbbbbb");
-								transaction.setTransactionStatus(orderApprovalDto.getStatus());
+								transaction.setTransactionStatus(OrderStatus.valueOf(orderApprovalDto.getStatus().toUpperCase()));
 								System.out.println("11111111111111111111111111111111111ccccccccccc");
 								transaction.setCoinName(orderTable.getCoinName());
 								System.out.println("11111111111111111111111111111111111dddddddd");
@@ -196,7 +201,9 @@ public class OrderService {
 				while(iterator.hasNext()) {
 				 tempWallet = iterator.next();
 
-					if(tempWallet.getCoinType().equals(WalletType.CRYPTO.toString()) && tempWallet.getCoinName().equals(sellBuyTransactionDto.getCoinName())) 
+					if(tempWallet.getCoinType().equals(WalletType.CRYPTO.toString()) 
+							&& 
+							tempWallet.getCoinName().equals(sellBuyTransactionDto.getCoinName())) 
 					{
 						flag  = true;
 					}
@@ -228,10 +235,15 @@ public class OrderService {
 			}
 			Double fees = coinManagement.getFees();
 			Double price = sellBuyTransactionDto.getPrice();
+			System.out.println(price+" = price");
 			Double quantity = sellBuyTransactionDto.getCoinQuantity();
-			Double netAmount = quantity * price;
-			fees = (netAmount * fees/100);
-			Double grossAmount = netAmount + fees;
+			System.out.println(quantity+" = quantity");
+			Double netAmount = (quantity * price);
+			System.out.println(netAmount+" = netAmount");
+			fees = (netAmount * (fees/100));
+			System.out.println(fees+" = fees");
+			Double grossAmount = (netAmount + fees);
+			System.out.println(grossAmount+" = GrossAmount");
 			System.out.println("2222222222222222222222222222222222222222222"+shadowBalance);
 			if(shadowBalance >= grossAmount) 
 			{
@@ -248,13 +260,15 @@ public class OrderService {
 				tempOrderTable.setGrossAmount(grossAmount);	
 				tempOrderTable.setOrderCreatedOn(new Date());
 				orderRepository.save(tempOrderTable);
-				shadowBalance = shadowBalance - grossAmount;
+				shadowBalance = (shadowBalance - grossAmount);
+				System.out.println(shadowBalance);
 				tempWallet.setShadowBalance(shadowBalance);
 				walletRepository.save(tempWallet);
 				
 				while(iterator.hasNext()) {
 					 tempWallet = iterator.next();
-						if(tempWallet.getCoinType().equals(WalletType.CRYPTO.toString()) && tempWallet.getCoinName().equals(sellBuyTransactionDto.getCoinName()))
+						if(tempWallet.getCoinType().equals(WalletType.CRYPTO.toString()) 
+								&& tempWallet.getCoinName().equals(sellBuyTransactionDto.getCoinName()))
 						{
 							shadowBalance = tempWallet.getShadowBalance();
 							System.out.println("11111111111111111111111111111111111"+shadowBalance);

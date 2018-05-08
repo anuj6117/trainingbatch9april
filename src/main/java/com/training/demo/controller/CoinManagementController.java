@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.training.demo.model.CoinManagement;
+import com.training.demo.repository.CoinManagementRepository;
 import com.training.demo.service.CoinManagementService;
 
 @RestController
@@ -18,17 +19,19 @@ public class CoinManagementController {
 	@Autowired
 	private CoinManagementService coinManagementService;
 	
+	@Autowired
+	private CoinManagementRepository coinRepository;
+	
 	@RequestMapping(value="/addcurrency", method=RequestMethod.POST)
 	public String addCoin(@RequestBody CoinManagement coinManagement)
 	{	
 			return coinManagementService.addAllCoin(coinManagement);	
 	}
 	
-	@RequestMapping(value="getallcurrency", method=RequestMethod.GET)
-	public List<CoinManagement> getAllCurrency()
+	@RequestMapping(value="/getallcurrency", method=RequestMethod.GET)
+	public Object getAllCurrency()
 	{
-		List<CoinManagement> list=coinManagementService.getCurrencies();
-		return list;
+		return  coinManagementService.getCurrencies();
 	}
 	
 	@RequestMapping(value="/updatecurrency", method=RequestMethod.POST)
@@ -42,4 +45,14 @@ public class CoinManagementController {
 	{
 			return coinManagementService.delete(coinId);	
 	}
+	
+	@RequestMapping(value="/getcurrencybyid", method=RequestMethod.GET)
+	public Object getCurrencyById(@RequestParam("coinId") Integer coinId)
+	{
+		CoinManagement coinManagement;
+		if((coinManagement = coinRepository.findOneByCoinId(coinId)) == null) {
+			return "invalid coin id.";
+		}
+		return coinManagement;
+	}	
 }

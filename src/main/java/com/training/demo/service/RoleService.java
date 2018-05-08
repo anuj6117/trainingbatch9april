@@ -21,6 +21,7 @@ public class RoleService{
 	{
 		String roleName = roleArg.getRoleType();
 		List<Role> roles = roleRepository.findAll();
+		
 		for(Role r : roles)
 		{
 			if(r.getRoleType().equalsIgnoreCase(roleArg.getRoleType())) 
@@ -54,21 +55,26 @@ public class RoleService{
 		
 	}
 
-	public String deleteRole(Integer roleId)
+	public String deleteRoleById(Integer roleId)
 	{
-		try {
-		Role tempRole = roleRepository.findByRoleId(roleId);
-		roleRepository.delete(tempRole);
-		return "Role is successfully added.";
+		Role tempRole ;
+		if((tempRole = roleRepository.findByRoleId(roleId))!= null) {
+			roleRepository.delete(tempRole);
+			return "Role Is Successfully Added.";
 		}
-		catch(Exception e)
+		else
 		{
-			return "roleId does not exist.";
+			return "Role Id Does Not Exist.";	
 		}
+		
 	}
 
-	public List<Role> getAllRole() {
+	public Object getAllRole() {
 		List<Role> tempRole = roleRepository.findAll();
+		if(tempRole == null)
+		{
+			return "There is no any roles available.";
+		}
 		return tempRole;
 	}
 	public Role getAllRole(Integer roleId) {

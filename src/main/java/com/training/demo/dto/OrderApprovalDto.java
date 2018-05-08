@@ -1,11 +1,9 @@
 package com.training.demo.dto;
 
-import com.training.demo.enums.OrderStatus;
-
 public class OrderApprovalDto {
 
 	private Integer orderId;
-	private OrderStatus status;
+	private String status;
 	private Integer userId;
 	private String description;
 	
@@ -13,7 +11,7 @@ public class OrderApprovalDto {
 		super();
 	}
 	
-	public OrderApprovalDto(Integer orderId, OrderStatus status, Integer userId, String description) {
+	public OrderApprovalDto(Integer orderId, String status, Integer userId, String description) {
 		super();
 		this.orderId = orderId;
 		this.status = status;
@@ -27,10 +25,10 @@ public class OrderApprovalDto {
 	public void setOrderId(Integer orderId) {
 		this.orderId = orderId;
 	}
-	public OrderStatus getStatus() {
+	public String getStatus() {
 		return status;
 	}
-	public void setStatus(OrderStatus status) {
+	public void setStatus(String status) {
 		this.status = status;
 	}
 	public Integer getUserId() {

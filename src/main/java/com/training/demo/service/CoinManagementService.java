@@ -1,13 +1,8 @@
 package com.training.demo.service;
 
-import java.util.Iterator;
 import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import com.training.demo.enums.WalletType;
 import com.training.demo.model.CoinManagement;
 import com.training.demo.repository.CoinManagementRepository;
@@ -30,6 +25,15 @@ public class CoinManagementService {
 			{
 				return  "Coin Name Can Not Be Null.";
 			}
+
+			if(!(coinManagementRepository.findByCoinName(coinName) == null)) 
+			{
+				return "Already Existing Coin Name.";
+			}
+		
+			if(!(coinName.matches("^[a-zA-Z]{2,}$"))){
+				return "Coin Name Can Not Be Numeric.";
+			}
 			
 	//SYMBOL VALIDATION
 			if(symbol.equals("") || symbol.isEmpty() || symbol == null || symbol.trim().length() == 0)
@@ -37,10 +41,6 @@ public class CoinManagementService {
 				return  "Symbol Can Not Be Null.";
 			}
 
-			if(!(coinManagementRepository.findByCoinName(coinName) == null)) 
-			{
-				return "Already Existing Coin Name.";
-			}
 	
 			if(!(coinManagementRepository.findBySymbol(symbol)==null))
 			{
@@ -68,18 +68,14 @@ public class CoinManagementService {
 			}			
 			
 	//FEES VALIDATION		
-			if(fees == null || fees == 0)
+			if(fees == null)
 			{
-				return  "Fees Can Not Be Null or Zero.";
+				return  "Fees Can Not Be Null.";
 			}
 			if(fees<0)
 			{
 				return "Fees Can Not Be Negative.";
 			}			
-			
-			if(!(coinName.matches("^[a-zA-Z]{2,}$"))){
-				return "Coin Name Can Not Be Numeric.";
-			}
 			
 				coinManagement.setCoinType(WalletType.CRYPTO);
 				coinManagement.setProfit(0.0);
@@ -89,8 +85,13 @@ public class CoinManagementService {
 			
 	}
 
-	public List<CoinManagement> getCurrencies() {
-		return coinManagementRepository.findAll();
+	public Object getCurrencies() {
+		List l = coinManagementRepository.findAll();
+		if(l == null)
+		{
+			return "There are no any currencies available for now.";
+		}
+		return l;
 	}
 
 	public String update(CoinManagement coinManagement) {
@@ -107,16 +108,20 @@ public class CoinManagementService {
 		{
 			return  "Coin Name Can Not Be Null.";
 		}
+
+		if(!(coinManagementRepository.findByCoinName(coinName) == null)) 
+		{
+			return "Already Existing Coin Name.";
+		}
+
+		if(!(coinName.matches("^[a-zA-Z]{2,}$"))){
+			return "Coin Name Can Not Be Numeric.";
+		}
 		
 //SYMBOL VALIDATION
 		if(symbol.equals("") || symbol.isEmpty() || symbol == null || symbol.trim().length() == 0)
 		{
 			return  "Symbol Can Not Be Null.";
-		}
-
-		if(!(coinManagementRepository.findByCoinName(coinName) == null)) 
-		{
-			return "Already Existing Coin Name.";
 		}
 
 		if(!(coinManagementRepository.findBySymbol(symbol)==null))
@@ -145,19 +150,16 @@ public class CoinManagementService {
 		}
 		
 //FEES VALIDATION		
-		if(fees == null || fees == 0)
+		if(fees == null)
 		{
-			return  "Fees Can Not Be Null or Zero.";
+			return  "Fees Can Not Be Null";
 		}
 		if(fees<0)
 		{
 			return "Fees Can Not Be Negative.";
 		}			
 
-		if(!(coinName.matches("^[a-zA-Z]{2,}$"))){
-			return "Coin Name Can Not Be Numeric.";
-		}
-		
+
 		if(!(coinManagementRepository.findOneByCoinId(coinManagement.getCoinId()) == null))
 		{
 			coinManagementData = coinManagementRepository.findOneByCoinId(coinManagement.getCoinId());
@@ -185,7 +187,6 @@ public class CoinManagementService {
 			}
 			catch(Exception e)
 			{
-				System.out.println("Exception :::::::::::: "+e);
 				return "invalid coin id";
 			}	
 	}

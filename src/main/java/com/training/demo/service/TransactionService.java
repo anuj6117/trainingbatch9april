@@ -119,7 +119,7 @@ public class TransactionService {
 				{
 					sellerOrder = sellerIterator.next();
 					
-					if((sellerOrder.getPrice() <= coinManagement.getPrice()) && sellerOrder.getPrice() <= buyerOrder.getPrice())
+					if(sellerOrder.getPrice() <= coinManagement.getPrice() && sellerOrder.getPrice() <= buyerOrder.getPrice() && buyerOrder.getUser().getUserId() != sellerOrder.getUser().getUserId() && buyerOrder.getOrderStatus().equals(OrderStatus.PENDING))
 					{
 						if(sellerOrder.getCoinQuantity() == buyerOrder.getCoinQuantity())
 						{
@@ -242,7 +242,8 @@ public class TransactionService {
 					}
 				}
 			}
-
+			if(buyerOrder.getOrderStatus().equals(OrderStatus.PENDING)) 
+			{
 				if(coinManagement.getInitialSupply() == buyerOrder.getCoinQuantity() && buyerOrder.getPrice() >= coinManagement.getPrice())
 				{									
 					Double initSupply = coinManagement.getInitialSupply();
@@ -341,6 +342,7 @@ public class TransactionService {
 				}
 				
 			}
+		}
 		return "Didn't find any matching transactions.";
 	}
 	
@@ -381,7 +383,6 @@ public class TransactionService {
 			transaction.setTransactionStatus(buyerOrder.getOrderStatus());
 			transactionRepository.save(transaction);	
 	}
-
 	
 		public void createSellerTransaction(OrderTable buyerOrder, OrderTable sellerOrder,String buyerWalletType) 
 		{
@@ -400,8 +401,6 @@ public class TransactionService {
 			transaction.setTransactionStatus(buyerOrder.getOrderStatus());
 			transactionRepository.save(transaction);		
 		}	
-		
-
 		
 		public List<Transaction> getAllTransactions(){
 			List<Transaction> transactions = transactionRepository.findAll();

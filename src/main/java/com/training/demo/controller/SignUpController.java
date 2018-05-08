@@ -52,7 +52,7 @@ public class SignUpController
 		
 	 }
 	 @RequestMapping(value="/getallusers", method=RequestMethod.GET)
-	 public List<User> getAll()
+	 public Object getAllUsers()
 	 {
 			return signUpService.getAllUsers();
 	  }
@@ -64,15 +64,10 @@ public class SignUpController
 	  }
 
 	 @RequestMapping(value = "/getbyuserid", method = RequestMethod.GET)
-	 public Optional<User> getUserById(@RequestParam("userId") Integer userId) 
+	 public Object getUserById(@RequestParam("userId") Integer userId) 
 	 {
-			Optional<User> obj = null;
-			try {
-				obj = signUpService.getUserById(userId);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-			return obj;
+				return signUpService.getUserById(userId);
+			
 	  }
 
 	 @RequestMapping(value="/deleteuser", method=RequestMethod.GET)
