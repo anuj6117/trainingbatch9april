@@ -6,6 +6,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import com.training.demo.enums.WalletType;
+
 @Entity
 @Table(name="coinManagement")
 public class CoinManagement {
@@ -14,9 +16,10 @@ public class CoinManagement {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Integer coinId;
 	private String coinName;
+	private WalletType coinType;
 	private String symbol;
 	private Double initialSupply;
-	private Double exchangeRate;
+	//private Double exchangeRate;
 	private Double price;
 	private Double fees;
 	private Double profit;
@@ -26,23 +29,18 @@ public class CoinManagement {
 		super();
 	}
 	
-
-
-	public CoinManagement(Integer coinId, String coinName, String symbol, Double initialSupply, Double exchangeRate,
-			Double price, Double fees, Double profit, Double coinInINR) {
+	public CoinManagement(Integer coinId, String coinName, String symbol, Double initialSupply, Double price, Double fees, Double profit, Double coinInINR, String coinType) {
 		super();
 		this.coinId = coinId;
 		this.coinName = coinName;
 		this.symbol = symbol;
 		this.initialSupply = initialSupply;
-		this.setExchangeRate(exchangeRate);
 		this.price = price;
 		this.fees = fees;
 		this.profit = profit;
 		this.coinInINR = coinInINR;
+		this.coinType = WalletType.valueOf(coinType);
 	}
-
-
 
 	public Double getFees() {
 		return fees;
@@ -108,12 +106,12 @@ public class CoinManagement {
 		this.profit = profit;
 	}
 
-	public Double getExchangeRate() {
-		return exchangeRate;
+	public WalletType getCoinType() {
+		return coinType;
 	}
 
-	public void setExchangeRate(Double exchangeRate) {
-		this.exchangeRate = exchangeRate;
+	public void setCoinType(WalletType coinType) {
+		this.coinType = coinType;
 	}
 
 }

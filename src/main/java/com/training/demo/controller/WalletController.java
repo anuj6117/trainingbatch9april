@@ -1,7 +1,5 @@
 package com.training.demo.controller;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -10,7 +8,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.training.demo.dto.OrderDto;
 import com.training.demo.dto.WalletDto;
-import com.training.demo.model.OrderTable;
 import com.training.demo.service.WalletService;
 
 @RestController
@@ -23,7 +20,7 @@ public class WalletController {
 	public String addWallet(@RequestBody WalletDto walletDto) {
 		System.out.println("from wallet controller");
 		if (walletDto != null) {
-			System.out.println(walletDto.getCoinName()+"/t"+walletDto.getWalletType()+"/t"+walletDto.getUserId());
+			System.out.println(walletDto.getCoinName()+"/t"+walletDto.getCoinType()+"/t"+walletDto.getUserId());
 			System.out.println("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");;
 			return walletService.addWallet(walletDto);
 		} else {
@@ -45,14 +42,8 @@ public class WalletController {
 	public String toWithdrawAmount(@RequestBody OrderDto orderDto) 
 	{
 		System.out.println(orderDto.getUserId()+"/t"+orderDto.getWalletType()+"/t"+orderDto.getAmount());
-			if(orderDto != null)
-			{
 				return walletService.toWithdrawn(orderDto);
-			}
-			else
-			{
-				throw new NullPointerException("Please provide complete details");
-			}
+
 	}
 	
 	@RequestMapping(value="/walletHistory", method = RequestMethod.GET)

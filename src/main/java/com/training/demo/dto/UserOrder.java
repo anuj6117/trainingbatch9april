@@ -12,7 +12,7 @@ public class UserOrder {
 	private WalletType walletType;
 	private String coinName;
 	private Double price;
-	private Date orderCreatedOn;
+//	private Date orderCreatedOn;
 	private OrderStatus orderStatus;
 	
 	public OrderType getOrderType() {
@@ -39,12 +39,13 @@ public class UserOrder {
 	public void setPrice(Double price) {
 		this.price = price;
 	}
-	public Date getOrderCreatedOn() {
+/*	public Date getOrderCreatedOn() {
 		return orderCreatedOn;
 	}
 	public void setOrderCreatedOn(Date orderCreatedOn) {
 		this.orderCreatedOn = orderCreatedOn;
 	}
+	*/
 	public OrderStatus getOrderStatus() {
 		return orderStatus;
 	}

@@ -8,7 +8,7 @@ import com.training.demo.model.Wallet;
 
 public interface WalletRepository extends JpaRepository<Wallet,Integer>{
 
-	Wallet findByWalletType(WalletType walletType);
-	Wallet findByWalletTypeAndUser(WalletType walletType, User user);
+	Wallet findByCoinType(WalletType coinType);
+	Wallet findByCoinTypeAndUser(WalletType coinType, User user);
 
 }

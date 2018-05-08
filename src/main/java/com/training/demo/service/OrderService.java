@@ -115,7 +115,7 @@ public class OrderService {
 					{
 						System.out.println("11111111111111111111111111111111111444444444444444444444444");
 						wallet = iterator.next();
-						String tempWalletType = wallet.getWalletType();
+						String tempWalletType = wallet.getCoinType();
 						if(tempWalletType.equals("FIAT"))
 						{		
 							System.out.println("11111111111111111111111111111111111555555555555555555");
@@ -196,12 +196,12 @@ public class OrderService {
 				while(iterator.hasNext()) {
 				 tempWallet = iterator.next();
 
-					if(tempWallet.getWalletType().equals(WalletType.CRYPTO.toString()) && tempWallet.getCoinName().equals(sellBuyTransactionDto.getCoinName())) 
+					if(tempWallet.getCoinType().equals(WalletType.CRYPTO.toString()) && tempWallet.getCoinName().equals(sellBuyTransactionDto.getCoinName())) 
 					{
 						flag  = true;
 					}
 				 
-					if(tempWallet.getWalletType().equals(WalletType.FIAT.toString()))
+					if(tempWallet.getCoinType().equals(WalletType.FIAT.toString()))
 					{
 						shadowBalance = tempWallet.getShadowBalance();
 						System.out.println("11111111111111111111111111111111111"+shadowBalance);
@@ -254,7 +254,7 @@ public class OrderService {
 				
 				while(iterator.hasNext()) {
 					 tempWallet = iterator.next();
-						if(tempWallet.getWalletType().equals(WalletType.CRYPTO.toString()) && tempWallet.getCoinName().equals(sellBuyTransactionDto.getCoinName()))
+						if(tempWallet.getCoinType().equals(WalletType.CRYPTO.toString()) && tempWallet.getCoinName().equals(sellBuyTransactionDto.getCoinName()))
 						{
 							shadowBalance = tempWallet.getShadowBalance();
 							System.out.println("11111111111111111111111111111111111"+shadowBalance);
@@ -290,7 +290,7 @@ public class OrderService {
 		while(iterator.hasNext())
 		{
 			wallet = iterator.next();
-			String walletType = wallet.getWalletType();
+			String walletType = wallet.getCoinType();
 			String coinName = wallet.getCoinName();
 			if(walletType.equals("CRYPTO") && coinName.equals(sellBuyTransactionDto.getCoinName())) {
 				if(wallet.getBalance()>=sellBuyTransactionDto.getCoinQuantity())
@@ -339,7 +339,7 @@ public class OrderService {
 			return "invalid user id";
 		}
 		
-		Set<OrderTable> allOrders = user.getOrderTable();
+		Set<OrderTable> allOrders = user.getOrders();
 		if(allOrders.isEmpty())
 		{
 			return "No Any Orders For Given User Id.";

@@ -21,14 +21,7 @@ public class CoinManagementController {
 	@RequestMapping(value="/addcurrency", method=RequestMethod.POST)
 	public String addCoin(@RequestBody CoinManagement coinManagement)
 	{	
-		if(coinManagement != null)
-		{
-			return coinManagementService.addAllCoin(coinManagement);
-		}
-		else
-		{
-			throw new NullPointerException("insufficient information.");
-		}
+			return coinManagementService.addAllCoin(coinManagement);	
 	}
 	
 	@RequestMapping(value="getallcurrency", method=RequestMethod.GET)
@@ -41,15 +34,7 @@ public class CoinManagementController {
 	@RequestMapping(value="/updatecurrency", method=RequestMethod.POST)
 	public String updateCurrency(@RequestBody CoinManagement data)
 	{
-		String result=coinManagementService.update(data);
-		if(result != null)
-		{
-			return "Your Coin Has Been Updated Successfully ";
-		}
-		else
-		{
-			throw new NullPointerException("insufficient information");
-		}
+		return  coinManagementService.update(data);
 	}
 	
 	@RequestMapping(value="/deletecurrency", method=RequestMethod.GET)

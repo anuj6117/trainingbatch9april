@@ -4,7 +4,7 @@ public class WalletDto {
 	
 	private Integer userId;
 	
-	private String walletType;
+	private String coinType;
 	
 	private String coinName;
 	
@@ -13,10 +13,10 @@ public class WalletDto {
 	}
 
 	
-	public WalletDto(Integer userId, String walletType, String coinName) {
+	public WalletDto(Integer userId, String coinType, String coinName) {
 		super();
 		this.userId = userId;
-		this.walletType = walletType;
+		this.coinType = coinType;
 		this.coinName = coinName;
 	}
 
@@ -27,11 +27,11 @@ public class WalletDto {
 	public void setUserId(Integer userId) {
 		this.userId = userId;
 	}
-	public String getWalletType() {
-		return walletType;
+	public String getCoinType() {
+		return coinType;
 	}
-	public void setWalletType(String walletType) {
-		this.walletType = walletType;
+	public void setCoinType(String coinType) {
+		this.coinType = coinType;
 	}
 
 	public String getCoinName() {
@@ -40,6 +40,5 @@ public class WalletDto {
 	public void setCoinName(String coinName) {
 		this.coinName = coinName;
 	}
-	
 	
 }

@@ -50,7 +50,7 @@ import com.training.demo.enums.OrderType;
 		private Double coinQuantity;
 		
 		@ManyToOne
-		@JoinColumn(name="fk_user_id", referencedColumnName="userId") 
+		@JoinColumn(name="fk_user_id",  referencedColumnName="userId") 
 		@JsonIgnore
 		private User user;
 

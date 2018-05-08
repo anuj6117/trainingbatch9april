@@ -22,7 +22,6 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.training.demo.enums.UserStatus;
 
 @Entity
@@ -67,9 +66,8 @@ public class User
 	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
 	private Set<Wallet> wallets = new HashSet<Wallet>();
 		
-	@OneToMany(fetch=FetchType.EAGER, cascade = CascadeType.ALL, mappedBy = "user")
-	@JsonIgnore
-	private Set<OrderTable> orderTable = new HashSet<>();
+	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+	private Set<OrderTable> orders = new HashSet<OrderTable>();
 	
 	public User()
 	{	super();
@@ -150,15 +148,15 @@ public class User
 	public void setWallets(Set<Wallet> wallets) {
 		this.wallets= wallets;
 	}
-
-	public Set<OrderTable> getOrderTable() {
-		return orderTable;
+	
+	public Set<OrderTable> getOrders() {
+		return orders;
 	}
 
-	public void setOrderTable(Set<OrderTable> orderTable) {
-		this.orderTable = orderTable;
-	}	
-	
+	public void setOrders(Set<OrderTable> orders) {
+		this.orders = orders;
+	}
+
 	public String toString()
 	{
 				return userId+", \t"+userName+", \t"+email+", \t"+country;

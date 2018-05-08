@@ -40,36 +40,30 @@ public class WalletService {
 	public String addWallet(WalletDto walletDto) {
 		boolean flag = false;
 		User user;
-		System.out.println(walletDto.getCoinName()+", \t"+walletDto.getUserId()+",\t"+walletDto.getWalletType());
+		System.out.println(walletDto.getCoinName()+", \t"+walletDto.getUserId()+",\t"+walletDto.getCoinType());
 		
 		//walletDto.getWalletType().toUpperCase();
 		
-		
-		if(!(walletDto.getWalletType().equalsIgnoreCase(WalletType.CRYPTO.toString())))
+		if((user = userRepository.findByUserId(walletDto.getUserId())) == null)
 		{
-			return "invalid wallet type.";
+			return "Invalid User Id";
+		}
+		
+		if(!(walletDto.getCoinType().equalsIgnoreCase(WalletType.CRYPTO.toString())))
+		{
+			return "Invalid Coin Type.";
 		}	
-		
-		try
-		{
-		user = userRepository.findByUserId(walletDto.getUserId());
-		}
-		catch(Exception e)
-		{
-			return "user does not exist.";
-		}
-		
+			
 		String tempCoinName = walletDto.getCoinName();
 		
 		if(tempCoinName == null || tempCoinName.equals(""))
 		{
-			return "please enter coin name.";
+			return "Please Enter Coin Name.";
 		}
 		
-		boolean tflag = coinRepository.existsByCoinName(tempCoinName);
-			if(!tflag)
+			if(!coinRepository.existsByCoinName(tempCoinName))
 			{
-				return "invalid coin name";
+				return "Invalid Coin Name";
 			}
 			
 		if(user.getUserStatus().equals(UserStatus.ACTIVE))
@@ -79,10 +73,10 @@ public class WalletService {
 		while(walletIterator.hasNext())
 		{
 			Wallet tempwallet = walletIterator.next();
-				System.out.println(tempwallet.getCoinName()+",\t"+tempwallet.getWalletType()+",\t"+tempwallet.getWalletId()+",\t"+tempwallet.getUser());
+				System.out.println(tempwallet.getCoinName()+",\t"+tempwallet.getCoinType()+",\t"+tempwallet.getWalletId()+",\t"+tempwallet.getUser());
 			if(tempwallet.getCoinName() != null)	
 			{
-				if(tempwallet.getWalletType().equals(walletDto.getWalletType()) && (tempwallet.getCoinName().equals(walletDto.getCoinName())))
+				if(tempwallet.getCoinType().equals(walletDto.getCoinType()) && (tempwallet.getCoinName().equals(walletDto.getCoinName())))
 				{
 					System.out.println(tempwallet);
 					flag = true;
@@ -92,7 +86,7 @@ public class WalletService {
 		if(!flag)
 		{		
 			Wallet wallet = new Wallet();
-			wallet.setWalletType(WalletType.valueOf(walletDto.getWalletType()));
+			wallet.setCoinType(WalletType.valueOf(walletDto.getCoinType()));
 			wallet.setUser(user);
 			wallet.setBalance(0.0);
 			wallet.setShadowBalance(0.0);
@@ -155,7 +149,7 @@ public class WalletService {
 		 Iterator<Wallet> itr = wallet.iterator();
 		 while(itr.hasNext()) {
 			Wallet tempWallet = itr.next();
-			 if(tempWallet == walletRepository.findByWalletType(WalletType.valueOf(walletType))) {
+			 if(tempWallet == walletRepository.findByCoinType(WalletType.valueOf(walletType))) {
 				 Double availBalance = tempWallet.getBalance();
 				 
 				 if(amount <= availBalance)

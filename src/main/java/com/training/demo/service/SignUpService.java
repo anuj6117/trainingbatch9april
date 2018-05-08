@@ -1,6 +1,5 @@
 package com.training.demo.service;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
@@ -8,12 +7,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Random;
 import java.util.Set;
-import java.util.TimeZone;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
-
 import com.training.demo.dto.UserRoleDto;
 import com.training.demo.enums.UserStatus;
 import com.training.demo.enums.WalletType;
@@ -51,15 +47,7 @@ public class SignUpService
 		
 
 	public String addUser(User user)
-	{
-	
-	    SimpleDateFormat sd = new SimpleDateFormat(
-	            "yyyy.MM.dd G 'at' HH:mm:ss z");
-	       
-		
-		
-		
-		
+	{		
 		
 		String userName=user.getUserName();
 		System.out.println(userName+"======================================");
@@ -90,12 +78,11 @@ public class SignUpService
 			return "country name can not be null or its length should be more than 2 characters.";
 		}
 		
-//USERNAME VALIDATIONS
-		
-		if(!(userName.matches("^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[-_]).{6,25}$"))){
+
+		if(!(userName.matches("^([a-zA-Z0-9]{2,}\\s[a-zA-z0-9]{1,}'?-?[a-zA-Z0-9]{2,}\\s?([a-zA-Z0-9]{1,})?)"))){
 			return "Maximun charaters allowed for userName field is 6 to 25 and User name can not contain any special character.";
 		}
-		
+
 		
 		if(userName.equals("") || userName.isEmpty() || userName == null || userName.trim().length() == 0)
 		{
@@ -120,8 +107,7 @@ public class SignUpService
 						Random random=new Random();
 						int tokenOTP=random.nextInt(99777)+1432;
 						
-						Date date = new Date();						
-				        user.setDate(date);
+				        user.setDate(new Date());
 				        
 						System.out.println("service hit before if");
 						user.setUserStatus(UserStatus.INACTIVE);
@@ -139,7 +125,7 @@ public class SignUpService
 				
 						///Default Wallet Creation 
 						Wallet wallet  = new Wallet();
-						wallet.setWalletType(WalletType.FIAT);
+						wallet.setCoinType(WalletType.FIAT);
 						wallet.setUser(user);
 						wallet.setBalance(0.0);
 						wallet.setShadowBalance(0.0);
@@ -167,8 +153,7 @@ public class SignUpService
 							otpVerification.setUserId(user.getUserId());
 							otpVerification.setTokenOTP(tokenOTP);
 							otpVerification.setEmail(user.getEmail());
-							date = new Date();
-							otpVerification.setDate(date);
+							otpVerification.setDate(new Date());
 							otpRepository.save(otpVerification);
 							return "Your account has been successfully created. Please, verify it by using OTP.";
 						}
@@ -237,6 +222,7 @@ public class SignUpService
 		l = userRepository.findAll();
 		return l;
 	}
+	
 		public Optional<User> getUserById(Integer userId)
 		{
 			Optional<User> usrid = userRepository.findById(userId);
@@ -246,6 +232,7 @@ public class SignUpService
 				throw new NullPointerException("Id does not exist.");
 			}
 		}
+	
 		public String updateUser(@RequestBody User user) {
 			String userName = user.getUserName();
 			System.out.println(userName+"======================================");
@@ -276,11 +263,9 @@ public class SignUpService
 				return "country name can not be null or its length should be more than 2 characters.";
 			}
 			
-			
-			if(!(userName.matches("^[a-z0-9_-]{6,25}$"))){
+			if(!(userName.matches("^([a-zA-Z0-9]{2,}\\s[a-zA-z0-9]{1,}'?-?[a-zA-Z0-9]{2,}\\s?([a-zA-Z0-9]{1,})?)"))){
 				return "Maximun charaters allowed for userName field is 6 to 25 and User name can not contain any special character.";
 			}
-			
 			
 			if(userName.equals("") || userName.isEmpty() || userName == null || userName.trim().length() == 0)
 			{

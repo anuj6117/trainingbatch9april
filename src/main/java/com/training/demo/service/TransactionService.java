@@ -81,10 +81,10 @@ public class TransactionService {
 			{
 				Wallet wall = walletIterator.next();
 				System.out.println("rrrrrrrrrrrrrrrrrrrr" + wall);
-				if(wall.getWalletType().equals(WalletType.FIAT.toString())) {
+				if(wall.getCoinType().equals(WalletType.FIAT.toString())) {
 					buyerFiatWallet = wall;
 				}
-				if(wall.getWalletType().equals(WalletType.CRYPTO.toString()) && wall.getCoinName().equals(buyerOrder.getCoinName()))
+				if(wall.getCoinType().equals(WalletType.CRYPTO.toString()) && wall.getCoinName().equals(buyerOrder.getCoinName()))
 				{
 					buyerCryptoWallet = wall;
 				}
@@ -102,10 +102,10 @@ public class TransactionService {
 				{
 					Wallet wall = walletIterator.next();
 
-					if(wall.getWalletType().equals(WalletType.FIAT.toString())) {
+					if(wall.getCoinType().equals(WalletType.FIAT.toString())) {
 						sellerFiatWallet = wall;
 					}
-					if(wall.getWalletType().equals(WalletType.CRYPTO.toString()) && wall.getCoinName().equals(buyerOrder.getCoinName()))
+					if(wall.getCoinType().equals(WalletType.CRYPTO.toString()) && wall.getCoinName().equals(buyerOrder.getCoinName()))
 					{
 						sellerCryptoWallet = wall;
 					}
@@ -146,7 +146,7 @@ public class TransactionService {
 							Double fees = (buyerOrder.getGrossAmount() * (coinManagement.getFees()/100));
 							
 							coinManagement.setCoinInINR(buyerOrder.getPrice()*buyerOrder.getCoinQuantity() - sellerOrder.getPrice()*sellerOrder.getCoinQuantity());
-							coinManagement.setExchangeRate(buyerOrder.getPrice());
+							//coinManagement.setExchangeRate(buyerOrder.getPrice());
 							coinManagement.setProfit(fees);
 							
 							buyerOrder.setCoinQuantity(buyerOrder.getCoinQuantity()-sellerOrder.getCoinQuantity());
@@ -154,7 +154,7 @@ public class TransactionService {
 							sellerOrder.setOrderStatus(OrderStatus.COMPLETED);
 							
 							this.sellerBuyerUpdate(sellerFiatWallet, sellerCryptoWallet, buyerFiatWallet, buyerCryptoWallet, coinManagement, buyerOrder, sellerOrder);
-							this.createSellerTransaction(buyerOrder, sellerOrder, buyerCryptoWallet.getWalletType());
+							this.createSellerTransaction(buyerOrder, sellerOrder, buyerCryptoWallet.getCoinType());
 					
 							return "Both buyer and seller Transaction is completed.";
 						}
@@ -183,7 +183,7 @@ public class TransactionService {
 							buyerCryptoWallet.setShadowBalance(buyerCryptoShadowBal+sellerOrder.getCoinQuantity());
 							
 							coinManagement.setCoinInINR(buyerOrder.getPrice()*sellerOrder.getCoinQuantity() - sellerOrder.getPrice()*sellerOrder.getCoinQuantity());
-							coinManagement.setExchangeRate(buyerOrder.getPrice());
+							//coinManagement.setExchangeRate(buyerOrder.getPrice());
 							coinManagement.setProfit(fees);
 							
 							buyerOrder.setCoinQuantity(buyerOrder.getCoinQuantity()-sellerOrder.getCoinQuantity());
@@ -195,7 +195,7 @@ public class TransactionService {
 							sellerOrder.setOrderStatus(OrderStatus.COMPLETED);
 							
 							this.sellerBuyerUpdate(sellerFiatWallet, sellerCryptoWallet, buyerFiatWallet, buyerCryptoWallet, coinManagement, buyerOrder, sellerOrder);
-							this.createSellerTransaction(buyerOrder, sellerOrder, buyerCryptoWallet.getWalletType());
+							this.createSellerTransaction(buyerOrder, sellerOrder, buyerCryptoWallet.getCoinType());
 							
 							return "seller Transaction is pending and buyer completed.";
 						}
@@ -225,7 +225,7 @@ public class TransactionService {
 							buyerCryptoWallet.setShadowBalance(buyerCryptoShadowBal+buyerOrder.getCoinQuantity());
 							
 							coinManagement.setCoinInINR(buyerOrder.getPrice()*buyerOrder.getCoinQuantity() - sellerOrder.getPrice()*buyerOrder.getCoinQuantity());
-							coinManagement.setExchangeRate(buyerOrder.getPrice());
+							//coinManagement.setExchangeRate(buyerOrder.getPrice());
 							coinManagement.setProfit(fees);
 							
 							sellerOrder.setCoinQuantity(sellerOrder.getCoinQuantity()-buyerOrder.getCoinQuantity());
@@ -235,7 +235,7 @@ public class TransactionService {
 							sellerOrder.setOrderStatus(OrderStatus.PENDING);
 							
 							this.sellerBuyerUpdate(sellerFiatWallet, sellerCryptoWallet, buyerFiatWallet, buyerCryptoWallet, coinManagement, buyerOrder, sellerOrder);
-							this.createSellerTransaction(buyerOrder, sellerOrder, buyerCryptoWallet.getWalletType());	
+							this.createSellerTransaction(buyerOrder, sellerOrder, buyerCryptoWallet.getCoinType());	
 						
 							return "buyer Transaction is completed but seller is pending.";
 						}
@@ -260,13 +260,13 @@ public class TransactionService {
 					
 					coinManagement.setInitialSupply(initSupply);
 					coinManagement.setCoinInINR(buyerOrder.getPrice()*buyerOrder.getCoinQuantity() - coinManagement.getPrice()*buyerOrder.getCoinQuantity());
-					coinManagement.setExchangeRate(buyerOrder.getPrice());
+					//coinManagement.setExchangeRate(buyerOrder.getPrice());
 					coinManagement.setProfit(buyerOrder.getFees());
 					
 					buyerOrder.setOrderStatus(OrderStatus.COMPLETED);
 					
 					this.adminBuyerUpdate(buyerFiatWallet, buyerCryptoWallet, coinManagement, buyerOrder);
-					this.createAdminTransaction(buyerOrder, buyerCryptoWallet.getWalletType());
+					this.createAdminTransaction(buyerOrder, buyerCryptoWallet.getCoinType());
 					
 					return "Buyer transaction is completed from coinManagement";
 
@@ -295,11 +295,11 @@ public class TransactionService {
 					coinManagement.setCoinInINR(buyerOrder.getPrice()*initSupply - coinManagement.getPrice()*initSupply);
 							initSupply = 0d;
 					coinManagement.setInitialSupply(initSupply);
-					coinManagement.setExchangeRate(buyerOrder.getPrice());
+					//coinManagement.setExchangeRate(buyerOrder.getPrice());
 					coinManagement.setProfit(buyerOrder.getFees());
 				
 					this.adminBuyerUpdate(buyerFiatWallet, buyerCryptoWallet, coinManagement, buyerOrder);
-					this.createAdminTransaction(buyerOrder, buyerCryptoWallet.getWalletType());	
+					this.createAdminTransaction(buyerOrder, buyerCryptoWallet.getCoinType());	
 
 					return "Buyer transaction is pending due to insufficient coins in transaction";
 				}
@@ -331,11 +331,11 @@ public class TransactionService {
 					coinManagement.setCoinInINR(buyerOrder.getPrice()*buyerOrder.getCoinQuantity() - coinManagement.getPrice()*buyerOrder.getCoinQuantity());
 					initSupply = initSupply - buyerOrder.getCoinQuantity();
 					coinManagement.setInitialSupply(initSupply);
-					coinManagement.setExchangeRate(buyerOrder.getPrice());
+					//coinManagement.setExchangeRate(buyerOrder.getPrice());
 					coinManagement.setProfit(buyerOrder.getFees());
 				
 					this.adminBuyerUpdate(buyerFiatWallet, buyerCryptoWallet, coinManagement, buyerOrder);
-					this.createAdminTransaction(buyerOrder, buyerCryptoWallet.getWalletType());	
+					this.createAdminTransaction(buyerOrder, buyerCryptoWallet.getCoinType());	
 					
 					return "Buyer transaction is completed from coinManagement because it has enough coins.";
 				}

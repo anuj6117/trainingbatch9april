@@ -22,7 +22,7 @@ public class Wallet {
 	private Integer walletId;
 	
 	@Enumerated(EnumType.STRING)
-	private WalletType walletType;
+	private WalletType coinType;
 	
 	private Double balance;
 	private Double shadowBalance;
@@ -34,7 +34,7 @@ public class Wallet {
 	private User user;
 	
 	public String toString() {
-		return walletId+"\t"+balance+"\t"+shadowBalance+"\t"+walletType;
+		return walletId+"\t"+balance+"\t"+shadowBalance+"\t"+coinType;
 	}
 	
 	public Wallet() {
@@ -44,11 +44,10 @@ public class Wallet {
 	}
 	
 
-	public Wallet(Integer walletId, WalletType walletType, Double balance, Double shadowBalance, String coinName,
-			User user) {
+	public Wallet(Integer walletId, WalletType walletType, Double balance, Double shadowBalance, String coinName, User user) {
 		super();
 		this.walletId = walletId;
-		this.walletType = walletType;
+		this.coinType = walletType;
 		this.balance = balance;
 		this.shadowBalance = shadowBalance;
 		this.coinName = coinName;
@@ -63,13 +62,13 @@ public class Wallet {
 		this.walletId = walletId;
 	}
 	
-	public String getWalletType() {
-		return walletType.toString();
+	public String getCoinType() {
+		return coinType.toString();
 	}
 	
 	
-	public void setWalletType(WalletType walletType) {
-		this.walletType = walletType;
+	public void setCoinType(WalletType coinType) {
+		this.coinType = coinType;
 	}
 	
 	public void setBalance(Double balance) {

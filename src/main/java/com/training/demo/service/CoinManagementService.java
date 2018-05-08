@@ -8,6 +8,7 @@ import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.training.demo.enums.WalletType;
 import com.training.demo.model.CoinManagement;
 import com.training.demo.repository.CoinManagementRepository;
 
@@ -18,79 +19,74 @@ public class CoinManagementService {
 	private CoinManagementRepository coinManagementRepository;
 
 	public String addAllCoin(CoinManagement coinManagement) {
-			CoinManagement tempCoinManagement;
 			String coinName = coinManagement.getCoinName();
 			Double price = coinManagement.getPrice();
-			String convertedPrice = Double.toString(price);
 			String symbol = coinManagement.getSymbol();
+			Double initSupply = coinManagement.getInitialSupply();
+			Double fees = coinManagement.getFees();
 			
-			Double initial= coinManagement.getInitialSupply();
-			String initSupply = initial.toString();
-			
-			//COINNAME VALIDATION
+	//COINNAME VALIDATION
 			if(coinName.equals("") || coinName.isEmpty() || coinName == null || coinName.trim().length() == 0)
 			{
 				return  "Coin Name Can Not Be Null.";
 			}
 			
-			//SYMBOL VALIDATION
+	//SYMBOL VALIDATION
 			if(symbol.equals("") || symbol.isEmpty() || symbol == null || symbol.trim().length() == 0)
 			{
 				return  "Symbol Can Not Be Null.";
 			}
-			
-			Set<CoinManagement> allCoins= coinManagementRepository.findAllBySymbol(symbol);
-			Iterator<CoinManagement> coinIterator = allCoins.iterator();
-			while(coinIterator.hasNext())
+
+			if(!(coinManagementRepository.findByCoinName(coinName) == null)) 
 			{
-				if(coinIterator.next().getSymbol().equals(symbol))
-				{
-					return "Symbol Already Exist";
-				}
+				return "Already Existing Coin Name.";
 			}
-			while(coinIterator.hasNext())
+	
+			if(!(coinManagementRepository.findBySymbol(symbol)==null))
 			{
-				if(coinIterator.next().getCoinName().equals(coinName))
-				{
-					return "Coin Name Already Exist";
-				}
-			}			
+				return "Already Existing Symbol Type";
+			}
 			
-			
-			//PRICE VALIDATION
-			if(convertedPrice.equals("") || convertedPrice == null || convertedPrice.isEmpty() || convertedPrice.trim().length() == 0 ||convertedPrice.equals("0"))
+	//PRICE VALIDATION
+			if(price == null || price == 0)
 			{
-				return  "Price Can Not Be Null.";
+				return  "Price Can Not Be Null or Zero.";
 			}
 			if(price<0)
 			{
-				return "Price Can Not Be Negative.";
+				return "Price Can Not Be In Negative.";
 			}
 			
-			//INITIAL SUPPLY VALIDATION
-			if(initSupply.equals("") || initSupply == null || initSupply.isEmpty() || initSupply.trim().length() == 0 ||initSupply.equals("0"))
+	//INITIAL SUPPLY VALIDATION
+			if(initSupply == null || initSupply == 0)
 			{
-				return  "Initial Supply Can Not Be Null.";
+				return  "Initial Supply Can Not Be Null or Zero.";
 			}
-			if(initial<0)
+			if(initSupply<0)
 			{
 				return "Initial Supply Can Not Be Negative.";
 			}			
 			
-			//CREATING COIN MANAGEMENT OBJECT
-			tempCoinManagement = coinManagementRepository.findOneByCoinName(coinManagement.getCoinName());			
-			if(tempCoinManagement == null)
+	//FEES VALIDATION		
+			if(fees == null || fees == 0)
 			{
-				coinManagement.setExchangeRate(0.0);
+				return  "Fees Can Not Be Null or Zero.";
+			}
+			if(fees<0)
+			{
+				return "Fees Can Not Be Negative.";
+			}			
+			
+			if(!(coinName.matches("^[a-zA-Z]{2,}$"))){
+				return "Coin Name Can Not Be Numeric.";
+			}
+			
+				coinManagement.setCoinType(WalletType.CRYPTO);
 				coinManagement.setProfit(0.0);
 				coinManagement.setCoinInINR(0.0);
 				coinManagementRepository.save(coinManagement);
 				return "Your Coin Has Been Added Successfully.";
-			}
-			else
-			{
-				return "Already existing coin name.";
-			}
+			
 	}
 
 	public List<CoinManagement> getCurrencies() {
@@ -98,40 +94,87 @@ public class CoinManagementService {
 	}
 
 	public String update(CoinManagement coinManagement) {
-		CoinManagement coinManagementData=null;		
+		
+		CoinManagement coinManagementData = null;		
 		String coinName = coinManagement.getCoinName();
 		Double price = coinManagement.getPrice();
-		String convertedPrice = Double.toString(price);
+		String symbol = coinManagement.getSymbol();
+		Double initSupply = coinManagement.getInitialSupply();
+		Double fees = coinManagement.getFees();
+		
+//COINNAME VALIDATION
 		if(coinName.equals("") || coinName.isEmpty() || coinName == null || coinName.trim().length() == 0)
 		{
-			return  "Coin Name Can Not Be Null Or Empty.";
+			return  "Coin Name Can Not Be Null.";
 		}
-		if(convertedPrice.equals("") || price == null || convertedPrice.isEmpty() || convertedPrice.trim().length() == 0 ||convertedPrice.equals("0"))
+		
+//SYMBOL VALIDATION
+		if(symbol.equals("") || symbol.isEmpty() || symbol == null || symbol.trim().length() == 0)
 		{
-			return  "price Can Not Be Null Or Empty or 0.";
+			return  "Symbol Can Not Be Null.";
+		}
+
+		if(!(coinManagementRepository.findByCoinName(coinName) == null)) 
+		{
+			return "Already Existing Coin Name.";
+		}
+
+		if(!(coinManagementRepository.findBySymbol(symbol)==null))
+		{
+			return "Already Existing Symbol";
+		}
+
+//INITIAL SUPPLY VALIDATION
+		if(initSupply == null || initSupply == 0)
+		{
+			return  "Initial Supply Can Not Be Null or Zero.";
+		}
+		if(initSupply<0)
+		{
+			return "Initial Supply Can Not Be Negative.";
+		}			
+				
+//PRICE VALIDATION
+		if(price == null || price == 0)
+		{
+			return  "Price Can Not Be Null or Zero.";
 		}
 		if(price<0)
 		{
-			return "Price Can Not Be Negative.";
-		}
-				
-		try 
-		{
-			coinManagementData=coinManagementRepository.findOneByCoinId(coinManagement.getCoinId());
-		}
-		catch(Exception e)
-		{
-			return "invalid coinId.";
+			return "Price Can Not Be In Negative.";
 		}
 		
-		coinManagementData.setCoinName(coinManagement.getCoinName());
-		coinManagementData.setSymbol(coinManagement.getSymbol());
-		coinManagementData.setInitialSupply(coinManagement.getInitialSupply());
-		coinManagementData.setPrice(coinManagement.getPrice());	
-		coinManagementData.setExchangeRate(coinManagement.getExchangeRate());
-		coinManagementData.setFees(coinManagement.getFees());
-		coinManagementData=coinManagementRepository.save(coinManagementData);
-		return "Your Coin Has Been Updated Successfully.";
+//FEES VALIDATION		
+		if(fees == null || fees == 0)
+		{
+			return  "Fees Can Not Be Null or Zero.";
+		}
+		if(fees<0)
+		{
+			return "Fees Can Not Be Negative.";
+		}			
+
+		if(!(coinName.matches("^[a-zA-Z]{2,}$"))){
+			return "Coin Name Can Not Be Numeric.";
+		}
+		
+		if(!(coinManagementRepository.findOneByCoinId(coinManagement.getCoinId()) == null))
+		{
+			coinManagementData = coinManagementRepository.findOneByCoinId(coinManagement.getCoinId());
+			coinManagementData.setCoinName(coinManagement.getCoinName());
+			coinManagementData.setSymbol(coinManagement.getSymbol());
+			coinManagementData.setInitialSupply(coinManagement.getInitialSupply());
+			coinManagementData.setPrice(coinManagement.getPrice());	
+			coinManagementData.setCoinType(WalletType.CRYPTO);
+			coinManagementData.setFees(coinManagement.getFees());
+			coinManagementData=coinManagementRepository.save(coinManagementData);
+			System.out.println("Your Coin Has Been Updated Successfully.");
+			return "Your Coin Has Been Updated Successfully.";
+		}
+		else
+		{
+			return "invalid coin id";
+		}
 	}
 
 	public String delete(Integer id) 
