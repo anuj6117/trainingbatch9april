@@ -1,15 +1,11 @@
-package com.traningproject1.domain;
+package com.example.demo.domain;
 
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
-
-import com.traningproject1.enumsclass.CoinType;
 
 @Entity
 @Table(name="CurrencyClass")
@@ -25,22 +21,11 @@ public class CurrencyClass {
 	@NotNull(message="symbol Should Not Accept null")
 	private Integer initialSupply;
 	@NotNull(message="symbol Should Not Accept null")
-	private Double  price;
+	private Integer price;
 	
 	private Double fees;
 	private Double profit;
 	private Double coinInINR;
-	@Enumerated(value=EnumType.STRING)
-	private CoinType coinType;
-	public CoinType getCoinType() {
-		return coinType;
-	}
-	public void setCoinType(CoinType coinType) {
-		this.coinType = coinType;
-	}
-	public void setFees(Double fees) {
-		this.fees = fees;
-	}
 	public CurrencyClass()
 	{
 		fees=0.0;
@@ -72,22 +57,18 @@ public class CurrencyClass {
 	public void setInitialSupply(Integer initialSupply) {
 		this.initialSupply = initialSupply;
 	}
-	
-	
-	public Double getPrice() {
+	public Integer getPrice() {
 		return price;
 	}
-	public void setPrice(Double price) {
+	public void setPrice(Integer price) {
 		this.price = price;
 	}
-	public Double getFees() {
+	
+	public double getFees() {
 		return fees;
 	}
-	public void setProfit(Double profit) {
-		this.profit = profit;
-	}
-	public void setCoinInINR(Double coinInINR) {
-		this.coinInINR = coinInINR;
+	public void setFees(double fees) {
+		this.fees = fees;
 	}
 	public double getProfit() {
 		return profit;

@@ -1,4 +1,4 @@
-package com.traningproject1.Controller;
+package com.example.demo.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -6,16 +6,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.traningproject1.demo.dto.AssignWalletDTO;
-import com.traningproject1.demo.dto.WalletApprovalDTO;
-import com.traningproject1.domain.User;
-import com.traningproject1.domain.UserOrder;
-import com.traningproject1.enumsclass.CoinType;
-import com.traningproject1.enumsclass.UserStatus;
-import com.traningproject1.repository.UserOrderRepository;
-import com.traningproject1.repository.UserRepository;
-import com.traningproject1.service.ServiceClass;
-import com.traningproject1.service.WalletService;
+import com.example.demo.domain.User;
+import com.example.demo.domain.UserOrder;
+import com.example.demo.dto.AssignWalletDTO;
+import com.example.demo.dto.WalletApprovalDTO;
+import com.example.demo.enumeration.CoinType;
+import com.example.demo.enumeration.UserStatus;
+import com.example.demo.repository.UserOrderRepository;
+import com.example.demo.service.ServiceClass;
+import com.example.demo.service.WalletService;
 
 @RestController
 public class WalletController {
@@ -25,16 +24,11 @@ public class WalletController {
 	WalletService walletService;
 	@Autowired
 	UserOrderRepository userOrderRepository;
-	@Autowired
-	UserRepository userRepository;
+	
 	@RequestMapping(value="/walletapproval",method=RequestMethod.POST)
 	public String walletApproval(@RequestBody  WalletApprovalDTO walletapprovaldto)
 	{
 		UserOrder userorder=userOrderRepository.findByuserorderId(walletapprovaldto.getUserorderId());
-		if(userorder==null)
-		{
-			return "Invalid UserOrder Id";
-		}
 		  User user=userorder.getUser();
 		 if(user.getStatus().equals(UserStatus.INACTIVE))
 		   {
@@ -53,11 +47,6 @@ public class WalletController {
 	@RequestMapping(value="/addwallet",method=RequestMethod.POST)
 	public String assignWallet(@RequestBody AssignWalletDTO assignwalletdto)
 	{
-		User user=userRepository.findByUserId(assignwalletdto.getUserId());
-		if(user==null)
-		{
-			return "Invalid UserId";
-		}
 		if(!(assignwalletdto.getCoinType().equals(CoinType.FIATE)))
 		{
 		 return  walletService.assignWallet(assignwalletdto);

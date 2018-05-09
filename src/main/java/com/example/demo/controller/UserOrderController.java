@@ -1,4 +1,4 @@
-package com.traningproject1.Controller;
+package com.example.demo.controller;
 
 import java.util.List;
 
@@ -9,14 +9,14 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.traningproject1.demo.dto.BuySellOrderDTO;
-import com.traningproject1.domain.User;
-import com.traningproject1.domain.UserOrder;
-import com.traningproject1.domain.Wallet;
-import com.traningproject1.repository.UserOrderRepository;
-import com.traningproject1.repository.UserRepository;
-import com.traningproject1.repository.WalletRepository;
-import com.traningproject1.service.UserOrderService;
+import com.example.demo.domain.User;
+import com.example.demo.domain.UserOrder;
+import com.example.demo.domain.Wallet;
+import com.example.demo.dto.BuySellOrderDTO;
+import com.example.demo.repository.UserOrderRepository;
+import com.example.demo.repository.UserRepository;
+import com.example.demo.repository.WalletRepository;
+import com.example.demo.service.UserOrderService;
 
 @RestController
 public class UserOrderController {
@@ -48,11 +48,6 @@ public String createBuyOrder(@RequestBody BuySellOrderDTO buysellorderdto)
 	{
 		return "Invalid user id";
 	} 
-	Wallet wallet=walletRepository.findByUserAndCoinName(user, buysellorderdto.getCoinName());
-	if(wallet==null)
-	{
-		return "please add wallet first";
-	}
   return userorderservice.createBuyOrder(buysellorderdto);	
 }
 

@@ -1,4 +1,4 @@
-package com.traningproject1.service;
+package com.example.demo.service;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -8,9 +8,8 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.traningproject1.domain.CurrencyClass;
-import com.traningproject1.enumsclass.CoinType;
-import com.traningproject1.repository.CurrencyRepository;
+import com.example.demo.domain.CurrencyClass;
+import com.example.demo.repository.CurrencyRepository;
 
 @Service
 public class CurrencyService {
@@ -20,9 +19,8 @@ public class CurrencyService {
 		
 	public String addCurrency(CurrencyClass currency)
 		{   
-			Double coinininr=currency.getPrice()*currency.getInitialSupply();
+			Integer coinininr=currency.getPrice()*currency.getInitialSupply();
 			currency.setCoinInINR(coinininr);
-			currency.setCoinType(CoinType.CRYPTO);
 			currencyRepository.save(currency);
 			return "Your Coin has been Added Successfully";
 					

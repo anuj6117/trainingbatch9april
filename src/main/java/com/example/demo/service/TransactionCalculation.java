@@ -1,4 +1,4 @@
-package com.traningproject1.service;
+package com.example.demo.service;
 
 import java.util.Date;
 import java.util.Iterator;
@@ -7,18 +7,18 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.traningproject1.domain.CurrencyClass;
-import com.traningproject1.domain.Transaction;
-import com.traningproject1.domain.User;
-import com.traningproject1.domain.UserOrder;
-import com.traningproject1.domain.Wallet;
-import com.traningproject1.enumsclass.CoinType;
-import com.traningproject1.enumsclass.TransactionStatus;
-import com.traningproject1.enumsclass.UserOrderStatus;
-import com.traningproject1.repository.CurrencyRepository;
-import com.traningproject1.repository.TransactionRepository;
-import com.traningproject1.repository.UserOrderRepository;
-import com.traningproject1.repository.WalletRepository;
+import com.example.demo.domain.CurrencyClass;
+import com.example.demo.domain.Transaction;
+import com.example.demo.domain.User;
+import com.example.demo.domain.UserOrder;
+import com.example.demo.domain.Wallet;
+import com.example.demo.enumeration.CoinType;
+import com.example.demo.enumeration.TransactionStatus;
+import com.example.demo.enumeration.UserOrderStatus;
+import com.example.demo.repository.CurrencyRepository;
+import com.example.demo.repository.TransactionRepository;
+import com.example.demo.repository.UserOrderRepository;
+import com.example.demo.repository.WalletRepository;
 
 @Service
 public class TransactionCalculation {
@@ -40,7 +40,7 @@ public class TransactionCalculation {
 		{
 			return "Buyer Not Exist";
 		}
-												
+
 		if(listseller.isEmpty())
 		{
 			Iterator<UserOrder>itrbuy=listbuyer.iterator();
@@ -271,7 +271,7 @@ public class TransactionCalculation {
 		
 		else
 		{
-				Iterator<UserOrder>buyitr=listbuyer.iterator();
+			Iterator<UserOrder>buyitr=listbuyer.iterator();
 			while(buyitr.hasNext())
 			{
 				UserOrder buyer=buyitr.next();
@@ -297,7 +297,7 @@ public class TransactionCalculation {
 		   	  
 			          if(seller.getPrice()<=buyer.getPrice()&&(!(seller.getUser().getUserId()==buyer.getUser().getUserId())))
 			          {
-			        	  if(seller.getPrice()<=currencycoin.getPrice()||currencycoin.getInitialSupply()==0)
+			        	  if(seller.getPrice()<=currencycoin.getPrice())
 			        	  {
 			        		  
 			        		  ////Seller sell////
@@ -320,16 +320,15 @@ public class TransactionCalculation {
 									 transactionsellerobject.setUserOrderType(seller.getOrderType());
 									 transactionRepository.save(transactionsellerobject);
 
-				                  //First Transaction
-				             Double amountdeducted=seller.getNetAmount()+(seller.getNetAmount()*currencycoin.getFees()/100);
-				                  // wallet.setBalance((wallet.getBalance()-(buyer.getGrossAmount()-((seller.getCoinQuantity()*buyer.getPrice()+(seller.getCoinQuantity()*buyer.getPrice())*currencycoin.getFees())/100))));
-			   	  				   wallet.setBalance(wallet.getBalance()-amountdeducted);
+				                  
+				         
+				                   wallet.setBalance((wallet.getBalance()-(buyer.getGrossAmount()-((seller.getCoinQuantity()*buyer.getPrice()+(seller.getCoinQuantity()*buyer.getPrice())*currencycoin.getFees())/100))));
 			   	  				   
 				                   wallet1.setBalance((seller.getCoinQuantity()+wallet1.getBalance()));
 				                   
 				                   wallet1.setShadowBalance((seller.getCoinQuantity()+wallet1.getShadowBalance()));
 				                   
-				                   walletseller.setBalance(walletseller.getBalance()+seller.getNetAmount());
+				                   walletseller.setBalance(walletseller.getBalance()+seller.getCoinQuantity()*seller.getPrice());
 			   	  				   walletsellercrypto.setBalance(walletsellercrypto.getBalance()-seller.getCoinQuantity());
 			   	  				     
 			   	  				   walletRepository.save(walletseller);
@@ -345,7 +344,7 @@ public class TransactionCalculation {
 			   	  				     
 			   	  				   buyer.setCoinQuantity(buyer.getCoinQuantity()-seller.getCoinQuantity());
 				                   buyer.setStatus(UserOrderStatus.PENDING);
-				                   buyer.setGrossAmount(buyer.getGrossAmount()-seller.getGrossAmount());
+				                   buyer.setGrossAmount(buyer.getGrossAmount()-((seller.getCoinQuantity()*buyer.getPrice()+(seller.getCoinQuantity()*buyer.getPrice())*currencycoin.getFees())/100));
 				                   buyer.setFees(((buyer.getCoinQuantity()-currencycoin.getInitialSupply())*buyer.getPrice()*currencycoin.getFees())/100);
 				                    seller.setStatus(UserOrderStatus.APPROVED);
 				                   //user id //

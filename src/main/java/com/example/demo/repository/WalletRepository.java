@@ -1,11 +1,11 @@
-package com.traningproject1.repository;
+package com.example.demo.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import com.traningproject1.domain.User;
-import com.traningproject1.domain.Wallet;
-import com.traningproject1.enumsclass.CoinType;
+import com.example.demo.domain.User;
+import com.example.demo.domain.Wallet;
+import com.example.demo.enumeration.CoinType;
 @Repository
 public interface WalletRepository extends JpaRepository<Wallet,Integer> {
 
@@ -16,7 +16,7 @@ public interface WalletRepository extends JpaRepository<Wallet,Integer> {
 	Wallet findByUserAndCoinTypeAndCoinName(User user, CoinType crypto, String coinName);
 
 
-	Wallet findByUserAndCoinName(User user, String string);
+	Wallet findByUserAndCoinName(User user, String coinName);
 
 	
 

@@ -1,4 +1,4 @@
-package com.traningproject1.Controller;
+package com.example.demo.controller;
 
 import java.util.Iterator;
 import java.util.List;
@@ -10,9 +10,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.traningproject1.domain.CurrencyClass;
-import com.traningproject1.repository.CurrencyRepository;
-import com.traningproject1.service.CurrencyService;
+import com.example.demo.domain.CurrencyClass;
+import com.example.demo.repository.CurrencyRepository;
+import com.example.demo.service.CurrencyService;
 
 @RestController
 public class CurrencyController {
@@ -93,7 +93,6 @@ public List<CurrencyClass> getAllCurrency()
 public String deleteCurrcency(@RequestParam("coinId") Integer coinId)
 {
 	CurrencyClass currency=currencyRepository.findByCoinId(coinId);
-	
 	if(currency==null)
 	{
 		return "Invalid Coin Id";
@@ -103,68 +102,18 @@ public String deleteCurrcency(@RequestParam("coinId") Integer coinId)
 @RequestMapping(value="/updatecurrency",method=RequestMethod.POST)
 public  String updateCurrency(@RequestBody CurrencyClass currency)
 {
+	
 	CurrencyClass currencyid=currencyRepository.findByCoinId(currency.getCoinId());
 	if(currencyid==null)
 	{
 		return "invalid Coin Id";
 	}
-	//String coinname=currency.getCoinName();
-	String sym=currency.getSymbol().trim();
-	
-	String coin=currency.getCoinName().trim();
-	//String sym1=currency.getSymbol().trim();
-	
-	
-	
-	
-	CurrencyClass cc = currencyRepository.findByCoinName(coin);
-	if(cc.getCoinId() != currency.getCoinId())
+	CurrencyClass currencyname=currencyRepository.findByCoinName(currency.getCoinName());
+	CurrencyClass currencysym=currencyRepository.findBySymbol(currency.getSymbol());
+	if(currencyname!=null||currencysym!=null)
 	{
-		return "already existing coin name";
+		return "currency Coin Name or Symbol Already Exist";
 	}
-	
-	cc = currencyRepository.findBySymbol(sym);
-	if(cc.getCoinId() != currency.getCoinId())
-	{
-		return "already existing symbol";
-	}
-	if(currency.getCoinName().length()!=coin.length())
-	{
-		return "please remove the space from the coin name";
-	}
-	if(currency.getSymbol().length()!=sym.length())
-	{
-		return "please remove the space from the coin symbol";
-	}
- if(sym.equals(""))
- {
-  return "Please enter the coin Symbol";
- }
-else if(sym.equals(" "))
-{
-	return "Please enter the coin Symbol";
- }
-else if(coin.equals(""))
-{
-	return "put coin Name";
-}
-else if(coin.equals(" "))
-{
-	return "put Valid coin Name";
-}
- if(currency.getPrice()<0)
-{
-	return "Price Can't be negative";
-}
-else if(currency.getInitialSupply()<0)
-{
-	return "InitialSupply Can't be negative";
-}
-
-else if(currency.getFees()<0)
-{
-	return "Fees Can't be negative";
-}
   return  currencyService.updateCurrency(currency);	
 }	
 }
