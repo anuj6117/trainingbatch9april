@@ -46,19 +46,33 @@ public class CurrencyController {
 	}
 	
 	@RequestMapping(value = "/getcurrencybyid",method = RequestMethod.GET)
-	public Optional<Currency> getById(@RequestParam("coinId") Integer coinId) {
+	public Currency getById(@RequestParam("coinId") Integer coinId) {
 		return currencyService.getById(coinId);
 	}
 	@RequestMapping(value  ="/updatecurrency",method = RequestMethod.POST)
-	public String updateCurrency(@RequestBody Currency currency) {
-		currencyService.updateCurrency(currency);
-		return "success";
+	public ResponseEntity<Object> updateCurrency(@RequestBody Currency currency) {
+		Map<String,Object> result = null;
+		try {
+			result = currencyService.updateCurrency(currency);
+			if(result.get("isSuccess").equals(true)) {
+				return ResponseHandler.generateResponse(HttpStatus.OK, true, result.get("message").toString(), result);
+			}
+			else {
+				return ResponseHandler.generateResponse(HttpStatus.OK, false, result.get("message").toString(), result);
+			}
+		}
+		catch(Exception e) {
+			return ResponseHandler.generateResponse(HttpStatus.BAD_REQUEST, false, e.getMessage(), result);
+		}
 	}
 
 	@RequestMapping(value = "/deletecurrency",method = RequestMethod.GET)
 	public String deleteCurrency(@RequestParam("coinId") Integer coinId) {
-		currencyService.deleteCurrency(coinId);
-		return "success";
+		try {
+		return currencyService.deleteCurrency(coinId);
+		}catch (Exception e) {
+			return "Currency Cannot be deleted as : "+e.getMessage();
+		}
 	}
 	
 

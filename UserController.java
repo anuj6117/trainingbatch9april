@@ -52,29 +52,44 @@ public class UserController {
 	
 	@RequestMapping(value = "/getbyuserid",method = RequestMethod.GET)
 	public User getById(@RequestParam("userId") Integer userId){
-		return userService.getById(userId);
-		  
+		return userService.getById(userId);	  
 	}
+	
 	@RequestMapping(value = "/updateuser",method = RequestMethod.POST)
-	public String updateUser(@RequestBody User user){
-		userService.updateUser(user);
-		return "Update success";
+	public ResponseEntity<Object> updateUser(@RequestBody User user){
+		Map<String,Object> result = null;
+		try {
+			result = userService.updateUser(user);	
+			if(result.get("isSuccess").equals(true)) {
+				return ResponseHandler.generateResponse(HttpStatus.OK, true, result.get("message").toString(), result);
+			}
+			else {
+				return ResponseHandler.generateResponse(HttpStatus.OK, false, result.get("message").toString(), result);
+			}
+		}
+		catch(Exception e) {
+			return ResponseHandler.generateResponse(HttpStatus.BAD_REQUEST, false, e.getMessage(), result);
+		}
 	}
 
 	@RequestMapping(value = "/deleteuser",method = RequestMethod.GET)
 	public String deleteUser(@RequestParam("userId") Integer userId){
-		userService.deleteUser(userId);
-		return "Delete success";
+		try {
+		return userService.deleteUser(userId);
+		}catch (Exception e) {
+			return "User Cannot be deleted as : "+e.getMessage();
+		}
 	}
+	
+	
 	
 	@RequestMapping(value = "/assignrole", method = RequestMethod.POST)
 	public String assignRole(@RequestBody UserRoleDto userRoleDto) {
 	try {
-		userService.assignRole(userRoleDto);
+		return userService.assignRole(userRoleDto);
 	} catch (Exception e) {
 	return "Role Cannot be assigned as : "+e.getMessage();
 	}
-	return "Role has Successfully Assigned.";
 	}
 	
 	@RequestMapping(value = "/addwallet", method = RequestMethod.POST)
