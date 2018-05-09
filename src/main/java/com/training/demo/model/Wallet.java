@@ -28,10 +28,18 @@ public class Wallet {
 	
 	//@Column(unique=true)
 	private String coinName;
-	long balance;
+	Double balance=0d;
 	
 
-	long shadowBalance;
+	Double shadowBalance=0d;
+
+	public void setBalance(Double balance) {
+		this.balance = balance;
+	}
+
+	public void setShadowBalance(Double shadowBalance) {
+		this.shadowBalance = shadowBalance;
+	}
 
 	@ManyToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "userId", referencedColumnName = "userId")
@@ -54,20 +62,18 @@ public class Wallet {
 	public void setCoinName(String coinName) {
 		this.coinName = coinName;
 	}
-	public long getBalance() {
+
+
+
+
+	
+
+	public Double getBalance() {
 		return balance;
 	}
 
-	public void setBalance(long balance) {
-		this.balance = balance;
-	}
-
-	public long getShadowBalance() {
+	public Double getShadowBalance() {
 		return shadowBalance;
-	}
-
-	public void setShadowBalance(long shadowBalance) {
-		this.shadowBalance = shadowBalance;
 	}
 
 	public User getUser() {

@@ -40,7 +40,7 @@ public class CoinManagementController {
 		int sml=sm.length();
 		int l=s.length();
 		double d=data.getInitialSupply();
-		int t=data.getPrice();
+		double t=data.getPrice();
 		int sk = String.valueOf(t).length();
 		 // int b=sk.length();
 
@@ -65,7 +65,8 @@ public class CoinManagementController {
 				return "symbol already exist";
 			}
 			
-			
+			//data.setProfit(0.0);
+			//data.setFee(0.0);
 			String result = coinManagementService.addAllCoin(data);
 			
 			
@@ -84,26 +85,33 @@ public class CoinManagementController {
 
 	@RequestMapping(value = "/updatecurrency", method = RequestMethod.POST)
 	public String updateCurrency(@RequestBody CoinManagement data) {
-		String result = coinManagementService.update(data);
-		if (result != null) {
-			return "Coin Updated";
-		} else {
-			return "Coin not updated";
-		}
+
+
+			return coinManagementService.update(data);
 	}
 
 	@RequestMapping(value = "/deletecurrency", method = RequestMethod.GET)
 	public String delete(@RequestParam("coinId") Integer id) {
 		System.out.println(id);
-		if ((id != null)) {
+		CoinManagement c=coinmanagementrepository.findOneByCoinId(id);
+		if ((c != null)) {
 			System.out.println(id);
 			coinManagementService.delete(id);
 			System.out.println(id);
 			return "success";
 		}
-		return "fail";
+		return "coin id is incorrect";
 		
 		
 		
 	}
+	@RequestMapping(value="/getcurrencybyid", method=RequestMethod.GET)
+	public Object getCurrencyById(@RequestParam("coinId") Integer coinId)
+	{
+		CoinManagement coinManagement;
+		if((coinManagement = coinmanagementrepository.findOneByCoinId(coinId)) == null) {
+			return "invalid coin id.";
+		}
+		return coinManagement;
+	}	
 }

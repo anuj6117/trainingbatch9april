@@ -5,8 +5,8 @@ import com.training.demo.enums.WalletType;
 public class UserOrderDto {
 
 	private Integer userId;
-	private long coinQuantity;
-	private long price;
+	private double coinQuantity;
+	private double price;
 	private String coinName;
 	private WalletType coinType;
 
@@ -34,20 +34,22 @@ public class UserOrderDto {
 		this.coinType = coinType;
 	}
 
-	public long getCoinQuantity() {
+	public double getCoinQuantity() {
 		return coinQuantity;
 	}
 
-	public void setCoinQuantity(long coinQuantity) {
+	public void setCoinQuantity(double coinQuantity) {
 		this.coinQuantity = coinQuantity;
 	}
 
-	public long getPrice() {
+	public double getPrice() {
 		return price;
 	}
 
-	public void setPrice(long price) {
+	public void setPrice(double price) {
 		this.price = price;
 	}
+
+	
 
 }

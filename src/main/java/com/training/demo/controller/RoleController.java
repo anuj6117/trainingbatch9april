@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.training.demo.enums.RoleType;
 import com.training.demo.model.Role;
 import com.training.demo.repository.RoleRepository;
 import com.training.demo.service.RoleService;
@@ -23,11 +25,15 @@ public class RoleController {
 	@RequestMapping(value = "/createRole", method = RequestMethod.POST)
 	public String insertRole(@RequestBody Role role) {
 		if (role != null) {
-		return	roleService.addRole(role);
+			if(role.getRoleType()==RoleType.USER) {
+				return"user role is already exist";
+			
+		}
 			
 		} else {
-			return "Role Addition Failure.";
+			return "Role Addition Failure. user role is";
 		}
+		return	roleService.addRole(role);
 	}
 
 	@RequestMapping(value = "/deleteRole", method = RequestMethod.GET)

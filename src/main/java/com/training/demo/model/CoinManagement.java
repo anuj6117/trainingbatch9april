@@ -1,6 +1,5 @@
 package com.training.demo.model;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -26,84 +25,73 @@ public class CoinManagement {
 	// @NotNull(message = "symbol not null")
 	private String symbol;
 	@NotNull(message = "can not be null")
-	private long initialSupply;
-	private Long profit;
+	private Double initialSupply;
+	private Double profit;
+	private Double INRconversion=0d;
 
-	public long getInitialSupply() {
-		return initialSupply;
+	public CoinManagement() {
+		profit = 0.0;
+		fee = 0.0;
 	}
 
-	public void setInitialSupply(long initialSupply) {
-		this.initialSupply = initialSupply;
-	}
-
-	@NotNull(message = "price not null")
-	private Integer price;
-	private long fee;
-
-	private Integer INRconversion;
-
-	public Integer getINRconversion() {
-		return INRconversion;
-	}
-
-	public void setINRconversion(Integer iNRconversion) {
-		INRconversion = iNRconversion;
-	}
-
-	public void setCoinId(Integer coinId) {
-		this.coinId = coinId;
-	}
-
-	public Long getProfit() {
-		return profit;
-	}
-
-	public void setProfit(Long profit) {
-		this.profit = profit;
-	}
-
-	public WalletType getCoinType() {
-		return coinType;
-	}
-
-	public void setCoinType(WalletType coinType) {
-		this.coinType = coinType;
-	}
-
-	public long getFee() {
-		return fee;
-	}
-
-	public void setFee(long fee) {
-		this.fee = fee;
-	}
+	//@NotNull(message = "price not null")
+	private Double price;
+	private Double fee;
 
 	public Integer getCoinId() {
 		return coinId;
 	}
-
+	public void setCoinId(Integer coinId) {
+		this.coinId = coinId;
+	}
+	public WalletType getCoinType() {
+		return coinType;
+	}
+	public void setCoinType(WalletType coinType) {
+		this.coinType = coinType;
+	}
 	public String getCoinName() {
 		return coinName;
 	}
-
 	public void setCoinName(String coinName) {
 		this.coinName = coinName;
 	}
-
 	public String getSymbol() {
 		return symbol;
 	}
-
 	public void setSymbol(String symbol) {
 		this.symbol = symbol;
 	}
-
-	public Integer getPrice() {
+	public Double getInitialSupply() {
+		return initialSupply;
+	}
+	public void setInitialSupply(Double initialSupply) {
+		this.initialSupply = initialSupply;
+	}
+	public Double getProfit() {
+		return profit;
+	}
+	public void setProfit(Double profit) {
+		this.profit = profit;
+	}
+	
+	public Double getINRconversion() {
+		return INRconversion;
+	}
+	public void setINRconversion(Double iNRconversion) {
+		INRconversion = iNRconversion;
+	}
+	public Double getPrice() {
 		return price;
 	}
-
-	public void setPrice(Integer price) {
+	public void setPrice(Double price) {
 		this.price = price;
 	}
+	public Double getFee() {
+		return fee;
+	}
+	public void setFee(Double fee) {
+		this.fee = fee;
+	}
+
 }

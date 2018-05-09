@@ -1,6 +1,7 @@
 package com.training.demo.model;
 
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -53,9 +54,18 @@ public class User {
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
 	private Set<Wallet> Wallet;
 	
+	@OneToMany(mappedBy="user")
+	private Set<UserOrder> UserOrder =new HashSet<>();
 	
 	
-	
+
+	public Set<UserOrder> getUserOrder() {
+		return UserOrder;
+	}
+
+	public void setUserOrder(Set<UserOrder> userOrder) {
+		UserOrder = userOrder;
+	}
 
 	public User() {
 		super();

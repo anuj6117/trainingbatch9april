@@ -22,12 +22,10 @@ public class Role {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Integer roleId;
-	//@Column(unique=true)
+	// @Column(unique=true)
 	@Enumerated(EnumType.STRING)
 	private RoleType roleType;
-	//private String roleType;
-
-
+	// private String roleType;
 
 	@JsonIgnore
 	@ManyToMany(mappedBy = "roles")
@@ -59,9 +57,6 @@ public class Role {
 		this.roleId = roleId;
 	}
 
-	
-
-	
 	public Set<User> getUser() {
 		return user;
 	}

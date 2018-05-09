@@ -66,8 +66,8 @@ public class WalletService {
 			Wallet wallet = new Wallet();
 			wallet.setCoinType(userWalletdto.getCoinType());
 			wallet.setCoinName(userWalletdto.getCoinName());
-			wallet.setBalance(0);
-			wallet.setShadowBalance(0);
+			wallet.setBalance(0d);
+			wallet.setShadowBalance(0d);
 			wallet.setUser(user);
 			walletset.add(wallet);
 			user.getWallet().add(wallet);
@@ -94,7 +94,7 @@ public class WalletService {
 		wallet = walletRepository.findByCoinType(userdepositdto.getWalletType());
 		//walletType=userdepositdto.getWalletType();
 		if ((wallet != null) && (userdepositdto.getAmount() < wallet.getBalance())) {
-			long moneyBalance = wallet.getBalance() - userdepositdto.getAmount();
+			double moneyBalance = wallet.getBalance() - userdepositdto.getAmount();
 			wallet.setBalance(moneyBalance);
 			wallet.setShadowBalance(moneyBalance);
 			walletRepository.save(wallet);
@@ -163,7 +163,7 @@ public class WalletService {
 			transection.setMessage(message);
 			transectionrepo.save(transection);
 
-			long longBalance = wallet.getBalance();
+			double longBalance = wallet.getBalance();
 					
 			longBalance = longBalance + userorder.getNetAmmount();
 			Set<Wallet> walletSet = new HashSet<Wallet>();
@@ -210,7 +210,7 @@ public class WalletService {
 			return "user is inactive";
 		}
 
-		return "sucess";
+		return "success";
 	}
 
 }

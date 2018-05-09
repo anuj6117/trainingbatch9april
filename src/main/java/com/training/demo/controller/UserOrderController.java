@@ -1,6 +1,7 @@
 package com.training.demo.controller;
 
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -11,14 +12,20 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.training.demo.dto.UserOrderDto;
 import com.training.demo.enums.OrderType;
-import com.training.demo.model.Transection;
+import com.training.demo.model.User;
 import com.training.demo.model.UserOrder;
+import com.training.demo.repository.UserOrderRepository;
+import com.training.demo.repository.UserRepository;
 import com.training.demo.service.UserOrderService;
 
 @RestController
 public class UserOrderController {
 	@Autowired
 	private UserOrderService userOrderService;
+	@Autowired
+	private UserOrderRepository userorderrepo;
+	@Autowired
+	 private UserRepository userrepo;
 	
 	
 	
@@ -33,7 +40,7 @@ public class UserOrderController {
 		return userOrderService.createSellOrder(userOrderDto);
 	}
 	
-	@RequestMapping(value = "/getallorders")
+	@RequestMapping(value = "/showallorders")
 	public List<UserOrder> getAllOrders() {
 		return userOrderService.getAllOrders();
 	}
@@ -53,10 +60,30 @@ public class UserOrderController {
 		return userOrderService.getAllAvailableOrders();	
 	}
 	
-	@RequestMapping(value = "/getorderbyuserid", method = RequestMethod.GET)
-	public String getOrderByUserId(@RequestParam Integer userId) { 
-		return userOrderService.getOrderByUserId(userId);
-	}
+	
+	@RequestMapping(value="/getorderbyuserid", method=RequestMethod.GET)
+	public Set<UserOrder> getorderByuserId(@RequestParam("userId") Integer userId)
+	{
+		User user=userrepo.findByUserId(userId);
+		if(user!=null)
+		{
+		
+		System.out.println("user"+user.getUserId());
+		
+		Set<UserOrder> setOrder=user.getUserOrder();
+		System.out.println("setorder" +setOrder);
+		return setOrder;
+		}
+		else
+		{
+			return null;
+		}
+		
+		
+	}	
+	
+	
+		
 
 	
 	

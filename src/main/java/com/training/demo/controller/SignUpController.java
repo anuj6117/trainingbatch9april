@@ -30,10 +30,10 @@ public class SignUpController {
 		String password = user.getPassword().trim();
 		String username = user.getuserName();
 		String username1 = user.getuserName().trim();
-		String countryname=user.getCountry();
-		String countryname1=user.getCountry().trim();
-		int countrylength=countryname.length();
-		int countrylength1=countryname1.length();
+		String countryname = user.getCountry();
+		String countryname1 = user.getCountry().trim();
+		int countrylength = countryname.length();
+		int countrylength1 = countryname1.length();
 
 		int length = password.length();
 		int unamelength = username.length();
@@ -41,11 +41,21 @@ public class SignUpController {
 		int phoneLength = user.getPhoneNo().length();
 		String phn = user.getPhoneNo().replaceAll("\\s+", "");
 		int l = phn.length();
+		if((!(Pattern.compile("^[A-Za-z0-9_-]{1,25}$").matcher(username).matches())))
+		{
+			return "please enter a valid user name";
+			
+		}
+		if((!(Pattern.compile("^[A-Za-z]{2,55}$").matcher(countryname).matches())))
+		{
+			return "please enter a valid country name";
+		}
 		if (user.getPhoneNo().length() == 10 && (user.getPhoneNo().matches("[0-9]+") && (phoneLength == l))) {
 			if ((unamelength != 0) && (unamelength == uname1length) && (user.getuserName() != null)) {
 				if (username.length() <= 25) {
 
-					if ((user.getCountry()!= null)&&(user.getCountry().length()!=0)&&(countrylength==countrylength1)) {
+					if ((user.getCountry() != null) && (user.getCountry().length() != 0)
+							&& (countrylength == countrylength1)) {
 
 						if (length != 0) {
 							String newUser = signUpService.addUser(user);
@@ -98,14 +108,11 @@ public class SignUpController {
 	}
 
 	@RequestMapping(value = "/getbyuserid", method = RequestMethod.GET)
-	public Optional<User> getUserById(@RequestParam("userId") Integer userId) {
-		Optional<User> obj = null;
-		try {
-			obj = signUpService.getUserById(userId);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return obj;
+	// public Optional<User> getUserById(@RequestParam("userId") Integer userId) {
+	public Object getUserById(@RequestParam("userId") Integer userId) {
+
+		return signUpService.getUserById(userId);
+
 	}
 
 	@RequestMapping(value = "/deleteuser", method = RequestMethod.GET)
@@ -115,7 +122,7 @@ public class SignUpController {
 			userRepository.delete(t_user);
 			return "user deleted sucessfully";
 		} catch (Exception e) {
-			return "fail";
+			return "user id is incorrect";
 		}
 	}
 }

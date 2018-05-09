@@ -31,13 +31,18 @@ public class UserOrder {
 	@Enumerated(EnumType.STRING)
 	private WalletType coinType;
 	private String coinName;
-	private Long coinQuantity;
-	private Long price;
+	private double coinQuantity;
+	private double price;
 	private Date orderCreatedOn;
-	private Long netAmmount;
-	private Long grossAmmount;
+	private double netAmmount;
+	private double grossAmmount;
 	@Enumerated(EnumType.STRING)
 	private UserOrderStatus status;
+	@ManyToOne
+	@JoinColumn(name = "userId")
+	@JsonIgnore
+	private User user;
+	private double fee;
 
 	public WalletType getCoinType() {
 		return coinType;
@@ -45,26 +50,6 @@ public class UserOrder {
 
 	public void setCoinType(WalletType coinType) {
 		this.coinType = coinType;
-	}
-
-	public Long getNetAmmount() {
-		return netAmmount;
-	}
-
-	public void setNetAmmount(Long netAmmount) {
-		this.netAmmount = netAmmount;
-	}
-
-	public Long getGrossAmmount() {
-		return grossAmmount;
-	}
-
-	public long getFee() {
-		return fee;
-	}
-
-	public void setGrossAmmount(Long grossAmmount) {
-		this.grossAmmount = grossAmmount;
 	}
 
 	public String getCoinName() {
@@ -75,16 +60,13 @@ public class UserOrder {
 		this.coinName = coinName;
 	}
 
-	private long fee;
-
-	public void setFee(long fee) {
-		this.fee = fee;
+	public double getFee() {
+		return fee;
 	}
 
-	@ManyToOne
-	@JoinColumn(name = "userId")
-	@JsonIgnore
-	private User user;
+	public void setFee(double fee) {
+		this.fee = fee;
+	}
 
 	public OrderType getOrderType() {
 		return orderType;
@@ -110,20 +92,36 @@ public class UserOrder {
 		this.userOrderId = userOrderId;
 	}
 
-	public Long getCoinQuantity() {
+	public double getCoinQuantity() {
 		return coinQuantity;
 	}
 
-	public void setCoinQuantity(Long coinQuantity) {
+	public void setCoinQuantity(double coinQuantity) {
 		this.coinQuantity = coinQuantity;
 	}
 
-	public Long getPrice() {
+	public double getPrice() {
 		return price;
 	}
 
-	public void setPrice(Long price) {
+	public void setPrice(double price) {
 		this.price = price;
+	}
+
+	public double getNetAmmount() {
+		return netAmmount;
+	}
+
+	public void setNetAmmount(double netAmmount) {
+		this.netAmmount = netAmmount;
+	}
+
+	public double getGrossAmmount() {
+		return grossAmmount;
+	}
+
+	public void setGrossAmmount(double grossAmmount) {
+		this.grossAmmount = grossAmmount;
 	}
 
 	public Date getOrderCreatedOn() {

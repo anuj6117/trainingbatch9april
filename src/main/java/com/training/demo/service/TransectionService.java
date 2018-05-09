@@ -66,24 +66,27 @@ public class TransectionService implements Comparator<UserOrder> {
 					return "no match";
 				}
 
-				long coinBuyed = buyers.get(i).getCoinQuantity() - admin.getInitialSupply();
+				double coinBuyed = buyers.get(i).getCoinQuantity() - admin.getInitialSupply();
 
 				if (coinBuyed <= 0) {
 					// all coins will be buyed
 					coinBuyed = buyers.get(i).getCoinQuantity();
+					if((buyers.get(i).getPrice()>=admin.getPrice()))
 					admin.setInitialSupply(admin.getInitialSupply() - coinBuyed);
 					buyers.get(i).setStatus(UserOrderStatus.APPROVE);
 				} else {
 					coinBuyed = admin.getInitialSupply();
-					admin.setInitialSupply(0);
+					admin.setInitialSupply(0.0);
 					buyers.get(i).setStatus(UserOrderStatus.PENDING);
 				}
 
 				// check if buyer has that kind of money or not for purchasing
-				long fees = currencyRepository.findByCoinName(coinName).getFee();
-				long totprice = (buyers.get(i).getPrice() * coinBuyed);
-				long fee = (int) ((fees * totprice) / 100);
-				long grossAmount = totprice + fee;
+				double pr=(buyers.get(i).getPrice());
+				double fees = currencyRepository.findByCoinName(coinName).getFee();
+				double totprice = (buyers.get(i).getPrice() * coinBuyed);
+				double fee =  ((fees * totprice) / 100);
+				
+				double grossAmount = totprice + fee;
 
 				Wallet buyerFiatwallet = walletRepository.findBycoinTypeAndUser(WalletType.FIAT,
 						buyers.get(i).getUser());
@@ -124,6 +127,8 @@ public class TransectionService implements Comparator<UserOrder> {
 						trans.setTransactionStatus(UserOrderStatus.FAILED);
 						trans.setNetAmount(totprice);
 						trans.setGrossAmount(grossAmount);
+						//888888888888888888
+						trans.setExchangeRate(pr);
 						trans.setMessage("no match");
 						transactionRepository.save(trans);
 
@@ -135,8 +140,8 @@ public class TransectionService implements Comparator<UserOrder> {
 					// approve transaction
 
 					// update admin currency
-					long adminprice = (admin.getPrice() * coinBuyed);
-					Integer coinInINR = (int) (totprice - adminprice);
+					double adminprice = (admin.getPrice() * coinBuyed);
+					double coinInINR = (int) (totprice - adminprice);
 					admin.setProfit(fee);
 					admin.setINRconversion(coinInINR);
 					currencyRepository.save(admin);
@@ -146,9 +151,11 @@ public class TransectionService implements Comparator<UserOrder> {
 					trans.setCreatedOn(new Date());
 					trans.setCoinName(coinName);
 					trans.setWalletType(buyers.get(i).getCoinType());
-					trans.setTransactionStatus(UserOrderStatus.APPROVE);
+					trans.setTransactionStatus(UserOrderStatus.COMPLETED);
 					trans.setNetAmount(totprice);
 					trans.setGrossAmount(grossAmount);
+					//666666666666
+					trans.setExchangeRate(pr);
 					trans.setMessage("done");
 					transactionRepository.save(trans);
 
@@ -176,13 +183,13 @@ public class TransectionService implements Comparator<UserOrder> {
 
 				}
 			}
-			return "success :: admin is only seller";
+			return "  sucess ladmin is there as a seller";
 		}
 
 		else if (buyers.size() == 0) {
 			//
 
-			return "success :: no buyers";
+			return "buyres not available";
 		}
 
 		// both buyers and sellers are present
@@ -207,13 +214,17 @@ public class TransectionService implements Comparator<UserOrder> {
 							buyFromAdmin(admin, buyer);
 							continue;
 						}
+						if(seller.getPrice()>buyer.getPrice())
+						{
+							continue;
+						}
 						Wallet sellerFiatWallet = walletRepository.findBycoinTypeAndUser(WalletType.FIAT,
 								seller.getUser());
 						Wallet sellerWallet = walletRepository.findBycoinNameAndUser(coinName, seller.getUser());
 
-						long scq = seller.getCoinQuantity();
-						long bcq = buyer.getCoinQuantity();
-						long coinBuyed = bcq - scq;
+						double scq = seller.getCoinQuantity();
+						double bcq = buyer.getCoinQuantity();
+						double coinBuyed = bcq - scq;
 
 						if (coinBuyed < 0) {
 							coinBuyed = bcq;
@@ -223,20 +234,22 @@ public class TransectionService implements Comparator<UserOrder> {
 
 						} else {
 							coinBuyed = scq;
-							scq = 0;
+							//scq=0;
+							
 							if (bcq - scq == 0) {
 								buyer.setStatus(UserOrderStatus.APPROVE);
 							} else {
 								buyer.setStatus(UserOrderStatus.PENDING);
 							}
-
+                          scq=sellerWallet.getBalance()-scq;
 							seller.setStatus(UserOrderStatus.APPROVE);
 
 						}
-						long fees = currencyRepository.findByCoinName(coinName).getFee();
-						long totprice = (buyers.get(i).getPrice() * coinBuyed);
-						Integer fee = (int) ((fees * totprice) / 100);
-						long grossAmount = totprice + fee;
+						double fees = currencyRepository.findByCoinName(coinName).getFee();
+						double totprice = (buyers.get(i).getPrice() * coinBuyed);
+						double pr=(buyers.get(i).getPrice());
+						double fee =  ((fees * totprice) / 100);
+						double grossAmount = totprice + fee;
 
 						Wallet buyerFiatwallet = walletRepository.findBycoinTypeAndUser(WalletType.FIAT,
 								buyer.getUser());
@@ -254,6 +267,7 @@ public class TransectionService implements Comparator<UserOrder> {
 							trans.setWalletType(buyers.get(i).getCoinType());
 							trans.setTransactionStatus(UserOrderStatus.FAILED);
 							trans.setNetAmount(totprice);
+							trans.setExchangeRate(pr);
 							trans.setGrossAmount(grossAmount);
 							trans.setMessage("insufficient funds");
 							transactionRepository.save(trans);
@@ -277,7 +291,7 @@ public class TransectionService implements Comparator<UserOrder> {
 							buyerwallet.setBalance(buyerwallet.getBalance() + coinBuyed);
 							// buyerwallet.setCoinName(coinName);
 							// buyerwallet.setCoinType( buyers.get(i).getCoinType());
-							buyerwallet.setBalance(buyerwallet.getBalance() + coinBuyed);
+							//buyerwallet.setBalance(buyerwallet.getBalance() + coinBuyed);
 							buyerwallet.setShadowBalance(buyerwallet.getShadowBalance() + coinBuyed);
 						}
 
@@ -300,7 +314,7 @@ public class TransectionService implements Comparator<UserOrder> {
 
 						// approve transaction
 
-						long sellerprice = (seller.getPrice() * coinBuyed);
+						double sellerprice = (seller.getPrice() * coinBuyed);
 						Integer coinInINR = (int) (totprice - sellerprice);
 						admin.setProfit(admin.getProfit() + fee);
 						admin.setINRconversion(admin.getINRconversion() + coinInINR);
@@ -311,8 +325,9 @@ public class TransectionService implements Comparator<UserOrder> {
 						trans.setCreatedOn(new Date());
 						trans.setCoinName(coinName);
 						trans.setWalletType(buyer.getCoinType());
-						trans.setTransactionStatus(UserOrderStatus.APPROVE);
+						trans.setTransactionStatus(UserOrderStatus.COMPLETED);
 						trans.setNetAmount(totprice);
+						trans.setExchangeRate(pr);
 						trans.setGrossAmount(grossAmount);
 						trans.setMessage("done");
 						transactionRepository.save(trans);
@@ -328,13 +343,13 @@ public class TransectionService implements Comparator<UserOrder> {
 			}
 		}
 
-		return "success :: both present";
+		return " transection successfull  buyer and seller are present";
 	}
 
 	private String buyFromAdmin(CoinManagement admin, UserOrder buyer) {
 
 		String coinName = buyer.getCoinName();
-		long coinBuyed = buyer.getCoinQuantity() - admin.getInitialSupply();
+		double coinBuyed = buyer.getCoinQuantity() - admin.getInitialSupply();
 
 		if (admin.getInitialSupply() == 0) {
 			// admin dont have the currency to sell
@@ -349,15 +364,16 @@ public class TransectionService implements Comparator<UserOrder> {
 			buyer.setStatus(UserOrderStatus.APPROVE);
 		} else {
 			coinBuyed = admin.getInitialSupply();
-			admin.setInitialSupply(0);
+			admin.setInitialSupply(0.0);
 			buyer.setStatus(UserOrderStatus.PENDING);
 		}
 
 		// check if buyer has that kind of money or not for purchasing
-		long fees = currencyRepository.findBycoinName(coinName).getFee();
-		long totprice = (buyer.getPrice() * coinBuyed);
-		Integer fee = (int) ((fees * totprice) / 100);
-		long grossAmount = totprice + fee;
+		double fees = currencyRepository.findBycoinName(coinName).getFee();
+		double totprice = (buyer.getPrice() * coinBuyed);
+		double pr=(buyer.getPrice());
+		double fee = (int) ((fees * totprice) / 100);
+		double grossAmount = totprice + fee;
 
 		Wallet buyerFiatwallet = walletRepository.findBycoinTypeAndUser(WalletType.FIAT, buyer.getUser());
 
@@ -374,12 +390,14 @@ public class TransectionService implements Comparator<UserOrder> {
 			trans.setTransactionStatus(UserOrderStatus.FAILED);
 			trans.setNetAmount(totprice);
 			trans.setGrossAmount(grossAmount);
+			//trans.setExchangeRate(totprice);
+			trans.setExchangeRate(pr);
 			trans.setMessage("insufficient funds");
 			transactionRepository.save(trans);
 
 			buyer.setStatus(UserOrderStatus.FAILED);
 			orderRepository.save(buyer);
-			return "insufficient funds";
+			return "insufficient balence";
 
 		} else {
 
@@ -395,6 +413,8 @@ public class TransectionService implements Comparator<UserOrder> {
 				trans.setTransactionStatus(UserOrderStatus.FAILED);
 				trans.setNetAmount(totprice);
 				trans.setGrossAmount(grossAmount);
+				//66666666666666
+				trans.setExchangeRate(pr);
 				trans.setMessage("no match");
 				transactionRepository.save(trans);
 				buyer.setGrossAmmount(grossAmount);
@@ -407,7 +427,7 @@ public class TransectionService implements Comparator<UserOrder> {
 			// approve transaction
 
 			// update admin currency
-			long adminprice = (admin.getPrice() * coinBuyed);
+			double adminprice = (admin.getPrice() * coinBuyed);
 			Integer coinInINR = (int) (totprice - adminprice);
 			admin.setProfit(admin.getProfit() + fee);
 			admin.setINRconversion(admin.getINRconversion() + coinInINR);
@@ -418,8 +438,10 @@ public class TransectionService implements Comparator<UserOrder> {
 			trans.setCreatedOn(new Date());
 			trans.setCoinName(coinName);
 			trans.setWalletType(buyer.getCoinType());
-			trans.setTransactionStatus(UserOrderStatus.APPROVE);
+			trans.setTransactionStatus(UserOrderStatus.COMPLETED);
 			trans.setNetAmount(totprice);
+			//66666666666666666666666
+			trans.setExchangeRate(pr);
 			trans.setGrossAmount(grossAmount);
 			trans.setMessage("done");
 			transactionRepository.save(trans);
@@ -448,7 +470,7 @@ public class TransectionService implements Comparator<UserOrder> {
 			orderRepository.save(buyer);
 
 		}
-		return "success :: admin is only seller";
+		return "transection successfull with admin";
 	}
 
 	@Override

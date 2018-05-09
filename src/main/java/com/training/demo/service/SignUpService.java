@@ -78,6 +78,21 @@ public class SignUpService {
 				return " oops this number is already exist";
 			}
 			String email = user.getEmail();
+			
+			if(user.getEmail() != null) {
+		    	//if(!(Pattern.compile("^[_-]{0,1}+[a-z0-9]+[_-]{0,1}+(\\.[_a-z0-9-]+)*@[a-z0-9]+(\\.[a-z0-9]+)*(\\.[a-z]{2,})$").matcher(user.getEmail()).matches()))
+				//if(!(Pattern.compile("^[a-z0-9][a-z0-9(\\-[a-z0-9]+)(\\_[a-z0-9]+)]*[a-zA-Z]+(\\.[a-z0-9]+)*[a-zA-Z]+(\\-[a-z0-9]+)*[a-zA-Z]+(\\_[a-z0-9]+)*[a-zA-Z]*@[a-z0-9]+(\\.[a-z0-9]+)*(\\.[a-z]{2,})$").matcher(user.getEmail()).matches()))
+				if(Pattern.compile("^[a-z0-9][a-z0-9(\\-[a-z0-9]+)(\\_[a-z0-9]+)]*[a-zA-Z0-9]+(\\.[a-z0-9]+)*[a-zA-Z0-9]+(\\-[a-z0-9]+)*[a-zA-Z0-9]+(\\_[a-z0-9]+)*[a-zA-Z0-9]*@[a-z0-9]+(\\.[a-z0-9]+)*(\\.[a-z]{2,})$").matcher(user.getEmail()).matches()) 
+				{
+				
+		    		
+		    		return"enter valid email";
+		    	}
+			}
+		    	else
+		    	{
+		    		return"email can not be null";
+		    	}
 			String phoneNo = user.getPhoneNo();
 			System.out.println(email);
 
@@ -131,19 +146,19 @@ public class SignUpService {
 	}
 
 	public String verifyUserWithOtp(String email, Integer otp) {
-		String t_email = otpVerification.getEmail();
-		Integer t_otp = otpVerification.getTokenOTP();
 		try {
-
 			OtpVerification tempOtpVerification = otpRepository.findByEmail(email);
 			String v_email = tempOtpVerification.getEmail();
 			int v_otp = tempOtpVerification.getTokenOTP();
 			User t_user = userRepository.findByEmail(email);
-
-			if (t_email.equals(v_email)) {
-				System.out.println("email is successfully verified" + t_email);
-				if (t_otp.equals(v_otp)) {
-					System.out.println(t_otp + " otp is successfully verified" + t_otp);
+			System.out.println(":::::::::::::::::::"+v_email);
+			
+			System.out.println(email+":::::::::::::::::::::");
+			
+			if (email.equals(v_email)) {
+				System.out.println("email is successfully verified" + email);
+				if (otp.equals(v_otp)) {
+					System.out.println(otp + " otp is successfully verified" + otp);
 
 				}
 				otpRepository.delete(tempOtpVerification);
@@ -165,21 +180,24 @@ public class SignUpService {
 		return l;
 	}
 
-	public Optional<User> getUserById(Integer userId) {
-		Optional<User> usrid = userRepository.findById(userId);
-		if (usrid != null) {
-			return usrid;
+	public Object getUserById(Integer userId) {
+		User user = userRepository.findByUserId(userId);
+		if (user != null) {
+			return user;
 		} else {
-			throw new NullPointerException("Id does not exist.");
+			return "user does not exist.";
 		}
 	}
 
 	public User assignRoleToUser(DtoUser userRoleDto) {
 		User user = userRepository.findByUserId(userRoleDto.getUserId());
 		Role role = roleRepository.findByRoleType(userRoleDto.getRoleType());
+		 
 
 		if ((user != null)&&(user.getUserStatus()==UserStatus.ACTIVE))
 		{
+			
+			
 			if (role != null) {
 				
 				user.getRoles().add(role);
@@ -194,17 +212,68 @@ public class SignUpService {
 	}
 
 	public String updateUser(@RequestBody User user) {
-		try {
+		 String pass=user.getPassword();
+		 java.util.regex.Matcher mtch = pswNamePtrn.matcher(pass);
+		
+		 User u=userRepository.findByUserName(user.getuserName());
+		 User c=userRepository.findByCountry(user.getCountry());
+		 User e=userRepository.findByEmail(user.getEmail());
+		 User p=userRepository.findByPhoneNo(user.getPhoneNo());
+		
+			
 			User tempUser = userRepository.findByUserId(user.getUserId());
+			if((!(Pattern.compile("^[A-Za-z0-9_-]{1,25}$").matcher(user.getuserName()).matches())))
+			{
+				return "please enter valid user name";
+				
+			}
+			if(u.getUserId()!=user.getUserId())
+			{
+				return"user name already exist";
+			}
+			if((!(Pattern.compile("^[A-Za-z]{2,55}$").matcher(user.getCountry()).matches())))
+			{
+				return "please enter valid country name";
+			}
+		
+			
+		
+			if(Pattern.compile("^[a-z0-9][a-z0-9(\\-[a-z0-9]+)(\\_[a-z0-9]+)]*[a-zA-Z]+(\\.[a-z0-9]+)*[a-zA-Z]+(\\-[a-z0-9]+)*[a-zA-Z]+(\\_[a-z0-9]+)*[a-zA-Z]*@[a-z0-9]+(\\.[a-z0-9]+)*(\\.[a-z]{2,})$").matcher(user.getEmail()).matches())
+				
+			{
+	    		
+	    		return" please enter valid email";
+	    	}
+			if(e.getUserId()!=user.getUserId())
+			{
+				return"email already exist";
+			}
+			  if(!mtch.matches())
+		       {
+		    	   return "Password Must Contains one Uppercase Alphabet,one lower case ,on dgigt, one special symbol";
+		       }
+			  if(p.getUserId()!=user.getUserId())
+			  {
+				  return "phone Number already in use";
+			  }
+			if(tempUser!=null) {
 			tempUser.setEmail(user.getEmail());
 			tempUser.setuserName(user.getuserName());
 			tempUser.setPhoneNo(user.getPhoneNo());
 			tempUser.setCountry(user.getCountry());
 			tempUser.setPassword(user.getPassword());
 			userRepository.save(tempUser);
-		} catch (Exception ex) {
-			return "Error while updating the user: " + ex.toString();
-		}
+		
 		return "User succesfully updated!";
+			}
+			else
+			{
+				return "user id is not valid";
+			}
+		
+		
+		
+		
+		
 	}
 }

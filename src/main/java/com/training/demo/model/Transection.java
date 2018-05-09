@@ -20,20 +20,22 @@ public class Transection {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private long transactionId;
-	private long netAmount;
+	private double netAmount;
 	@Enumerated(EnumType.STRING)
 	private WalletType walletType;
-	private Long fee;
+	private double fee;
 	private String coinName;
+	private double exchangeRate;
+	private double grossAmount;
+	private Integer buyer;
+	private Integer seller;
+	private String message;
+	@Enumerated(EnumType.STRING)
+	private UserOrderStatus transactionStatus;
 
-	public long getExchangeRate() {
-		return exchangeRate;
-	}
+	
 
-	public void setExchangeRate(long exchangeRate) {
-		this.exchangeRate = exchangeRate;
-	}
-
+	
 	public void setTransactionId(long transactionId) {
 		this.transactionId = transactionId;
 	}
@@ -42,9 +44,7 @@ public class Transection {
 		return transactionStatus;
 	}
 
-	public void setExchangeRate(Integer exchangeRate) {
-		this.exchangeRate = exchangeRate;
-	}
+	
 
 	public String getCoinName() {
 		return coinName;
@@ -58,17 +58,9 @@ public class Transection {
 		return transactionId;
 	}
 
-	public Long getFee() {
-		return fee;
-	}
 
-	public void setFee(Long fee) {
-		this.fee = fee;
-	}
 
-	private long exchangeRate;
-	private Long grossAmount;
-	private Integer buyer;
+	
 
 	public void setBuyer(Integer buyer) {
 		this.buyer = buyer;
@@ -78,10 +70,7 @@ public class Transection {
 		this.seller = seller;
 	}
 
-	private Integer seller;
-	private String message;
-	@Enumerated(EnumType.STRING)
-	private UserOrderStatus transactionStatus;
+	
 
 	public String getMessage() {
 		return message;
@@ -101,13 +90,7 @@ public class Transection {
 		this.transactionId = transactionId;
 	}
 
-	public long getNetAmount() {
-		return netAmount;
-	}
 
-	public void setNetAmount(long netAmount) {
-		this.netAmount = netAmount;
-	}
 
 	public WalletType getWalletType() {
 		return walletType;
@@ -117,12 +100,46 @@ public class Transection {
 		this.walletType = walletType;
 	}
 
-	public Long getGrossAmount() {
+	
+
+	public double getNetAmount() {
+		return netAmount;
+	}
+
+	public void setNetAmount(double netAmount) {
+		this.netAmount = netAmount;
+	}
+
+	public double getFee() {
+		return fee;
+	}
+
+	public void setFee(double fee) {
+		this.fee = fee;
+	}
+
+	public double getExchangeRate() {
+		return exchangeRate;
+	}
+
+	public void setExchangeRate(double exchangeRate) {
+		this.exchangeRate = exchangeRate;
+	}
+
+	public double getGrossAmount() {
 		return grossAmount;
 	}
 
-	public void setGrossAmount(Long grossAmount) {
+	public void setGrossAmount(double grossAmount) {
 		this.grossAmount = grossAmount;
+	}
+
+	public Integer getBuyer() {
+		return buyer;
+	}
+
+	public Integer getSeller() {
+		return seller;
 	}
 
 	public Date getCreatedOn() {
