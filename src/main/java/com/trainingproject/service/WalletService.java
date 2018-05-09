@@ -77,28 +77,30 @@ public class WalletService {
 	     
 	     
 	     Transaction transaction=new Transaction();
+	     
+	     transaction.setBuyer(null);
+ 	     transaction.setAmount(userorder.getPrice());
+ 	     transaction.setFee(0);
+ 	     transaction.setCoinType(CoinType.FIAT);
+ 	   
+ 	 
+ 	     transaction.setDate(userorder.getDate());
+ 	     transaction.setExchangeRate(0);
+ 	    transaction.setCoinName(userorder.getCoinName());
+ 	   transaction.setCoinType(userorder.getCoinType());
+ 	   
+ 	     if(awb.getOrderStatus().equals(UserOrderStatus.APPROVED))
+ 	     transaction.setStatus(TransactionStatus.APPROVED);
+ 	     else  if(awb.getOrderStatus().equals(UserOrderStatus.PENDING))
+ 	    	 transaction.setStatus(TransactionStatus.PENDING);
+ 	    else  if(awb.getOrderStatus().equals(UserOrderStatus.FAILED))
+ 	    	 transaction.setStatus(TransactionStatus.FAILED);
+         transactionRepository.save(transaction);
+ 	   
+         
+         
 	     if(orderType==OrderType.DEPOSIT) {
-	    	 
-	    	 
-	 	     transaction.setBuyer(null);
-	 	     transaction.setAmount(userorder.getPrice());
-	 	     transaction.setFee(0);
-	 	     transaction.setCoinType(CoinType.FIAT);
-	 	   
-	 	 
-	 	     transaction.setDate(userorder.getDate());
-	 	     transaction.setExchangeRate(0);
-	 	    transaction.setCoinName(userorder.getCoinName());
-	 	   transaction.setCoinType(userorder.getCoinType());
-	 	   
-	 	     if(awb.getOrderStatus().equals(UserOrderStatus.APPROVED))
-	 	     transaction.setStatus(TransactionStatus.APPROVED);
-	 	     else  if(awb.getOrderStatus().equals(UserOrderStatus.PENDING))
-	 	    	 transaction.setStatus(TransactionStatus.PENDING);
-	 	    else  if(awb.getOrderStatus().equals(UserOrderStatus.FAILED))
-	 	    	 transaction.setStatus(TransactionStatus.FAILED);
-             transactionRepository.save(transaction);
-	 	   
+	    	
 	    	 if(awb.getOrderStatus()==UserOrderStatus.APPROVED)
 	    	 fiatWallet.setBalance(fiatWallet.getBalance()+userorder.getPrice());
 	    	 if(awb.getOrderStatus()!=UserOrderStatus.FAILED)
@@ -111,6 +113,8 @@ public class WalletService {
 	    	 return "success";
 	     }
 	     else if(orderType==OrderType.WITHDRAW) {
+		 	   
+		 	   
 	    	 if(awb.getOrderStatus()==UserOrderStatus.APPROVED)
 	    	 fiatWallet.setBalance(fiatWallet.getBalance()-userorder.getPrice());
 	    	 if(awb.getOrderStatus()!=UserOrderStatus.FAILED)

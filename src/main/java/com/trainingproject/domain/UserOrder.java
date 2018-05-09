@@ -21,7 +21,7 @@ public class UserOrder {
 
  @Id
  @GeneratedValue
- private Integer userorderId;
+ private Integer orderId;
  @Enumerated(EnumType.STRING)
  private OrderType orderType;
  private String coinName;
@@ -97,11 +97,11 @@ public void setFee(double fee) {
 	this.fee = fee;
 }
 
-public Integer getUserorderId() {
-	return userorderId;
+public Integer getOrderId() {
+	return orderId;
 }
-public void setUserorderId(Integer userorderId) {
-	this.userorderId = userorderId;
+public void setOrderId(Integer orderId) {
+	this.orderId = orderId;
 }
 public OrderType getOrderType() {
 	return orderType;

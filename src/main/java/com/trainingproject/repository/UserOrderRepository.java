@@ -14,7 +14,7 @@ public interface UserOrderRepository extends JpaRepository<UserOrder,Integer> {
 
 	public List<UserOrder> findByuser(User user);
 	
-	public UserOrder findByuserorderId(Integer userorderId);
+	public UserOrder findByorderId(Integer orderId);
 
 	public List<UserOrder> findByorderType(OrderType orderType);
 	

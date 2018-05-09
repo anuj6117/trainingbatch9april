@@ -24,8 +24,10 @@ public class CurrencyService {
 		
 		if(cur.getCoinName()==null||cur.getCoinName().length()==0)
 			return "coin name cannot be null";
-		if(cur.getCoinType()==null)
+		
+		if(cur.getCoinType()==null)  //not mandatory
 			return "coin type cannot be null";
+		
 		if(cur.getSymbol()==null)
 			return "symbol cannot be null";
 		if(cur.getInitialSupply()==0)

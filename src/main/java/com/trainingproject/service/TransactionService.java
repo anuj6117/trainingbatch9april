@@ -55,6 +55,32 @@ public class TransactionService implements Comparator<UserOrder> {
 	    		 Currency admin=currencyRepository.findBycoinName(coinName);
 	    		 if(admin==null) {
 	    			 //admin dont have that currency
+	    			 
+	    			 Transaction tran=new Transaction();
+	    			 tran.setBuyer(buyers.get(i).getUser().getUserId());
+		            	
+	    			   tran.setSeller(admin.getCoinId());
+						tran.setFee(0);
+						
+						 SimpleDateFormat sdf = new SimpleDateFormat("M/d/yy h:mm a Z");
+						  TimeZone istTimeZone = TimeZone.getTimeZone("Asia/Kolkata");
+						  Date d = new Date();
+						  sdf.setTimeZone(istTimeZone);
+						  String strtime = sdf.format(d);
+						  tran.setDate(strtime);
+						
+						//trans.setDate(new Date());
+						tran.setCoinName(coinName);
+						tran.setCoinType(buyers.get(i).getCoinType());
+						tran.setStatus(TransactionStatus.FAILED);
+						tran.setAmount(0);
+						tran.setGrossAmount(0);
+						tran.setRemarks("currency not available");
+					    transactionRepository.save(tran);
+					    
+					    
+	    			 buyers.get(i).setOrderStatus(UserOrderStatus.PENDING);
+	    			 orderRepository.save(buyers.get(i));
 	    			 break;
 	    		 }
 	    		 
@@ -278,7 +304,7 @@ public class TransactionService implements Comparator<UserOrder> {
 							else {
 								buyer.setOrderStatus(UserOrderStatus.PENDING);
 							}
-							scq=sellerWallet.getCoinQuantity()-scq;;
+							scq=sellerWallet.getCoinQuantity()-scq;
 							 seller.setOrderStatus(UserOrderStatus.APPROVED);
 							
 						}
@@ -342,7 +368,6 @@ public class TransactionService implements Comparator<UserOrder> {
 					    }
 					    
 					    
-			            
 			            sellerFiatWallet.setBalance(coinBuyed*seller.getPrice()+sellerFiatWallet.getBalance());
 			            sellerFiatWallet.setShadowBal(sellerFiatWallet.getShadowBal()+coinBuyed*seller.getPrice());
 			            sellerWallet.setBalance(scq);
@@ -356,8 +381,7 @@ public class TransactionService implements Comparator<UserOrder> {
 					
 						walletRepository.save(buyerwallet);
 						walletRepository.save(buyerFiatwallet);
-						walletRepository.save(sellerFiatWallet);
-						
+						walletRepository.save(sellerFiatWallet);			
 					
 			            //approve transaction
 			            

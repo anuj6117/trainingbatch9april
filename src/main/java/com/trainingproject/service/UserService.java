@@ -1,7 +1,5 @@
 package com.trainingproject.service;
 
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.forwardedUrl;
-
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -123,7 +121,8 @@ public class UserService {
 		 user.setCreatedOn(strtime);
 		user.setStatus(UserStatus.INACTIVE);
 		
-		String regex = "^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$";
+		String regex ;//= "^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$";
+		regex="^[_-]{0,1}+[a-z0-9]+(\\_[a-z0-9]+)*[a-zA-Z]+[_-]{0,1}+(\\.[_a-z0-9-]+)*@[a-z0-9]+(\\.[a-z0-9]+)*(\\.[a-z]{2,})$";
 
 	      Pattern pattern = Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
 	      Matcher matcher = pattern.matcher(user.getEmail());
@@ -233,6 +232,17 @@ public class UserService {
 	     if(m.find())
 	    	 return "your name cannot have a special character";
 	     
+	     p = Pattern.compile("(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#/|()~`!$%^&+=])(?=\\S+$).{8,}$");
+		 m = p.matcher(user.getPassword());
+    
+		 if(!m.find())
+	    	 return "your password should contain special characters and no spaces with one upper case character";
+
+		String regex="^[_-]{0,1}+[a-z0-9]+(\\_[a-z0-9]+)*[a-zA-Z]+[_-]{0,1}+(\\.[_a-z0-9-]+)*@[a-z0-9]+(\\.[a-z0-9]+)*(\\.[a-z]{2,})$";
+
+	      Pattern pattern = Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
+	      Matcher matcher = pattern.matcher(user.getEmail());
+	     
 	     int i=0;
 		    for(i=0;i<name.length();i++) {
 		    	if(name.charAt(i)>=65&&name.charAt(i)<=90) {
@@ -241,9 +251,7 @@ public class UserService {
 		    }
 		     if(i==name.length())
 		    	 return "name should contain at least one uppercase";
-		     
-		     
-	     
+		 
 	     m = p.matcher(user.getPassword());
 	     if(!m.find())
 	    	 return "your password should have a special character";
@@ -313,15 +321,14 @@ public class UserService {
 	      if(arb.getRoleType().equalsIgnoreCase("ADMIN")||arb.getRoleType().equalsIgnoreCase("MANAGER"))
 	      {
 	    	 
-
 		Role roleobj=roleRepository.findByRoleType(arb.getRoleType());
 		if(roleobj==null)
 			return "role cannot be assigned";
 		List<Role> role=new ArrayList<Role>();
 		
 		role=user.getRoleType();
-		role.add(roleobj);
-		
+//		role.add(roleobj);
+		role.add(0, roleobj);
 		user.setRoleType(role);
 		userRepository.save(user);
 		return "success";
@@ -378,6 +385,24 @@ public class UserService {
      
 		User user=getUserById(wb.getUserId()).get();
 		
+		  List<Wallet>walletlist=user.getUserWallet();
+		     Wallet fiatWallet=null;
+		    // fiatWallet=walletRepository.findBycoinTypeAndUser(CoinType.FIAT, user);
+		     for(int i=0;i<walletlist.size();i++) {
+		    	 if(walletlist.get(i).getCoinType()==CoinType.FIAT) {
+		    		 
+		    		 if(walletlist.get(i).getCoinName().equals(wb.getCoinName())) {
+		    			 fiatWallet=walletlist.get(i);
+		    			 break;
+		    		 }
+		    	 }
+		     }
+		    if(fiatWallet==null) {
+		    	return "wallet does not exist";
+		    }
+		     
+		    
+		    
 		if(user.getStatus().equals(UserStatus.INACTIVE))
 			return "user is inactive";
 		
@@ -393,12 +418,17 @@ public class UserService {
 		userorder.setOrderType(OrderType.WITHDRAW);
 		userorder.setOrderStatus(UserOrderStatus.PENDING);
 		userorder.setUser(user);
+		
+		userorder.setCoinQuantity(wb.getAmount());
+		userorder.setCoinType(wb.getCoinType());
+		userorder.setCoinName(wb.getCoinName());
+		
 		userorder.setUserId(user.getUserId());
 		userorder.setPrice(wb.getAmount());
 		userorder.setGrossAmount(wb.getAmount());
 		userorderRepository.save(userorder);
 		
-		return "success";
+		return "your order has been placed successfully.wait for approval";
 		
 	}
 
@@ -419,6 +449,23 @@ public class UserService {
 	    
 		User user =getUserById(wdb.getUserId()).get();
 		
+		  List<Wallet>walletlist=user.getUserWallet();
+		     Wallet fiatWallet=null;
+		    // fiatWallet=walletRepository.findBycoinTypeAndUser(CoinType.FIAT, user);
+		     for(int i=0;i<walletlist.size();i++) {
+		    	 if(walletlist.get(i).getCoinType()==CoinType.FIAT) {
+		    		 
+		    		 if(walletlist.get(i).getCoinName().equals(wdb.getCoinName())) {
+		    			 fiatWallet=walletlist.get(i);
+		    			 break;
+		    		 }
+		    	 }
+		     }
+		    if(fiatWallet==null) {
+		    	return "wallet does not exist";
+		    }
+		     
+		     
 		
 		if(user.getStatus().equals(UserStatus.INACTIVE))
 			return "user is inactive";

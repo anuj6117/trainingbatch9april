@@ -7,6 +7,7 @@ import java.util.TimeZone;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.trainingproject.domain.Currency;
 import com.trainingproject.domain.User;
 import com.trainingproject.domain.UserOrder;
 import com.trainingproject.domain.Wallet;
@@ -60,8 +61,13 @@ public class UserOrderService {
 	    	 return "0 quantity to buy";
 		
 		 double totamount=bsb.getCoinQuantity()*bsb.getPrice();
-		 double fee=currencyRepository.findBycoinName(bsb.getCoinName()).getFee();
-		 double gross=(totamount*fee)/100+totamount;
+		 Currency cur=currencyRepository.findBycoinName(bsb.getCoinName());
+		
+		 double fee=0,gross=totamount;
+		 if(cur!=null) {
+		 fee=currencyRepository.findBycoinName(bsb.getCoinName()).getFee();
+		  gross=(totamount*fee)/100+totamount;
+		 }
 		Wallet buyerWallet=walletRepository.findBycoinTypeAndUser(CoinType.FIAT, user);
 		
 	  if(buyerWallet.getShadowBal()<gross)
@@ -144,7 +150,7 @@ public class UserOrderService {
 	
 	
 	public UserOrder getUserOrderById(Integer orderId) {
-		UserOrder userorder=userorderRepository.findByuserorderId(orderId);
+		UserOrder userorder=userorderRepository.findByorderId(orderId);
 		return userorder;
 	}
 
