@@ -37,11 +37,11 @@ public class OrderService
 	userorder.setCoinQuantity(userOrderDto.getCoinQuantity());
 	userorder.setPrice(userOrderDto.getPrice());
 	userorder.setFees(currency.getFees());
-	Integer netamount=userOrderDto.getCoinQuantity()*userOrderDto.getPrice();
+	Double netamount=userOrderDto.getCoinQuantity()*userOrderDto.getPrice();
 	System.out.println(netamount+"..........netamount........");
 	userorder.setNetAmount(netamount);
-	Integer fee=currency.getFees();
-    Integer percentValue=((netamount/100)*fee)+netamount;	
+	Double fee=currency.getFees();
+	Double percentValue=((netamount/100)*fee)+netamount;	
 	System.out.println(percentValue+"..........percentvalue........");
 	userorder.setGrossAmount(percentValue);
 	userorder.setOrderCreatedOn(date);
@@ -81,7 +81,7 @@ public class OrderService
  	userorder.setStatusType(StatusType.PENDING);
  	userorder.setCoinQuantity(userOrderDto.getCoinQuantity());
  	userorder.setPrice(userOrderDto.getPrice());
- 	Integer netamount=userOrderDto.getCoinQuantity()*userOrderDto.getPrice();
+ 	Double netamount=userOrderDto.getCoinQuantity()*userOrderDto.getPrice();
  	userorder.setNetAmount(netamount);	
  	userorder.setGrossAmount(netamount);
  	userorder.setOrderCreatedOn(date);

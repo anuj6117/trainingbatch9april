@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -55,11 +56,11 @@ public class OrderController
 		 System.out.println("...................................."+list);
 		 for(Wallet wallet:list)
 		 {
-			 if(wallet.getWalletType()==WalletType.FIAT)
+			 if(wallet.getCoinType()==WalletType.FIAT)
 			 {
 				 fiatWallet=wallet;
 			 }
-			 if((wallet.getWalletType().equals(WalletType.CRYPTOCURRENCY) && (wallet.getWalletName().equals(userOrderDto.getCoinName())))) 
+			 if((wallet.getCoinType().equals(WalletType.CRYPTO) && (wallet.getCoinName().equals(userOrderDto.getCoinName())))) 
 			 {
 				 cryptoWallet=wallet;
 			 }
@@ -69,13 +70,13 @@ public class OrderController
 			if(fiatWallet!=null)
 			 {
 				 currency=currencyRepository.findByCoinName(userOrderDto.getCoinName());
-				 int netamount=userOrderDto.getCoinQuantity()*userOrderDto.getPrice();
-			     int grossamount=((currency.getFees()*netamount)/100)+netamount; 
+				 Double netamount=userOrderDto.getCoinQuantity()*userOrderDto.getPrice();
+			     Double grossamount=((currency.getFees()*netamount)/100)+netamount; 
 			     
 			     System.out.println("createBuyOrder // ................................ ");
 				   if(fiatWallet.getShadowbalance()>=grossamount)
 					   
-				    {   Integer updateShadowBalance=fiatWallet.getShadowbalance();
+				    {   Double updateShadowBalance=fiatWallet.getShadowbalance();
 				        System.out.println("createBuyOrder // ................................ ");
 				         updateShadowBalance=updateShadowBalance-grossamount;
 					      fiatWallet.setShadowbalance(updateShadowBalance);
@@ -117,7 +118,7 @@ public class OrderController
 		   for(Wallet s:list)
 		     {
 			   
-		        if(s.getWalletName().equals(userOrderDto.getCoinName()))
+		        if(s.getCoinName().equals(userOrderDto.getCoinName()))
 		        {
 		        	System.out.println("createSellOrder // balance.........................1.......balance "+s.getBalance());
 		        	System.out.println("createSellOrder // shadowBalance.........................1.......balance "+userOrderDto.getCoinQuantity());
@@ -126,7 +127,7 @@ public class OrderController
 			        	System.out.println("enterng in createSellOrder.........................2");		        		
 		        		currency=currencyRepository.findByCoinName(userOrderDto.getCoinName());
 			    		   userorder.setUser(user);	
-			    		   Integer updateShadowBalnce=s.getShadowbalance();
+			    		   Double updateShadowBalnce=s.getShadowbalance();
 			    		   updateShadowBalnce=updateShadowBalnce-userOrderDto.getCoinQuantity();
 			    		   s.setShadowbalance(updateShadowBalnce);
 			    		   System.out.println("updated shadow balnce in createSellOrder.........."+s.getShadowbalance());
@@ -156,6 +157,20 @@ public class OrderController
 	   
 	  // return "";
 	}
+   
+   @GetMapping("/getorderbyuserid")
+   public Set<UserOrder> getorderbyid(@RequestParam("userId") Integer userId)
+   {
+	User user=userRepository.findByUserId(userId);
+    Set<UserOrder> userOrderSet=user.getUserorder();
+   // UserOrder userorder=orderrepository.findByUser(user);
+	if(user!=null)
+	{
+		return userOrderSet;
+	}
+	else
+		return null;
+     }
    
    @RequestMapping("/showallorder")
    public List<UserOrder> showallorder()

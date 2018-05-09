@@ -1,10 +1,10 @@
 package com.example.controller;
 
 import java.util.List;
+import java.util.regex.Pattern;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -51,8 +51,11 @@ public class SignUserController
 		{
 		String username1=user.getUserName();
 		String username=user.getUserName().trim();
+		//String username3=user.getUserName().replaceAll("\\s+","");
 		int usernameLength=username.length();
 		int usernameLength2=username1.length();
+		
+		//String r=if(Pattern.compile("^[a-z0-9][a-z0-9(\\-[a-z0-9]+)(\\_[a-z0-9]+)]*[a-zA-Z]+(\\.[a-z0-9]+)*[a-zA-Z]+(\\-[a-z0-9]+)*[a-zA-Z]+(\\_[a-z0-9]+)*[a-zA-Z]*@[a-z0-9]+(\\.[a-z0-9]+)*(\\.[a-z]{2,})$").matcher(str).matches()) {
 		
 		String passwordvalue=user.getPassword();
 		int passwordLength1=passwordvalue.length();
@@ -60,6 +63,8 @@ public class SignUserController
 	    int passwordLength2=passwordvalue.length();
 	   // String patternPhone="(?=.*[0-9]).{10,10}";
 	    String pattern="(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\\S+$).{8,32}";
+	   // String emailPattern="^[_-]{0,1}+[a-z0-9]+(\\_[a-z0-9]+)*[a-zA-Z]+[_-]{0,1}+(\\.[_a-z0-9-]+)*@[a-z0-9]+(\\.[a-z0-9]+)*(\\.[a-z]{2,})$";
+	     String emailPattern="^[a-z0-9][a-z0-9(\\-[a-z0-9]+)(\\_[a-z0-9]+)]*[a-zA-Z]+(\\.[a-z0-9]+)*[a-zA-Z]+(\\-[a-z0-9]+)*[a-zA-Z]+(\\_[a-z0-9]+)*[a-zA-Z]*@[a-z0-9]+(\\.[a-z0-9]+)*(\\.[a-z]{2,})$";
 	    if((passwordLength2!=0) && (passwordLength1==passwordLength2) && (passwordvalue.matches(pattern)))
 		{
 	    	 System.out.println("......................111111111122222");
@@ -69,6 +74,8 @@ public class SignUserController
 	    	   {
 	    		 if( (username1.length()<=25))
 	    		 {
+	    		  if(Pattern.compile(emailPattern).matcher(user.getEmail()).matches())
+	    		  {
 	    			if(user.getCountry().trim().length()!=0)
 	    			{
 			         String u=signupservice.addUser(user);
@@ -80,7 +87,10 @@ public class SignUserController
 			         return "use different email";
 			        }
 	    			else
-	    			 return "Country can't be null";	
+	    			  return "Country can't be null";	
+	    		   }
+	    		  else
+	    			return "invalid email";
 	    		 }
 	    		 else
 	    		 return "Maximum character for username is 25";

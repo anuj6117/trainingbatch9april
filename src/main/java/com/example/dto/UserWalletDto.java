@@ -8,24 +8,31 @@ import com.example.enums.WalletType;
 public class UserWalletDto
  {
   private Integer userId;
-  private String walletName;
+  private String coinName;
   @Enumerated(EnumType.STRING)
-  private WalletType walletType;
-  private Integer amount;
+  private WalletType coinType;
+  private Double amount;
   
   
   
 
-public String getWalletName() {
-	return walletName;
+
+public String getCoinName() {
+	return coinName;
 }
-public void setWalletName(String walletName) {
-	this.walletName = walletName;
+public void setCoinName(String coinName) {
+	this.coinName = coinName;
 }
-public Integer getAmount() {
+public WalletType getCoinType() {
+	return coinType;
+}
+public void setCoinType(WalletType coinType) {
+	this.coinType = coinType;
+}
+public Double getAmount() {
 	return amount;
 }
-public void setAmount(Integer amount) {
+public void setAmount(Double amount) {
 	this.amount = amount;
 }
 public Integer getUserId() {
@@ -33,12 +40,6 @@ public Integer getUserId() {
 }
 public void setUserId(Integer userId) {
 	this.userId = userId;
-}
-public WalletType getWalletType() {
-	return walletType;
-}
-public void setWalletType(WalletType walletType) {
-	this.walletType = walletType;
 }
 
   

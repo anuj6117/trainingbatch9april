@@ -43,16 +43,21 @@ public class RoleController
    {
 	   if(userRoleDto != null)
 	   {
-		 System.out.println("SOPSOSO{S{S{PSP{{SPSP{SS");
+		 
 		   User user = userRepository.findByUserId(userRoleDto.getUserId());
 		   Role role = roleRepository.findByType(userRoleDto.getRoleType());
-		   System.out.println(">>>>>>>>>>>>>>>>");
-		   
+		   if((user!=null))
+		   {
+			   if(role!=null) {
 		   		user.getRoles().add(role);
 		   		System.out.println("nnnnnnnnnnnnnn"+user.getRoles()+".........."+user+",,,,,,,");
 		   		userRepository.save(user);
-		   
-		   return "RoleAssignmentSuccess ";
+		        return "Role Assigned Successfully ";
+			   }
+			   else return "Invalid role type";
+		   }
+		   else
+			   return "Invalid user";
 	   }
 	   else
 	   {

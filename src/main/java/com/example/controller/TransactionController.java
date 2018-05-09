@@ -18,9 +18,10 @@ public class TransactionController
     @Autowired
     private TransactionRepository transactionRepository;
    @RequestMapping("/transaction")
-	public void transaction()
+	public String transaction()
 	{
        transactionService.transactionMethod();
+       return "Transaction has proceeded";
 	}
    @RequestMapping("/showalltransaction")
    public List<Transaction> showAllTransaction()

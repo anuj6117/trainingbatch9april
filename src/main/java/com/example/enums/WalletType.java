@@ -2,7 +2,7 @@ package com.example.enums;
 
 public enum WalletType
 {
- FIAT("Fiat"),CRYPTOCURRENCY("CryptoCurrency");
+ FIAT("Fiat"),CRYPTO("Crypto");
 	private String value;
  
 private WalletType(String value) {

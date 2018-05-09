@@ -72,10 +72,10 @@ public class SignUpService
 		 userrepository.save(user);
 		 Set<Wallet> walletset=new HashSet<Wallet>();
 		 Wallet wallet = new Wallet();
-	     wallet.setWalletType(WalletType.FIAT);
-	     wallet.setWalletName("INR");
-	     wallet.setBalance(0);
-	     wallet.setShadowbalance(0);
+	     wallet.setCoinType(WalletType.FIAT);
+	     wallet.setCoinName("INR");
+	     wallet.setBalance(0.0);
+	     wallet.setShadowbalance(0.0);
 		 wallet.setUser(user);
 		 walletset.add(wallet);
 		 walletrepository.save(wallet);
@@ -116,6 +116,21 @@ public class SignUpService
 	}
 	public String updateuser(User user)
 	 {  
+		
+		User user1=userrepository.findByUserId(user.getUserId());
+		User userEmail=userrepository.findByEmail(user.getEmail());
+		User userPhone=userrepository.findByPhoneNumber(user.getPhoneNumber());
+		if((user1==null)&&(user1.getStatus()==UserStatus.INACTIVE))
+		{
+           return "Invalid user";			
+		}else if((userEmail!=null && (userEmail.getUserId()!=user.getUserId()) ) )
+		{
+			return "Email already exist";
+		}
+		else if()
+		{
+			
+		}
 		 String date=new Date()+"";
 		// user.getCreatedOn(date);
 		 user.setCreatedOn(date);
@@ -150,7 +165,7 @@ public class SignUpService
 		  
 		 userorder.setStatusType(StatusType.PENDING);
 		 userorder.setCoinType(WalletType.FIAT);
-		 userorder.setCoinName(userwalletdto.getWalletName());
+		 userorder.setCoinName(userwalletdto.getCoinName());
 		 userorder.setNetAmount(userwalletdto.getAmount());
 		 userorder.setGrossAmount(userwalletdto.getAmount());
 		 userorder.setOrderType(OrderType.DEPOSIT);
@@ -162,29 +177,7 @@ public class SignUpService
 		 
 		 return "Deposit has done. Waiting for approval";
 	   }
-		 /*
-		 user=userrepository.findByUserId(userwalletdto.getUserId());
-		 
-		 if(user!=null)
-	{
-		 if(walletrepository.findByWalletType(userwalletdto.getWalletType())!=null)
-		 {
-			 int val=userwalletdto.getAmount();
-			 Wallet wallet=walletrepository.findByWalletType(userwalletdto.getWalletType());
-			 wallet.setBalance(val);
-			 walletrepository.save(wallet);
-			 return "amount deposited";
-			 
-		 }
-		 else
-			 return "wallettype doesnot available";
-		 
-		 
-	}
-	else
-		return "user doesnot exist";
-		 
-	*/	
+	
 		 
 	 }
 	 

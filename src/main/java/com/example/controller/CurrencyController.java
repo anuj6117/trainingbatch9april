@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.enums.WalletType;
 import com.example.model.Currency;
 import com.example.repository.CurrencyRepository;
 import com.example.repository.UserRepository;
@@ -60,7 +61,7 @@ private CurrencyRepository currencyrepository;
     }
 	catch(NullPointerException e)
 	{
-		String pattern="(?=.*[@#$%^&+=*])(?=\\S+$).{1,1}";
+		String pattern="(?=.*[@#$%^&+=*])(?=\\S+$).{1,10}";
 		
 	
 		//here null pointer maeans we can insert
@@ -135,6 +136,7 @@ private CurrencyRepository currencyrepository;
 		String coinName=currency.getCoinName().trim();
 		if(coinName.length()!=0)
 		{
+			currency.setCoinType(WalletType.CRYPTO);
 	     currencyrepository.save(currency);
 	     return "Your currency has been updated successfully";
 	    }else
@@ -147,9 +149,27 @@ private CurrencyRepository currencyrepository;
 public String deletecurrency(@RequestParam("coinId") Integer coinid)
 {
 	 //currency=currencyrepository.findByCoinId(coinid);
-	 currencyrepository.deleteById(coinid);
-	 //currencyrepository.delete(coinid);
-	 return "Your currency has been deleted successfully";
+	Currency currency=currencyrepository.findByCoinId(coinid);
+	if(currency!=null)
+	{
+	currencyrepository.deleteById(coinid);
+	return "Your currency has been deleted successfully";
+	}
+	else return "invalid coinId";
+	 
+}
+
+@GetMapping("/getcurrencybyid")
+public Currency getCurrenyById(@RequestParam("coinId") Integer coinid)
+{
+	Currency currency=currencyrepository.findByCoinId(coinid);
+	if(currency!=null)
+	{
+		return currency;
+	}
+	else
+		return null;
+	
 	
 }
 

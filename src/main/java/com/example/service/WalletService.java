@@ -46,10 +46,10 @@ public class WalletService
 	 if(user.getStatus()==UserStatus.ACTIVE)
 	 {
 	 Wallet wallet=new Wallet();
-	 wallet.setWalletType(userwalletdto.getWalletType());
-	 wallet.setWalletName(userwalletdto.getWalletName());
-	 wallet.setBalance(0);
-	 wallet.setShadowbalance(0);
+	 wallet.setCoinType(userwalletdto.getCoinType());
+	 wallet.setCoinName(userwalletdto.getCoinName());
+	 wallet.setBalance(0.0);
+	 wallet.setShadowbalance(0.0);
 	 wallet.setUser(user);
 	 walletrepository.save(wallet);
 	 return "wallet added in service";
@@ -77,7 +77,7 @@ public class WalletService
 		     {
 		    	 
 		   
-		    	 if(s.getWalletType()==WalletType.FIAT)
+		    	 if(s.getCoinType()==WalletType.FIAT)
 		    	 {
 		    		 wallet=s;
 		    		 s.setBalance(userorder.getGrossAmount());
@@ -89,7 +89,7 @@ public class WalletService
 			 transaction.setCoinType(WalletType.FIAT);
 			 transaction.setCoinName(userorder.getCoinName());
 			 transaction.setTransactionCreatedOn(date);
-			 transaction.setStatus(StatusType.APPROVED);
+			 transaction.setStatus(StatusType.COMPLETED);
 			 transaction.setDescription(walletApprovalDto.getDescription());
 			 transaction.setGrossAmount(userorder.getGrossAmount());
 			 transaction.setNetAmount(userorder.getNetAmount());
@@ -127,31 +127,43 @@ public class WalletService
  public String withdrawamount(UserWalletDto userwalletdto)
  {
 	 
-	 user=userrepository.findByUserId(userwalletdto.getUserId());
+	User user=userrepository.findByUserId(userwalletdto.getUserId());
 	
 	 if(user!=null )
   {
-	 if(walletrepository.findByWalletType(userwalletdto.getWalletType())!=null) 
-	 {
-		 int amount=userwalletdto.getAmount();
-		 Wallet wallet=walletrepository.findByWalletType(userwalletdto.getWalletType());
-		 int walletBalance=wallet.getBalance();
-		 if(walletBalance>=amount)
+		 if(userwalletdto.getCoinType()==WalletType.FIAT) 
 		 {
-		 wallet.setBalance(walletBalance-amount);
-		 walletrepository.save(wallet);
-		 return "amount withdrawl";
+	        Set<Wallet> wallett=user.getWallet();
+	        for(Wallet fiatWallet:wallett)
+	        {
+	        	if(fiatWallet.getCoinType()==WalletType.FIAT)
+	        	{
+	        		Double walletBalance=fiatWallet.getBalance();
+	        		Double amount=userwalletdto.getAmount();
+	   		     if(walletBalance>=amount)
+	   		     {
+	   		      fiatWallet.setBalance(walletBalance-amount);
+	   		      fiatWallet.setShadowbalance(walletBalance-amount);
+	   		      walletrepository.save(fiatWallet);
+	   		      return "Amount withdrawl";
+	   		     }
+	   		     else
+	   			   return "balance too low";
+	   	       
+	   		     
+	        	}
+	        	
+	        }
+		   // 
+		    //Wallet wallet=walletrepository.findByWalletType(userwalletdto.getWalletType());
+		    
 		 }
 		 else
-			 return "balance too low";
-	 }
-	 else
-		 return "wallettype doesnot available";
-	 
-	 
+			 return "Wrong wallet type for withdrawl";
   }
   else
 	 return "user doesnot exist";
+	return "";
 	 
 	
 	 

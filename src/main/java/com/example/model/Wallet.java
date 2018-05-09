@@ -23,12 +23,12 @@ public class Wallet
 @GeneratedValue(strategy=GenerationType.AUTO)
 private Integer id;
 @Enumerated(EnumType.STRING)
-private WalletType walletType;
+private WalletType coinType;
 
-private String walletName;
-private Integer balance;
+private String coinName;
+private Double balance;
 
-private Integer shadowbalance;
+private Double shadowbalance;
 
 @ManyToOne
 @JoinColumn(name="userId")
@@ -37,12 +37,21 @@ private Integer shadowbalance;
 
 
 
-public String getWalletName() {
-	return walletName;
+
+public WalletType getCoinType() {
+	return coinType;
 }
 
-public void setWalletName(String walletName) {
-	this.walletName = walletName;
+public void setCoinType(WalletType coinType) {
+	this.coinType = coinType;
+}
+
+public String getCoinName() {
+	return coinName;
+}
+
+public void setCoinName(String coinName) {
+	this.coinName = coinName;
 }
 
 public Integer getId() {
@@ -54,27 +63,21 @@ public void setId(Integer id) {
 }
 
 
-public WalletType getWalletType() {
-	return walletType;
-}
 
-public void setWalletType(WalletType walletType) {
-	this.walletType = walletType;
-}
 
-public Integer getBalance() {
+public Double getBalance() {
 	return balance;
 }
 
-public void setBalance(Integer balance) {
+public void setBalance(Double balance) {
 	this.balance = balance;
 }
 
-public Integer getShadowbalance() {
+public Double getShadowbalance() {
 	return shadowbalance;
 }
 
-public void setShadowbalance(Integer shadowbalance) {
+public void setShadowbalance(Double shadowbalance) {
 	this.shadowbalance = shadowbalance;
 }
 

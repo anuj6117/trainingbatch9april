@@ -6,6 +6,7 @@ import java.util.Set;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
+import com.example.model.User;
 import com.example.model.UserOrder;
 
 public interface OrderRepository extends JpaRepository<UserOrder,Integer> {
@@ -20,4 +21,5 @@ public interface OrderRepository extends JpaRepository<UserOrder,Integer> {
 	UserOrder maxList(String orderType,String status);*/
 /*	 @Query(value="SELECT * FROM currency  WHERE price=?1 ",nativeQuery=true)
 	   Currency myPrice(Integer price);*/
+	UserOrder findByUser(User user);
 }

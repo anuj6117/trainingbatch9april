@@ -5,8 +5,8 @@ import com.example.enums.WalletType;
 public class UserOrderDto
 {
  private Integer userId;
- private Integer coinQuantity;
- private Integer price;
+ private Double coinQuantity;
+ private Double price;
  private String coinName;
 /* private WalletType coinType;
  
@@ -17,26 +17,31 @@ public WalletType getCoinType() {
 public void setCoinType(WalletType coinType) {
 	this.coinType = coinType;
 }*/
+
+ 
+public String getCoinName() {
+	return coinName;
+}
+
 public Integer getUserId() {
 	return userId;
 }
+
 public void setUserId(Integer userId) {
 	this.userId = userId;
 }
-public Integer getCoinQuantity() {
+
+public Double getCoinQuantity() {
 	return coinQuantity;
 }
-public void setCoinQuantity(Integer coinQuantity) {
+public void setCoinQuantity(Double coinQuantity) {
 	this.coinQuantity = coinQuantity;
 }
-public Integer getPrice() {
+public Double getPrice() {
 	return price;
 }
-public void setPrice(Integer price) {
+public void setPrice(Double price) {
 	this.price = price;
-}
-public String getCoinName() {
-	return coinName;
 }
 public void setCoinName(String coinName) {
 	this.coinName = coinName;

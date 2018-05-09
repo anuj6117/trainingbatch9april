@@ -27,15 +27,18 @@ public class Currency
   
   private String symbol;
  
-  private Integer initialSupply;
+  private Double initialSupply;
 
-  private Integer price;
-  private Integer fees;
-  private Integer profit;
-  private Integer coinInINR;
+  private Double price;
+  private Double fees;
+  private Double profit;
+  private Double coinInINR;
   
   public void setCoinId(Integer coinId) {
 	this.coinId = coinId;
+}
+  public Integer getCoinId() {
+		return coinId;
 }
 public WalletType getCoinType() {
 	return coinType;
@@ -43,31 +46,6 @@ public WalletType getCoinType() {
 public void setCoinType(WalletType coinType) {
 	this.coinType = coinType;
 }
-public Integer getFees() {
-	return fees;
-}
-public void setFees(Integer fees) {
-	this.fees = fees;
-}
-public Integer getProfit() {
-	return profit;
-}
-public void setProfit(Integer profit) {
-	this.profit = profit;
-}
-public Integer getCoinInINR() {
-	return coinInINR;
-}
-public void setCoinInINR(Integer coinInINR) {
-	this.coinInINR = coinInINR;
-}
-public Integer getCoinId() {
-	return coinId;
-}
-public void setCurrencyId(Integer coinId) {
-	this.coinId = coinId;
-}
-
 
 public String getCoinName() {
 	return coinName;
@@ -81,17 +59,39 @@ public String getSymbol() {
 public void setSymbol(String symbol) {
 	this.symbol = symbol;
 }
-public Integer getInitialSupply() {
+public Double getInitialSupply() {
 	return initialSupply;
 }
-public void setInitialSupply(Integer initialSupply) {
+public void setInitialSupply(Double initialSupply) {
 	this.initialSupply = initialSupply;
 }
-public Integer getPrice() {
+public Double getPrice() {
 	return price;
 }
-public void setPrice(Integer price) {
+public void setPrice(Double price) {
 	this.price = price;
 }
+public Double getFees() {
+	return fees;
+}
+public void setFees(Double fees) {
+	this.fees = fees;
+}
+public Double getProfit() {
+	return profit;
+}
+public void setProfit(Double profit) {
+	this.profit = profit;
+}
+public Double getCoinInINR() {
+	return coinInINR;
+}
+public void setCoinInINR(Double coinInINR) {
+	this.coinInINR = coinInINR;
+}
+
+
+
+
  	
 }

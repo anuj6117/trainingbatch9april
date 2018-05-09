@@ -15,8 +15,8 @@ public class CurrencyService
 	public String addCurrency(Currency currency)
 	{
 		System.out.println("...................................");
-		currency.setCoinInINR(0);
-		currency.setProfit(0);
+		currency.setCoinInINR(0.0);
+		currency.setProfit(0.0);
 		  currencyrepository.save(currency);
 		  return "Your coin has been added successfully";
 	  	

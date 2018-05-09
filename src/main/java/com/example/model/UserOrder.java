@@ -29,11 +29,11 @@ public class UserOrder
 	private String coinName;
 	@Enumerated(EnumType.STRING)
 	private WalletType coinType;
-	private Integer coinQuantity;
-	private Integer price;
-	private Integer fees;
-	private Integer netAmount;
-	private Integer grossAmount;
+	private Double coinQuantity;
+	private Double price;
+	private Double fees;
+	private Double netAmount;
+	private Double grossAmount;
 	private String orderCreatedOn;
 	@Enumerated(EnumType.STRING)
 	private StatusType statusType;
@@ -57,25 +57,39 @@ public class UserOrder
 public void setCoinType(WalletType coinType) {
 	this.coinType = coinType;
 }
-public Integer getFees() {
+	
+
+
+	public Double getCoinQuantity() {
+	return coinQuantity;
+}
+public Double getPrice() {
+	return price;
+}
+	public Double getFees() {
 	return fees;
 }
-public void setFees(Integer fees) {
+public void setFees(Double fees) {
 	this.fees = fees;
 }
-public Integer getNetAmount() {
+public Double getNetAmount() {
 	return netAmount;
 }
-public void setNetAmount(Integer netAmount) {
+public void setNetAmount(Double netAmount) {
 	this.netAmount = netAmount;
 }
-public Integer getGrossAmount() {
+public Double getGrossAmount() {
 	return grossAmount;
 }
-public void setGrossAmount(Integer grossAmount) {
+public void setGrossAmount(Double grossAmount) {
 	this.grossAmount = grossAmount;
 }
-	
+public void setCoinQuantity(Double coinQuantity) {
+	this.coinQuantity = coinQuantity;
+}
+public void setPrice(Double price) {
+	this.price = price;
+}
 	public Integer getOrderId() {
 	return orderId;
 }
@@ -95,12 +109,7 @@ public void setOrderId(Integer orderId) {
 		this.coinName = coinName;
 	}
 	
-	public Integer getCoinQuantity() {
-		return coinQuantity;
-	}
-	public void setCoinQuantity(Integer coinQuantity) {
-		this.coinQuantity = coinQuantity;
-	}
+
 	
 	
 	public String getOrderCreatedOn() {
@@ -109,12 +118,7 @@ public void setOrderId(Integer orderId) {
 	public void setOrderCreatedOn(String orderCreatedOn) {
 		this.orderCreatedOn = orderCreatedOn;
 	}
-	public Integer getPrice() {
-		return price;
-	}
-	public void setPrice(Integer price) {
-		this.price = price;
-	}
+	
 	/*public Date getOrderCcreatedOn() {
 		return orderCcreatedOn;
 	}

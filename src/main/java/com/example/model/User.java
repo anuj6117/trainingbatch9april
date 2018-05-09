@@ -32,14 +32,14 @@ public class User
 	private Integer userId;
 
 	
-	@Size(min=1,max=25,message="name should be less than equal to 25")
+	//@Size(min=1,max=25,message="name should be less than equal to 25")
 	private String userName;//@NotNull
-	@Email
+	
 	private String email;//@Column(unique=true)
 	
-	@Size(min=10,max=10,message="phonenumber length should be 10 only")
+	//@Size(min=10,max=10,message="phonenumber length should be 10 only")
 	private String phoneNumber;//@Column(unique=true)
-	@Size(min=8,max=32)
+	//@Size(min=8,max=32)
 	private String password;
 	@NotNull
 	private String country;
