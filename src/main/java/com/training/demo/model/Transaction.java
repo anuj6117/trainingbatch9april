@@ -79,8 +79,8 @@ public class Transaction {
 	public WalletType getCoinType() {
 		return coinType;
 	}
-	public void setCoinType(WalletType coinType) {
-		this.coinType = coinType;
+	public void setCoinType(WalletType walletType) {
+		this.coinType = walletType;
 	}
 	public String getCoinName() {
 		return coinName;

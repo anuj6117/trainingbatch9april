@@ -109,10 +109,8 @@ public class WalletService {
 	public String depositAmount(OrderDto orderDto) {
 		User user ;
 		
-		try {
-		user = userRepository.findByUserId(orderDto.getUserId());
-		}
-		catch(Exception e)
+		
+		if((user = userRepository.findByUserId(orderDto.getUserId())) == null)
 		{
 			return "invalid user id.";
 		}

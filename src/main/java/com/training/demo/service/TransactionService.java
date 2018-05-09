@@ -119,7 +119,11 @@ public class TransactionService {
 				{
 					sellerOrder = sellerIterator.next();
 					
-					if(sellerOrder.getPrice() <= coinManagement.getPrice() && sellerOrder.getPrice() <= buyerOrder.getPrice() && buyerOrder.getUser().getUserId() != sellerOrder.getUser().getUserId() && buyerOrder.getOrderStatus().equals(OrderStatus.PENDING))
+					if(sellerOrder.getPrice() <= coinManagement.getPrice() 
+							&& sellerOrder.getPrice() <= buyerOrder.getPrice() 
+							&& buyerOrder.getUser().getUserId() != sellerOrder.getUser().getUserId() 
+							&& buyerOrder.getOrderStatus().equals(OrderStatus.PENDING)
+							)
 					{
 						if(sellerOrder.getCoinQuantity() == buyerOrder.getCoinQuantity())
 						{
@@ -150,13 +154,20 @@ public class TransactionService {
 							coinManagement.setProfit(fees);
 							
 							buyerOrder.setCoinQuantity(buyerOrder.getCoinQuantity()-sellerOrder.getCoinQuantity());
-							buyerOrder.setOrderStatus(OrderStatus.COMPLETED);
-							sellerOrder.setOrderStatus(OrderStatus.COMPLETED);
+							buyerOrder.setOrderStatus(OrderStatus.APPROVED);
+							sellerOrder.setOrderStatus(OrderStatus.APPROVED);
 							
 							this.sellerBuyerUpdate(sellerFiatWallet, sellerCryptoWallet, buyerFiatWallet, buyerCryptoWallet, coinManagement, buyerOrder, sellerOrder);
-							this.createSellerTransaction(buyerOrder, sellerOrder, buyerCryptoWallet.getCoinType());
-					
-							return "Both buyer and seller Transaction is completed.";
+//							this.createSellerTransaction(buyerOrder, sellerOrder, buyerCryptoWallet.getCoinType());
+	
+							this.createTransaction(buyerOrder.getUser().getUserId(), buyerOrder.getCoinName(), buyerOrder.getCoinQuantity(),
+									WalletType.CRYPTO, "Buyer transaction is completed from seller side.", buyerOrder.getPrice(),
+										buyerOrder.getFees(), buyerOrder.getNetAmount(), buyerOrder.getGrossAmount(), sellerOrder.getUser().getUserId(), OrderStatus.COMPLETED);	
+							System.out.println("Both buyer and seller Transaction is completed.");
+							
+							//return "Both buyer and seller Transaction is completed.";
+		
+							break;
 						}
 						if(sellerOrder.getCoinQuantity() < buyerOrder.getCoinQuantity()) 
 						{
@@ -175,8 +186,9 @@ public class TransactionService {
 							sellerFiatWallet.setShadowBalance(sellerFiatShadowBal+sellerOrder.getGrossAmount());
 							sellerCryptoWallet.setBalance(sellerCryptoMainBal-sellerOrder.getCoinQuantity());
 							
-							Double fees = (sellerOrder.getGrossAmount() * (coinManagement.getFees()/100));
-							Double AmountAndFee = sellerOrder.getGrossAmount()+fees;
+							Double netAmount = sellerOrder.getNetAmount();
+							Double fees = (netAmount * (coinManagement.getFees()/100));
+							Double AmountAndFee = netAmount+fees;
 							
 							buyerFiatWallet.setBalance(buyerFiatMainBal - AmountAndFee);
 							buyerCryptoWallet.setBalance(buyerCryptoMainBal+sellerOrder.getCoinQuantity());
@@ -192,12 +204,18 @@ public class TransactionService {
 							buyerOrder.setNetAmount(buyerOrder.getNetAmount()-sellerOrder.getGrossAmount());
 							buyerOrder.setOrderStatus(OrderStatus.PENDING);
 							
-							sellerOrder.setOrderStatus(OrderStatus.COMPLETED);
+							sellerOrder.setOrderStatus(OrderStatus.APPROVED);
 							
 							this.sellerBuyerUpdate(sellerFiatWallet, sellerCryptoWallet, buyerFiatWallet, buyerCryptoWallet, coinManagement, buyerOrder, sellerOrder);
-							this.createSellerTransaction(buyerOrder, sellerOrder, buyerCryptoWallet.getCoinType());
-							
-							return "seller Transaction is pending and buyer completed.";
+//							this.createSellerTransaction(buyerOrder, sellerOrder, buyerCryptoWallet.getCoinType());
+	
+							this.createTransaction(buyerOrder.getUser().getUserId(), buyerOrder.getCoinName(), sellerOrder.getCoinQuantity(),
+									WalletType.CRYPTO, "Buyer transaction is completed from seller side.", buyerOrder.getPrice(),
+										fees, netAmount, AmountAndFee, sellerOrder.getUser().getUserId(), OrderStatus.APPROVED);	
+
+							System.out.println("seller completed and buyer Transaction is pending.");
+							//return "seller Transaction is completed and buyer pending.";
+				
 						}
 			
 						if(sellerOrder.getCoinQuantity() > buyerOrder.getCoinQuantity())
@@ -225,25 +243,29 @@ public class TransactionService {
 							buyerCryptoWallet.setShadowBalance(buyerCryptoShadowBal+buyerOrder.getCoinQuantity());
 							
 							coinManagement.setCoinInINR(buyerOrder.getPrice()*buyerOrder.getCoinQuantity() - sellerOrder.getPrice()*buyerOrder.getCoinQuantity());
-							//coinManagement.setExchangeRate(buyerOrder.getPrice());
 							coinManagement.setProfit(fees);
 							
 							sellerOrder.setCoinQuantity(sellerOrder.getCoinQuantity()-buyerOrder.getCoinQuantity());
 							sellerOrder.setNetAmount(sellerOrder.getNetAmount()-buyerOrder.getNetAmount());
 							sellerOrder.setGrossAmount(sellerOrder.getGrossAmount()-buyerOrder.getNetAmount());
-							buyerOrder.setOrderStatus(OrderStatus.COMPLETED);
+							buyerOrder.setOrderStatus(OrderStatus.APPROVED);
 							sellerOrder.setOrderStatus(OrderStatus.PENDING);
 							
 							this.sellerBuyerUpdate(sellerFiatWallet, sellerCryptoWallet, buyerFiatWallet, buyerCryptoWallet, coinManagement, buyerOrder, sellerOrder);
-							this.createSellerTransaction(buyerOrder, sellerOrder, buyerCryptoWallet.getCoinType());	
-						
-							return "buyer Transaction is completed but seller is pending.";
+							
+							this.createTransaction(buyerOrder.getUser().getUserId(), buyerOrder.getCoinName(), buyerOrder.getCoinQuantity(),
+									WalletType.CRYPTO, "Buyer transaction is completed from seller side.", buyerOrder.getPrice(),
+										buyerOrder.getFees(), buyerOrder.getNetAmount(), buyerOrder.getGrossAmount(), sellerOrder.getUser().getUserId(), OrderStatus.COMPLETED);	
+									
+							System.out.println("buyer Transaction is completed but seller is pending.");
+							//return "buyer Transaction is completed but seller is pending.";
 						}
 					}
 				}
 			}
-			if(buyerOrder.getOrderStatus().equals(OrderStatus.PENDING)) 
+			if(buyerOrder.getOrderStatus().equals(OrderStatus.PENDING) && coinManagement.getInitialSupply() > 0) 
 			{
+				Integer adminId = 0;
 				if(coinManagement.getInitialSupply() == buyerOrder.getCoinQuantity() && buyerOrder.getPrice() >= coinManagement.getPrice())
 				{									
 					Double initSupply = coinManagement.getInitialSupply();
@@ -252,98 +274,110 @@ public class TransactionService {
 					Double buyerFiatMainBal = buyerFiatWallet.getBalance();
 					Double buyerCryptoMainBal = buyerCryptoWallet.getBalance();
 					Double buyerCryptoShadowBal = buyerCryptoWallet.getShadowBalance();
-					
 					Double AmountAndFee = buyerOrder.getGrossAmount();
 					
+					//WALLET UPGRADATIONS
 					buyerFiatWallet.setBalance(buyerFiatMainBal - AmountAndFee);
 					buyerCryptoWallet.setBalance(buyerCryptoMainBal+buyerOrder.getCoinQuantity());
 					buyerCryptoWallet.setShadowBalance(buyerCryptoShadowBal+buyerOrder.getCoinQuantity());
 					
+					//COIN MANAGEMENT UPGRADATIONS
 					coinManagement.setInitialSupply(initSupply);
-					coinManagement.setCoinInINR(buyerOrder.getPrice()*buyerOrder.getCoinQuantity() - coinManagement.getPrice()*buyerOrder.getCoinQuantity());
-					//coinManagement.setExchangeRate(buyerOrder.getPrice());
-					coinManagement.setProfit(buyerOrder.getFees());
+					coinManagement.setCoinInINR(coinManagement.getCoinInINR()+(buyerOrder.getPrice()*buyerOrder.getCoinQuantity() - coinManagement.getPrice()*buyerOrder.getCoinQuantity()));
+					coinManagement.setProfit(coinManagement.getFees()+buyerOrder.getFees());
 					
-					buyerOrder.setOrderStatus(OrderStatus.COMPLETED);
+					// ORDER UPGRADATIONS
+					buyerOrder.setOrderStatus(OrderStatus.APPROVED);
 					
 					this.adminBuyerUpdate(buyerFiatWallet, buyerCryptoWallet, coinManagement, buyerOrder);
-					this.createAdminTransaction(buyerOrder, buyerCryptoWallet.getCoinType());
 					
-					return "Buyer transaction is completed from coinManagement";
+					this.createTransaction(buyerOrder.getUser().getUserId(), buyerOrder.getCoinName(), buyerOrder.getCoinQuantity(),
+							WalletType.CRYPTO, "Buyer transaction is completed from coinManagement", buyerOrder.getPrice(),
+								buyerOrder.getFees(), buyerOrder.getNetAmount(), buyerOrder.getGrossAmount(), adminId, OrderStatus.APPROVED);
+					
+					System.out.println("Buyer transaction is completed from coinManagement");
+					//return "Buyer transaction is completed from coinManagement";
 
 				}
+				
+				//////////////////////////////////////////////////
+		////// CORRECTED
+				////////////////////////////////////////////////
+				
 				if(coinManagement.getInitialSupply() < buyerOrder.getCoinQuantity() && buyerOrder.getPrice() >= coinManagement.getPrice())
 				{
 					Double initSupply = coinManagement.getInitialSupply();
-						
-				
 					Double buyerFiatMainBal = buyerFiatWallet.getBalance();
 					Double buyerCryptoMainBal = buyerCryptoWallet.getBalance();
 					Double buyerCryptoShadowBal = buyerCryptoWallet.getShadowBalance();
-					
-					Double fees = ((initSupply*buyerOrder.getPrice())*(coinManagement.getFees()/100));
-					Double AmountAndFee = initSupply * buyerOrder.getPrice()+fees;
+					Double netAmount = (initSupply*buyerOrder.getPrice());
+					Double fees = (netAmount*(coinManagement.getFees()/100));
+					Double grossAmount = (initSupply * buyerOrder.getPrice())+fees;
 										
-					buyerFiatWallet.setBalance(buyerFiatMainBal - AmountAndFee);
+					//WALLET UPGRADATION
+					buyerFiatWallet.setBalance(buyerFiatMainBal - grossAmount);
 					buyerCryptoWallet.setBalance(buyerCryptoMainBal+initSupply);
 					buyerCryptoWallet.setShadowBalance(buyerCryptoShadowBal+initSupply);
 					
-					buyerOrder.setCoinQuantity(buyerOrder.getCoinQuantity()-initSupply);
-					buyerOrder.setNetAmount(buyerOrder.getNetAmount()-(initSupply * buyerOrder.getPrice()));
-					buyerOrder.setGrossAmount(buyerOrder.getGrossAmount()-AmountAndFee);
+					//ORDER TABLE UPGRADATION
+					buyerOrder.setCoinQuantity(buyerOrder.getCoinQuantity()-initSupply);			
+					buyerOrder.setNetAmount(buyerOrder.getNetAmount()-netAmount);					
+					buyerOrder.setFees(buyerOrder.getFees()-fees);										
+					buyerOrder.setGrossAmount(buyerOrder.getGrossAmount()-grossAmount);
 					buyerOrder.setOrderStatus(OrderStatus.PENDING);
+										
+					//COIN TABLE UPGRADATION
+					coinManagement.setCoinInINR(coinManagement.getCoinInINR()+(buyerOrder.getPrice()*initSupply - coinManagement.getPrice()*initSupply));
+					coinManagement.setInitialSupply(0d);
+					coinManagement.setProfit(coinManagement.getProfit()+fees);
 					
-					coinManagement.setCoinInINR(buyerOrder.getPrice()*initSupply - coinManagement.getPrice()*initSupply);
-							initSupply = 0d;
-					coinManagement.setInitialSupply(initSupply);
-					//coinManagement.setExchangeRate(buyerOrder.getPrice());
-					coinManagement.setProfit(buyerOrder.getFees());
-				
 					this.adminBuyerUpdate(buyerFiatWallet, buyerCryptoWallet, coinManagement, buyerOrder);
-					this.createAdminTransaction(buyerOrder, buyerCryptoWallet.getCoinType());	
+					
+					this.createTransaction(buyerOrder.getUser().getUserId(), buyerOrder.getCoinName(), initSupply,
+							WalletType.CRYPTO, "Buyer transaction is pending because of insufficient coin in currency.", buyerOrder.getPrice(),
+								fees, netAmount, grossAmount, adminId, OrderStatus.APPROVED);		
 
-					return "Buyer transaction is pending due to insufficient coins in transaction";
+					System.out.println("Buyer transaction is pending due to insufficient coins in transaction");
+					//return "Buyer transaction is pending due to insufficient coins in transaction";
 				}
 
-				if(coinManagement.getInitialSupply() > buyerOrder.getCoinQuantity() && buyerOrder.getPrice() >= coinManagement.getPrice())
+				//////////////////////////////////////////////////
+		////// CORRECTED
+				////////////////////////////////////////////////
+							
+				if(coinManagement.getInitialSupply() >= buyerOrder.getCoinQuantity() && buyerOrder.getPrice() >= coinManagement.getPrice())
 				{
-					Double initSupply = coinManagement.getInitialSupply();
-					System.out.println("hhhhhhhhhhhhhhhhhhhhhhhhhh"+buyerFiatWallet);
-					System.out.println("hhhhhhhhhhhhhhhhhhhhhhhhhiiiiiiiiiiiiiiiiiiih"+buyerFiatWallet.getBalance());
-
-					System.out.println("alalslslslsllslslssssssssssssssssssssssssslslslslsllllllllllllllllllll");	
+					Double initSupply = coinManagement.getInitialSupply();	
 					Double buyerFiatMainBal = buyerFiatWallet.getBalance();
-					
-					System.out.println(buyerFiatWallet.getUser().getUserId()+":::::::::::::::::::"+buyerFiatMainBal);
 					Double buyerCryptoMainBal = buyerCryptoWallet.getBalance();
 					
-					System.out.println(":::::::::::::::buyer crypto wallet balance "+buyerCryptoMainBal);
-					Double buyerCryptoShadowBal = buyerCryptoWallet.getShadowBalance();
-
-					//Double fees = ((initSupply*buyerOrder.getPrice())*(coinManagement.getFees()/100));
-					//Double AmountAndFee = initSupply * buyerOrder.getPrice()+fees;
-										
+					//WALLET UPGRADATION
 					buyerFiatWallet.setBalance(buyerFiatMainBal - buyerOrder.getGrossAmount());
+					Double buyerCryptoShadowBal = buyerCryptoWallet.getShadowBalance();
 					buyerCryptoWallet.setBalance(buyerCryptoMainBal+buyerOrder.getCoinQuantity());
 					buyerCryptoWallet.setShadowBalance(buyerCryptoShadowBal+buyerOrder.getCoinQuantity());
 					
-					buyerOrder.setOrderStatus(OrderStatus.COMPLETED);
+					//ORDER UPGRADATION
+					buyerOrder.setOrderStatus(OrderStatus.APPROVED);					
 					
-					coinManagement.setCoinInINR(buyerOrder.getPrice()*buyerOrder.getCoinQuantity() - coinManagement.getPrice()*buyerOrder.getCoinQuantity());
+					//COIN MANAGEMENT UPGRADATION
+					coinManagement.setCoinInINR(coinManagement.getCoinInINR()+(buyerOrder.getNetAmount() - coinManagement.getPrice()*buyerOrder.getCoinQuantity()));
 					initSupply = initSupply - buyerOrder.getCoinQuantity();
 					coinManagement.setInitialSupply(initSupply);
-					//coinManagement.setExchangeRate(buyerOrder.getPrice());
-					coinManagement.setProfit(buyerOrder.getFees());
-				
+					coinManagement.setProfit(coinManagement.getProfit()+buyerOrder.getFees());
+
 					this.adminBuyerUpdate(buyerFiatWallet, buyerCryptoWallet, coinManagement, buyerOrder);
-					this.createAdminTransaction(buyerOrder, buyerCryptoWallet.getCoinType());	
+					this.createTransaction(buyerOrder.getUser().getUserId(), buyerOrder.getCoinName(), buyerOrder.getCoinQuantity(),
+							WalletType.CRYPTO, "Buyer transaction is completed from coinManagement", buyerOrder.getPrice(),
+								buyerOrder.getFees(), buyerOrder.getNetAmount(), buyerOrder.getGrossAmount(), adminId, OrderStatus.APPROVED);	
 					
-					return "Buyer transaction is completed from coinManagement because it has enough coins.";
+					System.out.println("Buyer transaction is completed from coinManagement because it has enough coins.");
+					//return "Buyer transaction is completed from coinManagement because it has enough coins.";
 				}
 				
 			}
 		}
-		return "Didn't find any matching transactions.";
+		return "TRANSACTIONS COMPLETED.";
 	}
 	
 	public void adminBuyerUpdate(Wallet buyerFiatWallet, Wallet buyerCryptoWallet, CoinManagement coinManagement,OrderTable buyerOrder)
@@ -366,39 +400,23 @@ public class TransactionService {
 		coinRepository.save(coinManagement);
 
 	}
-
-	public void createAdminTransaction(OrderTable buyerOrder,String buyerWalletType) 
-	{
-			Transaction transaction = new Transaction();
-			transaction.setBuyerId(buyerOrder.getUser().getUserId());
-			transaction.setCoinName(buyerOrder.getCoinName());
-			transaction.setCoinQuantity(buyerOrder.getCoinQuantity());
-			transaction.setCoinType(WalletType.valueOf(buyerWalletType));
-			transaction.setDescription("Admin has sold his coins.");
-			transaction.setExchangeRate(buyerOrder.getPrice());
-			transaction.setFees(buyerOrder.getFees());
-			transaction.setGrossAmount(buyerOrder.getGrossAmount());
-			transaction.setNetAmount(buyerOrder.getNetAmount());
-			transaction.setTransactionCreatedOn(new Date());
-			transaction.setTransactionStatus(buyerOrder.getOrderStatus());
-			transactionRepository.save(transaction);	
-	}
 	
-		public void createSellerTransaction(OrderTable buyerOrder, OrderTable sellerOrder,String buyerWalletType) 
+		public void createTransaction(Integer buyerId, String coinName, Double coinQuantity, WalletType coinType, String description, 
+				Double exchangeRate, Double fees, Double netAmount, Double grossAmount, Integer sellerId, OrderStatus orderStatus) 
 		{
 			Transaction transaction = new Transaction();
-			transaction.setBuyerId(buyerOrder.getUser().getUserId());
-			transaction.setCoinName(sellerOrder.getCoinName());
-			transaction.setCoinQuantity(sellerOrder.getCoinQuantity());
-			transaction.setCoinType(WalletType.valueOf(buyerWalletType));
-			transaction.setDescription("Seller has sold his coins.");
-			transaction.setExchangeRate(buyerOrder.getPrice());
-			transaction.setFees(buyerOrder.getFees());
-			transaction.setGrossAmount(buyerOrder.getGrossAmount());
-			transaction.setNetAmount(buyerOrder.getNetAmount());
-			transaction.setSellerId(sellerOrder.getUser().getUserId());
+			transaction.setBuyerId(buyerId);
+			transaction.setCoinName(coinName);
+			transaction.setCoinQuantity(coinQuantity);
+			transaction.setCoinType(coinType);
+			transaction.setDescription(description);
+			transaction.setExchangeRate(exchangeRate);
+			transaction.setFees(fees);
+			transaction.setNetAmount(netAmount);
+			transaction.setGrossAmount(grossAmount);
+			transaction.setSellerId(sellerId);
 			transaction.setTransactionCreatedOn(new Date());
-			transaction.setTransactionStatus(buyerOrder.getOrderStatus());
+			transaction.setTransactionStatus(orderStatus);
 			transactionRepository.save(transaction);		
 		}	
 		
@@ -407,5 +425,4 @@ public class TransactionService {
 			return transactions;			
 		}
 		
-	
 }			

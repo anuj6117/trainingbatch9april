@@ -181,6 +181,10 @@ public class OrderService {
 	public String createBuyOrder(SellBuyTransactionDto sellBuyTransactionDto)
 	{
 	
+			if(sellBuyTransactionDto.getCoinQuantity()<=0)
+			{
+				return "coin quantity can not be 0 or less.";
+			}
 			boolean flag = false;
 
 			Integer userId = sellBuyTransactionDto.getUserId();
@@ -188,6 +192,7 @@ public class OrderService {
 			User user;
 			CoinManagement coinManagement; 
 			Double shadowBalance = 0.0;
+			Wallet fiatWallet = null;
 			Wallet tempWallet = null;
 			Set<Wallet> wallets ;
 			Iterator<Wallet> iterator ;
@@ -209,8 +214,8 @@ public class OrderService {
 					}
 				 
 					if(tempWallet.getCoinType().equals(WalletType.FIAT.toString()))
-					{
-						shadowBalance = tempWallet.getShadowBalance();
+					{	fiatWallet = tempWallet;
+						shadowBalance = fiatWallet.getShadowBalance();
 						System.out.println("11111111111111111111111111111111111"+shadowBalance);
 					}					
 				}
@@ -240,7 +245,7 @@ public class OrderService {
 			System.out.println(quantity+" = quantity");
 			Double netAmount = (quantity * price);
 			System.out.println(netAmount+" = netAmount");
-			fees = (netAmount * (fees/100));
+			fees = ((netAmount * fees)/100);
 			System.out.println(fees+" = fees");
 			Double grossAmount = (netAmount + fees);
 			System.out.println(grossAmount+" = GrossAmount");
@@ -262,23 +267,8 @@ public class OrderService {
 				orderRepository.save(tempOrderTable);
 				shadowBalance = (shadowBalance - grossAmount);
 				System.out.println(shadowBalance);
-				tempWallet.setShadowBalance(shadowBalance);
+				fiatWallet.setShadowBalance(shadowBalance);
 				walletRepository.save(tempWallet);
-				
-				while(iterator.hasNext()) {
-					 tempWallet = iterator.next();
-						if(tempWallet.getCoinType().equals(WalletType.CRYPTO.toString()) 
-								&& tempWallet.getCoinName().equals(sellBuyTransactionDto.getCoinName()))
-						{
-							shadowBalance = tempWallet.getShadowBalance();
-							System.out.println("11111111111111111111111111111111111"+shadowBalance);
-							break;
-						}					
-					}
-				shadowBalance = shadowBalance + sellBuyTransactionDto.getCoinQuantity();
-				tempWallet.setShadowBalance(shadowBalance);
-				walletRepository.save(tempWallet);
-				
 				return "Your Order Has Been  placed successfully, Wait for Approval.";
 			}
 			else if(shadowBalance < grossAmount)
@@ -294,6 +284,12 @@ public class OrderService {
 	
 	public String createSellOrder(SellBuyTransactionDto sellBuyTransactionDto)
 	{ 
+		
+		if(sellBuyTransactionDto.getCoinQuantity()<=0)
+		{
+			return "coin quantity can not be 0 or less.";
+		}
+		
 		Integer userId = sellBuyTransactionDto.getUserId();
 		boolean flag = false;
 		Double shadowBalance= 0.0;
