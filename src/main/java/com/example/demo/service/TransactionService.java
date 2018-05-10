@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.example.demo.enums.OrderStatus;
+import com.example.demo.enums.OrderType;
 import com.example.demo.enums.WalletType;
 import com.example.demo.model.CoinManagement;
 import com.example.demo.model.Order;
@@ -349,6 +350,7 @@ public class TransactionService
 			transaction.setCoinQuantity(buyerOrder.getCoinQuantity());
 			transaction.setCoinType(buyerWalletType);
 			transaction.setDescription("Admin has sold his coins.");
+			//transaction.setOrderType(OrderType.);
 			transaction.setExchangeRate(buyerOrder.getPrice());
 			transaction.setGrossAmount(buyerOrder.getGrossAmount());
 			transaction.setNetAmount(buyerOrder.getNetAmount());

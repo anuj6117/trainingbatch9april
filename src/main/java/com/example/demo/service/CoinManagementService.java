@@ -109,7 +109,8 @@ public class CoinManagementService {
 			coinManagement.setPrice(price);
 			coinManagement.setInitialSupply(initialSupply);
 			coinManagement.setFee(fee);
-			//Double initialSupply1=coinManagement.getInitialSupply();
+			coinManagement.setProfit(0.0);
+			coinManagement.setExchangeRate(0.0);
 			coinManagement.setCoinInInr(0.0);
 			coinManagementRepository.save(coinManagement);
 			

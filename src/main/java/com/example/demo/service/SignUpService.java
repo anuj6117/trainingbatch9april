@@ -83,7 +83,7 @@ public class SignUpService
 				return result;
 			}
 			
-			if(!(Pattern.compile("^[a-zA-Z0-9\\s\\\\._\\\\-]{3,25}$").matcher(userName).matches())) 
+			if(!(Pattern.compile("^[a-zA-Z0-9\\s\\\\_\\\\-]{3,25}$").matcher(userName).matches())) 
 			{
 				result.put("isSuccess", false);
 				result.put("message", "Special character is not allowed in username or length should not exceed 25 character.");
