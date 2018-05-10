@@ -319,8 +319,13 @@ public class OrderService {
 		tempOrderTable.setUser(user);
 		tempOrderTable.setCoinName((sellBuyTransactionDto.getCoinName()));
 		tempOrderTable.setCoinQuantity(sellBuyTransactionDto.getCoinQuantity());
+		tempOrderTable.setNetAmount(sellBuyTransactionDto.getCoinQuantity()*sellBuyTransactionDto.getPrice());
+		tempOrderTable.setGrossAmount(sellBuyTransactionDto.getCoinQuantity()*sellBuyTransactionDto.getPrice());
+		tempOrderTable.setPrice(sellBuyTransactionDto.getPrice());
+		tempOrderTable.setFees(0d);
+		tempOrderTable.setOrderCreatedOn(new Date());
+		tempOrderTable.setOrderType(OrderType.SELLER);
 		tempOrderTable.setOrderStatus(OrderStatus.PENDING);
-		tempOrderTable.setFees(fees);
 		orderRepository.save(tempOrderTable);
 		wallet.setShadowBalance(shadowBalance);
 		walletRepository.save(wallet);
