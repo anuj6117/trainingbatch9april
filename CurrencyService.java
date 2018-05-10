@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.regex.Pattern;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -81,19 +80,19 @@ public class CurrencyService {
 			result.put("message", "Symbol Already Exist");
 			return result;
 		}
-		if(currency.getFees() == null) {
+		if(currency.getFees() == null && currency.getFees() >= 0) {
 			result.put("isSuccess", false);
-			result.put("message", "Fees can't be null.");
+			result.put("message", "Fees can't be null or negative");
 			return result;
 		}
-		if(currency.getInitialSupply() == null) {
+		if(currency.getInitialSupply() == null && currency.getInitialSupply() >= 0) {
 			result.put("isSuccess", false);
-			result.put("message", "Initial Supply can't be null.");
+			result.put("message", "Initial Supply can't be null or negative");
 			return result;
 		}
-		if(currency.getPrice() == null) {
+		if(currency.getPrice() == null && currency.getPrice() >= 0) {
 			result.put("isSuccess", false);
-			result.put("message", "Price can't be null.");
+			result.put("message", "Price can't be null or negative");
 			return result;
 		}
 			currencyRepository.save(currency);
@@ -126,7 +125,7 @@ public class CurrencyService {
 			return currencyGet;
 		}
 		else {
-			throw new NullPointerException("Coin id can not exist");
+			throw new NullPointerException("Coin id does not exist");
 		}
 	}
 
@@ -194,19 +193,19 @@ public class CurrencyService {
 			result.put("message", "Symbol Already Exist");
 			return result;
 		}
-		if(currency.getFees() == null) {
+		if(currency.getFees() == null && currency.getFees() >= 0) {
 			result.put("isSuccess", false);
-			result.put("message", "Fees can't be null.");
+			result.put("message", "Fees can't be null or negative");
 			return result;
 		}
-		if(currency.getInitialSupply() == null) {
+		if(currency.getInitialSupply() == null && currency.getInitialSupply() >= 0) {
 			result.put("isSuccess", false);
-			result.put("message", "Initial Supply can't be null.");
+			result.put("message", "Initial Supply can't be null or negative");
 			return result;
 		}
-		if(currency.getPrice() == null) {
+		if(currency.getPrice() == null && currency.getPrice() >= 0) {
 			result.put("isSuccess", false);
-			result.put("message", "Price can't be null.");
+			result.put("message", "Price can't be null or negative");
 			return result;
 		}
 		    currencyRepository.save(currency);
@@ -233,7 +232,7 @@ public class CurrencyService {
 			return "Delete currency success";
 		}
 		else {
-			throw new NullPointerException("Coin id can not exist");
+			throw new NullPointerException("Coin id does not exist");
 		}
 	}
 

@@ -142,8 +142,16 @@ public class WalletService {
 	public UserOrder walletHistory(Integer userId, String coinName) {
 		// TODO Auto-generated method stub
 		User user = userRepository.findByUserId(userId);
+		if(user == null) {
+			throw new NullPointerException("User id does not exist");
+		}
 		UserOrder userOrder = userOrderRepository.findByCoinNameAndUser(coinName, user);
+		if(userOrder == null) {
+			throw new NullPointerException("User id or coinName does not exist");
+		}
+		else {
 		return userOrderRepository.getOne(userOrder.getOrderId());
+		}
 	}
 	
 	

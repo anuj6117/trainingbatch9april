@@ -206,7 +206,7 @@ public class UserService {
 		}
 	}
 	
-	
+		
 	public Map<String,Object> updateUser(User user) {
 		Map<String,Object> result = new HashMap<>();
 		if ((userRepository.findByEmail(user.getEmail()) == null)) {

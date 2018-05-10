@@ -51,7 +51,11 @@ public class WalletController {
 	}
 	
 	@RequestMapping(value = "/wallethistory", method = RequestMethod.GET)
-	public UserOrder walletHistory(@RequestParam("userId") Integer userId, @RequestParam("coinName") String coinName ) {
+	public Object walletHistory(@RequestParam("userId") Integer userId, @RequestParam("coinName") String coinName ) {
+		try {	
 		return walletService.walletHistory(userId, coinName);
+		} catch(Exception e) {
+			return "Wallet history can't display as :"+e.getMessage();
+		}
 	}
 }

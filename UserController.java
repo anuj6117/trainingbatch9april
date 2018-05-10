@@ -51,10 +51,14 @@ public class UserController {
 	}
 	
 	@RequestMapping(value = "/getbyuserid",method = RequestMethod.GET)
-	public User getById(@RequestParam("userId") Integer userId){
-		return userService.getById(userId);	  
+	public Object getById(@RequestParam("userId") Integer userId){
+		try {
+		return userService.getById(userId);
+		} catch(Exception e) {
+			return "User can't be display as :"+e.getMessage();
+		}
 	}
-	
+
 	@RequestMapping(value = "/updateuser",method = RequestMethod.POST)
 	public ResponseEntity<Object> updateUser(@RequestBody User user){
 		Map<String,Object> result = null;

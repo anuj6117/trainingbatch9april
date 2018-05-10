@@ -2,7 +2,6 @@ package com.trainingproject.controller;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -46,8 +45,12 @@ public class CurrencyController {
 	}
 	
 	@RequestMapping(value = "/getcurrencybyid",method = RequestMethod.GET)
-	public Currency getById(@RequestParam("coinId") Integer coinId) {
+	public Object getById(@RequestParam("coinId") Integer coinId) {
+		try {
 		return currencyService.getById(coinId);
+		} catch(Exception e) {
+			return "Currency can't be display as :"+e.getMessage();
+		}
 	}
 	@RequestMapping(value  ="/updatecurrency",method = RequestMethod.POST)
 	public ResponseEntity<Object> updateCurrency(@RequestBody Currency currency) {
