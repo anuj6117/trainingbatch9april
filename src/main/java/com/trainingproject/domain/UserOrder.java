@@ -1,6 +1,7 @@
 package com.trainingproject.domain;
 
-import java.util.Date;
+//import java.util.Date;
+
 
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -34,7 +35,7 @@ public class UserOrder {
 private double grossAmount;
  private double coinQuantity;
  private String date;
- private double fee=2l;
+ private double fees=2l;
  private Integer userId;
  
 
@@ -89,12 +90,12 @@ public void setUserId(Integer userId) {
 	this.userId = userId;
 }
 
-public double getFee() {
-	return fee;
+public double getFees() {
+	return fees;
 }
 
-public void setFee(double fee) {
-	this.fee = fee;
+public void setFee(double fees) {
+	this.fees = fees;
 }
 
 public Integer getOrderId() {

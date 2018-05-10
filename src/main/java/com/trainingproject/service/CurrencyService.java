@@ -40,11 +40,11 @@ public class CurrencyService {
 			return "symbol already exists!";
 		
 	
-	//	Pattern p = Pattern.compile("^[a-zA-Z]{1,}$", Pattern.CASE_INSENSITIVE);
-		Pattern  p = Pattern.compile("(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#/|()~`!$%^&+=])(?=\\S+$).{1,}$");
-		Matcher m = p.matcher(cur.getCoinName());
+	//	Pattern p = Pattern.compile("^[a-zA-Z0-9._-]{1,}$", Pattern.CASE_INSENSITIVE);
+	//	Pattern  p = Pattern.compile("(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#/|()~`!$%^&+=])(?=\\S+$).{1,}$");
+	//	Matcher m = p.matcher(cur.getCoinName());
 		
-		 if(!m.find())
+		 if(cur.getCoinName()==null)
 			 return "invalid coin name";
 		 
 		cur.setCoinType(CoinType.CRYPTO);
@@ -81,11 +81,11 @@ public class CurrencyService {
 //			return "symbol already exists!";
 		
 		//Pattern p = Pattern.compile("^[a-zA-Z]{1,}$", Pattern.CASE_INSENSITIVE);
-		Pattern  p = Pattern.compile("(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#/|()~`!$%^&+=])(?=\\S+$).{1,}$");
+	//	Pattern  p = Pattern.compile("(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#/|()~`!$%^&+=])(?=\\S+$).{1,}$");
 
-		Matcher m = p.matcher(cur.getCoinName());
+		//Matcher m = p.matcher(cur.getCoinName());
 		
-		 if(!m.find())
+		 if(cur.getCoinName()==null)
 			 return "invalid coin name";
 		
 		if(cur.getCoinType().equals(CoinType.CRYPTO)||cur.getCoinType().equals(CoinType.FIAT)) {

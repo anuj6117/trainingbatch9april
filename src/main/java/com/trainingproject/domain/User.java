@@ -1,6 +1,7 @@
 package com.trainingproject.domain;
 
-import java.util.Date;
+//import java.util.Date;
+
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -16,9 +17,9 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.validation.constraints.Email;
+//import javax.validation.constraints.Email;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+//import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.trainingproject.enums.UserStatus;
 
 @Entity

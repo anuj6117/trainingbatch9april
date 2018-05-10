@@ -52,10 +52,10 @@ public class UserOrderService {
 		if(bsb.getCoinName()==null||bsb.getCoinName().length()==0)
 		      return "coin name cannot be null";
 		
-		if(bsb.getCoinQuantity()==null||bsb.getCoinQuantity()==0)
+		if(bsb.getCoinQuantity()==0)
 		      return "coin quantity cannot be null";
 		
-		if(bsb.getPrice()==null||bsb.getPrice()==0)
+		if(bsb.getPrice()==0)
 		      return "price cannot be null";
 		 if(bsb.getCoinQuantity()==0)
 	    	 return "0 quantity to buy";
@@ -119,10 +119,10 @@ public class UserOrderService {
 			if(bsb.getCoinName()==null||bsb.getCoinName().length()==0)
 			      return "coin name cannot be null";
 			
-			if(bsb.getCoinQuantity()==null||bsb.getCoinQuantity()==0)
+			if(bsb.getCoinQuantity()==0)
 			      return "coin quantity cannot be null";
 			
-			if(bsb.getPrice()==null||bsb.getPrice()==0)
+			if(bsb.getPrice()==0)
 			      return "price cannot be null";
 			
 	     

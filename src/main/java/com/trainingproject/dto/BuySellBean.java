@@ -8,8 +8,8 @@ import com.trainingproject.enums.CoinType;
 public class BuySellBean {
 
 	private Integer userId;
-	private Integer coinQuantity;
-	private Integer price;
+	private double coinQuantity;
+	private double price;
 	private String coinName;
 	 @Enumerated(EnumType.STRING)
 	private CoinType coinType;
@@ -26,16 +26,16 @@ public class BuySellBean {
 	public void setUserId(Integer userId) {
 		this.userId = userId;
 	}
-	public Integer getCoinQuantity() {
+	public double getCoinQuantity() {
 		return coinQuantity;
 	}
-	public void setCoinQuantity(Integer coinQuantity) {
+	public void setCoinQuantity(double coinQuantity) {
 		this.coinQuantity = coinQuantity;
 	}
-	public Integer getPrice() {
+	public double getPrice() {
 		return price;
 	}
-	public void setPrice(Integer price) {
+	public void setPrice(double price) {
 		this.price = price;
 	}
 	public String getCoinName() {

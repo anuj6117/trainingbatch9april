@@ -1,9 +1,10 @@
 package com.trainingproject.service;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
+//import java.text.SimpleDateFormat;
+
+//import java.util.Date;
 import java.util.List;
-import java.util.TimeZone;
+//import java.util.TimeZone;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -12,7 +13,7 @@ import com.trainingproject.domain.Transaction;
 import com.trainingproject.domain.User;
 import com.trainingproject.domain.UserOrder;
 import com.trainingproject.domain.Wallet;
-import com.trainingproject.domain.WalletHistory;
+//import com.trainingproject.domain.WalletHistory;
 import com.trainingproject.dto.ApproveWalletBean;
 import com.trainingproject.enums.CoinType;
 import com.trainingproject.enums.OrderType;
@@ -80,7 +81,7 @@ public class WalletService {
 	     
 	     transaction.setBuyer(null);
  	     transaction.setAmount(userorder.getPrice());
- 	     transaction.setFee(0);
+ 	     transaction.setFees(0);
  	     transaction.setCoinType(CoinType.FIAT);
  	   
  	 

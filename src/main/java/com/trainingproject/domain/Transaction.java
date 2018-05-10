@@ -1,6 +1,7 @@
 package com.trainingproject.domain;
 
-import java.util.Date;
+//import java.util.Date;
+
 
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -23,7 +24,7 @@ public class Transaction {
 	 @Enumerated(EnumType.STRING)
 	private CoinType coinType;
 	private String coinName;
-	private double fee;
+	private double fees;
 	private double exchangeRate;
 	private double grossAmount;
 	private Integer buyer;
@@ -65,11 +66,11 @@ public class Transaction {
 	public void setCoinName(String coinName) {
 		this.coinName = coinName;
 	}
-	public double getFee() {
-		return fee;
+	public double getFees() {
+		return fees;
 	}
-	public void setFee(double fee) {
-		this.fee = fee;
+	public void setFees(double fees) {
+		this.fees = fees;
 	}
 	public double getExchangeRate() {
 		return exchangeRate;
