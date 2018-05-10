@@ -9,8 +9,8 @@ import com.example.model.UserOtpTable;
 
 public interface OTPjpaRepository extends JpaRepository<UserOtpTable,String> {
 	
-	public UserOtpTable findOneByOtp(String otp);
-	public UserOtpTable findByOtp(String otp);
+	//public UserOtpTable findOneByOtp(String otp);
+	public UserOtpTable findByTokenOTP(String otp);
 	public UserOtpTable findByEmail(String email);
 	
 }

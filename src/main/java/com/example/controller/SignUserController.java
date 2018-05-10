@@ -116,7 +116,7 @@ public class SignUserController
 		if(user!=null)
 		{
 			userotptable1=otpjparepository.findByEmail(user.getEmail());
-			if(userotptable1.getOtp().equals(userotptable.getOtp()))
+			if(userotptable1.getTokenOTP().equals(userotptable.getTokenOTP()))
 			{
 				user.setStatus((UserStatus.ACTIVE));
 				
@@ -154,9 +154,12 @@ public class SignUserController
 	public String deleteUser(@RequestParam("userId") Integer id) 
 	{
 		user=userrepository.findByUserId(id);
-		System.out.println("here......user........has......"+user);
-		signupservice.deleteUser(user);
-	    return "account deleted";
+		if(user!=null) {
+			return signupservice.deleteUser(user);
+	    
+		}
+		else
+			return "Invalid user for delete operation";
 	}
 	
 	@RequestMapping(value="/depositamount",method=RequestMethod.POST)

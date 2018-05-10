@@ -10,17 +10,17 @@ public class UserOtpTable
 {
 	
 @Id
-private String otp;
+private String tokenOTP;
 private String email;
 private String date;
 
-public String getOtp() {
-		return otp;
-	}
-	public void setOtp(String otp) {
-		this.otp = otp;
-	}
 
+public String getTokenOTP() {
+	return tokenOTP;
+}
+public void setTokenOTP(String tokenOTP) {
+	this.tokenOTP = tokenOTP;
+}
 public String getEmail() {
 	return email;
 }
@@ -33,9 +33,10 @@ public String getDateCreated() {
 public void setDateCreated(String date) {
 	this.date = date;
 }
-public UserOtpTable(String otp, String email, String date) {
+
+public UserOtpTable(String tokenOTP, String email, String date) {
 	super();
-	this.otp = otp;
+	this.tokenOTP = tokenOTP;
 	this.email = email;
 	this.date = date;
 }

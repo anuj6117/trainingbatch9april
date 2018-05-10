@@ -122,16 +122,19 @@ public class SignUpService
 		 User user1=userrepository.findByEmail(user.getEmail());
 		   User user2=userrepository.findByPhoneNumber(user.getPhoneNumber());
 		   User user3=userrepository.findByUserId(user.getUserId());
-		   user.setCreatedOn(user3.getCreatedOn());
-		  // System.out.println("user:::::::::::::::::::1"+user+" "+user.getUserId());
+		   User userIdExistOrNot=userrepository.findByUserId(user.getUserId());
+		  		  // System.out.println("user:::::::::::::::::::1"+user+" "+user.getUserId());
 		  // System.out.println("user:::::::::::::::::::2"+user1);
 		  // System.out.println("user:::::::::::::::::::3"+user2);
 		  // System.out.println("user:::::::::::::::::::4"+user1.getUserId()+" "+user1.getEmail());
 		  // System.out.println("user:::::::::::::::::::5"+user2.getUserId()+" "+user2.getEmail());
 		  
 		  // System.out.println("user:::::::::::::::::6"+user3.getStatus());
-		   
-		   if(user3.getStatus()!=UserStatus.ACTIVE)
+		   if(userIdExistOrNot==null)
+		   {
+			   return "Invalid user";
+		   }
+		   else if(user3.getStatus()!=UserStatus.ACTIVE)
 			{
 			 
 			   return "User not active";
@@ -175,7 +178,8 @@ public class SignUpService
 		    		  if(Pattern.compile(emailPattern).matcher(user.getEmail()).matches())
 		    		  {
 		    			if(user.getCountry().trim().length()!=0)
-		    			{
+		    			{      user.setCreatedOn(user3.getCreatedOn());
+
 		    				  user.setStatus(UserStatus.ACTIVE);
 		    				  userrepository.save(user);
 		                      return "Your account has been successfully updated." ;
@@ -257,9 +261,10 @@ public class SignUpService
 	 
 	public String deleteUser(User user)
 	{
-		userrepository.delete(user);
-		System.out.println("repository se delete ho gya");
-		return "deleted";
+        
+        	userrepository.delete(user);
+    	return "user deleted ";	
+		
 	}
 	
 	
