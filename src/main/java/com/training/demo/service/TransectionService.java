@@ -71,8 +71,8 @@ public class TransectionService implements Comparator<UserOrder> {
 				if (coinBuyed <= 0) {
 					// all coins will be buyed
 					coinBuyed = buyers.get(i).getCoinQuantity();
-					if((buyers.get(i).getPrice()>=admin.getPrice()))
-					admin.setInitialSupply(admin.getInitialSupply() - coinBuyed);
+					if ((buyers.get(i).getPrice() >= admin.getPrice()))
+						admin.setInitialSupply(admin.getInitialSupply() - coinBuyed);
 					buyers.get(i).setStatus(UserOrderStatus.APPROVE);
 				} else {
 					coinBuyed = admin.getInitialSupply();
@@ -81,11 +81,11 @@ public class TransectionService implements Comparator<UserOrder> {
 				}
 
 				// check if buyer has that kind of money or not for purchasing
-				double pr=(buyers.get(i).getPrice());
+				double pr = (buyers.get(i).getPrice());
 				double fees = currencyRepository.findByCoinName(coinName).getFee();
 				double totprice = (buyers.get(i).getPrice() * coinBuyed);
-				double fee =  ((fees * totprice) / 100);
-				
+				double fee = ((fees * totprice) / 100);
+
 				double grossAmount = totprice + fee;
 
 				Wallet buyerFiatwallet = walletRepository.findBycoinTypeAndUser(WalletType.FIAT,
@@ -127,7 +127,7 @@ public class TransectionService implements Comparator<UserOrder> {
 						trans.setTransactionStatus(UserOrderStatus.FAILED);
 						trans.setNetAmount(totprice);
 						trans.setGrossAmount(grossAmount);
-						//888888888888888888
+						// 888888888888888888
 						trans.setExchangeRate(pr);
 						trans.setMessage("no match");
 						transactionRepository.save(trans);
@@ -154,7 +154,7 @@ public class TransectionService implements Comparator<UserOrder> {
 					trans.setTransactionStatus(UserOrderStatus.COMPLETED);
 					trans.setNetAmount(totprice);
 					trans.setGrossAmount(grossAmount);
-					//666666666666
+					// 666666666666
 					trans.setExchangeRate(pr);
 					trans.setMessage("done");
 					transactionRepository.save(trans);
@@ -174,7 +174,7 @@ public class TransectionService implements Comparator<UserOrder> {
 						buyerwallet.setBalance(buyerwallet.getBalance() + coinBuyed);
 						// buyerwallet.setCoinName(coinName);
 						// buyerwallet.setCoinType( buyers.get(i).getCoinType());
-						//buyerwallet.setBalance(buyerwallet.getBalance() + coinBuyed);
+						// buyerwallet.setBalance(buyerwallet.getBalance() + coinBuyed);
 						buyerwallet.setShadowBalance(buyerwallet.getShadowBalance() + coinBuyed);
 					}
 					walletRepository.save(buyerwallet);
@@ -214,8 +214,7 @@ public class TransectionService implements Comparator<UserOrder> {
 							buyFromAdmin(admin, buyer);
 							continue;
 						}
-						if(seller.getPrice()>buyer.getPrice())
-						{
+						if (seller.getPrice() > buyer.getPrice()) {
 							continue;
 						}
 						Wallet sellerFiatWallet = walletRepository.findBycoinTypeAndUser(WalletType.FIAT,
@@ -234,21 +233,21 @@ public class TransectionService implements Comparator<UserOrder> {
 
 						} else {
 							coinBuyed = scq;
-							//scq=0;
-							
+							// scq=0;
+
 							if (bcq - scq == 0) {
 								buyer.setStatus(UserOrderStatus.APPROVE);
 							} else {
 								buyer.setStatus(UserOrderStatus.PENDING);
 							}
-                          scq=sellerWallet.getBalance()-scq;
+							scq = sellerWallet.getBalance() - scq;
 							seller.setStatus(UserOrderStatus.APPROVE);
 
 						}
 						double fees = currencyRepository.findByCoinName(coinName).getFee();
 						double totprice = (buyers.get(i).getPrice() * coinBuyed);
-						double pr=(buyers.get(i).getPrice());
-						double fee =  ((fees * totprice) / 100);
+						double pr = (buyers.get(i).getPrice());
+						double fee = ((fees * totprice) / 100);
 						double grossAmount = totprice + fee;
 
 						Wallet buyerFiatwallet = walletRepository.findBycoinTypeAndUser(WalletType.FIAT,
@@ -291,7 +290,7 @@ public class TransectionService implements Comparator<UserOrder> {
 							buyerwallet.setBalance(buyerwallet.getBalance() + coinBuyed);
 							// buyerwallet.setCoinName(coinName);
 							// buyerwallet.setCoinType( buyers.get(i).getCoinType());
-							//buyerwallet.setBalance(buyerwallet.getBalance() + coinBuyed);
+							// buyerwallet.setBalance(buyerwallet.getBalance() + coinBuyed);
 							buyerwallet.setShadowBalance(buyerwallet.getShadowBalance() + coinBuyed);
 						}
 
@@ -371,7 +370,7 @@ public class TransectionService implements Comparator<UserOrder> {
 		// check if buyer has that kind of money or not for purchasing
 		double fees = currencyRepository.findBycoinName(coinName).getFee();
 		double totprice = (buyer.getPrice() * coinBuyed);
-		double pr=(buyer.getPrice());
+		double pr = (buyer.getPrice());
 		double fee = (int) ((fees * totprice) / 100);
 		double grossAmount = totprice + fee;
 
@@ -390,7 +389,7 @@ public class TransectionService implements Comparator<UserOrder> {
 			trans.setTransactionStatus(UserOrderStatus.FAILED);
 			trans.setNetAmount(totprice);
 			trans.setGrossAmount(grossAmount);
-			//trans.setExchangeRate(totprice);
+			// trans.setExchangeRate(totprice);
 			trans.setExchangeRate(pr);
 			trans.setMessage("insufficient funds");
 			transactionRepository.save(trans);
@@ -413,7 +412,7 @@ public class TransectionService implements Comparator<UserOrder> {
 				trans.setTransactionStatus(UserOrderStatus.FAILED);
 				trans.setNetAmount(totprice);
 				trans.setGrossAmount(grossAmount);
-				//66666666666666
+				// 66666666666666
 				trans.setExchangeRate(pr);
 				trans.setMessage("no match");
 				transactionRepository.save(trans);
@@ -440,7 +439,7 @@ public class TransectionService implements Comparator<UserOrder> {
 			trans.setWalletType(buyer.getCoinType());
 			trans.setTransactionStatus(UserOrderStatus.COMPLETED);
 			trans.setNetAmount(totprice);
-			//66666666666666666666666
+			// 66666666666666666666666
 			trans.setExchangeRate(pr);
 			trans.setGrossAmount(grossAmount);
 			trans.setMessage("done");
@@ -483,22 +482,11 @@ public class TransectionService implements Comparator<UserOrder> {
 
 	}
 
-	
-	
-	
 	public List<Transection> getalltransaction() {
 		List<Transection> l = new ArrayList<Transection>();
-				l=transactionRepository.findAll();
+		l = transactionRepository.findAll();
 		return l;
-			
-				}
-	
-	
-	
-}	
-	
-	
-	
-	
-	
 
+	}
+
+}

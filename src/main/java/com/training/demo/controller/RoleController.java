@@ -22,7 +22,7 @@ public class RoleController {
 	@Autowired
 	private RoleRepository roleRepository;
 
-	@RequestMapping(value = "/createRole", method = RequestMethod.POST)
+	@RequestMapping(value = "/createrole", method = RequestMethod.POST)
 	public String insertRole(@RequestBody Role role) {
 		if (role != null) {
 			if(role.getRoleType()==RoleType.USER) {

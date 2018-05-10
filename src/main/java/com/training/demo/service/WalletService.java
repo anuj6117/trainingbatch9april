@@ -109,6 +109,10 @@ public class WalletService {
 		// Wallet wallet = new Wallet();
 		// UserOrder userorder=new UserOrder();
 		User user = userrepository.findByUserId(userwalletdto.getUserId());
+		if(user==null)
+		{
+			return "user not exist";
+		}
 		walletType = userwalletdto.getCoinType();
 		coinName=userwalletdto.getCoinName();
 		UserOrder userorder = new UserOrder();

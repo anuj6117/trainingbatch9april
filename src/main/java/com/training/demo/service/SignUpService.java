@@ -49,7 +49,7 @@ public class SignUpService {
 	private OtpVerification otpVerification;
 	
 	private static Pattern pswNamePtrn = 
-			Pattern.compile("((?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%]).{8,32})");
+			Pattern.compile("((?=.*\\d)(?=.$*[a-z])(?=.*[A-Z])(?=.*[@#%==>>>///]).{8,32})");
 	
 
 	public String addUser(User user) {
@@ -58,7 +58,7 @@ public class SignUpService {
 		boolean b = hashSet.add(roles);
 		
 		boolean flag = userRepository.existsByEmail(user.getEmail());
-		boolean phone=userRepository.existsByPhoneNo(user.getPhoneNo());
+		boolean phone=userRepository.existsByPhoneNumber(user.getPhoneNumber());
 		// )&&(userRepository.existByPhoneNo(user.getPhoneNo())));
 		
 		 String pass=user.getPassword();
@@ -82,8 +82,11 @@ public class SignUpService {
 			if(user.getEmail() != null) {
 		    	//if(!(Pattern.compile("^[_-]{0,1}+[a-z0-9]+[_-]{0,1}+(\\.[_a-z0-9-]+)*@[a-z0-9]+(\\.[a-z0-9]+)*(\\.[a-z]{2,})$").matcher(user.getEmail()).matches()))
 				//if(!(Pattern.compile("^[a-z0-9][a-z0-9(\\-[a-z0-9]+)(\\_[a-z0-9]+)]*[a-zA-Z]+(\\.[a-z0-9]+)*[a-zA-Z]+(\\-[a-z0-9]+)*[a-zA-Z]+(\\_[a-z0-9]+)*[a-zA-Z]*@[a-z0-9]+(\\.[a-z0-9]+)*(\\.[a-z]{2,})$").matcher(user.getEmail()).matches()))
-				if(Pattern.compile("^[a-z0-9][a-z0-9(\\-[a-z0-9]+)(\\_[a-z0-9]+)]*[a-zA-Z0-9]+(\\.[a-z0-9]+)*[a-zA-Z0-9]+(\\-[a-z0-9]+)*[a-zA-Z0-9]+(\\_[a-z0-9]+)*[a-zA-Z0-9]*@[a-z0-9]+(\\.[a-z0-9]+)*(\\.[a-z]{2,})$").matcher(user.getEmail()).matches()) 
+				//if(!(Pattern.compile("^[a-z0-9][a-z0-9(\\-[a-z0-9]+)(\\_[a-z0-9]+)]*[a-zA-Z0-9]+(\\.[a-z0-9]+)*[a-zA-Z0-9]+(\\-[a-z0-9]+)*[a-zA-Z0-9]+(\\_[a-z0-9]+)*[a-zA-Z0-9]*@[a-z0-9]+(\\.[a-z0-9]+)*(\\.[a-z]{2})$").matcher(user.getEmail()).matches())) 
+				
+				if(!(Pattern.compile("^[a-z0-9][a-z0-9(\\-[a-z0-9]+)(\\_[a-z0-9]+)]*[a-zA-Z0-9]+(\\.[a-z0-9]+)*[a-zA-Z0-9]+(\\-[a-z0-9]+)*[a-zA-Z0-9]+(\\_[a-z0-9]+)*[a-zA-Z0-9]*@[a-z0-9]+(\\.[a-z0-9]+)*(\\.[a-z]{2,})$").matcher(user.getEmail()).matches())) 			
 				{
+					
 				
 		    		
 		    		return"enter valid email";
@@ -93,7 +96,7 @@ public class SignUpService {
 		    	{
 		    		return"email can not be null";
 		    	}
-			String phoneNo = user.getPhoneNo();
+			String phoneNo = user.getPhoneNumber();
 			System.out.println(email);
 
 			System.out.println("service hit");
@@ -214,11 +217,17 @@ public class SignUpService {
 	public String updateUser(@RequestBody User user) {
 		 String pass=user.getPassword();
 		 java.util.regex.Matcher mtch = pswNamePtrn.matcher(pass);
-		
+		 int phoneLength = user.getPhoneNumber().length();
+			String phn = user.getPhoneNumber().replaceAll("\\s+", "");
+			int l = phn.length();
 		 User u=userRepository.findByUserName(user.getuserName());
 		 User c=userRepository.findByCountry(user.getCountry());
 		 User e=userRepository.findByEmail(user.getEmail());
-		 User p=userRepository.findByPhoneNo(user.getPhoneNo());
+		 User p=userRepository.findByPhoneNumber(user.getPhoneNumber());
+		  if (!(user.getPhoneNumber().length() == 10) || !(user.getPhoneNumber().matches("[0-9]+") || !(phoneLength == l)))
+		  {
+			  return"please enter valid phone number";
+		  }
 		
 			
 			User tempUser = userRepository.findByUserId(user.getUserId());
@@ -227,6 +236,8 @@ public class SignUpService {
 				return "please enter valid user name";
 				
 			}
+			if(!(userRepository.findByUserName(user.getuserName())==null))
+			{
 			if(u.getUserId()!=user.getUserId())
 			{
 				return"user name already exist";
@@ -235,31 +246,42 @@ public class SignUpService {
 			{
 				return "please enter valid country name";
 			}
-		
+			}
 			
 		
-			if(Pattern.compile("^[a-z0-9][a-z0-9(\\-[a-z0-9]+)(\\_[a-z0-9]+)]*[a-zA-Z]+(\\.[a-z0-9]+)*[a-zA-Z]+(\\-[a-z0-9]+)*[a-zA-Z]+(\\_[a-z0-9]+)*[a-zA-Z]*@[a-z0-9]+(\\.[a-z0-9]+)*(\\.[a-z]{2,})$").matcher(user.getEmail()).matches())
-				
+			//if(Pattern.compile("^[a-z0-9][a-z0-9(\\-[a-z0-9]+)(\\_[a-z0-9]+)]*[a-zA-Z]+(\\.[a-z0-9]+)*[a-zA-Z]+(\\-[a-z0-9]+)*[a-zA-Z]+(\\_[a-z0-9]+)*[a-zA-Z]*@[a-z0-9]+(\\.[a-z0-9]+)*(\\.[a-z]{2,})$").matcher(user.getEmail()).matches())
+			if(!(Pattern.compile("^[a-z0-9][a-z0-9(\\-[a-z0-9]+)(\\_[a-z0-9]+)]*[a-zA-Z0-9]+(\\.[a-z0-9]+)*[a-zA-Z0-9]+(\\-[a-z0-9]+)*[a-zA-Z0-9]+(\\_[a-z0-9]+)*[a-zA-Z0-9]*@[a-z0-9]+(\\.[a-z0-9]+)*(\\.[a-z]{2,})$").matcher(user.getEmail()).matches())) 
 			{
 	    		
 	    		return" please enter valid email";
 	    	}
+			if(!(userRepository.findByEmail(user.getEmail())==null))
+			{
 			if(e.getUserId()!=user.getUserId())
 			{
 				return"email already exist";
 			}
+			}
+			else
+			{
+				return "please enter email";
+			}
+			
 			  if(!mtch.matches())
 		       {
 		    	   return "Password Must Contains one Uppercase Alphabet,one lower case ,on dgigt, one special symbol";
 		       }
+			  if(!(userRepository.findByPhoneNumber(user.getPhoneNumber())==null))
 			  if(p.getUserId()!=user.getUserId())
 			  {
 				  return "phone Number already in use";
 			  }
+			  
+			
 			if(tempUser!=null) {
 			tempUser.setEmail(user.getEmail());
 			tempUser.setuserName(user.getuserName());
-			tempUser.setPhoneNo(user.getPhoneNo());
+			tempUser.setPhoneNumber(user.getPhoneNumber());
 			tempUser.setCountry(user.getCountry());
 			tempUser.setPassword(user.getPassword());
 			userRepository.save(tempUser);

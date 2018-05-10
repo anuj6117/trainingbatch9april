@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.training.demo.enums.WalletType;
 import com.training.demo.model.CoinManagement;
 import com.training.demo.repository.CoinManagementRepository;
 import com.training.demo.service.CoinManagementService;
@@ -55,6 +56,10 @@ public class CoinManagementController {
 			if(sk==0)
 			{
 				return "price can not be null";
+			}
+			if(data.getCoinType()==WalletType.FIAT)
+			{
+				return "Only CRYPTO coinType is valid";
 			}
 			if(coinmanagement!=null)
 			{

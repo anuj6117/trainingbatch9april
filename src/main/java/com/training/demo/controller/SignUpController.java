@@ -38,8 +38,8 @@ public class SignUpController {
 		int length = password.length();
 		int unamelength = username.length();
 		int uname1length = username1.length();
-		int phoneLength = user.getPhoneNo().length();
-		String phn = user.getPhoneNo().replaceAll("\\s+", "");
+		int phoneLength = user.getPhoneNumber().length();
+		String phn = user.getPhoneNumber().replaceAll("\\s+", "");
 		int l = phn.length();
 		if((!(Pattern.compile("^[A-Za-z0-9_-]{1,25}$").matcher(username).matches())))
 		{
@@ -50,7 +50,7 @@ public class SignUpController {
 		{
 			return "please enter a valid country name";
 		}
-		if (user.getPhoneNo().length() == 10 && (user.getPhoneNo().matches("[0-9]+") && (phoneLength == l))) {
+		if (user.getPhoneNumber().length() == 10 && (user.getPhoneNumber().matches("[0-9]+") && (phoneLength == l))) {
 			if ((unamelength != 0) && (unamelength == uname1length) && (user.getuserName() != null)) {
 				if (username.length() <= 25) {
 
@@ -76,7 +76,7 @@ public class SignUpController {
 			return "phone number should be length of 10 and  should contain numeric only";
 	}
 
-	@RequestMapping(value = "/verify", method = RequestMethod.POST)
+	@RequestMapping(value = "/verifyuser", method = RequestMethod.POST)
 	public String userVerification(@RequestBody OtpVerification otpVerification) {
 		if ((otpVerification.getEmail() == null) || (otpVerification.getTokenOTP() == null)) {
 			return "otp not found";
@@ -91,7 +91,7 @@ public class SignUpController {
 		return signUpService.getAllUsers();
 	}
 
-	@RequestMapping(value = "/update", method = RequestMethod.POST)
+	@RequestMapping(value = "/updateuser", method = RequestMethod.POST)
 	public String updateUser(@RequestBody User user) {
 		return signUpService.updateUser(user);
 	}

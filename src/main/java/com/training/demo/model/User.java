@@ -38,7 +38,7 @@ public class User {
 	@NotBlank(message = "Space Not Accepted")
 	private String email;
 	@Size(min = 10, max = 10)
-	private String phoneNo;
+	private String phoneNumber;
 	@NotNull
 	private String password;
 	@NotNull
@@ -77,7 +77,7 @@ public class User {
 		this.userId = userId;
 		this.userName = userName;
 		this.email = email;
-		this.phoneNo = phoneNo;
+		this.phoneNumber = phoneNo;
 		this.password = password;
 		this.country = country;
 	}
@@ -114,12 +114,15 @@ public class User {
 		this.email = email;
 	}
 
-	public String getPhoneNo() {
-		return phoneNo;
+	
+
+	
+	public String getPhoneNumber() {
+		return phoneNumber;
 	}
 
-	public void setPhoneNo(String phoneNo) {
-		this.phoneNo = phoneNo;
+	public void setPhoneNumber(String phoneNumber) {
+		this.phoneNumber = phoneNumber;
 	}
 
 	public String getPassword() {

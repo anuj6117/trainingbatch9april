@@ -3,6 +3,8 @@ package com.training.demo.service;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import com.training.demo.enums.WalletType;
 import com.training.demo.model.CoinManagement;
 import com.training.demo.repository.CoinManagementRepository;
 
@@ -33,6 +35,11 @@ public class CoinManagementService {
 	public String update(CoinManagement data) {
 
 		 CoinManagement coinManagementData = null;
+		 
+		 if(data.getCoinType()==WalletType.FIAT)
+		 {
+			 return"coin name can not be FIAT";
+		 }
 		String s = data.getCoinName();
 		String sm = data.getSymbol();
 		//coinManagementData = coinManagementRepository.findByCoinName(s);
@@ -44,12 +51,14 @@ public class CoinManagementService {
 		double t = data.getPrice();
 		int sk = String.valueOf(t).length();
 		CoinManagement coinname=coinManagementRepository.findBycoinName(data.getCoinName());
+		if(!(coinManagementRepository.findBycoinName(data.getCoinName())==null))
 		if(coinname.getCoinId()!=data.getCoinId())
 		{
 			return"coin name is already exist";
 		
 		}
 		CoinManagement sym=coinManagementRepository.findBySymbol(data.getSymbol());
+		if(!(coinManagementRepository.findBySymbol(data.getSymbol())==null))
 		if(sym.getCoinId()!=data.getCoinId())
 		{
 			return"symbol already exist";
