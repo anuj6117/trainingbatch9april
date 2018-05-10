@@ -1,9 +1,11 @@
 package com.training.demo.dto;
 
+import com.training.demo.enums.WalletType;
+
 public class OrderDto {
 
 	private Integer userId;
-	private String walletType;
+	private String coinType;
 	private Double amount;
 	private String coinName;
 	
@@ -11,10 +13,10 @@ public class OrderDto {
 		super();
 	}
 
-	public OrderDto(Integer userId, String walletType, Double amount, String coinName) {
+	public OrderDto(Integer userId, String coinType, Double amount, String coinName) {
 		super();
 		this.userId = userId;
-		this.walletType = walletType;
+		this.coinType = coinType;
 		this.amount = amount;
 		this.coinName = coinName;
 	}
@@ -27,12 +29,12 @@ public class OrderDto {
 		this.userId = userId;
 	}
 
-	public String getWalletType() {
-		return walletType;
+	public String getCoinType() {
+		return coinType;
 	}
 
-	public void setWalletType(String walletType) {
-		this.walletType = walletType;
+	public void setCoinType(String coinType) {
+		this.coinType = coinType;
 	}
 
 	public Double getAmount() {
@@ -50,5 +52,7 @@ public class OrderDto {
 	public void setCoinName(String coinName) {
 		this.coinName = coinName;
 	}
-
+	
+	
+	
 }

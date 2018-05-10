@@ -69,48 +69,40 @@ public class OrderService {
 			
 		boolean currencyFlag = false;
 		List<CoinManagement> currencyList = coinRepository.findAll();
-		System.out.println("curency listtttttttttttttt "+currencyList);
 		if(currencyList != null) {
 			Iterator<CoinManagement> currencyIterator = currencyList.iterator();
 			
 			while(currencyIterator.hasNext())
 			{
-				System.out.println("in currency whileeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee");
 				CoinManagement tempCoinManagement= currencyIterator.next();
 				if(tempCoinManagement.getCoinName().equals(orderTable.getCoinName())){
-					System.out.println("in currency ifffffffffffffffffffffffffffffffffffff");
 					currencyFlag = true;
-					System.out.println("curency flag set trueeeeeeeeeeeeeeeeeeeeeeeee");
 				}
 			}
 			if(currencyFlag) {
-				System.out.println("order can not be approved........................its not fiat.");
 				return "you can only approve FIAT orders but not CRYPTO orders.";
 			}
 		}
 		
-			System.out.println("11111111111111111111111111111111111");
 			if(orderTable.getOrderStatus().equals(OrderStatus.PENDING))
 			{
-				System.out.println("1111111111111111111111111111111111122222222222222222222222");
 				User user ;
 				try 
-				{	System.out.println("USERrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr1111111111111111111111111111111111122222222222222222222222");
+				{	
 					user = userRepository.findByUserId(orderApprovalDto.getUserId());
 				}
 				catch(Exception e)
 				{
 					return "invalid user id";
 				}
-				System.out.println(user+"/t"+orderTable);
+				
 				if(user == null)
 				{
 					return "invalid user id";
 				}
-				System.out.println(user+"/t"+orderTable);
+				
 				if(orderTable != null && user !=null) 
 				{
-					System.out.println("111111111111111333333333333333333333333333333333");
 					boolean flag = false;
 					Set<Wallet> wallets = new HashSet<Wallet>();
 					wallets = user.getWallets();
@@ -118,41 +110,25 @@ public class OrderService {
 					Iterator<Wallet> iterator = wallets.iterator();
 					while(iterator.hasNext())
 					{
-						System.out.println("11111111111111111111111111111111111444444444444444444444444");
 						wallet = iterator.next();
 						String tempWalletType = wallet.getCoinType();
 						if(tempWalletType.equals("FIAT"))
 						{		
-							System.out.println("11111111111111111111111111111111111555555555555555555");
 								flag = true;
 								Transaction transaction = new Transaction();
-								System.out.println("11111111111111111111111111111111111aaaaaaa");
 								transaction.setBuyerId(orderTable.getUser().getUserId());
 								transaction.setTransactionId(orderTable.getOrderId());
-								System.out.println("11111111111111111111111111111111111bbbbbbbb");
 								transaction.setTransactionStatus(OrderStatus.valueOf(orderApprovalDto.getStatus().toUpperCase()));
-								System.out.println("11111111111111111111111111111111111ccccccccccc");
 								transaction.setCoinName(orderTable.getCoinName());
-								System.out.println("11111111111111111111111111111111111dddddddd");
 								transaction.setCoinQuantity(orderTable.getNetAmount());
-								System.out.println("11111111111111111111111111111111111eeeeeeeeeee");
 								transaction.setCoinType(WalletType.valueOf(tempWalletType));
-								System.out.println("11111111111111111111111111111111111ffffffffffffffff");
 								transaction.setGrossAmount(orderTable.getNetAmount());
-								System.out.println("11111111111111111111111111111111111ggggggggggggggggg");
-		
-								//TodayUpgradations
 								transaction.setExchangeRate(0d);
 								transaction.setFees(0d);
-								
 								transaction.setNetAmount(orderTable.getNetAmount());
-								System.out.println("11111111111111111111111111111111111hhhhhhhhhhhhhhhhhhhhh");
 								transaction.setDescription(orderApprovalDto.getDescription());	
-								System.out.println("11111111111111111111111111111111111iiiiiiiiiiiiiiiiiii");
 								transaction.setTransactionCreatedOn(new Date());
-								System.out.println("11111111111111111111111111111111111jjjjjjjjjjjjj");
 								transactionRepository.save(transaction);
-								System.out.println("1111111111111111111111111111111111166666666666666666666");
 								orderTable.setOrderStatus(transaction.getTransactionStatus());
 								wallet.setCoinName(orderTable.getCoinName());
 								Double availableBalance = wallet.getBalance();
@@ -160,19 +136,16 @@ public class OrderService {
 								Double availableShadowBalance = wallet.getShadowBalance();
 								wallet.setShadowBalance(availableShadowBalance+orderTable.getNetAmount());
 								userRepository.save(user);
-								System.out.println("111111111111111111111111111111111117777777777777777777");
 						}
 					}
 					if(!flag)
 					{
-						System.out.println("1111111111111111111111111111111111188888888888888888888888888");
 						return "invalid coin name.";
 					}
 				}
 			}
 			else
 			{
-				System.out.println("111111111111111111111111111111111119999999999999999999999999");
 				return "There is no any pending transaction for given order id : "+orderApprovalDto.getOrderId();
 			}
 			return "Transaction request has been approved";	
@@ -188,7 +161,6 @@ public class OrderService {
 			boolean flag = false;
 
 			Integer userId = sellBuyTransactionDto.getUserId();
-			System.out.println("user iddddddddddddddddddddddddddddddddddddddddd >> "+sellBuyTransactionDto.getUserId());
 			User user;
 			CoinManagement coinManagement; 
 			Double shadowBalance = 0.0;
@@ -198,7 +170,6 @@ public class OrderService {
 			Iterator<Wallet> iterator ;
 			
 			try {
-				System.out.println(sellBuyTransactionDto.getUserId()+"///////////////////");
 				user = userRepository.findByUserId(userId);
 				System.out.println("  >> "+user.getUserId());
 				wallets = user.getWallets();
@@ -216,7 +187,6 @@ public class OrderService {
 					if(tempWallet.getCoinType().equals(WalletType.FIAT.toString()))
 					{	fiatWallet = tempWallet;
 						shadowBalance = fiatWallet.getShadowBalance();
-						System.out.println("11111111111111111111111111111111111"+shadowBalance);
 					}					
 				}
 			}
@@ -230,9 +200,7 @@ public class OrderService {
 			}
 			try 
 			{
-				System.out.println(sellBuyTransactionDto.getCoinName()+"///////////////////");
 				coinManagement = coinManagementRepository.findOneByCoinName(sellBuyTransactionDto.getCoinName());
-				System.out.println("///////////////////"+coinManagement.getCoinName());
 			}
 			catch(Exception e)
 			{
@@ -249,10 +217,8 @@ public class OrderService {
 			System.out.println(fees+" = fees");
 			Double grossAmount = (netAmount + fees);
 			System.out.println(grossAmount+" = GrossAmount");
-			System.out.println("2222222222222222222222222222222222222222222"+shadowBalance);
 			if(shadowBalance >= grossAmount) 
 			{
-				System.out.println("33333333333333333333333333333333333333333333"+shadowBalance);
 				OrderTable tempOrderTable = new OrderTable();
 				tempOrderTable.setUser(user);
 				tempOrderTable.setCoinName((sellBuyTransactionDto.getCoinName()));
@@ -273,7 +239,6 @@ public class OrderService {
 			}
 			else if(shadowBalance < grossAmount)
 			{
-				System.out.println("44444444444444444444444444444444444444444444444444444"+shadowBalance);
 				return "Your Order can not be place due to Insufficient Balance.";
 			}
 			else 
@@ -313,8 +278,7 @@ public class OrderService {
 		}
 		
 		if(flag) {
-		CoinManagement coinManagement = coinManagementRepository.findOneByCoinName(sellBuyTransactionDto.getCoinName());		
-		Double fees = coinManagement.getFees();				
+		CoinManagement coinManagement = coinManagementRepository.findOneByCoinName(sellBuyTransactionDto.getCoinName());	
 		OrderTable tempOrderTable = new OrderTable();
 		tempOrderTable.setUser(user);
 		tempOrderTable.setCoinName((sellBuyTransactionDto.getCoinName()));
@@ -360,7 +324,6 @@ public class OrderService {
 			return "No Any Orders For Given User Id.";
 		}
 		return allOrders;
-
 	}
 	
 }

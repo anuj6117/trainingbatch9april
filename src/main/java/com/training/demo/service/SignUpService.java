@@ -5,9 +5,12 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
+import java.util.regex.Pattern;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
+
 import com.training.demo.dto.UserRoleDto;
 import com.training.demo.enums.UserStatus;
 import com.training.demo.enums.WalletType;
@@ -36,8 +39,9 @@ public class SignUpService {
 
 	EmailValidation emailValidation = new EmailValidation();
 
+//CORRECTED VALIDATED [user name,email,phone,country,password]
 	public String addUser(User user) {
-
+		
 		String userName = user.getUserName();
 		System.out.println(userName + "======================================");
 		String password = user.getPassword();
@@ -45,9 +49,7 @@ public class SignUpService {
 		String tempEmail = user.getEmail();
 		String countryName = user.getCountry();
 
-		boolean validateEmail = emailValidation.validateEmail(tempEmail);
-
-		if (!validateEmail) {
+		if (!emailValidation.validateEmail(tempEmail)) {
 			return "Please enter a valid email address.";
 		}
 
@@ -61,13 +63,15 @@ public class SignUpService {
 		}
 
 		if (!(countryName.matches("^[a-zA-Z]{2,}$"))) {
-			return "country name can not be null or its length should be more than 2 characters.";
+			return "country name can not be null or its length should be more than 2 characters and must not contain any numeric.";
 		}
 
-		if (!(userName.matches("^([a-zA-Z0-9]{2,}\\s[a-zA-z0-9]{1,}'?-?[a-zA-Z0-9]{2,}\\s?([a-zA-Z0-9]{1,})?)"))) {
-			return "Maximun charaters allowed for userName field is 6 to 25 and User name can not contain any special character.";
-		}
-
+		//if (!(userName.matches("^([a-zA-Z0-9]{2,}\\s[a-zA-z0-9]{1,}'?-?[a-zA-Z0-9]{2,}\\s?([a-zA-Z0-9]{1,})?)"))) {
+		if (!(userName.matches("^[A-Za-z0-9_-]{1,25}$"))) 
+		{			
+			return "Maximum charaters allowed for userName field is 6 to 25 and User name can not contain any special character.";
+		}	
+		
 		if (userName.equals("") || userName.isEmpty() || userName == null || userName.trim().length() == 0) {
 			return "User Name can not be null or empty.";
 		}
@@ -80,8 +84,8 @@ public class SignUpService {
 
 		if ((userRepository.findByEmail(user.getEmail()) == null)) {
 			// boolean emailFlag = userRepository.existsByEmail(user.getEmail());
-			boolean phoneNoFlag = userRepository.existsByPhoneNumber(user.getPhoneNumber());
-			if (phoneNoFlag == false) {
+			
+			if(!userRepository.existsByPhoneNumber(user.getPhoneNumber())){
 				System.out.println("service hit");
 				Random random = new Random();
 				int tokenOTP = random.nextInt(99777) + 1432;
@@ -141,53 +145,49 @@ public class SignUpService {
 		return "Already existing Email.";
 	}
 
+//CORRECTED VALIDATED [invalid otp, invalid email]
 	public String verifyUserWithOtp(String email, Integer tokenOTP) {
 		OtpVerification tempOtpVerification;
 		User t_user;
-
 		String tempTokenOTP = tokenOTP.toString();
 		if (tokenOTP == null || tempTokenOTP.length() < 4) {
 			return "invalid otp";
 		}
-		try {
-			tempOtpVerification = otpRepository.findByEmail(email);
-			t_user = userRepository.findByEmail(email);
+		
+			if(((tempOtpVerification = otpRepository.findByEmail(email)) == null)){
+				return "invalid email";
+			}
+			
 			String v_email = tempOtpVerification.getEmail();
 			int v_otp = tempOtpVerification.getTokenOTP();
-
+			
+			if((t_user = userRepository.findByEmail(email)) == null) {
+				return "invalid email";
+			}
+			
 			if (email.equals(v_email)) {
-				System.out.println("email is successfully verified : " + email);
-				System.out.println("..........---------Token otp >>>>>> " + tempOtpVerification.getTokenOTP());
-				if (tokenOTP.equals(v_otp)) {
-					System.out.println(tokenOTP + "< token otp is successfully verified with table otp > " + v_otp);
-				} else {
-					return "invalid otp";
-				}
+				if (!tokenOTP.equals(v_otp)) {
+						return "invalid otp";
+				} 
 				otpRepository.delete(tempOtpVerification);
 				t_user.setUserStatus(UserStatus.ACTIVE);
 				userRepository.save(t_user);
-				System.out.println("otpVerification table deleted.");
 				return "Your account is verified successfully.";
-			} else {
-				System.out.println("Sorry, invalid username or otp");
+			}
+			else {
 				return "Invalid email";
 			}
-		} catch (Exception e) {
-			return "invalid email.";
-		}
 
 	}
 
+//CORRECTED VALIDATED	[user name,email,phone,country,password]
 	public String updateUser(@RequestBody User user) {
 		String userName = user.getUserName();
-		System.out.println(userName + "======================================");
 		String password = user.getPassword();
 		String tempEmail = user.getEmail();
 		String countryName = user.getCountry();
 
-		boolean validateEmail = emailValidation.validateEmail(tempEmail);
-
-		if (!validateEmail) {
+		if (!(emailValidation.validateEmail(tempEmail))) {
 			return "Please enter a valid email address.";
 		}
 
@@ -201,11 +201,14 @@ public class SignUpService {
 		}
 
 		if (!(countryName.matches("^[a-zA-Z]{2,}$"))) {
-			return "country name can not be null or its length should be more than 2 characters.";
+			return "country name can not be null or its length should be more than 2 characters and must not contain any numeric .";
 		}
-
-		if (!(userName.matches("^([a-zA-Z0-9]{2,}\\s[a-zA-z0-9]{1,}'?-?[a-zA-Z0-9]{2,}\\s?([a-zA-Z0-9]{1,})?)"))) {
-			return "Maximun charaters allowed for userName field is 6 to 25 and User name can not contain any special character.";
+		
+		//if (!(userName.matches("^([a-zA-Z0-9]{2,}\\s[a-zA-z0-9]{1,}'?-?[a-zA-Z0-9]{2,}\\s?([a-zA-Z0-9]{1,})?)"))) {
+		if (!(userName.matches("^[A-Za-z0-9_-]{1,25}$"))) 
+		{
+			
+				return "Maximum charaters allowed for userName field is 6 to 25 and User name can not contain any special character.";
 		}
 
 		if (userName.equals("") || userName.isEmpty() || userName == null || userName.trim().length() == 0) {
@@ -216,26 +219,41 @@ public class SignUpService {
 		if (!PhoneValidation.isValid(tempPhoneNo)) {
 			return "Please enter a valid mobile number.";
 		}
-
-		try {
-			User tempUser = userRepository.findByUserId(user.getUserId());
-			if (tempUser.getUserStatus().equals(UserStatus.ACTIVE)) {
-				tempUser.setEmail(user.getEmail());
-				tempUser.setUserName(user.getUserName());
-				tempUser.setPhoneNumber(user.getPhoneNumber());
-				tempUser.setCountry(user.getCountry());
-				tempUser.setPassword(user.getPassword());
-				userRepository.save(tempUser);
-			} else {
-				return "please activate your account first.";
-			}
-		} catch (Exception ex) {
-			return "user does not exist";
+		
+		User vUser;
+		if((vUser = userRepository.findByEmail(user.getEmail()))!=null)
+		{
+			if(vUser.getUserId() != user.getUserId())
+			return "already existing Email Id";
 		}
-
-		return "User succesfully updated!";
+		
+		if((vUser = userRepository.findByPhoneNumber(user.getPhoneNumber()))!=null)
+		if(vUser.getUserId() != user.getUserId())
+		{
+			return "already existing phone Number";
+		}		
+			User tempUser;
+			if(!((tempUser = userRepository.findByUserId(user.getUserId())) == null)) {
+				
+					if (tempUser.getUserStatus().equals(UserStatus.ACTIVE)) {
+								tempUser.setEmail(user.getEmail());
+								tempUser.setUserName(user.getUserName());
+								tempUser.setPhoneNumber(user.getPhoneNumber());
+								tempUser.setCountry(user.getCountry());
+								tempUser.setPassword(user.getPassword());
+								userRepository.save(tempUser);
+								return "User succesfully updated!";
+					}
+					else {
+							return "please activate your account first.";
+					}
+			} 
+			else{
+				return "user does not exist";
+			}
 	}
 
+//CORRECTED VALIDATED [if empty]
 	public Object getAllUsers() {
 		List<User> userList = userRepository.findAll();
 		if (userList.isEmpty()) {
@@ -243,7 +261,8 @@ public class SignUpService {
 		}
 		return userList;
 	}
-
+	
+//CORRECTED VALIDATED [invalid user id]
 	public Object getUserById(Integer userId) {
 		User user = null;
 		if (((user = userRepository.findByUserId(userId)) != null)) {
@@ -253,6 +272,7 @@ public class SignUpService {
 		}
 	}
 
+//CORRECTED VALIDATED [invalid userid, invalid roletype, duplicate roletype]
 	public String assignRoleToUser(UserRoleDto userRoleDto) {
 		User user = null;
 		Role role = null;
@@ -264,7 +284,14 @@ public class SignUpService {
 		if ((role = roleRepository.findByRoleType(userRoleDto.getRoleType())) == null) {
 			return "invalid role type.";
 		}
-
+		Set<Role> roles = user.getRoles();
+		for(Role r : roles) {
+			if(r.getRoleType().equalsIgnoreCase(userRoleDto.getRoleType()))
+			{
+				return "Already existing role type.";
+			}
+		}
+		
 		user.getRoles().add(role);
 		userRepository.save(user);
 		return "Role is successfully assigned to the given user.";

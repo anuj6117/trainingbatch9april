@@ -17,11 +17,9 @@ public class RoleController {
 	@Autowired
 	private RoleService roleService;
 	
-	
 	@RequestMapping(value="/createrole", method=RequestMethod.POST)
 	public String createRole(@RequestBody Role role)
 	{ 
-		System.out.println("Role controller hit addRole api");
 			return roleService.addRole(role);
 		
 	}	
@@ -35,7 +33,6 @@ public class RoleController {
 	@RequestMapping(value="/getallrole", method=RequestMethod.GET)
 	public Object getAllRole()
 	{ 	
-		System.out.println("Role controller hit getRole api.");
 			return roleService.getAllRole();
 	}
 
@@ -44,7 +41,7 @@ public class RoleController {
 	{ 	
 		if(roleId != null)
 		{
-			return roleService.getAllRole();
+			return roleService.getRoleById(roleId);
 		}
 		else
 		{

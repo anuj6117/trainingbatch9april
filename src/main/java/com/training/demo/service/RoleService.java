@@ -17,36 +17,33 @@ public class RoleService{
 		
 	User user;	
 	
+//Corrected and Validated
 	public String addRole(Role roleArg)
 	{
-		String roleName = roleArg.getRoleType();
-		List<Role> roles = roleRepository.findAll();
-		
-		for(Role r : roles)
-		{
-			if(r.getRoleType().equalsIgnoreCase(roleArg.getRoleType())) 
-			{
-				return "roleType already exists.";
-				
-			}
+		String roleName = roleArg.getRoleType().toUpperCase();
+		roleArg.setRoleType(roleName);
+		Role role ;
+			
+		if((role = roleRepository.findByRoleType(roleArg.getRoleType())) != null) {
+			return "Already existing role type.";
 		}
-	
+		
 		if(roleName.equals("") || roleName.isEmpty() || roleName == null)
 		{
 			return  "Role type can't be null or empty.";
 		}
+
 		String trimmedRole = roleName.trim();
 		if(!roleName.equals(trimmedRole))
 		{
 			return "please remove leading or trailing spaces.";
 		}
-		
-		System.out.println(roleArg.getRoleType());
+
 		
 		if(roleArg.getRoleType().equalsIgnoreCase("user") || roleArg.getRoleType().equalsIgnoreCase("manager") || roleArg.getRoleType().equalsIgnoreCase("admin"))
 			{
-			roleRepository.save(roleArg);
-			return "Role is successfully added.";
+				roleRepository.save(roleArg);
+				return "Role is successfully added.";
 			}
 		else
 		{
@@ -55,6 +52,7 @@ public class RoleService{
 		
 	}
 
+//Corrected and Validated	
 	public String deleteRoleById(Integer roleId)
 	{
 		Role tempRole ;
@@ -69,18 +67,22 @@ public class RoleService{
 		
 	}
 
+//Corrected and Validated	
 	public Object getAllRole() {
 		List<Role> tempRole = roleRepository.findAll();
-		if(tempRole == null)
+		if(tempRole.isEmpty())
 		{
-			return "There is no any roles available.";
+			return "There are no any roles available.";
 		}
 		return tempRole;
 	}
-	public Role getAllRole(Integer roleId) {
-		Role tempRole = roleRepository.findByRoleId(roleId);
-		return tempRole;
-	}	
 	
+	public Object getRoleById(Integer roleId) {
+		Role role;
+		if((role = roleRepository.findByRoleId(roleId))==null){
+			return "There are no any role available for the given role id or invalid role id";
+		}
+		return role;
+	}
 	
 }

@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.training.demo.dto.OrderDto;
@@ -37,17 +38,18 @@ public class WalletController {
 			throw new NullPointerException("Insufficient information....");
 		}
 	}		
-	
+/*	
 	@RequestMapping(value="/withdrawamount", method = RequestMethod.POST)
 	public String toWithdrawAmount(@RequestBody OrderDto orderDto) 
 	{
-		System.out.println(orderDto.getUserId()+"/t"+orderDto.getWalletType()+"/t"+orderDto.getAmount());
+		System.out.println(orderDto.getUserId()+"/t"+orderDto.getCoinType()+"/t"+orderDto.getAmount());
 				return walletService.toWithdrawn(orderDto);
 
 	}
+	*/
 	
 	@RequestMapping(value="/walletHistory", method = RequestMethod.GET)
-	public Object showWalletHistoryByUserIdAndCoinName(Integer userId, String coinName){
+	public Object showWalletHistoryByUserIdAndCoinName(@RequestParam("userId")Integer userId, @RequestParam("coinName")String coinName){
 		return walletService.showWalletHistoryByUserIdAndCoinName(userId, coinName);
 		
 	}
