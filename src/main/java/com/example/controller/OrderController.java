@@ -69,10 +69,12 @@ public class OrderController
 		 {
 			if(fiatWallet!=null)
 			 {
-				 currency=currencyRepository.findByCoinName(userOrderDto.getCoinName());
+				 
 				 Double netamount=userOrderDto.getCoinQuantity()*userOrderDto.getPrice();
-			     Double grossamount=((currency.getFees()*netamount)/100)+netamount; 
-			     
+				 currency=currencyRepository.findByCoinName(userOrderDto.getCoinName());
+				 if(currency!=null) 
+				 {
+				 Double grossamount=((currency.getFees()*netamount)/100)+netamount; 
 			     System.out.println("createBuyOrder // ................................ ");
 				   if(fiatWallet.getShadowbalance()>=grossamount)
 					   
@@ -89,6 +91,9 @@ public class OrderController
 				   else
 				     { return "insufficient balance to buy";
 				     }
+				 }
+				 else 
+					 return "currency not available ";
 			  }
 			else 
 				return "fiat wallet not available";

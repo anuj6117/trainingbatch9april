@@ -165,14 +165,15 @@ public class SignUserController
 	@RequestMapping(value="/depositamount",method=RequestMethod.POST)
 	public String depositamount(@RequestBody UserWalletDto userwalletdto )
 	{
+	
 		User user=userrepository.findByUserId(userwalletdto.getUserId());
-		if(user.getStatus()==UserStatus.ACTIVE)
+		if(user.getStatus()==UserStatus.ACTIVE && user!=null)
 		{
 		return signupservice.depositamount(userwalletdto);
 		}
 		else
 		{
-			return "Invalid user, not Active";
+			return "Invalid user or may not be Active";
 		}
 	}
 	

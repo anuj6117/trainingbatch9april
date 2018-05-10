@@ -64,43 +64,70 @@ public class TransactionService
 				   System.out.println("admin is seller.....................................");
 			  // throw new RuntimeException("Seller are not available");
 				   Double quantityDone=buy.getCoinQuantity();
+				   System.out.println("buy quantity:::::::::::::::::"+buy.getCoinQuantity());
 				   Double quantityRemaining=adminQuantity-quantityDone;
+				   System.out.println("buy remaining:::::::::::::::::"+quantityRemaining);
+				   
        		    buy.setStatusType(StatusType.APPROVED);
+       		    System.out.println("buy status:::::"+buy.getStatusType());
        	     	currency.setInitialSupply(quantityRemaining);
        	        Double fee=currency.getFees();
+       	         System.out.println("fee of currency:::::::::::::"+fee);
        	        Double netamount=quantityDone*buy.getPrice();
+       	          System.out.println("netamount:::::::::::::::::"+netamount);
        	        Double feeAmount=((fee*netamount)/100);
+       	               System.out.println("feeAmount:::::::::::::"+feeAmount);
        	        Double currencyNetAmount=quantityDone*currency.getPrice();
+       	          System.out.println("currencyNetAmount:::::::::::::::"+currencyNetAmount);
        	        Double NetAmount=netamount-currencyNetAmount;
+       	           System.out.println("NetAmount:::::::::::::::"+NetAmount);
         		currency.setCoinInINR(NetAmount);
+        		    System.out.println("currency.setCoinININr:::::::::::"+currency.getCoinInINR());
         		currency.setProfit(feeAmount);
+        		System.out.println("currncy.getProfit::::::::::::::"+currency.getProfit());
         		orderRepository.save(buy);
         		currencyRepository.save(currency);
         		String date =new Date()+" ";
+        		System.out.println("TRANSACTION TABLE start///////////////////");
         		Transaction transaction=new Transaction();
         		transaction.setBuyerId(buy.getUser().getUserId());
+        		  System.out.println("buyer id:::::::::::::::::::::::"+transaction.getBuyerId());
         		transaction.setSellerId(0); // admin ki seller id
+        		System.out.println("seller id:::::::::::::::::::::::"+transaction.getSellerId());
         		transaction.setCoinName(buy.getCoinName());
+        		System.out.println("coin name :::::::::::::::::::::::"+transaction.getCoinName());
        	    	transaction.setCoinType(buy.getCoinType());
+       	    	System.out.println("coin type:::::::::::::::::::::::"+transaction.getCoinType());
        	     	transaction.setExchangeRate(buy.getPrice());
+       	        System.out.println("exchange rate:::::::::::::::::::::::"+transaction.getExchangeRate());
        	     	transaction.setNetAmount(buy.getNetAmount());
+        	     System.out.println("net amount:::::::::::::::::::::::"+transaction.getNetAmount());
        		    transaction.setGrossAmount(buy.getGrossAmount());
+        		 System.out.println("gross amount:::::::::::::::::::::::"+transaction.getGrossAmount());
        	     	transaction.setCoinQuantity(quantityDone);
+        	     System.out.println("coin quantity:::::::::::::::::::::::"+transaction.getCoinQuantity());
        		    transaction.setTransactionFee(feeAmount);
+        		 System.out.println("transaction fee:::::::::::::::::::::::"+transaction.getTransactionFee());
        	    	transaction.setDescription("purchase done");
        		    transaction.setStatus(StatusType.COMPLETED);
+        		 System.out.println("status type:::::::::::::::::::::::"+transaction.getStatus());
        		    transaction.setTransactionCreatedOn(date);
        		    transactionRepository.save(transaction);		        		
        		   //setTransaction(userOrderBuy, userOrderSell, quantity);
        		   User user1=buy.getUser();
+       		   
        	       Set<Wallet> sett=user1.getWallet();
+       	       System.out.println("user id of buyer::::::::::::::::"+user1.getUserId());
        	       for(Wallet w:sett)
        	       {System.out.println("seller is empyt// admin seller// updating wallet//buyer wallet update in crypto.....................................");
        	     	 if(w.getCoinType()==buy.getCoinType())
        	     	  {System.out.println("11.....................................22");
        	     	     Double balance=w.getBalance();
+       	     	     System.out.println("initial balance:::::::::::::::::::::::::"+balance);
        	     		 balance+=quantityDone;
+       	     		 System.out.println("updated balance::::::::::::::::::::::::"+balance);
        	     		 w.setBalance(balance);
+       	     		// System.out.println("w.get balance::::::::::::::::::::::::::::"+w.getBalance());
        	     		 System.out.println("balance(crypto)111........."+w.getBalance());
        	     		 w.setShadowbalance(balance);
        	     		System.out.println("balance(crypto)222........."+w.getShadowbalance());
@@ -108,9 +135,13 @@ public class TransactionService
        	     	 if(w.getCoinType()==WalletType.FIAT)
        	     	  {System.out.println("seller is empyt// admin seller// updating wallet//buyer wallet update in crypto.....................................33");
        	     	     Double balance=buy.getGrossAmount();
+       	     	     System.out.println("balnce:::::::::::::::::::"+balance);
        	             Double buyerBalance=w.getBalance();
+       	             System.out.println("buyerbalance::::::::::::::::::::::::::"+buyerBalance);
        	     		 buyerBalance=buyerBalance-balance;
+       	     		System.out.println(" updated buyerbalance::::::::::::::::::::::::::"+buyerBalance);
        	     		 w.setBalance(buyerBalance);
+       	     	
        	     		System.out.println("balance(crypto)333........."+w.getBalance());
        	     		 //w.setShadowbalance(buyerBalance);
        	     		System.out.println("balance(crypto)444........."+w.getShadowbalance());
@@ -121,6 +152,7 @@ public class TransactionService
 			   }else
 			    {
 				  // return "";
+				   System.out.println("outer cconditions are not satisfied");
 			    }
 			  
 		   }

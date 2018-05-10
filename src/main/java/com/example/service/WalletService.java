@@ -43,7 +43,8 @@ public class WalletService
  public String addWallet(UserWalletDto userwalletdto)
  {
 	 user=userrepository.findByUserId(userwalletdto.getUserId());
-	 if(user.getStatus()==UserStatus.ACTIVE)
+	 
+	 if(user!=null && user.getStatus()==UserStatus.ACTIVE )
 	 {
 	 Wallet wallet=new Wallet();
 	 wallet.setCoinType(userwalletdto.getCoinType());
@@ -67,7 +68,7 @@ public class WalletService
 	 userorder=orderrepository.findByOrderId(walletApprovalDto.getOrderId());
 	 user=userorder.getUser();
      
-	 if(user.getStatus().equals(UserStatus.ACTIVE))
+	 if(user.getStatus().equals(UserStatus.ACTIVE) && user!=null)
 	 {
 		
 		 if(walletApprovalDto.getStatusType()==StatusType.COMPLETED)

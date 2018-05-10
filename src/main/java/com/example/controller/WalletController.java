@@ -9,18 +9,21 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.dto.UserWalletDto;
 import com.example.dto.WalletApprovalDto;
 import com.example.model.User;
+import com.example.model.Wallet;
+import com.example.repository.WalletRepository;
 import com.example.service.WalletService;
 
 @RestController
 public class WalletController 
 {
+	
 	@Autowired
 	private WalletService walletservice;
 	private User user;
     @RequestMapping(value="/addwallet",method=RequestMethod.POST)
 	public String addWallet(@RequestBody UserWalletDto userwalletdto)
 	{
-    	
+    	//Wallet wallet=walletRepository.findById(userwalletdto.getUserId());
 	  	return walletservice.addWallet(userwalletdto) ;
 	}
     
