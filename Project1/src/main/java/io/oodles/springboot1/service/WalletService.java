@@ -164,7 +164,7 @@ public class WalletService {
 		System.out.println(userorder.getCoinname());
 		//System.out.println(userorder.getUsersorder().getUserId());
 		//wallet=
-		wallet=walletRepository.findByUsersAndCoinTypeAndCoinName(user, userorder.getCoinType(),userorder.getCoinname());
+		wallet=walletRepository.findByUsersAndCoinTypeAndCoinName(user, WalletType.FIAT,"INR");
 		
 		
 		if(userorder.getOrderStatus().equals(OrderStatus.PENDING)) {

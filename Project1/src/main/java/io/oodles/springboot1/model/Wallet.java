@@ -20,8 +20,8 @@ public class Wallet {
 	@Enumerated(EnumType.STRING)
 	private WalletType coinType;
 	private String coinName;
-	private Integer balance=0;
-	private Integer shadowbalance=0;
+	private Double balance=0.0;
+			private Double shadowbalance=0.0;
 	@ManyToOne
 	@JoinColumn(name="user_id")
 	@JsonIgnore
@@ -64,16 +64,16 @@ public class Wallet {
 	}
 
 
-	public Integer getBalance() {
+	public Double getBalance() {
 		return balance;
 	}
-	public void setBalance(Integer balance) {
+	public void setBalance(Double balance) {
 		this.balance = balance;
 	}
-	public Integer getShadowbalance() {
+	public Double getShadowbalance() {
 		return shadowbalance;
 	}
-	public void setShadowbalance(Integer shadowbalance) {
+	public void setShadowbalance(Double shadowbalance) {
 		this.shadowbalance = shadowbalance;
 	}
 	

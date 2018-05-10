@@ -16,12 +16,12 @@ import io.oodles.springboot1.enums.WalletType;
 public class UserTransaction {
 	@Id @GeneratedValue(strategy=GenerationType.AUTO)
 	Integer id;
-	Integer netAmount;
+	Double netAmount=0.0;
 	WalletType coinType;
 	String coinName;
-	Integer fees;
-	Integer exchangeRate;
-	Integer grossAmount;
+	Double fees=0.0;
+	Double exchangeRate=0.0;
+	Double grossAmount=0.0;
 	Integer buyer_id;
 	Integer seller_id;
 	@Enumerated(EnumType.STRING)
@@ -43,10 +43,10 @@ public class UserTransaction {
 	}
 	
 	
-	public Integer getNetAmount() {
+	public Double getNetAmount() {
 		return netAmount;
 	}
-	public void setNetAmount(Integer netAmount) {
+	public void setNetAmount(Double netAmount) {
 		this.netAmount = netAmount;
 	}
 	public WalletType getCoinType() {
@@ -61,10 +61,10 @@ public class UserTransaction {
 	public void setCoinName(String coinName) {
 		this.coinName = coinName;
 	}
-	public Integer getFees() {
+	public Double getFees() {
 		return fees;
 	}
-	public void setFees(Integer fees) {
+	public void setFees(Double fees) {
 		this.fees = fees;
 	}
 	public OrderStatus getTransactionstatus() {
@@ -74,16 +74,16 @@ public class UserTransaction {
 		this.transactionstatus = transactionstatus;
 	}
 	
-	public Integer getExchangeRate() {
+	public Double getExchangeRate() {
 		return exchangeRate;
 	}
-	public void setExchangeRate(Integer exchangeRate) {
+	public void setExchangeRate(Double exchangeRate) {
 		this.exchangeRate = exchangeRate;
 	}
-	public Integer getGrossAmount() {
+	public Double getGrossAmount() {
 		return grossAmount;
 	}
-	public void setGrossAmount(Integer grossAmount) {
+	public void setGrossAmount(Double grossAmount) {
 		this.grossAmount = grossAmount;
 	}
 	

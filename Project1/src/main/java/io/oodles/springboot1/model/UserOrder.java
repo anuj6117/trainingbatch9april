@@ -26,18 +26,18 @@ public class UserOrder {
 	@Enumerated(EnumType.STRING)
 	WalletType coinType;
 	String coinname;
-	Integer coinQuantity=0;
-	Integer price=0;
+	Double coinQuantity=0.0;
+	Double price=0.0;
 	Date orderCreatedOn;
 	@Enumerated(EnumType.STRING)
 	OrderStatus orderStatus;
-	Integer fee;
+	Double fee=0.0;
 	@ManyToOne
 	@JoinColumn(name="user_id")
 	@JsonIgnore
 	Users usersorder;
-	Integer netAmount;
-	Integer grossAmount;
+	Double netAmount=0.0;
+	Double grossAmount=0.0;
 	
 	
 	
@@ -54,19 +54,19 @@ public class UserOrder {
 		this.coinType = coinType;
 	}
 
-	public Integer getNetAmount() {
+	public Double getNetAmount() {
 		return netAmount;
 	}
 
-	public void setNetAmount(Integer netAmount) {
+	public void setNetAmount(Double netAmount) {
 		this.netAmount = netAmount;
 	}
 
-	public Integer getGrossAmount() {
+	public Double getGrossAmount() {
 		return grossAmount;
 	}
 
-	public void setGrossAmount(Integer grossAmount) {
+	public void setGrossAmount(Double grossAmount) {
 		this.grossAmount = grossAmount;
 	}
 
@@ -104,19 +104,19 @@ public class UserOrder {
 		this.coinname = coinname;
 	}
 
-	public Integer getCoinQuantity() {
+	public Double getCoinQuantity() {
 		return coinQuantity;
 	}
 
-	public void setCoinQuantity(Integer coinQuantity) {
+	public void setCoinQuantity(Double coinQuantity) {
 		this.coinQuantity = coinQuantity;
 	}
 
-	public Integer getPrice() {
+	public Double getPrice() {
 		return price;
 	}
 
-	public void setPrice(Integer price) {
+	public void setPrice(Double price) {
 		this.price = price;
 	}
 
@@ -136,11 +136,11 @@ public class UserOrder {
 		this.orderStatus = orderStatus;
 	}
 
-	public Integer getFee() {
+	public Double getFee() {
 		return fee;
 	}
 
-	public void setFee(Integer fee) {
+	public void setFee(Double fee) {
 		this.fee = fee;
 	}
 

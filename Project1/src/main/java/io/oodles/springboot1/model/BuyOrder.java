@@ -7,8 +7,8 @@ import io.oodles.springboot1.enums.WalletType;
 
 public class BuyOrder {
 	private Integer userid;
-	private Integer coinQuantity;
-	private Integer price;
+	private Double coinQuantity=0.0;
+	private Double price=0.0;
 	private String coinname;
 	@Enumerated(EnumType.STRING)
 	private WalletType coinType;
@@ -25,16 +25,16 @@ public class BuyOrder {
 	public void setUserid(Integer userid) {
 		this.userid = userid;
 	}
-	public Integer getCoinQuantity() {
+	public Double getCoinQuantity() {
 		return coinQuantity;
 	}
-	public void setCoinQuantity(Integer coinQuantity) {
+	public void setCoinQuantity(Double coinQuantity) {
 		this.coinQuantity = coinQuantity;
 	}
-	public Integer getPrice() {
+	public Double getPrice() {
 		return price;
 	}
-	public void setPrice(Integer price) {
+	public void setPrice(Double price) {
 		this.price = price;
 	}
 	public String getCoinname() {

@@ -10,7 +10,7 @@ public class Sortbyprice implements Comparator<UserOrder> {
 	@Override
 	public int compare(UserOrder o1, UserOrder o2) {
 		// TODO Auto-generated method stub
-		return o1.getPrice()-o2.getPrice();
+		return o1.getPrice().compareTo(o2.getPrice());
 	}
 
 }

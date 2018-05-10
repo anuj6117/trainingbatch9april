@@ -10,7 +10,7 @@ public class Deposit {
 	@Enumerated(EnumType.STRING)
 	WalletType coinType;
 	String coinName;
-	Integer amount;
+	Double amount=0.0;
 	
 	
 	
@@ -32,10 +32,10 @@ public class Deposit {
 	public void setUserId(Integer userId) {
 		this.userId = userId;
 	}
-	public Integer getAmount() {
+	public Double getAmount() {
 		return amount;
 	}
-	public void setAmount(Integer amount) {
+	public void setAmount(Double amount) {
 		this.amount = amount;
 	}
 	public WalletType getCoinType() {

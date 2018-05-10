@@ -46,9 +46,9 @@ public class OrderController {
 	}
 	
 	@GetMapping("/transaction")
-	public void maketransaction() {
+	public String maketransaction() {
 		
-		orderService.transaction();
+		return orderService.transaction();
 	}
 	@GetMapping("/showalltransaction")
 	public List<UserTransaction> showall() {

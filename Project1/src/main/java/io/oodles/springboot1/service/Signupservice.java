@@ -120,21 +120,21 @@ public class Signupservice {
 			return result;
 			
 			}
-		else if(phone!=null) {
+	 if(phone!=null) {
 			result.put("isSuccess", false);
 			result.put("message","phone number already exists");
 			result.put("timestamp",date );
 			return result;
 			
 		}
-		else if(name!=null) {
+		 if(name!=null) {
 			result.put("isSuccess", false);
 			result.put("message","Username already exists");
 			result.put("timestamp",date );
 			return result;
 			
 		}
-		else if(s.length()>25) {
+	 if(s.length()>25) {
 			result.put("isSuccess", false);
 			result.put("message","Maximum Characters allowed for this field is 25");
 			result.put("timestamp",date );
@@ -142,7 +142,7 @@ public class Signupservice {
 
 			
 		}
-		else if(mob.length()>10){
+		 if(mob.length()>10){
 			result.put("isSuccess", false);
 			result.put("message","Please,enter a valid mobile number.");
 			result.put("timestamp",date );
@@ -150,7 +150,7 @@ public class Signupservice {
 
 			
 		}
-		else if(mobpresent!=null) {
+		 if(mobpresent!=null) {
 			result.put("isSuccess", false);
 			result.put("message","Oops,this number is already registered");
 			result.put("timestamp",date );
@@ -158,7 +158,7 @@ public class Signupservice {
 
 			
 		}
-		else if(!Pattern.matches("(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%]).{8,32}", users.getPassword())) {
+		 if(!Pattern.matches("(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%!&*<?>/]).{8,32}", users.getPassword())) {
 			result.put("isSuccess", false);
 			result.put("message","Please enter password with minimum 8 characters.You password should have atleast 1 Upper Case, 1 Lower Case, 1 Digit & 1 Special Character.");
 			result.put("timestamp",date );
@@ -166,19 +166,31 @@ public class Signupservice {
 
 			
 		}
-		else if(!Pattern.matches("\\d{10}", users.getPhoneNumber())) {
+		 if(!Pattern.matches("\\d{10}", users.getPhoneNumber())) {
 			result.put("isSuccess", false);
 			result.put("message","Phone Number incorrect");
 			result.put("timestamp",date );
 			return result;
 
 			
-		}else if(users.getCountry().length()<2){
+		} if(users.getCountry().length()<2){
 			result.put("isSuccess", false);
 			result.put("message","Minimum 2 characters required");
 			result.put("timestamp",date );
 			return result;
 			
+		}
+		if(!Pattern.matches("^[a-zA-Z0-9_-]{1,25}$", users.getUserName())) {
+			result.put("isSuccess", false);
+			result.put("message","Username format wrong.");
+			result.put("timestamp",date );
+			return result;
+		}
+		if(!Pattern.matches("^[a-z0-9][a-z0-9(\\-[a-z0-9]+)(\\_[a-z0-9]+)]*[a-zA-Z0-9]+(\\.[a-z0-9]+)*[a-zA-Z0-9]+(\\-[a-z0-9]+)*[a-zA-Z0-9]+(\\_[a-z0-9]+)*[a-zA-Z0-9]*@[a-z0-9]+(\\.[a-z0-9]+)*(\\.[a-z]{2,})$", users.getEmail())) {
+			result.put("isSuccess", false);
+			result.put("message","Email format wrong.");
+			result.put("timestamp",date );
+			return result;
 		}
 		else {
 			
@@ -258,9 +270,16 @@ public class Signupservice {
 
 
 	public String assign(AssignRole assignrole) {
+		
 		// TODO Auto-generated method stub
 		users=usersRepository.findByUserId(assignrole.getUserid());
 		role=rolerepository.findByRoleType(assignrole.getRoletype());
+		List<Role> list1=users.getRoles();
+		for(Role r:list1) {
+			if(r.getRoleType().equals(assignrole.getRoletype())) {
+				return "Role already Assigned";
+			}
+		}
 		users.getRoles().add(role);
 		usersRepository.save(users);
 		return "Role Assigned";

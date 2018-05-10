@@ -21,32 +21,32 @@ public class Currency {
 	
 	private String symbol;
 	@NotNull
-	private Integer initialSupply;
+	private Double initialSupply=0.0;
 	@NotNull
-	private Integer price;
-	private Integer fees;
-	private Integer INRconversion;
+	private Double price=0.0;
+	private Double fees=0.0;
+	private Double INRconversion=0.0;
 	
 	
-	private Integer profit;
+	private Double profit=0.0;
 	
 	
 	
 	
-	public Integer getProfit() {
+	public Double getProfit() {
 		return profit;
 	}
 
-	public void setProfit(Integer profit) {
+	public void setProfit(Double profit) {
 		this.profit = profit;
 	}
 
 	
-	public Integer getINRconversion() {
+	public Double getINRconversion() {
 		return INRconversion;
 	}
 
-	public void setINRconversion(Integer iNRconversion) {
+	public void setINRconversion(Double iNRconversion) {
 		INRconversion = iNRconversion;
 	}
 
@@ -68,18 +68,18 @@ public class Currency {
 		this.symbol = symbol;
 	}
 	
-	public Integer getInitialSupply() {
+	public Double getInitialSupply() {
 		return initialSupply;
 	}
 
-	public void setInitialSupply(Integer initialSupply) {
+	public void setInitialSupply(Double initialSupply) {
 		this.initialSupply = initialSupply;
 	}
 
-	public Integer getPrice() {
+	public Double getPrice() {
 		return price;
 	}
-	public void setPrice(Integer price) {
+	public void setPrice(Double price) {
 		this.price = price;
 	}
 
@@ -99,11 +99,11 @@ public class Currency {
 		this.coinName = coinName;
 	}
 
-	public Integer getFees() {
+	public Double getFees() {
 		return fees;
 	}
 
-	public void setFees(Integer fees) {
+	public void setFees(Double fees) {
 		this.fees = fees;
 	}
 	
