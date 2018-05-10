@@ -54,17 +54,15 @@ public class SignUserController
 		//String username3=user.getUserName().replaceAll("\\s+","");
 		int usernameLength=username.length();
 		int usernameLength2=username1.length();
-		
-		//String r=if(Pattern.compile("^[a-z0-9][a-z0-9(\\-[a-z0-9]+)(\\_[a-z0-9]+)]*[a-zA-Z]+(\\.[a-z0-9]+)*[a-zA-Z]+(\\-[a-z0-9]+)*[a-zA-Z]+(\\_[a-z0-9]+)*[a-zA-Z]*@[a-z0-9]+(\\.[a-z0-9]+)*(\\.[a-z]{2,})$").matcher(str).matches()) {
-		
 		String passwordvalue=user.getPassword();
 		int passwordLength1=passwordvalue.length();
 	    passwordvalue=passwordvalue.replaceAll("\\s+","");
 	    int passwordLength2=passwordvalue.length();
-	   // String patternPhone="(?=.*[0-9]).{10,10}";
+	  
 	    String pattern="(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\\S+$).{8,32}";
-	   // String emailPattern="^[_-]{0,1}+[a-z0-9]+(\\_[a-z0-9]+)*[a-zA-Z]+[_-]{0,1}+(\\.[_a-z0-9-]+)*@[a-z0-9]+(\\.[a-z0-9]+)*(\\.[a-z]{2,})$";
-	     String emailPattern="^[a-z0-9][a-z0-9(\\-[a-z0-9]+)(\\_[a-z0-9]+)]*[a-zA-Z]+(\\.[a-z0-9]+)*[a-zA-Z]+(\\-[a-z0-9]+)*[a-zA-Z]+(\\_[a-z0-9]+)*[a-zA-Z]*@[a-z0-9]+(\\.[a-z0-9]+)*(\\.[a-z]{2,})$";
+	   
+	   
+	    String emailPattern="^[a-z0-9][a-z0-9(\\-[a-z0-9]+)(\\_[a-z0-9]+)]*[a-zA-Z0-9]+(\\.[a-z0-9]+)*[a-zA-Z0-9]+(\\-[a-z0-9]+)*[a-zA-Z0-9]+(\\_[a-z0-9]+)*[a-zA-Z0-9]*@[a-z0-9]+(\\.[a-z0-9]+)*(\\.[a-z]{2,})$";
 	    if((passwordLength2!=0) && (passwordLength1==passwordLength2) && (passwordvalue.matches(pattern)))
 		{
 	    	 System.out.println("......................111111111122222");
@@ -149,13 +147,7 @@ public class SignUserController
 	@RequestMapping(value="/updateuser",method=RequestMethod.POST)
 	public String updateuser(@RequestBody User user) 
 	{
-	    String s=signupservice.updateuser(user);
-	    if(s!=null)
-	    {
-	    	return "updated";
-	    }
-	    else
-	    	return "null";
+	    return signupservice.updateuser(user);
 	}
 	
 	@GetMapping("/deleteuser")

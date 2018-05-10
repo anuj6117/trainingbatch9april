@@ -28,7 +28,7 @@ public class RoleController
   public String addUser(@RequestBody Role role)
   {   
 	  
-	   if(role.getType().equalsIgnoreCase("admin") || role.getType().equalsIgnoreCase("manager"))
+	   if(role.getRoleType().equalsIgnoreCase("admin") || role.getRoleType().equalsIgnoreCase("manager"))
 	   {
 		   
 		   roleRepository.save(role);
@@ -45,7 +45,7 @@ public class RoleController
 	   {
 		 
 		   User user = userRepository.findByUserId(userRoleDto.getUserId());
-		   Role role = roleRepository.findByType(userRoleDto.getRoleType());
+		   Role role = roleRepository.findByRoleType(userRoleDto.getRoleType());
 		   if((user!=null))
 		   {
 			   if(role!=null) {

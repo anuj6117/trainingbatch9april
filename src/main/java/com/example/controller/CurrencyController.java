@@ -38,15 +38,15 @@ private CurrencyRepository currencyrepository;
 	System.out.println("rest");
 	try
     {
-	 
 	  currency1=currencyrepository.findBySymbol(currency.getSymbol());
-	  
-      
 	  currency2=currencyrepository.findByCoinName(currency.getCoinName());
 	  System.out.println(".........currency1 "+currency1);
 	  System.out.println(".........currency2 "+currency2); 
-	  
-	  if(currency1!=null || currency1!=null)
+	  if(currency.getCoinType()!=WalletType.CRYPTO)
+	  {
+		  return "Only Cryptocurrency can be added";
+	  }
+	  else if(currency1!=null || currency1!=null)
 	  {
 		  return "Coin Name or Symbol already exist";  
 	  }
@@ -61,26 +61,27 @@ private CurrencyRepository currencyrepository;
     }
 	catch(NullPointerException e)
 	{
-		String pattern="(?=.*[@#$%^&+=*])(?=\\S+$).{1,10}";
+		String pattern="(?=.*[!()@#$%^&+=*])(?=\\S+$).{1,10}";
 		
 	
 		//here null pointer maeans we can insert
 		if(currency1==null && currency2==null)
 		{
-			System.out.println("numeber 1");
+			System.out.println("number 1");
 			
 			if(currency.getCoinName().trim().length()!=0)
 			{	
-				System.out.println("numeber 2");
+				System.out.println("number 2");
 				if(currency.getSymbol().trim().length()!=0 && currency.getSymbol().matches(pattern))
 				{
-					System.out.println("numeber 3");
+					System.out.println("number 3");
 					//System.out.println("value of currency " + currency.getInitialSupply());
 					try {
 					if(currency.getPrice()>0 && currency.getInitialSupply()>0 && currency.getInitialSupply()!=null && currency.getPrice()!=null)
 					{
-						System.out.println("numeber 4");
-		    	     return currencyservice.addCurrency(currency);	
+						
+						  System.out.println("number 4");
+		    	          return currencyservice.addCurrency(currency);	
 					} 
 					else
 					 return "Initial supply or price can't be null ";
@@ -130,7 +131,101 @@ private CurrencyRepository currencyrepository;
 @RequestMapping(value="/updatecurrency",method=RequestMethod.POST)
  public String updatecurrency(@RequestBody Currency currency)
  {
-	Currency currency1=currencyrepository.findByCoinId(currency.getCoinId());
+	
+    currency.setCoinType(WalletType.CRYPTO);
+    currency.setProfit(0.0);
+    currency.setCoinInINR(0.0);
+	Currency currency1=null;
+	Currency currency2=null;
+	System.out.println("rest");
+	try
+    {
+	  currency1=currencyrepository.findBySymbol(currency.getSymbol());
+	  currency2=currencyrepository.findByCoinName(currency.getCoinName());
+	  Currency currency3=currencyrepository.findByCoinId(currency.getCoinId());
+	  System.out.println(".........currency1 "+currency1);
+	  System.out.println(".........currency2 "+currency2);
+	  
+	  
+	  if(currency3==null)
+	  {
+		  return "Invalid Coin Id";
+	  }
+	  else if((currency.getCoinName().equalsIgnoreCase("INR")))
+	  {
+		  return "Only Cryptocurrency can be added";
+	  }
+	  else if((currency1!=null && currency1.getCoinId()!=currency.getCoinId()) ||(currency1!=null && currency2.getCoinId()==currency.getCoinId()))
+	  {
+		  return "Coin Name or Symbol already exist";  
+	  }
+	  else
+	  {
+		  currency1.getCoinId();
+		  currency2.getCoinId();  
+		  return "";
+	  }
+	 
+	  
+    }
+	catch(NullPointerException e)
+	{
+		String pattern="(?=.*[!()@#$%^&+=*])(?=\\S+$).{1,10}";
+		
+	
+		//here null pointer maeans we can insert
+		if(currency1==null && currency2==null)
+		{
+			System.out.println("number 1");
+			
+			if(currency.getCoinName().trim().length()!=0)
+			{	
+				System.out.println("number 2");
+				if(currency.getSymbol().trim().length()!=0 && currency.getSymbol().matches(pattern))
+				{
+					System.out.println("number 3");
+					//System.out.println("value of currency " + currency.getInitialSupply());
+					try {
+					if(currency.getPrice()>0 && currency.getInitialSupply()>0 && currency.getInitialSupply()!=null && currency.getPrice()!=null)
+					{
+						
+						  System.out.println("number 4");
+		    	          currencyrepository.save(currency);
+		    	          return "currency updated successfully";
+					} 
+					else
+					 return "Initial supply or price can't be null ";
+					}
+					catch(NullPointerException r)
+					{
+						return "Initial supply or price can't be null";
+					}
+				}
+				else
+				   return "Symbol has  null value or incorrect value, enter correct one"; 
+			}
+			else
+				return "Coin Name can't be null";
+		}
+		else
+			return "coinName or symbol already exist";
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	/*Currency currency1=currencyrepository.findByCoinId(currency.getCoinId());
 	if(currency1!=null)
 	{
 		String coinName=currency.getCoinName().trim();
@@ -142,7 +237,7 @@ private CurrencyRepository currencyrepository;
 	    }else
 	    	return "coin name is null";
 	}else
-		return "Coin Id do not exist";
+		return "Coin Id do not exist";*/
  }
 
 @GetMapping("/deletecurrency")

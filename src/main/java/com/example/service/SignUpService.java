@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Random;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -80,7 +81,7 @@ public class SignUpService
 		 walletset.add(wallet);
 		 walletrepository.save(wallet);
 		 Set<Role> rolelist=new HashSet<Role>();
-		 Role role1=rolerepository.findByType("user");
+		 Role role1=rolerepository.findByRoleType("user");
 		 Role role2=new Role();
 		 if(role1!=null)
 		 {
@@ -88,7 +89,7 @@ public class SignUpService
 		 }
 		 else
 		 {
-			 role2.setType("user");
+			 role2.setRoleType("user");
 			 rolerepository.save(role2);
 		 rolelist.add(role2);
 		 }
@@ -117,6 +118,114 @@ public class SignUpService
 	public String updateuser(User user)
 	 {  
 		
+		
+		 User user1=userrepository.findByEmail(user.getEmail());
+		   User user2=userrepository.findByPhoneNumber(user.getPhoneNumber());
+		   User user3=userrepository.findByUserId(user.getUserId());
+		   user.setCreatedOn(user3.getCreatedOn());
+		  // System.out.println("user:::::::::::::::::::1"+user+" "+user.getUserId());
+		  // System.out.println("user:::::::::::::::::::2"+user1);
+		  // System.out.println("user:::::::::::::::::::3"+user2);
+		  // System.out.println("user:::::::::::::::::::4"+user1.getUserId()+" "+user1.getEmail());
+		  // System.out.println("user:::::::::::::::::::5"+user2.getUserId()+" "+user2.getEmail());
+		  
+		  // System.out.println("user:::::::::::::::::6"+user3.getStatus());
+		   
+		   if(user3.getStatus()!=UserStatus.ACTIVE)
+			{
+			 
+			   return "User not active";
+			}
+		   else if(user1!=null && (user1.getUserId()!=user.getUserId()) )
+			{
+				return "email already exist";
+			}
+			else if(user2!=null && (user2.getPhoneNumber()!=user.getPhoneNumber()) )
+			{
+				return "phone number already exist";
+			}
+			else 
+			{
+				//Validation for username
+			String username1=user.getUserName();
+			String username=user.getUserName().trim();
+			//String username3=user.getUserName().replaceAll("\\s+","");
+			int usernameLength=username.length();
+			int usernameLength2=username1.length();
+			
+			   // validation for password
+			String passwordvalue=user.getPassword();
+			int passwordLength1=passwordvalue.length();
+		    passwordvalue=passwordvalue.replaceAll("\\s+","");
+		    int passwordLength2=passwordvalue.length();
+		  
+		    String pattern="(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\\S+$).{8,32}";
+		   
+		   
+		    String emailPattern="^[a-z0-9][a-z0-9(\\-[a-z0-9]+)(\\_[a-z0-9]+)]*[a-zA-Z0-9]+(\\.[a-z0-9]+)*[a-zA-Z0-9]+(\\-[a-z0-9]+)*[a-zA-Z0-9]+(\\_[a-z0-9]+)*[a-zA-Z0-9]*@[a-z0-9]+(\\.[a-z0-9]+)*(\\.[a-z]{2,})$";
+		    if((passwordLength2!=0) && (passwordLength1==passwordLength2) && (passwordvalue.matches(pattern)))
+			{
+		    	
+		    	 if(user.getPhoneNumber().length()==10 && (user.getPhoneNumber().matches("[0-9]+")))
+		    	 {
+		    		 if((usernameLength!=0 )&& (usernameLength==usernameLength2) && (user.getUserName()!=null) )
+		    	   {
+		    		 if( (username1.length()<=25))
+		    		 {
+		    		  if(Pattern.compile(emailPattern).matcher(user.getEmail()).matches())
+		    		  {
+		    			if(user.getCountry().trim().length()!=0)
+		    			{
+		    				  user.setStatus(UserStatus.ACTIVE);
+		    				  userrepository.save(user);
+		                      return "Your account has been successfully updated." ;
+		    				//	return "User not active";
+				        }
+		    			else
+		    			  return "Country can't be null";	
+		    		   }
+		    		  else
+		    			return "invalid email";
+		    		 }
+		    		 else
+		    		 return "Maximum character for username is 25";
+		    	   }
+		    	   else
+		    		return "Username can't be null or cannot contain inappropriate spaces";
+			     }
+		    	   else
+		    		return "Phone number should be of length 10 and should contain numeric only ";
+		   }
+			else
+			{
+				return "enter valid password";
+			}
+		   } 
+
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+	/*	String username1=user.getUserName();
+		String username=user.getUserName().trim();
+		//String username3=user.getUserName().replaceAll("\\s+","");
+		int usernameLength=username.length();
+		int usernameLength2=username1.length();
+		
+		
+			String passwordvalue=user.getPassword();
+		int passwordLength1=passwordvalue.length();
+	    passwordvalue=passwordvalue.replaceAll("\\s+","");
+	    int passwordLength2=passwordvalue.length();
+	   // String patternPhone="(?=.*[0-9]).{10,10}";
+	    String pattern="(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\\S+$).{8,32}";
+	  
 		User user1=userrepository.findByUserId(user.getUserId());
 		User userEmail=userrepository.findByEmail(user.getEmail());
 		User userPhone=userrepository.findByPhoneNumber(user.getPhoneNumber());
@@ -127,7 +236,8 @@ public class SignUpService
 		{
 			return "Email already exist";
 		}
-		else if()
+		else if((passwordLength2==0) || !(passwordLength1==passwordLength2) ||
+				(passwordvalue.matches(pattern)))
 		{
 			
 		}
@@ -142,7 +252,7 @@ public class SignUpService
 		}
 		else
 			return "Not updated, null value";
-		
+		*/
 	 }
 	 
 	public String deleteUser(User user)

@@ -20,7 +20,7 @@ public class Role
 	@Id
   @GeneratedValue(strategy = GenerationType.AUTO)
   private Integer roleId;
-  private String type;
+  private String roleType;
   /*@JsonIgnore
   @ManyToMany(fetch=FetchType.EAGER,cascade=CascadeType.ALL, mappedBy="roles")
   private Set<User> user;
@@ -32,23 +32,29 @@ public Role()
 	  super();
   }
   
-public Role(Integer roleId, String type) {
+
+public Role(Integer roleId, String roleType) {
 	super();
 	this.roleId = roleId;
-	this.type = type;
+	this.roleType = roleType;
 }
+
+
 public Integer getRoleId() {
 	return roleId;
 }
 public void setRoleId(Integer roleId) {
 	this.roleId = roleId;
 }
-public String getType() {
-	return type;
+
+public String getRoleType() {
+	return roleType;
 }
-public void setType(String type) {
-	this.type = type;
+
+public void setRoleType(String roleType) {
+	this.roleType = roleType;
 }
+
 
 /*public Set<User> getUser() {
 	return user;
