@@ -142,7 +142,7 @@ public class WalletService {
 
 	public String approve(ApprovalDTO approvalDTO) {
 		// TODO Auto-generated method stub
-		//System.out.println("/////////////////////////");
+		System.out.println("/////////////////////////");
 		
 		user=usersRepository.findByUserId(approvalDTO.getUserid());
 		//System.out.println("<<<<<<<<<<<<<<<<<<<<<");
@@ -161,18 +161,20 @@ public class WalletService {
 		Date date=new Date();
 		UserTransaction userTransaction=new UserTransaction();
 		userorder=orderRepository.findById(approvalDTO.getOrderid()).get();
-		//System.out.println(userorder.getOrderid());
+		System.out.println(userorder.getCoinname());
 		//System.out.println(userorder.getUsersorder().getUserId());
 		//wallet=
 		wallet=walletRepository.findByUsersAndCoinTypeAndCoinName(user, userorder.getCoinType(),userorder.getCoinname());
 		
 		
-		if(userorder.getOrderStatus()==OrderStatus.PENDING) {
+		if(userorder.getOrderStatus().equals(OrderStatus.PENDING)) {
 			userorder.setOrderStatus(approvalDTO.getOrderStatus());}
-			if(userorder.getOrderStatus()==OrderStatus.APPROVE) {
+			if(userorder.getOrderStatus().equals(OrderStatus.APPROVE)) {
 				Set<Wallet> walletset=new HashSet<Wallet>();
 				
-				
+				userTransaction.setBuyer_id(userorder.getOrderid());
+				userTransaction.setCoinName(userorder.getCoinname());
+				userTransaction.setFees(userorder.getFee());
 				userTransaction.setTransactionstatus(userorder.getOrderStatus());
 				userTransaction.setGrossAmount(userorder.getGrossAmount());
 				userTransaction.setNetAmount(userorder.getNetAmount());
