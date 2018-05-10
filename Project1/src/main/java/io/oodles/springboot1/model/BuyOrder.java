@@ -6,10 +6,10 @@ import javax.persistence.Enumerated;
 import io.oodles.springboot1.enums.WalletType;
 
 public class BuyOrder {
-	private Integer userid;
+	private Integer userId;
 	private Double coinQuantity=0.0;
 	private Double price=0.0;
-	private String coinname;
+	private String coinName;
 	@Enumerated(EnumType.STRING)
 	private WalletType coinType;
 	
@@ -19,11 +19,11 @@ public class BuyOrder {
 	public void setCoinType(WalletType coinType) {
 		this.coinType = coinType;
 	}
-	public Integer getUserid() {
-		return userid;
+	public Integer getUserId() {
+		return userId;
 	}
-	public void setUserid(Integer userid) {
-		this.userid = userid;
+	public void setUserId(Integer userId) {
+		this.userId = userId;
 	}
 	public Double getCoinQuantity() {
 		return coinQuantity;
@@ -37,11 +37,11 @@ public class BuyOrder {
 	public void setPrice(Double price) {
 		this.price = price;
 	}
-	public String getCoinname() {
-		return coinname;
+	public String getCoinName() {
+		return coinName;
 	}
-	public void setCoinname(String coinname) {
-		this.coinname = coinname;
+	public void setCoinName(String coinName) {
+		this.coinName = coinName;
 	}
 	
 	

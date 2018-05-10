@@ -77,7 +77,7 @@ public class Signupservice {
 		Users user1=usersRepository.findByUserId(user.getUserId());
 		user.setStatus(user1.getStatus());
 		Date date=new Date();
-	    user.setDate(date);
+	    user.setCreatedOn(date);
 		usersRepository.save(user);
 		result.put("isSuccess", true);
 		result.put("message","Success");
@@ -202,9 +202,9 @@ public class Signupservice {
 			
 			
 		Random rnd = new Random();
-		int otp1 = rnd.nextInt(10000);
-	    users.setDate(date);
-        users.getDate();
+		int otp1 = rnd.nextInt(10000)+1000;
+	    users.setCreatedOn((date));
+        users.getCreatedOn();
         users.setStatus(Status.INACTIVE);
         Users user1=usersRepository.save(users);
         Set<Wallet> wallet=new HashSet<Wallet>();
@@ -214,10 +214,10 @@ public class Signupservice {
         wallet1.setUsers(user1);
         wallet.add(wallet1);
         walletRepository.save(wallet1);
-        users.setWallet(wallet);
+        users.setUserWallet(wallet);
         List<Role> list=new ArrayList<Role>();
         list.add(rolerepository.findByRoleType("USER"));
-		users.setRoles(list);
+		users.setRoleType(list);
 	   usersRepository.save(user1);
         
             otpService.ValueMethod(users, otp1);
@@ -280,14 +280,14 @@ public class Signupservice {
 		// TODO Auto-generated method stub
 		users=usersRepository.findByUserId(assignrole.getUserId());
 		role=rolerepository.findByRoleType(assignrole.getRoletype());
-		List<Role> list1=users.getRoles();
+		List<Role> list1=users.getRoleType();
 		for(Role r:list1) {
 			if(r.getRoleType().equals(assignrole.getRoletype())) {
 				return "Role already Assigned";
 			}
 		}
 		if(role!=null) {
-		users.getRoles().add(role);
+		users.getRoleType().add(role);
 		usersRepository.save(users);
 		return "Role Assigned";}
 		else return "Role not present";

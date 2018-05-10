@@ -20,12 +20,12 @@ import io.oodles.springboot1.enums.WalletType;
 @Entity
 public class UserOrder {
 	@Id @GeneratedValue(strategy=GenerationType.AUTO) 
-   	Integer orderid;
+   	Integer orderId;
 	@Enumerated(EnumType.STRING)
-	OrderType ordertype;
+	OrderType orderType;
 	@Enumerated(EnumType.STRING)
 	WalletType coinType;
-	String coinname;
+	String coinName;
 	Double coinQuantity=0.0;
 	Double price=0.0;
 	Date orderCreatedOn;
@@ -76,32 +76,35 @@ public class UserOrder {
 
 	
 
-	public Integer getOrderid() {
-		return orderid;
-	}
-
-	public void setOrderid(Integer orderid) {
-		this.orderid = orderid;
-	}
-
-	public OrderType getOrdertype() {
-		return ordertype;
-	}
-
-	public void setOrdertype(OrderType ordertype) {
-		this.ordertype = ordertype;
-	}
+	
 
 	
 
 	
 
-	public String getCoinname() {
-		return coinname;
+	
+	public Integer getOrderId() {
+		return orderId;
 	}
 
-	public void setCoinname(String coinname) {
-		this.coinname = coinname;
+	public void setOrderId(Integer orderId) {
+		this.orderId = orderId;
+	}
+
+	public OrderType getOrderType() {
+		return orderType;
+	}
+
+	public void setOrderType(OrderType orderType) {
+		this.orderType = orderType;
+	}
+
+	public String getCoinName() {
+		return coinName;
+	}
+
+	public void setCoinName(String coinName) {
+		this.coinName = coinName;
 	}
 
 	public Double getCoinQuantity() {

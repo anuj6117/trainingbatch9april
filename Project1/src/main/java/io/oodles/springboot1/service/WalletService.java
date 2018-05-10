@@ -81,11 +81,11 @@ public class WalletService {
 		walletsets.add(wallet);
 		
 		walletRepository.save(wallet);
-		user.setWallet(walletsets);
+		user.setUserWallet(walletsets);
 		
 		if(user!=null && wallet!=null) {
 						
-		user.getWallet().add(wallet);
+		user.getUserWallet().add(wallet);
 	
 		usersRepository.save(user);
 		}
@@ -117,7 +117,7 @@ public class WalletService {
 	    	
 	    userOrder.setCoinType(deposit.getCoinType());
 	    
-	    userOrder.setCoinname(deposit.getCoinName());
+	    userOrder.setCoinName(deposit.getCoinName());
 	    userOrder.setCoinQuantity(deposit.getAmount());
 	    userOrder.setNetAmount(deposit.getAmount());
 	    userOrder.setGrossAmount(deposit.getAmount());
@@ -129,7 +129,7 @@ public class WalletService {
 	    
 	    userOrder.setOrderCreatedOn(date);
 	    
-	    userOrder.setOrdertype(OrderType.DEPOSIT);
+	    userOrder.setOrderType(OrderType.DEPOSIT);
 	    
 	     orderRepository.save(userOrder);
 	    
@@ -160,7 +160,7 @@ public class WalletService {
 		Date date=new Date();
 		UserTransaction userTransaction=new UserTransaction();
 		userorder=orderRepository.findById(approvalDTO.getOrderId()).get();
-		System.out.println(userorder.getCoinname());
+		System.out.println(userorder.getCoinName());
 		//System.out.println(userorder.getUsersorder().getUserId());
 		//wallet=
 		wallet=walletRepository.findByUsersAndCoinTypeAndCoinName(user, WalletType.FIAT,"INR");
@@ -171,14 +171,14 @@ public class WalletService {
 			if(userorder.getOrderStatus().equals(OrderStatus.APPROVE)) {
 				Set<Wallet> walletset=new HashSet<Wallet>();
 				
-				userTransaction.setBuyer_id(userorder.getOrderid());
-				userTransaction.setCoinName(userorder.getCoinname());
-				userTransaction.setFees(userorder.getFee());
+				userTransaction.setBuyerId(userorder.getOrderId());
+				userTransaction.setCoinName(userorder.getCoinName());
+				userTransaction.setTransactionfee(userorder.getFee());
 				userTransaction.setTransactionstatus(userorder.getOrderStatus());
 				userTransaction.setGrossAmount(userorder.getGrossAmount());
 				userTransaction.setNetAmount(userorder.getNetAmount());
 				userTransaction.setCoinType(userorder.getCoinType());
-				userTransaction.setDateCreated(date);
+				userTransaction.setTransactionCreatedOn(date);
 				userTransaction.setDescription("Approved");
 				
 				transactionRepository.save(userTransaction);
@@ -195,7 +195,7 @@ public class WalletService {
 				walletRepository.save(wallet);
 				
 				walletset.add(wallet);
-				user.setWallet(walletset);
+				user.setUserWallet(walletset);
 				usersRepository.save(user);
 				return "Success";
 			}
@@ -204,7 +204,7 @@ public class WalletService {
 				userTransaction.setGrossAmount(userorder.getGrossAmount());
 				userTransaction.setNetAmount(userorder.getNetAmount());
 				userTransaction.setCoinType(userorder.getCoinType());
-				userTransaction.setDateCreated(date);
+				userTransaction.setTransactionCreatedOn(date);
 				userTransaction.setDescription("Failed");
 				transactionRepository.save(userTransaction);
 				return "Failed";
@@ -214,7 +214,7 @@ public class WalletService {
 				userTransaction.setGrossAmount(userorder.getGrossAmount());
 				userTransaction.setNetAmount(userorder.getNetAmount());
 				userTransaction.setCoinType(userorder.getCoinType());
-				userTransaction.setDateCreated(date);
+				userTransaction.setTransactionCreatedOn(date);
 				userTransaction.setDescription("Rejected");
 				transactionRepository.save(userTransaction);
 				return "Rejected";

@@ -15,25 +15,21 @@ import io.oodles.springboot1.enums.WalletType;
 @Entity
 public class UserTransaction {
 	@Id @GeneratedValue(strategy=GenerationType.AUTO)
-	Integer id;
+	Integer transactionId;
+	Double coinQuantity=0.0;
 	Double netAmount=0.0;
 	WalletType coinType;
 	String coinName;
-	Double fees=0.0;
+	Double transactionfee=0.0;
 	Double exchangeRate=0.0;
 	Double grossAmount=0.0;
-	Integer buyer_id;
-	Integer seller_id;
+	Integer buyerId;
+	Integer sellerId;
 	@Enumerated(EnumType.STRING)
 	OrderStatus transactionstatus;
-	Date dateCreated;
+	Date transactionCreatedOn;
 	String description;
-	public Integer getId() {
-		return id;
-	}
-	public void setId(Integer id) {
-		this.id = id;
-	}
+	
 	
 	public String getDescription() {
 		return description;
@@ -61,12 +57,7 @@ public class UserTransaction {
 	public void setCoinName(String coinName) {
 		this.coinName = coinName;
 	}
-	public Double getFees() {
-		return fees;
-	}
-	public void setFees(Double fees) {
-		this.fees = fees;
-	}
+
 	public OrderStatus getTransactionstatus() {
 		return transactionstatus;
 	}
@@ -86,27 +77,46 @@ public class UserTransaction {
 	public void setGrossAmount(Double grossAmount) {
 		this.grossAmount = grossAmount;
 	}
+	public Integer getTransactionId() {
+		return transactionId;
+	}
+	public void setTransactionId(Integer transactionId) {
+		this.transactionId = transactionId;
+	}
+	public Double getCoinQuantity() {
+		return coinQuantity;
+	}
+	public void setCoinQuantity(Double coinQuantity) {
+		this.coinQuantity = coinQuantity;
+	}
+	public Double getTransactionfee() {
+		return transactionfee;
+	}
+	public void setTransactionfee(Double transactionfee) {
+		this.transactionfee = transactionfee;
+	}
+	public Integer getBuyerId() {
+		return buyerId;
+	}
+	public void setBuyerId(Integer buyerId) {
+		this.buyerId = buyerId;
+	}
+	public Integer getSellerId() {
+		return sellerId;
+	}
+	public void setSellerId(Integer sellerId) {
+		this.sellerId = sellerId;
+	}
+	public Date getTransactionCreatedOn() {
+		return transactionCreatedOn;
+	}
+	public void setTransactionCreatedOn(Date transactionCreatedOn) {
+		this.transactionCreatedOn = transactionCreatedOn;
+	}
 	
 	
 	
-	public Integer getBuyer_id() {
-		return buyer_id;
-	}
-	public void setBuyer_id(Integer buyer_id) {
-		this.buyer_id = buyer_id;
-	}
-	public Integer getSeller_id() {
-		return seller_id;
-	}
-	public void setSeller_id(Integer seller_id) {
-		this.seller_id = seller_id;
-	}
-	public Date getDateCreated() {
-		return dateCreated;
-	}
-	public void setDateCreated(Date dateCreated) {
-		this.dateCreated = dateCreated;
-	}
+	
 	
 
 }

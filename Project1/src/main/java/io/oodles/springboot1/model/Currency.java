@@ -25,7 +25,7 @@ public class Currency {
 	@NotNull
 	private Double price=0.0;
 	private Double fees=0.0;
-	private Double INRconversion=0.0;
+	private Double coinInINR=0.0;
 	
 	
 	private Double profit=0.0;
@@ -42,16 +42,18 @@ public class Currency {
 	}
 
 	
-	public Double getINRconversion() {
-		return INRconversion;
-	}
-
-	public void setINRconversion(Double iNRconversion) {
-		INRconversion = iNRconversion;
-	}
+	
 
 	
 	
+	public Double getCoinInINR() {
+		return coinInINR;
+	}
+
+	public void setCoinInINR(Double coinInINR) {
+		this.coinInINR = coinInINR;
+	}
+
 	public WalletType getCoinType() {
 		return coinType;
 	}

@@ -78,17 +78,17 @@ public class Users  {
 	@Size(min=8,max=32)
 	//@Pattern(regexp="^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*()-_=+{[}]:;'<,.>?/|])(?=\\S+$)$")
 	public String password;
-	Date date;
+	Date createdOn;
 	@Enumerated(EnumType.STRING)
 	public Status  status;
 	@ManyToMany(cascade=CascadeType.ALL,fetch=FetchType.EAGER)
 	@JoinTable(name="user_role",
 	joinColumns= {@JoinColumn(name="user_id",referencedColumnName="userid")},
 	inverseJoinColumns= {@JoinColumn(name="role_id",referencedColumnName="roleid")})
-	private List<Role> roles;
+	private List<Role> roleType;
 	
 	@OneToMany(mappedBy="users")
-	private Set<Wallet> wallet;
+	private Set<Wallet> userWallet;
 	
 	@JsonIgnore
 	@OneToMany(mappedBy="usersorder")
@@ -107,17 +107,18 @@ public class Users  {
 		this.userOrder = userOrder;
 	}
 	
-	public Set<Wallet> getWallet() {
-		return wallet;
+	
+	public List<Role> getRoleType() {
+		return roleType;
 	}
-	public void setWallet(Set<Wallet> wallet) {
-		this.wallet = wallet;
+	public void setRoleType(List<Role> roleType) {
+		this.roleType = roleType;
 	}
-	public List<Role> getRoles() {
-		return roles;
+	public Set<Wallet> getUserWallet() {
+		return userWallet;
 	}
-	public void setRoles(List<Role> roles) {
-		this.roles = roles;
+	public void setUserWallet(Set<Wallet> userWallet) {
+		this.userWallet = userWallet;
 	}
 	public Status getStatus() {
 		return status;
@@ -147,12 +148,13 @@ public class Users  {
 	public void setPassword(String password) {
 		this.password = password;
 	}
-	public Date getDate() {
-		return date;
+	public Date getCreatedOn() {
+		return createdOn;
 	}
-	public void setDate(Date date) {
-		this.date = date;
+	public void setCreatedOn(Date createdOn) {
+		this.createdOn = createdOn;
 	}
+	
 	
 	
 	

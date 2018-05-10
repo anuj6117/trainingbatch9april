@@ -96,7 +96,7 @@ public class CurrencyService {
 		// TODO Auto-generated method stub
 		Currency currency1=currencyRepository.findById(currency.getCoinId()).get();
 		System.out.println(currency.getCoinId());
-		currency.setINRconversion(currency1.getINRconversion());
+		currency.setCoinInINR(currency1.getCoinInINR());
 		currency.setProfit(currency1.getProfit());
 		
 		currencyRepository.save(currency);
