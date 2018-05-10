@@ -143,7 +143,7 @@ public class SignUpService
 			}
 			
 			String password=user.getPassword();
-			if(!(password.matches("(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=>])(?=\\S+$).{8,}")))
+			if(!(password.matches("(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=>])(?=\\S+$).{8,32}")))
 			{
 				result.put("isSuccess", false);
 				result.put("message", "Please enter password with minimum 8 characters. Your password should have atleast 1 Uppercase, 1 Lowercase, 1 Digit & 1 Special character. Space is not allowed.");
@@ -157,7 +157,7 @@ public class SignUpService
 			if ((role = roleRepository.findByRoleType("user")) == null) 
 			{
 				role = new Role();
-				role.setRoleType("user");
+				role.setRoleType("USER");
 			}
 
 			User newUser = new User(user);
@@ -194,9 +194,9 @@ public class SignUpService
 				//mailService.sendMail(tokenOtp, user.getEmail());
 
 				verifyOtp.setId(user.getUserId());
-				verifyOtp.setTokenOtp(tokenOtp);
-				verifyOtp.setEmailId(user.getEmail());
-				verifyOtp.getEmailId();
+				verifyOtp.setTokenOTP(tokenOtp);
+				verifyOtp.setEmail(user.getEmail());
+				verifyOtp.getEmail();
 				verifyOtp.setDate(new Date());
 
 				verifyOtpRepository.save(verifyOtp);
@@ -223,13 +223,13 @@ public class SignUpService
 	public String verifyUserWithOtp(String emailId, Integer otp)
 	{
 
-		VerifyOtp verifyOtpObject = verifyOtpRepository.findByEmailId(emailId);
+		VerifyOtp verifyOtpObject = verifyOtpRepository.findByEmail(emailId);
 		if (verifyOtpObject == null) 
 		{
 			return "email does not exist.";
 		}
 		
-		if (otp.equals(verifyOtpObject.getTokenOtp())) 
+		if (otp.equals(verifyOtpObject.getTokenOTP())) 
 		{
 			User user = userRepository.findByEmail(emailId);
 			user.setStatus(UserStatus.ACTIVE);
@@ -334,7 +334,7 @@ public class SignUpService
 			}
 			
 			String password=user.getPassword();
-			if(!(password.matches("(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=>])(?=\\S+$).{8,}")))
+			if(!(password.matches("(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=>])(?=\\S+$).{8,32}")))
 			{
 				return "Please enter password with minimum 8 characters. Your password should have atleast 1 Uppercase, 1 Lowercase, 1 Digit & 1 Special character. Space is not allowed.";
 			}

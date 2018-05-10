@@ -54,8 +54,6 @@ public class OrderController {
 	@RequestMapping(value="/createsellorder", method = RequestMethod.POST)
 	public String sellOrder(@RequestBody OrderDTO orderDTO)
 	{
-		/*return "hello";*/
-			return orderService.sellOrder(orderDTO);
-			
+		return orderService.sellOrder(orderDTO);		
 	}
 }

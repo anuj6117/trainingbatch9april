@@ -3,6 +3,7 @@ package com.example.demo.service;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -10,13 +11,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.example.demo.dto.DepositAmountDTO;
+import com.example.demo.dto.UserWalletDTO;
 import com.example.demo.dto.WalletDTO;
 import com.example.demo.enums.OrderStatus;
 import com.example.demo.enums.OrderType;
 import com.example.demo.enums.UserStatus;
 import com.example.demo.enums.WalletType;
-import com.example.demo.model.User;
 import com.example.demo.model.Order;
+import com.example.demo.model.User;
 import com.example.demo.model.Wallet;
 import com.example.demo.repository.OrderRepository;
 import com.example.demo.repository.UserRepository;
@@ -39,10 +41,15 @@ public class WalletService
 		Map<String, Object> result = new HashMap<String, Object>();
 		User newUser=null;
 		
-		try 
+		try
 		{
-			System.out.println(walletDTO.getUserId());
-			newUser=userRepository.findByUserId(walletDTO.getUserId());
+			newUser = userRepository.findByUserId(walletDTO.getUserId());
+			if(newUser == null)
+			{
+				result.put("isSuccess", false);
+				result.put("message", "User does not exist.");
+				return result;
+			}
 		}
 		catch(Exception e)
 		{
@@ -50,7 +57,7 @@ public class WalletService
 			result.put("message", "User does not exist.");
 			return result;
 		}
-		
+			
 		if(newUser.getStatus().equals(UserStatus.ACTIVE))
 		{
 			Set<Wallet> wallets=newUser.getWallets();
@@ -73,12 +80,11 @@ public class WalletService
 					userWallet.setShadowBalance(0.0);
 					userWallet.setUser(newUser);
 					walletRepository.save(userWallet);
-					
+				
 					result.put("isSuccess", true);
 					result.put("message", "Your wallet has been created.");
 					return result;
 				}
-				
 			}
 		}
 		else
@@ -96,7 +102,6 @@ public class WalletService
 		
 		Order order=new Order();
 		order.setUser(user);
-		//order.setCoinQuantity(depositAmountDTO.getCoinQuantity());
 		order.setCoinName(depositAmountDTO.getCoinName());
 		order.setCoinType(WalletType.FIAT);
 		order.setNetAmount(depositAmountDTO.getAmount());
@@ -110,5 +115,17 @@ public class WalletService
 		
 		return "Order saved successfully.";
 		
+	}
+	
+	public List<Wallet> getAllWallets()
+	{
+		return walletRepository.findAll();
+	}
+
+	public List<Order> getWalletHistory(UserWalletDTO userWalletDTO)
+	{
+		User user = userRepository.findByUserId(userWalletDTO.getUserId());
+		//walletRepository.findOrderByUserAndCoinName(user, userWalletDTO.getWalletType());
+		return null;
 	}
 }

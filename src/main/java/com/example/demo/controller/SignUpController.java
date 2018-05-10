@@ -41,7 +41,6 @@ public class SignUpController {
 				String newMessage=result.get("message").toString();
 				result.remove("message");
 				result.remove("isSuccess");
-				//System.out.println(":::::::::::"+result);
 				return ResponseHandler.generateResponse(HttpStatus.OK, false, newMessage, result);
 			}
 		} 
@@ -54,9 +53,9 @@ public class SignUpController {
 	@RequestMapping(value = "/verifyuser", method = RequestMethod.POST)
 	public String verifyUser(@RequestBody VerifyOtp obj) 
 	{
-		if (((obj.getEmailId() != null) && (obj.getTokenOtp() != null)))
+		if (((obj.getEmail() != null) && (obj.getTokenOTP() != null)))
 		{
-			return signUpService.verifyUserWithOtp(obj.getEmailId(), obj.getTokenOtp());
+			return signUpService.verifyUserWithOtp(obj.getEmail(), obj.getTokenOTP());
 		} 
 		else
 		{

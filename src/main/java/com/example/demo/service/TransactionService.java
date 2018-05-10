@@ -130,11 +130,12 @@ public class TransactionService
 							buyerCryptoWallet.setBalance(buyerCryptoMainBal+buyerOrder.getCoinQuantity());
 							buyerCryptoWallet.setShadowBalance(buyerCryptoShadowBal+buyerOrder.getCoinQuantity());
 							
-							Double fees = (buyerOrder.getGrossAmount() * (coinManagement.getFee()/100));
+							/*Double fees = ((buyerOrder.getNetAmount() * coinManagement.getFee())/100);*/
+							Double fees = ((buyerOrder.getNetAmount()+(buyerOrder.getGrossAmount()-buyerOrder.getNetAmount())));
 							
 							coinManagement.setCoinInInr(buyerOrder.getPrice()*buyerOrder.getCoinQuantity() - sellerOrder.getPrice()*sellerOrder.getCoinQuantity());
 							coinManagement.setExchangeRate(buyerOrder.getPrice());
-							coinManagement.setProfit(fees);
+							coinManagement.setProfit(coinManagement.getProfit() + fees);
 							
 							buyerOrder.setOrderStatus(OrderStatus.COMPLETED);
 							sellerOrder.setOrderStatus(OrderStatus.COMPLETED);
@@ -203,7 +204,7 @@ public class TransactionService
 							sellerFiatWallet.setShadowBalance(sellerFiatShadowBal+buyerOrder.getNetAmount());
 							sellerCryptoWallet.setBalance(sellerCryptoMainBal-buyerOrder.getCoinQuantity());
 							
-							Double fees = (buyerOrder.getNetAmount() * (coinManagement.getFee()/100));
+							Double fees =((buyerOrder.getNetAmount() * coinManagement.getFee())/100);
 							Double AmountAndFee = sellerOrder.getGrossAmount()+fees;
 							
 							buyerFiatWallet.setBalance(buyerFiatMainBal - AmountAndFee);
@@ -212,7 +213,7 @@ public class TransactionService
 							
 							coinManagement.setCoinInInr(buyerOrder.getPrice()*buyerOrder.getCoinQuantity() - sellerOrder.getPrice()*buyerOrder.getCoinQuantity());
 							coinManagement.setExchangeRate(buyerOrder.getPrice());
-							coinManagement.setProfit(fees);
+							coinManagement.setProfit(coinManagement.getProfit() + fees );
 							
 							sellerOrder.setCoinQuantity(sellerOrder.getCoinQuantity()-buyerOrder.getCoinQuantity());
 							sellerOrder.setNetAmount(sellerOrder.getNetAmount()-buyerOrder.getNetAmount());
@@ -241,13 +242,13 @@ public class TransactionService
 					Double AmountAndFee = buyerOrder.getGrossAmount();
 					
 					buyerFiatWallet.setBalance(buyerFiatMainBal - AmountAndFee);
-					buyerCryptoWallet.setBalance(buyerCryptoMainBal+buyerOrder.getCoinQuantity());
+					buyerCryptoWallet.setBalance(buyerCryptoMainBal + buyerOrder.getCoinQuantity());
 					buyerCryptoWallet.setShadowBalance(buyerCryptoShadowBal+buyerOrder.getCoinQuantity());
 					
 					coinManagement.setInitialSupply(initialSupply);
 					coinManagement.setCoinInInr(buyerOrder.getPrice()*buyerOrder.getCoinQuantity() - coinManagement.getPrice()*buyerOrder.getCoinQuantity());
 					coinManagement.setExchangeRate(buyerOrder.getPrice());
-					coinManagement.setProfit(buyerOrder.getFee());
+					coinManagement.setProfit(coinManagement.getProfit() + ((buyerOrder.getNetAmount() * coinManagement.getFee()) / 100));
 					
 					buyerOrder.setOrderStatus(OrderStatus.COMPLETED);
 					
@@ -259,8 +260,7 @@ public class TransactionService
 				}
 				if(coinManagement.getInitialSupply() < buyerOrder.getCoinQuantity() && buyerOrder.getPrice() >= coinManagement.getPrice())
 				{
-					Double initSupply = coinManagement.getInitialSupply();
-						
+					Double initSupply = coinManagement.getInitialSupply();	
 				
 					Double buyerFiatMainBal = buyerFiatWallet.getBalance();
 					Double buyerCryptoMainBal = buyerCryptoWallet.getBalance();
@@ -278,7 +278,7 @@ public class TransactionService
 					buyerOrder.setGrossAmount(buyerOrder.getGrossAmount()-AmountAndFee);
 					buyerOrder.setOrderStatus(OrderStatus.PENDING);
 					
-					coinManagement.setCoinInInr(buyerOrder.getPrice()*initSupply - coinManagement.getPrice()*initSupply);
+					coinManagement.setCoinInInr(buyerOrder.getPrice() * initSupply - coinManagement.getPrice() * initSupply);
 					initSupply = 0d;
 					coinManagement.setInitialSupply(initSupply);
 					coinManagement.setExchangeRate(buyerOrder.getPrice());
@@ -310,7 +310,7 @@ public class TransactionService
 					initSupply = initSupply - buyerOrder.getCoinQuantity();
 					coinManagement.setInitialSupply(initSupply);
 					coinManagement.setExchangeRate(buyerOrder.getPrice());
-					coinManagement.setProfit(buyerOrder.getFee());
+					coinManagement.setProfit(coinManagement.getProfit() + ((buyerOrder.getNetAmount() * coinManagement.getFee()) / 100));
 				
 					this.adminBuyerUpdate(buyerFiatWallet, buyerCryptoWallet, coinManagement, buyerOrder);
 					this.createAdminTransaction(buyerOrder, buyerCryptoWallet.getWalletType());	

@@ -14,8 +14,8 @@ public class VerifyOtp {
 	@Id
 	@GeneratedValue
 	private Integer id;
-	private Integer tokenOtp;
-	private String emailId;
+	private Integer tokenOTP;
+	private String email;
 	private Date date;
 	
 	public VerifyOtp() 
@@ -37,20 +37,16 @@ public class VerifyOtp {
 	public void setId(Integer id) {
 		this.id = id;
 	}
-
-	public Integer getTokenOtp() {
-		return tokenOtp;
+	public Integer getTokenOTP() {
+		return tokenOTP;
 	}
-
-	public void setTokenOtp(Integer tokenOtp) {
-		this.tokenOtp = tokenOtp;
+	public void setTokenOTP(Integer tokenOTP) {
+		this.tokenOTP = tokenOTP;
 	}
-
-	public String getEmailId() {
-		return emailId;
+	public String getEmail() {
+		return email;
 	}
-
-	public void setEmailId(String emailId) {
-		this.emailId = emailId;
+	public void setEmail(String email) {
+		this.email = email;
 	}
 }

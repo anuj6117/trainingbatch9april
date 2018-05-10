@@ -69,10 +69,11 @@ public class OrderService {
 				Wallet walletUpdate=itr.next();
 				if(walletUpdate.getWalletType().equals(WalletType.FIAT))
 				{
+					Double previousBalance=walletUpdate.getBalance();
+					Double previousShadowBalance = walletUpdate.getShadowBalance();
 					
-					walletUpdate.setBalance(order.getNetAmount());
-					
-					walletUpdate.setShadowBalance(order.getNetAmount());
+					walletUpdate.setBalance(order.getNetAmount() + previousBalance);
+					walletUpdate.setShadowBalance(order.getNetAmount() + previousShadowBalance);
 					walletUpdate.setCoinName(order.getCoinName());
 					walletRepository.save(walletUpdate);
 					userRepository.save(user);
@@ -99,7 +100,7 @@ public class OrderService {
 		}
 		User user = userRepository.findByUserId(orderDTO.getUserId()); 
 		Double shadowBalance = null;
-		if(user==null)
+		if(user == null)
 		{
 			return "null user";
 		}
@@ -119,9 +120,9 @@ public class OrderService {
 		if(flag) 
 		{
 			CoinManagement coinManagementCoinName = coinManagementRepository.findByCoinName(orderDTO.getCoinName());
-			if(coinManagementCoinName!=null)
+			if(coinManagementCoinName != null)
 			{
-				Double totalAmount = ((orderDTO.getPrice() * orderDTO.getCoinQuantity()*coinManagementCoinName.getFee())/100)+orderDTO.getPrice() * orderDTO.getCoinQuantity();
+				Double totalAmount = ((orderDTO.getPrice() * orderDTO.getCoinQuantity() * coinManagementCoinName.getFee()) / 100) + orderDTO.getPrice() * orderDTO.getCoinQuantity();
 										
 				if(shadowBalance >= totalAmount)
 				{
@@ -129,9 +130,9 @@ public class OrderService {
 					{
 						if(wallet1.getCoinName().equals("INR")) 
 						{
-						wallet1.setShadowBalance(shadowBalance - totalAmount);
-						walletRepository.save(wallet);
-						break;
+							wallet1.setShadowBalance(shadowBalance - totalAmount);
+							walletRepository.save(wallet);
+							break;
 						}
 					}					
 					Order order = new Order();
@@ -153,12 +154,12 @@ public class OrderService {
 				}
 				else
 				{
-					return "You don't have enough balance to buy.";
+					return "You do not have enough balance to buy coin.";
 				}
 			}
 			return "currency does not exist.";
 		}
-		return "user doesn't have that type of wallet.";
+		return "User does not have this wallet.";
 	}
 		
 	public String sellOrder(OrderDTO orderDTO) 
@@ -176,21 +177,25 @@ public class OrderService {
 		}
 		for(Wallet wallet1 : user.getWallets())
 		{
-			if(wallet1.getCoinName().equals(orderDTO.getCoinName())) {			
-				if(wallet1.getShadowBalance()>=orderDTO.getCoinQuantity()) {
-					wallet1.setShadowBalance(wallet1.getShadowBalance()-orderDTO.getCoinQuantity());
+			if(wallet1.getCoinName().equals(orderDTO.getCoinName()))
+			{			
+				if(wallet1.getShadowBalance() >= orderDTO.getCoinQuantity())
+				{
+					wallet1.setShadowBalance(wallet1.getShadowBalance() - orderDTO.getCoinQuantity());
 					wallet1.setUser(user);
 					walletRepository.save(wallet1);
 					flag = true;
 					break;
 				}
 				else
+				{
 					return "insufficient coin";
+				}
 			}
 		}
 		if(flag)
 		{
-			double totalAmount = orderDTO.getCoinQuantity()*orderDTO.getPrice();
+			double netAmount = orderDTO.getCoinQuantity() * orderDTO.getPrice();
 			Order order = new Order();
 			order.setCoinType(WalletType.CRYPTO);
 			order.setCoinName(orderDTO.getCoinName());
@@ -198,29 +203,19 @@ public class OrderService {
 			order.setPrice(orderDTO.getPrice());
 			order.setOrderType(OrderType.SELLER);
 			order.setOrderStatus(OrderStatus.PENDING);
-			order.setGrossAmount(totalAmount);
+			order.setGrossAmount(netAmount);
 			order.setFee(0.0);
 			order.setDateCreated(new Date());
-			order.setNetAmount(totalAmount);
+			order.setNetAmount(netAmount);
 			order.setUser(user);
 		
 			orderRepository.save(order);
+			
+			return "Your order has been placed and need for approval.";
 		}
 		else
-			return "wallet not exist";
-		return null;
-		
-	}
-	
-	/*public String transactionManagement(@RequestParam("coinName") String coinName)
-	{
-		List<Order> orders=orderRepository.findByCoinName(coinName);
-		Iterator itr=orders.iterator();
-		while(itr.hasNext())
 		{
-			Order order = (Order)itr.next();
-			
+			return "wallet not exist";
 		}
-		return null;
-	}*/
+	}
 }

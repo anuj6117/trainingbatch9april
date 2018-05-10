@@ -6,6 +6,6 @@ import com.example.demo.model.VerifyOtp;
 
 public interface VerifyOtpRepository extends JpaRepository<VerifyOtp , Integer>
 {
-	public VerifyOtp findByEmailId(String email);
+	public VerifyOtp findByEmail(String email);
 	
 }

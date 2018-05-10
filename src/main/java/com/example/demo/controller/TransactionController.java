@@ -16,7 +16,7 @@ public class TransactionController
 	@Autowired
 	private TransactionService transactionService;
 	
-	@RequestMapping(value = "/approveTransaction", method = RequestMethod.GET)
+	@RequestMapping(value = "/transaction", method = RequestMethod.GET)
 	public String approveTransaction()
 	{
 		return transactionService.transactionApproval();

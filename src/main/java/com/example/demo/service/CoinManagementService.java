@@ -49,7 +49,7 @@ public class CoinManagementService {
 				result.put("message", "Coin Name should not have trailing space.");
 				return result;
 			}
-			if(!(Pattern.compile("^[a-zA-Z0-9\\s\\\\._\\\\-]{3,15}$").matcher(coinName).matches())) 
+			if(!(Pattern.compile("^[a-zA-Z]{3,15}$").matcher(coinName).matches())) 
 			{
 				result.put("isSuccess", false);
 				result.put("message", "Special character is not allowed in Coin Name or length should not exceed 15 character.");
@@ -74,10 +74,10 @@ public class CoinManagementService {
 				return result;
 			}
 			
-			if(!(Pattern.compile("^[a-zA-Z0-9\\s\\\\._\\\\-]{3,15}$").matcher(symbol).matches())) 
+			if(!(Pattern.compile("^[a-zA-Z]{3,15}$").matcher(symbol).matches())) 
 			{
 				result.put("isSuccess", false);
-				result.put("message", "Special character is not allowed in symbol or length should not exceed 15 character.");
+				result.put("message", "Special character is not allowed in symbol or length should not exceed 15 character .");
 				return result;
 			}
 			if(initialSupply == null)
@@ -109,8 +109,8 @@ public class CoinManagementService {
 			coinManagement.setPrice(price);
 			coinManagement.setInitialSupply(initialSupply);
 			coinManagement.setFee(fee);
-			Double initialSupply1=coinManagement.getInitialSupply();
-			coinManagement.setCoinInInr(price * initialSupply);
+			//Double initialSupply1=coinManagement.getInitialSupply();
+			coinManagement.setCoinInInr(0.0);
 			coinManagementRepository.save(coinManagement);
 			
 			result.put("isSuccess", true);

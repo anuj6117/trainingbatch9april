@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import com.example.demo.model.Order;
+import com.example.demo.model.User;
 
 public interface OrderRepository extends JpaRepository<Order, Integer> 
 {
@@ -25,4 +26,6 @@ public interface OrderRepository extends JpaRepository<Order, Integer>
 	
 	@Query("select odr from Order odr where UPPER(odr.orderType)=UPPER(:orderType) and orderStatus = 'PENDING' order by price ASC")
 	public List<Order> getSellers(@Param("orderType")String order);
+	
+	public List<Order> findOrderByUserAndCoinName(User user, String CoinName);
 }
