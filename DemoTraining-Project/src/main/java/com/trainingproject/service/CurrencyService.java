@@ -34,7 +34,7 @@ public class CurrencyService {
 			}
 			if(!(Pattern.compile("^[A-Za-z]{1,25}$").matcher(currency.getCoinName()).matches())) {
 				result.put("isSuccess", false);
-				result.put("message", "Hyphan & space are not allowed or Maximum character allowed for this field is 25.");
+				result.put("message", "Hyphan, underscore & space are not allowed or CoinName Maximum character allowed for this field is 25.");
 				return result;
 			}
 		}
@@ -62,6 +62,11 @@ public class CurrencyService {
 				result.put("isSuccess", false);
 				result.put("message", "Symbol can't be blank.");
 				//result.put("data", null);
+				return result;
+			}
+			if(!(Pattern.compile("^[A-Za-z]{1,25}$").matcher(currency.getSymbol()).matches())) {
+				result.put("isSuccess", false);
+				result.put("message", "Hyphan, underscore & space are not allowed or Symbol Maximum character allowed for this field is 25.");
 				return result;
 			}
 		}
@@ -142,7 +147,7 @@ public class CurrencyService {
 			}
 			if(!(Pattern.compile("^[A-Za-z]{1,25}$").matcher(currency.getCoinName()).matches())) {
 				result.put("isSuccess", false);
-				result.put("message", "Hyphan & space are not allowed or Maximum character allowed for this field is 25.");
+				result.put("message", "Hyphan & space are not allowed or CoinName Maximum character allowed for this field is 25.");
 				return result;
 			}
 		}
@@ -170,6 +175,11 @@ public class CurrencyService {
 				result.put("isSuccess", false);
 				result.put("message", "Symbol can't be blank.");
 				//result.put("data", null);
+				return result;
+			}
+			if(!(Pattern.compile("^[A-Za-z]{1,25}$").matcher(currency.getSymbol()).matches())) {
+				result.put("isSuccess", false);
+				result.put("message", "Hyphan, underscore & space are not allowed or Symbol Maximum character allowed for this field is 25.");
 				return result;
 			}
 		}
