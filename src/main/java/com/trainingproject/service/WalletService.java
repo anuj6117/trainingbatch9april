@@ -126,7 +126,7 @@ public class WalletService {
 	   
 	}
 	
-	public UserOrder walletHistory(Integer userId,CoinType coinType) {
+	public List<UserOrder> walletHistory(Integer userId,CoinType coinType) {
 		
 		return userorderRepository.findBycoinTypeAndUser(coinType, userService.getUserById(userId).get());
 		

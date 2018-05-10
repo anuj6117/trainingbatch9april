@@ -217,6 +217,13 @@ public class UserService {
 		if(!userRepository.existsById(user.getUserId()))
 			return "this user do not exist";
 		
+		if(userRepository.findByEmail(user.getEmail())!=null)
+			return "oops this email id is already registered";
+		
+		if(userRepository.findByphoneNumber(user.getPhoneNumber())!=null)
+			return "oops this phone number is already registered";
+		
+		
 		String name=user.getUserName();
 		
 		User cuser=userRepository.findById(user.getUserId()).get();
@@ -229,7 +236,7 @@ public class UserService {
 		
 		Pattern p = Pattern.compile("^[a-zA-Z0-9._-]{3,}$", Pattern.CASE_INSENSITIVE);
 		Matcher m = p.matcher(name);
-	     if(m.find())
+	     if(!m.find())
 	    	 return "your name cannot have a special character";
 	     
 	     p = Pattern.compile("(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#/|()~`!$%^&+=])(?=\\S+$).{8,}$");
@@ -243,6 +250,9 @@ public class UserService {
 	      Pattern pattern = Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
 	      Matcher matcher = pattern.matcher(user.getEmail());
 	     
+	      if(!matcher.matches())
+	    	  return "invalid email";
+	      
 	     int i=0;
 		    for(i=0;i<name.length();i++) {
 		    	if(name.charAt(i)>=65&&name.charAt(i)<=90) {

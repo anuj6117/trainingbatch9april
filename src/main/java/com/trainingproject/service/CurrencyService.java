@@ -25,8 +25,8 @@ public class CurrencyService {
 		if(cur.getCoinName()==null||cur.getCoinName().length()==0)
 			return "coin name cannot be null";
 		
-		if(cur.getCoinType()==null)  //not mandatory
-			return "coin type cannot be null";
+//		if(cur.getCoinType()==null)  //not mandatory
+//			return "coin type cannot be null";
 		
 		if(cur.getSymbol()==null)
 			return "symbol cannot be null";
@@ -40,13 +40,14 @@ public class CurrencyService {
 			return "symbol already exists!";
 		
 	
-		Pattern p = Pattern.compile("^[a-zA-Z]{1,}$", Pattern.CASE_INSENSITIVE);
+	//	Pattern p = Pattern.compile("^[a-zA-Z]{1,}$", Pattern.CASE_INSENSITIVE);
+		Pattern  p = Pattern.compile("(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#/|()~`!$%^&+=])(?=\\S+$).{1,}$");
 		Matcher m = p.matcher(cur.getCoinName());
 		
 		 if(!m.find())
 			 return "invalid coin name";
 		 
-		
+		cur.setCoinType(CoinType.CRYPTO);
 		if(cur.getCoinType().equals(CoinType.CRYPTO)||cur.getCoinType().equals(CoinType.FIAT)) {
 
 		currencyRepository.save(cur);
@@ -70,7 +71,7 @@ public class CurrencyService {
 			return "symbol cannot be null";
 		if(cur.getInitialSupply()==0)
 			return "initial supply cannot be null";
-		if(cur.getFee()==0)
+		if(cur.getFees()==0)
 			return "fee cannot be null";
 		if(cur.getPrice()==0)
 			return "price cannot be null";
@@ -79,7 +80,9 @@ public class CurrencyService {
 //		if(currencyRepository.findBysymbol(cur.getSymbol())!=null)
 //			return "symbol already exists!";
 		
-		Pattern p = Pattern.compile("^[a-zA-Z]{1,}$", Pattern.CASE_INSENSITIVE);
+		//Pattern p = Pattern.compile("^[a-zA-Z]{1,}$", Pattern.CASE_INSENSITIVE);
+		Pattern  p = Pattern.compile("(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#/|()~`!$%^&+=])(?=\\S+$).{1,}$");
+
 		Matcher m = p.matcher(cur.getCoinName());
 		
 		 if(!m.find())
@@ -90,7 +93,7 @@ public class CurrencyService {
 		 if(currency==null)
 			 return "currency not found";
 		  currency.setInitialSupply(cur.getInitialSupply());
-		  currency.setFee(cur.getFee());
+		  currency.setFees(cur.getFees());
 		  currency.setSymbol(cur.getSymbol());
 		  currency.setCoinName(cur.getCoinName());
 		  currency.setCoinType(cur.getCoinType());

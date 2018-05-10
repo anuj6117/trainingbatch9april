@@ -20,5 +20,5 @@ public interface UserOrderRepository extends JpaRepository<UserOrder,Integer> {
 	
 	public List<UserOrder> findByorderTypeAndOrderStatus(OrderType orderType,UserOrderStatus orderStatus);
 	
-	public UserOrder findBycoinTypeAndUser(CoinType coinType,User user);
+	public List<UserOrder> findBycoinTypeAndUser(CoinType coinType,User user);
 }

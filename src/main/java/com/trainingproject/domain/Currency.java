@@ -23,14 +23,14 @@ public class Currency {
 	private String symbol;
 	private double initialSupply;
 	private double price; 
-	private double fee; 
+	private double fees; 
 	private double profit; 
 	private double coinInINR; 
 	
 	public Currency () {
 		coinInINR=0;
 		profit=0;
-		fee=0;
+		fees=0;
 	}
 	
 	public CoinType getCoinType() {
@@ -53,11 +53,11 @@ public class Currency {
 	public void setInitialSupply(double initialsupply) {
 		this.initialSupply = initialsupply;
 	}
-	public double getFee() {
-		return fee;
+	public double getFees() {
+		return fees;
 	}
-	public void setFee(double fee) {
-		this.fee = fee;
+	public void setFees(double fees) {
+		this.fees = fees;
 	}
 	public double getProfit() {
 		return profit;

@@ -1,5 +1,7 @@
 package com.trainingproject.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -34,7 +36,7 @@ public class WalletController {
 	}
 	
 	@RequestMapping(value="walletHistory",method=RequestMethod.GET)
-	public UserOrder walletHistory(@RequestParam Integer userId,CoinType coinType) {
+	public List<UserOrder> walletHistory(@RequestParam Integer userId,CoinType coinType) {
 		
 		 return  walletService.walletHistory(userId,coinType);
 	}
