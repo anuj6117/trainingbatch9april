@@ -422,7 +422,7 @@ public class OrderService {
      	    				//For FIAT
      	    				Users user=b.getUsersorder();
      	    				//System.out.println(">>>>>>>>>>>>>"+user.getUserId());
-     	    				Wallet wallet=walletRepository.findByUsersAndCoinTypeAndCoinName(user,WalletType.FIAT,"INR");;
+     	    				wallet=walletRepository.findByUsersAndCoinTypeAndCoinName(user,WalletType.FIAT,"INR");;
      	    				Double bal=wallet.getBalance()-b.getGrossAmount();
      	    				//System.out.println(bal);
      	    				wallet.setBalance(bal);
@@ -493,7 +493,7 @@ public class OrderService {
          	    				//For FIAT
          	    				Users user=b.getUsersorder();
          	    				//System.out.println(">>>>>>>>>>>>>"+user.getUserId());
-         	    				Wallet wallet=walletRepository.findByUsersAndCoinTypeAndCoinName(user,WalletType.FIAT,"INR");;
+         	    				wallet=walletRepository.findByUsersAndCoinTypeAndCoinName(user,WalletType.FIAT,"INR");;
          	    				Double bal=wallet.getBalance()-b.getGrossAmount();
          	    				//System.out.println(bal);
          	    				wallet.setBalance(bal);
@@ -584,7 +584,7 @@ public class OrderService {
      	    				//For FIAT
      	    				Users user=b.getUsersorder();
      	    				System.out.println(">>>>>>>>>>>>>"+user.getUserId());
-          	    				Wallet wallet=walletRepository.findByUsersAndCoinTypeAndCoinName(user,WalletType.FIAT,"INR");;
+          	    				 wallet=walletRepository.findByUsersAndCoinTypeAndCoinName(user,WalletType.FIAT,"INR");;
      	    				Double bal=wallet.getBalance()-b.getGrossAmount();
      	    				System.out.println(bal);
      	    				wallet.setBalance(bal);
@@ -596,12 +596,12 @@ public class OrderService {
      	    				//System.out.println(user1.getUserId());
      	    				String s1=b.getCoinname();
      	    				System.out.println(">>>>>>>>>>"+s1);
-     Wallet wallet1=walletRepository.findByUsersAndCoinTypeAndCoinName(user, WalletType.CRYPTO,b.getCoinname());
-     	    				System.out.println(">>>>>>>>>>"+wallet1.getId()+wallet1.getCoinName());
-     	    				wallet1.setShadowbalance(wallet1.getShadowbalance()+b.getCoinQuantity());
-     	    				wallet1.setBalance(wallet1.getBalance()+b.getCoinQuantity());
+     wallet=walletRepository.findByUsersAndCoinTypeAndCoinName(user, WalletType.CRYPTO,b.getCoinname());
+     	    				System.out.println(">>>>>>>>>>"+wallet.getId()+wallet.getCoinName());
+     	    				wallet.setShadowbalance(wallet.getShadowbalance()+b.getCoinQuantity());
+     	    				wallet.setBalance(wallet.getBalance()+b.getCoinQuantity());
      	    				
-     	    				walletRepository.save(wallet1);
+     	    				walletRepository.save(wallet);
      	    				
      	    				Double inrconversion=currency.getINRconversion()+((b.getPrice()*b.getCoinQuantity())-currency.getPrice()*b.getCoinQuantity());
      	    				//System.out.println(inrconversion);
@@ -654,7 +654,7 @@ public class OrderService {
      	    				//For FIAT
      	    				Users user=b.getUsersorder();
      	    				System.out.println(">>>>>>>>>>>>>"+user.getUserId());
-          	    				Wallet wallet=walletRepository.findByUsersAndCoinTypeAndCoinName(user,WalletType.FIAT,"INR");;
+          	    			 wallet=walletRepository.findByUsersAndCoinTypeAndCoinName(user,WalletType.FIAT,"INR");;
      	    				Double bal=wallet.getBalance()-b.getGrossAmount();
      	    				System.out.println(bal);
      	    				wallet.setBalance(bal);
@@ -666,12 +666,12 @@ public class OrderService {
      	    				//System.out.println(user1.getUserId());
      	    				//String s1=b.getCoinname();
      	    				//System.out.println(">>>>>>>>>>"+s1);
-     Wallet wallet1=walletRepository.findByUsersAndCoinTypeAndCoinName(user, WalletType.CRYPTO,b.getCoinname());
+     wallet=walletRepository.findByUsersAndCoinTypeAndCoinName(user, WalletType.CRYPTO,b.getCoinname());
      	    				//System.out.println(">>>>>>>>>>"+wallet1.getId()+wallet1.getCoinName());
-     	    				wallet1.setShadowbalance(wallet.getShadowbalance()+currency.getInitialSupply());
-     	    				wallet1.setBalance(wallet.getBalance()+currency.getInitialSupply());
+     	    				wallet.setShadowbalance(wallet.getShadowbalance()+currency.getInitialSupply());
+     	    				wallet.setBalance(wallet.getBalance()+currency.getInitialSupply());
      	    				
-     	    				walletRepository.save(wallet1);
+     	    				walletRepository.save(wallet);
      	    				
      	    				Double inrconversion=currency.getINRconversion()+((b.getPrice()*currency.getInitialSupply())-currency.getPrice()*currency.getInitialSupply());
      	    				//System.out.println(inrconversion);

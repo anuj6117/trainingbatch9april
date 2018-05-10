@@ -3,21 +3,21 @@ package io.oodles.springboot1.model;
 import io.oodles.springboot1.enums.OrderStatus;
 
 public class ApprovalDTO {
-	Integer orderid;
-	Integer userid;
+	Integer orderId;
+	Integer userId;
 	OrderStatus orderStatus;
 	String description;
-	public Integer getOrderid() {
-		return orderid;
+	public Integer getOrderId() {
+		return orderId;
 	}
-	public void setOrderid(Integer orderid) {
-		this.orderid = orderid;
+	public void setOrderId(Integer orderId) {
+		this.orderId = orderId;
 	}
-	public Integer getUserid() {
-		return userid;
+	public Integer getUserId() {
+		return userId;
 	}
-	public void setUserid(Integer userid) {
-		this.userid = userid;
+	public void setUserId(Integer userId) {
+		this.userId = userId;
 	}
 	public OrderStatus getOrderStatus() {
 		return orderStatus;

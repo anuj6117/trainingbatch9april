@@ -41,7 +41,7 @@ public class WalletController {
 		return walletService.deposit(deposit);
 	}
 	
-@PostMapping("/approve")
+@PostMapping("/approvewallet")
 public String approvedeposit(@RequestBody ApprovalDTO approvalDTO ) {
 	System.out.println("????????????????????????????");
 	return walletService.approve(approvalDTO);

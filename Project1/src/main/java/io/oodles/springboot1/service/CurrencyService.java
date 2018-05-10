@@ -61,16 +61,23 @@ public class CurrencyService {
 		// TODO Auto-generated method stub
 		Currency currency1=currencyRepository.findByCoinName(currency.getCoinName());
 		Currency currencySymbol=currencyRepository.findBySymbol(currency.getSymbol());
+		//Currency currencyType=currencyRepository.findByCoinType(currency.getCoinType());
+		Currency currencypresent=currencyRepository.findByCoinNameAndCoinType(currency.getCoinName(), currency.getCoinType());
 		if(currency.getCoinName().length()==0) {
 			return "Coin Name can't be null.";
 		}
-		else if(currency.getSymbol().length()==0) {
+		 if(currency.getSymbol().length()==0) {
 			return "Symbol can't be null";
-		}else if(currency1!=null) {
+		} if(currency1!=null) {
 			return "Coin Name already present";
-		}else if(currencySymbol!=null) {
+		} if(currencySymbol!=null) {
 			return "Symbol already present";
 		}
+		if(currencypresent!=null) {
+			return "Already Present";
+		}
+		
+		
 		
 		
 		
@@ -99,7 +106,10 @@ public class CurrencyService {
 
 	public String delete(int id) {
 		// TODO Auto-generated method stub
+		Currency currency=currencyRepository.findByCoinId(id);
+		if(currency!=null) {
 		currencyRepository.deleteById(id);
-		return "Currency has been Deleted";
+		return "Currency has been Deleted";}
+		 return "currency not present";
 	}
 }

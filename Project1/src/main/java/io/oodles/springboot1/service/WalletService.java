@@ -1,6 +1,5 @@
 package io.oodles.springboot1.service;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -72,7 +71,7 @@ public class WalletService {
 
 	public String add(AddWallet addwallet) {
 		// TODO Auto-generated method stub
-		user=usersRepository.findByUserId(addwallet.getUserid());
+		user=usersRepository.findByUserId(addwallet.getUserId());
 		Set<Wallet> walletsets=new HashSet<Wallet>();
 		Wallet wallet=new Wallet();
 		wallet.setUsers(user);
@@ -144,7 +143,7 @@ public class WalletService {
 		// TODO Auto-generated method stub
 		System.out.println("/////////////////////////");
 		
-		user=usersRepository.findByUserId(approvalDTO.getUserid());
+		user=usersRepository.findByUserId(approvalDTO.getUserId());
 		//System.out.println("<<<<<<<<<<<<<<<<<<<<<");
 		//Set<Wallet>hashset=user.getWallet();
 		
@@ -160,7 +159,7 @@ public class WalletService {
 		
 		Date date=new Date();
 		UserTransaction userTransaction=new UserTransaction();
-		userorder=orderRepository.findById(approvalDTO.getOrderid()).get();
+		userorder=orderRepository.findById(approvalDTO.getOrderId()).get();
 		System.out.println(userorder.getCoinname());
 		//System.out.println(userorder.getUsersorder().getUserId());
 		//wallet=

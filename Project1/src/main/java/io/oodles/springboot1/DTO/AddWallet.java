@@ -7,17 +7,17 @@ import io.oodles.springboot1.enums.WalletType;
 
 public class AddWallet {
 	
-	Integer userid;
+	Integer userId;
 	@Enumerated(EnumType.STRING)
 	WalletType coinType;
 	String coinName;
 	
 	
-	public Integer getUserid() {
-		return userid;
+	public Integer getUserId() {
+		return userId;
 	}
-	public void setUserid(Integer userid) {
-		this.userid = userid;
+	public void setUserId(Integer userId) {
+		this.userId = userId;
 	}
 	public WalletType getCoinType() {
 		return coinType;

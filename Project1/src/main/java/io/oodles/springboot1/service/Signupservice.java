@@ -89,11 +89,17 @@ public class Signupservice {
 	public Map<String,Object> delete(int id) {
 		// TODO Auto-generated method stub
 		Map<String,Object> result=new HashMap<String,Object>();
+		Users deleted=usersRepository.findByUserId(id);
+		if(deleted!=null) {
 		 usersRepository.deleteById(id);
 		 result.put("isSuccess", true);
 			result.put("message","Success");
 			result.put("timestamp",date );
-			return result;
+			return result;}
+		result.put("isSuccess", false);
+		result.put("message","Id does not exist");
+		result.put("timestamp",date );
+		return result;
 	}
 	
 
@@ -272,7 +278,7 @@ public class Signupservice {
 	public String assign(AssignRole assignrole) {
 		
 		// TODO Auto-generated method stub
-		users=usersRepository.findByUserId(assignrole.getUserid());
+		users=usersRepository.findByUserId(assignrole.getUserId());
 		role=rolerepository.findByRoleType(assignrole.getRoletype());
 		List<Role> list1=users.getRoles();
 		for(Role r:list1) {
@@ -280,9 +286,11 @@ public class Signupservice {
 				return "Role already Assigned";
 			}
 		}
+		if(role!=null) {
 		users.getRoles().add(role);
 		usersRepository.save(users);
-		return "Role Assigned";
+		return "Role Assigned";}
+		else return "Role not present";
 	}
 	
 }	

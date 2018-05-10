@@ -51,20 +51,22 @@ public class Role_Service {
 		//System.out.println("Done2");
 		//System.out.println(role.getRoleType());
 		Role role1=roleRepository.findByRoleType(role.getRoleType());
-	    //System.out.println(role1);
-		if(role1==null) {
+	    //System.out.println(role1.getRoleType());
+		if(role1!=null) {
+			return "Role Already present";}
+		else {
 			
 		if(role.getRoleType().equalsIgnoreCase("USER")||role.getRoleType().equalsIgnoreCase("ADMIN")||role.getRoleType().equalsIgnoreCase("MANAGER")){
 		
 		roleRepository.save(role);
 	
-		return "Role Created";}else {
-			return "Role can't be created";
 		}
 	
 		
 		}
-		return "Role Already Present";}
+		return "Role Created";
+	
+		}
 	
 	    
 	  
