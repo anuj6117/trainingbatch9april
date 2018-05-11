@@ -140,9 +140,14 @@ public class SignUserController
 	}
 	
 	@GetMapping("/getbyuserid")
-	public User getbyuserid(@RequestParam("userId") Integer id) 
+	public Object getbyuserid(@RequestParam("userId") Integer id) 
 	{
-	    return userrepository.findByUserId(id);
+		User user=userrepository.findByUserId(id);
+		if(user!=null)
+		{
+		return userrepository.findByUserId(id);
+		}else
+		return "Invalid user";
 	}
 	
 	@RequestMapping(value="/updateuser",method=RequestMethod.POST)

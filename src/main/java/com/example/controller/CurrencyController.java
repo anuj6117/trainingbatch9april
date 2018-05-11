@@ -148,7 +148,7 @@ private CurrencyRepository currencyrepository;
 	  Currency currency3=currencyrepository.findByCoinId(currency.getCoinId());
 	  System.out.println(".........currency1 "+currency1);
 	  System.out.println(".........currency2 "+currency2);
-	  
+	  System.out.println(".........currency "+currency);
 	  
 	  if(currency3==null)
 	  {
@@ -158,14 +158,26 @@ private CurrencyRepository currencyrepository;
 	  {
 		  return "Only Cryptocurrency can be added";
 	  }
-	  else if((currency1!=null && currency1.getCoinId()!=currency.getCoinId()) ||(currency1!=null && currency2.getCoinId()==currency.getCoinId()))
+	  else if((currency1!=null && currency1.getCoinId()!=currency.getCoinId()) ||(currency2!=null && currency2.getCoinId()!=currency.getCoinId()))
 	  {
+		  System.out.println("currency1::::::"+currency1);
+		  System.out.println("currency1.getCoinId:::::::::::::::::::"+currency1.getCoinId());
+		  System.out.println("currency.getCoinId()::::::::::::::::"+currency.getCoinId());
+		  System.out.println("///////////////............../////////////////");
+		  System.out.println("currency2::::::::::::::::::::"+currency2);
+		  System.out.println("currency2.getCoinId()::::::::::::::"+currency2.getCoinId());
+		  System.out.println("currency.getCoinId()::::::::::::::"+currency.getCoinId());
 		  return "Coin Name or Symbol already exist";  
 	  }
 	  else
 	  {
 		  currency1.getCoinId();
-		  currency2.getCoinId();  
+		  currency2.getCoinId(); 
+		  if((currency.getCoinId()==currency1.getCoinId())&&(currency.getCoinId()==currency2.getCoinId()))
+		  {
+			  System.out.println("entering here");
+			  throw new NullPointerException();
+		  }
 		  return "";
 	  }
 	 
@@ -173,14 +185,8 @@ private CurrencyRepository currencyrepository;
     }
 	catch(NullPointerException e)
 	{
-		String pattern="(?=.*[!()@#$%^&+=*])(?=\\S+$).{1,10}";
-		
-	
+		String pattern="(?=.*[a-zA-Z!()@#$%^&+=*])(?=\\S+$).{1,10}";
 		//here null pointer maeans we can insert
-		if(currency1==null && currency2==null)
-		{
-			System.out.println("number 1");
-			
 			if(currency.getCoinName().trim().length()!=0)
 			{	
 				System.out.println("number 2");
@@ -209,9 +215,7 @@ private CurrencyRepository currencyrepository;
 			}
 			else
 				return "Coin Name can't be null";
-		}
-		else
-			return "coinName or symbol already exist";
+		
 	}
 	
 	
