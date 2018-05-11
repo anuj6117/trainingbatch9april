@@ -29,21 +29,19 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.oodles.springboot1.enums.Status;
 
 @Entity
-@Table(name = "user",
-uniqueConstraints = @UniqueConstraint(name = "email_user_uc"
-                                      ,columnNames = {"email","phoneNumber"}))
-//@XmlRootElement(name="users")
-//@XmlAccessorType(XmlAccessType.FIELD)
+@Table(name = "user")
+/*uniqueConstraints = @UniqueConstraint(name = "email_user_uc"
+                                      ,columnNames = {"email","phoneNumber"}))*/
+
 public class Users  {
-	//private static final long serialversionUID=1L;
+	
 	@Column(name="userId")
 	@Id @GeneratedValue(strategy=GenerationType.AUTO)
 	public Integer userId;
 	@NotNull
 	@javax.validation.constraints.NotEmpty
 	@Size(max=25)
-	//@Pattern(regexp="^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[_-])(?=\\S+$)$",message="check username")
-	//@Pattern(regexp= "^[A-Za-z0-9_-][A-Za-z0-9_-]{24}$")
+	
 
 	public String userName;
 	@javax.validation.constraints.NotEmpty
@@ -76,7 +74,7 @@ public class Users  {
 	@javax.validation.constraints.NotEmpty
 	public String country;
 	@Size(min=8,max=32)
-	//@Pattern(regexp="^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*()-_=+{[}]:;'<,.>?/|])(?=\\S+$)$")
+	
 	public String password;
 	Date createdOn;
 	@Enumerated(EnumType.STRING)

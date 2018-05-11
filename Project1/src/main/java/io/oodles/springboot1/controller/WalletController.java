@@ -32,10 +32,7 @@ public class WalletController {
 	public String addwallet(@RequestBody AddWallet addwallet) {
 		return walletService.add(addwallet);
 	}
-	/*@PostMapping("/newwallet")
-	public Wallet newwallet(@RequestBody Wallet wallet) {
-		return walletService.newwallet1(wallet);
-	}*/
+	
 	@PostMapping("/depositamount")
 	public String depositamount(@RequestBody Deposit deposit) {
 		return walletService.deposit(deposit);

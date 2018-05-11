@@ -15,14 +15,15 @@ import io.oodles.springboot1.enums.WalletType;
 public class Currency {
 	@Id @GeneratedValue(strategy=GenerationType.AUTO)
 	private Integer coinId;
+	
 	@Enumerated(EnumType.STRING)
 	private WalletType coinType;
 	private String coinName;
 	
 	private String symbol;
-	@NotNull
+	
 	private Double initialSupply=0.0;
-	@NotNull
+	
 	private Double price=0.0;
 	private Double fees=0.0;
 	private Double coinInINR=0.0;

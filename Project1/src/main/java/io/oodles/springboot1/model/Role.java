@@ -13,14 +13,8 @@ public class Role {
 	@NotNull
 	String roleType;
 	
-	/*Users user;
-	public Users getUser() {
-		return user;
-	}
-	public void setUser(Users user) {
-		this.user = user;
-	}
-	*/public Role(){}
+	
+	public Role(){}
 	public Integer getRoleid() {
 		return roleid;
 	}

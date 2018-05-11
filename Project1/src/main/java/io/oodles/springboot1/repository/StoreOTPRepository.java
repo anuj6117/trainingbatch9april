@@ -10,7 +10,7 @@ public interface StoreOTPRepository extends JpaRepository<StoreOTP,Integer > {
 
 	public StoreOTP findByTokenOTP(Integer tokenOTP);
 
-	//public void deleteByUserotp(Integer userotp);
+	
 
 	
 }

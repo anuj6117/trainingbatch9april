@@ -2,6 +2,7 @@ package io.oodles.springboot1.controller;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -41,7 +42,7 @@ public class OrderController {
 	}
 	
 	@GetMapping("/getorderbyuserid")
-	public Optional<UserOrder> getorder(@RequestParam Integer id) {
+	public Set<UserOrder> getorder(@RequestParam Integer id) {
 		return orderService.get(id);
 	}
 	

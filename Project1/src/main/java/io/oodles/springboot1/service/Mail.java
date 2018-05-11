@@ -21,10 +21,10 @@ public class Mail {
  helper.setSubject("Mail From Spring Boot");
  } catch (MessagingException e) {
  e.printStackTrace();
- //return "Error while sending mail ..";
+ 
  }
  sender.send(message);
- //return "Mail Sent Success!";
+
  }
 
 	

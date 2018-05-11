@@ -72,7 +72,17 @@ public class WalletService {
 	public String add(AddWallet addwallet) {
 		// TODO Auto-generated method stub
 		user=usersRepository.findByUserId(addwallet.getUserId());
-		Set<Wallet> walletsets=new HashSet<Wallet>();
+		
+		if(user==null) {
+			return "User does not exist";
+		}
+		Wallet wallet1=walletRepository.findByUsersAndCoinName(user, addwallet.getCoinName());
+		
+		if(wallet1!=null) {
+			return "coin name already present";
+		}
+		
+	    Set<Wallet> walletsets=new HashSet<Wallet>();
 		Wallet wallet=new Wallet();
 		wallet.setUsers(user);
 		wallet.setCoinName(addwallet.getCoinName());
@@ -83,15 +93,17 @@ public class WalletService {
 		walletRepository.save(wallet);
 		user.setUserWallet(walletsets);
 		
-		if(user!=null && wallet!=null) {
+		
 						
 		user.getUserWallet().add(wallet);
 	
 		usersRepository.save(user);
+		return "Wallet Added";
 		}
 			
-		return "Wallet Added";
-	}
+		
+	
+		
 
 	public Wallet newwallet1(Wallet wallet) {
 		// TODO Auto-generated method stub
@@ -105,7 +117,7 @@ public class WalletService {
 		//wallet=walletRepository.findByCoinType((deposit.getCoinType()));
 		//wallet1=walletRepository.findByCoinName(deposit.getCoinName());
 	   
-		
+		if(deposit.getCoinName().equals("INR")&&deposit.getCoinType().equals(WalletType.FIAT)) {
 		
 		Date date=new Date();
 		
@@ -134,6 +146,9 @@ public class WalletService {
 	     orderRepository.save(userOrder);
 	    
 	    return "Success";}
+		return"Wrong coin name or coin type.";
+		
+		}
 		
        
 	
@@ -183,10 +198,10 @@ public class WalletService {
 				
 				transactionRepository.save(userTransaction);
 				wallet.setUsers(user);
-		        		
-				wallet.setBalance(userorder.getNetAmount());
+				wallet.setShadowbalance(wallet.getBalance()+userorder.getNetAmount());		
+				wallet.setBalance(wallet.getBalance()+userorder.getNetAmount());
 				
-				wallet.setShadowbalance(userorder.getNetAmount());
+				
 				
 				wallet.setCoinType(userorder.getCoinType());
 				

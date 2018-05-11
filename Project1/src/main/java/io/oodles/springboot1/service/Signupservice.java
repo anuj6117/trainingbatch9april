@@ -57,34 +57,131 @@ public class Signupservice {
 	StoreOTP storeOTP;
 	Date date = new Date();
 	
-	 //Correct
-	/*public Map<String,Object> addUser(Users user){
-		
+	
+	public Map<String,Object> update(Users users) {
 		Map<String,Object> result=new HashMap<String,Object>();
-		Users user1=usersRepository.findByEmail(user.getEmail());
-		System.out.println(user1.getEmail());
-		if(user1!=null) {
+		
+		Users user=usersRepository.findByEmail(users.getEmail());
+		Users phone=usersRepository.findByPhoneNumber(users.getPhoneNumber());
+		Users name=usersRepository.findByUserName(users.getUserName());
+		if(user!=null )  {
 			result.put("isSuccess", false);
-			result.put("message", "email id already exists.");
+			result.put("message","Email Id already present.");
+			result.put("timestamp",date );
 			return result;
 		}
-		return result;
-	}*/
-	
-	public Map<String,Object> update(Users user) {
+		 if(phone!=null) {
+				result.put("isSuccess", false);
+				result.put("message","phone number already exists");
+				result.put("timestamp",date );
+				return result;
+				
+			}
+			 if(name!=null) {
+				result.put("isSuccess", false);
+				result.put("message","Username already exists");
+				result.put("timestamp",date );
+				return result;
+				
+			}
+		
+		String s=users.getUserName();
+		String mob=users.getPhoneNumber();
+		
 		// TODO Auto-generated method stub
-		Map<String,Object> result=new HashMap<String,Object>();
-		Users user1=usersRepository.findByUserId(user.getUserId());
-		user.setStatus(user1.getStatus());
+		System.out.println("?????????????");
+		
+		System.out.println("?????????????");
+		if(users.getCountry().length()==0||users.getEmail().length()==0||users.getPassword().length()==0||users.getPhoneNumber().length()==0||
+				users.getUserId().toString().length()==0||users.getUserName().length()==0) {
+			System.out.println("?????????????1111111111");
+			result.put("isSuccess", false);
+			result.put("message","Field cannot be blank");
+			result.put("timestamp",date );
+			return result;
+		}
+		
+		if(!Pattern.matches("(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%!&*<?>/]).{8,32}", users.getPassword())) {
+			result.put("isSuccess", false);
+			result.put("message","Please enter password with minimum 8 characters.You password should have atleast 1 Upper Case, 1 Lower Case, 1 Digit & 1 Special Character.");
+			result.put("timestamp",date );
+			return result;
+
+			
+		}
+		if(!Pattern.matches("\\d{10}", users.getPhoneNumber())) {
+			result.put("isSuccess", false);
+			result.put("message","Phone Number incorrect");
+			result.put("timestamp",date );
+			return result;
+
+			
+		}
+		if(!Pattern.matches("^[a-zA-Z0-9_-]{1,25}$", users.getUserName())) {
+			result.put("isSuccess", false);
+			result.put("message","Username format wrong.");
+			result.put("timestamp",date );
+			return result;
+		}
+		if(!Pattern.matches("^[a-z0-9][a-z0-9(\\-[a-z0-9]+)(\\_[a-z0-9]+)]*[a-zA-Z0-9]+(\\.[a-z0-9]+)*[a-zA-Z0-9]+(\\-[a-z0-9]+)*[a-zA-Z0-9]+(\\_[a-z0-9]+)*[a-zA-Z0-9]*@[a-z0-9]+(\\.[a-z0-9]+)*(\\.[a-z]{2,})$", users.getEmail())) {
+			result.put("isSuccess", false);
+			result.put("message","Email format wrong.");
+			result.put("timestamp",date );
+			return result;
+		}
+		if(s.length()>25) {
+			result.put("isSuccess", false);
+			result.put("message","Maximum Characters allowed for this field is 25");
+			result.put("timestamp",date );
+			return result;
+
+			
+		}
+		 if(mob.length()>10){
+			result.put("isSuccess", false);
+			result.put("message","Please,enter a valid mobile number.");
+			result.put("timestamp",date );
+			return result;
+
+			
+		}
+		 if(users.getCountry().length()<2){
+				result.put("isSuccess", false);
+				result.put("message","Minimum 2 characters required");
+				result.put("timestamp",date );
+				return result;
+				
+			}
+		
+	   /* Users useremail=usersRepository.findByUserIdAndEmail(user.getUserId(),user.getEmail());
+	    System.out.println("?????????????");
+	    Users usersusername=usersRepository.findByUserIdAndUserName(user.getUserId(),user.getUserName());
+	    System.out.println("?????????????");
+	    Users usersphone=usersRepository.findByUserIdAndPhoneNumber(user.getUserId(),user.getPhoneNumber());
+	    System.out.println("?????????????");
+	    if(user.getEmail().equalsIgnoreCase(useremail.getEmail())){||user.getUserName().equalsIgnoreCase(usersusername.getUserName())||user.getPhoneNumber().equalsIgnoreCase(usersphone.getUserName())) {*/
+	    	System.out.println("?????????????");
+	    	Users user1=usersRepository.findByUserId(user.getUserId());
+	    	System.out.println("?????????????");
+		users.setStatus(user1.getStatus());
+		System.out.println("?????????????");
 		Date date=new Date();
-	    user.setCreatedOn(date);
-		usersRepository.save(user);
+		System.out.println("?????????????");
+	    users.setCreatedOn(date);
+	    System.out.println("?????????????");
+		usersRepository.save(users);
+		System.out.println("?????????????");
 		result.put("isSuccess", true);
 		result.put("message","Success");
 		result.put("timestamp",date );
-		return result;
+		return result;}/*else {
+	    result.put("isSuccess", false);
+		result.put("message","Cannot update");
+		result.put("timestamp",date );
+		return result;}
+	    */
 		
-	}
+	
 
 	public Map<String,Object> delete(int id) {
 		// TODO Auto-generated method stub
@@ -267,9 +364,13 @@ public class Signupservice {
 
 	
 
-	public Optional<Users> searchbyid(int id) {
+	public Users searchbyid(int id) {
 		// TODO Auto-generated method stub
-		return usersRepository.findById(id);
+		Users user=usersRepository.findByUserId(id);
+		if(user!=null) {
+			return user;
+		}
+		else {throw new NullPointerException("User id does not active");}
 	}
 
 	
@@ -279,19 +380,23 @@ public class Signupservice {
 		
 		// TODO Auto-generated method stub
 		users=usersRepository.findByUserId(assignrole.getUserId());
-		role=rolerepository.findByRoleType(assignrole.getRoletype());
+		if(users==null) {
+			return "UserId invalid.";		}
+		role=rolerepository.findByRoleType(assignrole.getRoleType());
 		List<Role> list1=users.getRoleType();
 		for(Role r:list1) {
-			if(r.getRoleType().equals(assignrole.getRoletype())) {
+			if(r.getRoleType().equalsIgnoreCase(assignrole.getRoleType())) {
 				return "Role already Assigned";
 			}
 		}
 		if(role!=null) {
+			
 		users.getRoleType().add(role);
 		usersRepository.save(users);
 		return "Role Assigned";}
 		else return "Role not present";
 	}
+	
 	
 }	
 		

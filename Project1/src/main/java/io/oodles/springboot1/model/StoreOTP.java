@@ -10,8 +10,6 @@ import javax.persistence.Id;
 @Entity
 public class StoreOTP {
 	
-	/*@GeneratedValue(strategy=GenerationType.AUTO)
-	private Long id;*/
 	
     @Id
     @GeneratedValue(strategy=GenerationType.AUTO)

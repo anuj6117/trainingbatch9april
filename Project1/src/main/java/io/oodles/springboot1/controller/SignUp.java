@@ -28,11 +28,7 @@ public class SignUp {
 	Signupservice signupservice;
 	
 
-	/*@PostMapping("/signup")
-	public String insertUser( @RequestBody Users users) {
-		return signupservice.addUser(users);
-		
-	}*/
+	
 	
 	@PostMapping("/signup")   
 	public ResponseEntity<Object> insertUser(@RequestBody Users users){
@@ -108,7 +104,7 @@ public class SignUp {
 	}
 	
 	@GetMapping("/getbyuserid")
-	public Optional<Users> getbyid(@RequestParam int userId){
+	public Users getbyid(@RequestParam int userId){
 		return signupservice.searchbyid(userId);
 	}
 	

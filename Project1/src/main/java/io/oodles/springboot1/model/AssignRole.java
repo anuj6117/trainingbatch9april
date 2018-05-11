@@ -2,16 +2,16 @@ package io.oodles.springboot1.model;
 
 public class AssignRole {
 	Integer userId;
-    String roletype;
+    String roleType;
 	
 	AssignRole(){}
-	public AssignRole(Integer userId, String roletype) {
+	public AssignRole(Integer userId, String roleType) {
 		super();
 		this.userId = userId;
-		this.roletype = roletype;
+		this.roleType = roleType;
 	}
 
-	public Integer getUserId() {
+	public Integer getUserId(){
 		return userId;
 	}
 
@@ -19,12 +19,12 @@ public class AssignRole {
 		this.userId = userId;
 	}
 
-	public String getRoletype() {
-		return roletype;
+	public String getRoleType() {
+		return roleType;
 	}
 
-	public void setRoletype(String roletype) {
-		this.roletype = roletype;
+	public void setRoleType(String roleType) {
+		this.roleType = roleType;
 	}
 	
 	

@@ -29,7 +29,7 @@ public class CurrencyController {
 		return currencyservice.create(currency);
 	}
 	@GetMapping("/getbycurrencyid")
-	public Optional<Currency> getbyid(@RequestParam int coinId){
+	public Currency getbyid(@RequestParam int coinId){
 		return currencyservice.searchbyid(coinId);
 	}
 	

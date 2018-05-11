@@ -13,10 +13,10 @@ import io.oodles.springboot1.model.Users;
 public interface OrderRepository extends JpaRepository<UserOrder, Integer> {
 
 	
-@Query(value="SELECT * FROM user_order u WHERE u.ordertype='BUY' AND u.order_status='PENDING'",nativeQuery=true)
+@Query(value="SELECT * FROM user_order u WHERE u.order_type='BUY' AND u.order_status='PENDING'",nativeQuery=true)
 public List<UserOrder> findByOrdertype1();
 	
-@Query(value="SELECT * FROM user_order u WHERE u.ordertype='SELL' AND u.order_status='PENDING'",nativeQuery=true)
+@Query(value="SELECT * FROM user_order u WHERE u.order_type='SELL' AND u.order_status='PENDING'",nativeQuery=true)
 public List<UserOrder> findByOrdertype();
 
 
