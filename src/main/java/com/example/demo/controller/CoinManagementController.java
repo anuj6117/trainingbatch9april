@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.model.CoinManagement;
+import com.example.demo.repository.CoinManagementRepository;
 import com.example.demo.service.CoinManagementService;
 import com.example.demo.utility.ResponseHandler;
 
@@ -22,8 +23,29 @@ public class CoinManagementController {
 	@Autowired
 	private CoinManagementService coinManagementService;
 	
+	@Autowired
+	private CoinManagementRepository coinManagementRepository;
 	
 	@RequestMapping(value = "/addcurrency", method = RequestMethod.POST)
+	public Object addCurrency(@RequestBody CoinManagement coinManagement)
+	{
+		System.out.println("1111111111111111111111");
+		String coinName = coinManagement.getCoinName();
+		String symbol = coinManagement.getSymbol();
+		
+		if(coinManagementRepository.findByCoinName(coinName) == null && coinManagementRepository.findOneBySymbol(symbol) == null)
+		{
+			return coinManagementService.addCurrency(coinManagement);
+		}
+		else
+		{
+			return "coin already exist.";
+		}
+		
+	}
+	
+	
+	/*@RequestMapping(value = "/addcurrency", method = RequestMethod.POST)
 	public ResponseEntity<Object> addCurrency(@RequestBody CoinManagement coinManagement)
 	{
 		Map<String, Object> result = null;
@@ -39,7 +61,7 @@ public class CoinManagementController {
 		} catch (Exception e) {
 			return ResponseHandler.generateResponse(HttpStatus.BAD_REQUEST, false, e.getMessage(), result);
 		}
-	}
+	}*/
 	
 	@RequestMapping(value = "/updatecurrency", method = RequestMethod.POST)
 	public ResponseEntity<Object> updateCurrency(@RequestBody CoinManagement coinManagement)
@@ -84,5 +106,18 @@ public class CoinManagementController {
 	public List<CoinManagement> getAllCurrencies() {
 		List<CoinManagement> list = coinManagementService.getAllCurrencies();
 		return list;
+	}
+	
+	@RequestMapping(value = "/getcurrencybyid", method = RequestMethod.GET)
+	public Object getCurrencyById(@RequestParam("coinId") Integer coinId)
+	{
+		if(coinManagementRepository.findOneByCoinId(coinId) == null)
+		{
+			return "Coin does not exist.";
+		}
+		else
+		{
+			return coinManagementService.getCurrencyById(coinId);
+		}
 	}
 }
