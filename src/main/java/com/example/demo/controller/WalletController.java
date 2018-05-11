@@ -9,16 +9,17 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.dto.DepositAmountDTO;
-import com.example.demo.dto.UserWalletDTO;
 import com.example.demo.dto.WalletDTO;
 import com.example.demo.enums.UserStatus;
-import com.example.demo.model.Order;
 import com.example.demo.model.User;
 import com.example.demo.model.Wallet;
+import com.example.demo.repository.OrderRepository;
 import com.example.demo.repository.UserRepository;
+import com.example.demo.repository.WalletRepository;
 import com.example.demo.service.WalletService;
 import com.example.demo.utility.ResponseHandler;
 
@@ -30,6 +31,11 @@ public class WalletController {
 	
 	@Autowired
 	private UserRepository userRepository;
+	@Autowired
+	private WalletRepository walletRepository;
+	
+	@Autowired
+	private OrderRepository orderRepository;
 	
 	@RequestMapping(value = "/addwallet", method = RequestMethod.POST)
 	public ResponseEntity<Object> addWallet(@RequestBody WalletDTO walletDTO)
@@ -82,17 +88,15 @@ public class WalletController {
 		return walletService.getAllWallets();
 	}
 	
-	@RequestMapping(value = "/wallethistory", method = RequestMethod.POST)
-	public Object getWalletHistory(@RequestBody UserWalletDTO userWalletDTO )
+	@RequestMapping(value="/walletHistory",method=RequestMethod.GET)
+	public Object walletHistory(@RequestParam("userId")Integer userId,@RequestParam("coinName") String coinName)
 	{
-		List<Order> orderHistory = walletService.getWalletHistory(userWalletDTO);
-		if(orderHistory.isEmpty())
+		User user=userRepository.findByUserId(userId);
+		Wallet wallet=walletRepository.findByUserAndCoinName(user,coinName);
+		if(user==null||wallet==null)
 		{
-			return "No order available for this user.";
+			return "Invalid user id or wallet.";
 		}
-		else
-		{
-			return orderHistory;
-		}
+		return orderRepository.walletHistory(userId, coinName);
 	}
 }
