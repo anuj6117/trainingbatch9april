@@ -54,6 +54,8 @@ public class TransactionService
 		    adminPrice=currency.getPrice();
 		    adminQuantity=currency.getInitialSupply();
 		   }
+		   
+		   while(buy.getCoinQuantity()!=0) {
 		   Set<UserOrder> sellList=orderRepository.sellList("SELL","PENDING",buy.getCoinName());
 		   System.out.println("value of sellList..................................."+sellList);
 		   if(sellList.isEmpty())
@@ -70,7 +72,9 @@ public class TransactionService
 				   
        		    buy.setStatusType(StatusType.APPROVED);
        		    System.out.println("buy status:::::"+buy.getStatusType());
-       	     	currency.setInitialSupply(quantityRemaining);
+       		    Double initialCurrencyQuantity=currency.getInitialSupply();
+       		      initialCurrencyQuantity=initialCurrencyQuantity-quantityDone;
+       	     	currency.setInitialSupply(initialCurrencyQuantity);////// DECREMENT IN CURRENCY QUANTITY
        	        Double fee=currency.getFees();
        	         System.out.println("fee of currency:::::::::::::"+fee);
        	        Double netamount=quantityDone*buy.getPrice();
@@ -81,9 +85,13 @@ public class TransactionService
        	          System.out.println("currencyNetAmount:::::::::::::::"+currencyNetAmount);
        	        Double NetAmount=netamount-currencyNetAmount;
        	           System.out.println("NetAmount:::::::::::::::"+NetAmount);
-        		currency.setCoinInINR(NetAmount);
+       	           Double initialcoinInInr=currency.getCoinInINR();
+       	           initialcoinInInr+=NetAmount;
+        		currency.setCoinInINR(initialcoinInInr);
         		    System.out.println("currency.setCoinININr:::::::::::"+currency.getCoinInINR());
-        		currency.setProfit(feeAmount);
+        		    Double initialProfit=currency.getProfit();
+        		    initialProfit+=feeAmount;
+        		currency.setProfit(initialProfit);
         		System.out.println("currncy.getProfit::::::::::::::"+currency.getProfit());
         		orderRepository.save(buy);
         		currencyRepository.save(currency);
@@ -125,6 +133,14 @@ public class TransactionService
        	     	     Double balance=w.getBalance();
        	     	     System.out.println("initial balance:::::::::::::::::::::::::"+balance);
        	     		 balance+=quantityDone;
+       	     		 Double buyerQuantity=buy.getCoinQuantity();
+       	     		 if(buyerQuantity-quantityDone<0)
+       	     		 {
+       	     			 buy.setCoinQuantity(0.0);
+       	     		 }
+       	     		 else
+       	     		 buy.setCoinQuantity(buyerQuantity-quantityDone);
+       	     		 
        	     		 System.out.println("updated balance::::::::::::::::::::::::"+balance);
        	     		 w.setBalance(balance);
        	     		// System.out.println("w.get balance::::::::::::::::::::::::::::"+w.getBalance());
@@ -134,7 +150,14 @@ public class TransactionService
        	     	  }
        	     	 if(w.getCoinType()==WalletType.FIAT)
        	     	  {System.out.println("seller is empyt// admin seller// updating wallet//buyer wallet update in crypto.....................................33");
-       	     	     Double balance=buy.getGrossAmount();
+       	     	    
+       	     	      Double initialBalance=buy.getCoinQuantity()*buy.getPrice();
+       	     	      System.out.println("buyer quantity::::::://"+buy.getCoinQuantity());
+       	     	      System.out.println("byer price:::::::::::::"+buy.getPrice());
+       	     	      System.out.println("initial balance ::::::::::::::::::::::"+initialBalance);
+       	     	      initialBalance=((fee*initialBalance)/100)+initialBalance;
+       	     	      System.out.println("initial balance ::::::::::::::::::::::"+initialBalance);
+       	     	     Double balance=initialBalance;
        	     	     System.out.println("balnce:::::::::::::::::::"+balance);
        	             Double buyerBalance=w.getBalance();
        	             System.out.println("buyerbalance::::::::::::::::::::::::::"+buyerBalance);
@@ -175,7 +198,9 @@ public class TransactionService
 				        Double quantityDone=buy.getCoinQuantity();
 				        Double quantityRemaining=adminQuantity-quantityDone;
 		        		buy.setStatusType(StatusType.APPROVED);
-		        		currency.setInitialSupply(quantityRemaining);
+		        		 Double initialCurrencyQuantity=currency.getInitialSupply();
+		       		      initialCurrencyQuantity=initialCurrencyQuantity-quantityDone;
+		        		currency.setInitialSupply(initialCurrencyQuantity);
 		        		Double fee=currency.getFees();
 		        		Double netamount=quantityDone*buy.getPrice();
 		        		Double feeAmount=((fee*netamount)/100);
@@ -190,7 +215,7 @@ public class TransactionService
 		        		String date =new Date()+" ";
 		        		Transaction transaction=new Transaction();
 		        		transaction.setBuyerId(buy.getUser().getUserId());
-		        		transaction.setSellerId(currency.getCoinId()); // admin ki seller id
+		        		transaction.setSellerId(0); // admin ki seller id
 		        		transaction.setCoinName(buy.getCoinName());
 		        		transaction.setCoinType(buy.getCoinType());
 		        		transaction.setExchangeRate(buy.getPrice());
@@ -212,6 +237,14 @@ public class TransactionService
 		        	     	  {
 		        	     		Double balance=w.getBalance();
 		        	     		 balance+=quantityDone;
+		        	     		 Double buyerQuantity=buy.getCoinQuantity();
+		           	     		 if(buyerQuantity-quantityDone<0)
+		           	     		 {
+		           	     			 buy.setCoinQuantity(0.0);
+		           	     		 }
+		           	     		 else
+		           	     		 buy.setCoinQuantity(buyerQuantity-quantityDone);
+		           	     		 
 		        	     		 w.setBalance(balance);
 		        	     		 w.setShadowbalance(balance);
 		        	     	  }
@@ -382,7 +415,7 @@ public class TransactionService
 					      System.out.println("setTransaction.....................................end");
 					     // walletUpdation(buy, sell, quantityDone);
 				       }
-				       else// seller quantity >buyer Quantity
+				       else // seller quantity >buyer Quantity
 				       {   
 				    	   System.out.println("Seller is a user here not admin//buyerQUANt < sellerQUANT..........................");
 				    	   System.out.println("Buyer quantity:::::::::::::::::::::"+buy.getCoinQuantity());
@@ -502,6 +535,9 @@ public class TransactionService
 			    }			   
 		   }
 		  }
+		   
+		   }// HERE WHILE LOOP IS ENDING NOW  
+		   
 	   }   
  }
   

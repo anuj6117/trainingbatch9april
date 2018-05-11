@@ -61,18 +61,21 @@ private CurrencyRepository currencyrepository;
     }
 	catch(NullPointerException e)
 	{
-		String pattern="(?=.*[!()@#$%^&+=*])(?=\\S+$).{1,10}";
-		
-	
+		String pattern="(?=.*[a-zA-Z!()@~#$%^&+=*])(?=\\S+$).{1,100}";
+		Integer symbolLength1=currency.getSymbol().length();
+	    Integer symbolLength2=currency.getSymbol().replaceAll("\\s+","").length();
+	    
+	    Integer currencyCoinNameLength=currency.getCoinName().length();
+	    Integer currencyCoinNameLengthWithOutSpace=currency.getCoinName().replaceAll("\\s+","").length();
 		//here null pointer maeans we can insert
 		if(currency1==null && currency2==null)
 		{
 			System.out.println("number 1");
 			
-			if(currency.getCoinName().trim().length()!=0)
+			if(currency.getCoinName().trim().length()!=0 && currencyCoinNameLength==currencyCoinNameLength)
 			{	
 				System.out.println("number 2");
-				if(currency.getSymbol().trim().length()!=0 && currency.getSymbol().matches(pattern))
+				if(currency.getSymbol().trim().length()!=0 && currency.getSymbol().matches(pattern) && symbolLength1==symbolLength2)
 				{
 					System.out.println("number 3");
 					//System.out.println("value of currency " + currency.getInitialSupply());

@@ -37,7 +37,8 @@ public class SignUserController
 	 
 	@RequestMapping(value="/signup", method=RequestMethod.POST)
 	public String insertUser(@RequestBody User user)
-	{  User user1=userrepository.findByEmail(user.getEmail());
+	{    String emailPattern="^[a-z0-9][a-z0-9(\\-[a-z0-9]+)(\\_[a-z0-9]+)]*[a-zA-Z0-9]+(\\.[a-z0-9]+)*[a-zA-Z0-9]+(\\-[a-z0-9]+)*[a-zA-Z0-9]+(\\_[a-z0-9]+)*[a-zA-Z0-9]*@[a-z0-9]+(\\.[a-z0-9]+)*(\\.[a-z]{2,})$";
+		User user1=userrepository.findByEmail(user.getEmail());
 	   User user2=userrepository.findByPhoneNumber(user.getPhoneNumber());
 		if(user1!=null)
 		{
@@ -62,7 +63,7 @@ public class SignUserController
 	    String pattern="(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\\S+$).{8,32}";
 	   
 	   
-	    String emailPattern="^[a-z0-9][a-z0-9(\\-[a-z0-9]+)(\\_[a-z0-9]+)]*[a-zA-Z0-9]+(\\.[a-z0-9]+)*[a-zA-Z0-9]+(\\-[a-z0-9]+)*[a-zA-Z0-9]+(\\_[a-z0-9]+)*[a-zA-Z0-9]*@[a-z0-9]+(\\.[a-z0-9]+)*(\\.[a-z]{2,})$";
+	 
 	    if((passwordLength2!=0) && (passwordLength1==passwordLength2) && (passwordvalue.matches(pattern)))
 		{
 	    	 System.out.println("......................111111111122222");

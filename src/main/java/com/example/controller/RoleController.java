@@ -1,5 +1,7 @@
 package com.example.controller;
 
+import java.util.Set;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -43,16 +45,30 @@ public class RoleController
    {
 	   if(userRoleDto != null)
 	   {
-		 
+		 Integer k=0;
 		   User user = userRepository.findByUserId(userRoleDto.getUserId());
 		   Role role = roleRepository.findByRoleType(userRoleDto.getRoleType());
 		   if((user!=null))
 		   {
-			   if(role!=null) {
+			   if(role!=null )
+			   {
+				   
+				Set<Role> roleList=user.getRoles();
+				for(Role rol:roleList)
+				{
+					if(rol.getRoleType()==role.getRoleType())
+					{
+						k++;
+					}
+				}
+				if(k!=0)
+				{
+					return "role already exist with user";
+				}
+				else {
 		   		user.getRoles().add(role);
-		   		System.out.println("nnnnnnnnnnnnnn"+user.getRoles()+".........."+user+",,,,,,,");
 		   		userRepository.save(user);
-		        return "Role Assigned Successfully ";
+		        return "Role Assigned Successfully ";}
 			   }
 			   else return "Invalid role type";
 		   }
