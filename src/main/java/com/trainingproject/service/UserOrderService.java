@@ -104,11 +104,13 @@ public class UserOrderService {
 	 	 if(sellerWallet==null) {
 	 		 return "seller dont have this currency";
 	 	 }
+	 	 if(sellerWallet.getCoinQuantity()<bsb.getCoinQuantity())
+	 		 return "seller do not have this much of coin quantity";
 	     if(user==null)
 				return "user is null";
 	     
 	     if(bsb.getCoinQuantity()==0)
-	    	 return "0 quantity to sell";
+	    	 return "No coin quantity to sell";
 	     if(user.getStatus()==null)
 				return "user is inactive";
 			if(user.getStatus().equals(UserStatus.INACTIVE))

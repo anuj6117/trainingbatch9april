@@ -85,9 +85,7 @@ public class CurrencyService {
 
 		//Matcher m = p.matcher(cur.getCoinName());
 		
-		 if(cur.getCoinName()==null)
-			 return "invalid coin name";
-		
+	
 		if(cur.getCoinType().equals(CoinType.CRYPTO)||cur.getCoinType().equals(CoinType.FIAT)) {
 		 Currency currency=getCurrencyById(cur.getCoinId()).get();
 		 if(currency==null)

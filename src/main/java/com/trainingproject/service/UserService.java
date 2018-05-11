@@ -247,6 +247,7 @@ public class UserService {
 
 		String regex="^[_-]{0,1}+[a-z0-9]+(\\_[a-z0-9]+)*[a-zA-Z]+[_-]{0,1}+(\\.[_a-z0-9-]+)*@[a-z0-9]+(\\.[a-z0-9]+)*(\\.[a-z]{2,})$";
 
+		
 	      Pattern pattern = Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
 	      Matcher matcher = pattern.matcher(user.getEmail());
 	     
@@ -602,8 +603,8 @@ public class UserService {
 			return "Invalid OTP";
 		}
 		else {
-			System.out.println(user.getEmail()+",,,,,,,,,,,,,,,,,,,,,,,,,user,,,,,,,,,,,,,,,,,,");
-			System.out.println(userOTP.getEmail()+",,,,,,,,,,,,,,,,,,,,,,,,userotp,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,");
+			//System.out.println(user.getEmail()+",,,,,,,,,,,,,,,,,,,,,,,,,user,,,,,,,,,,,,,,,,,,");
+		//	System.out.println(userOTP.getEmail()+",,,,,,,,,,,,,,,,,,,,,,,,userotp,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,");
 			if(userOTP.getEmail().equals(user.getEmail())) {
 				
 				signupOTPRepository.delete(userOTP);
@@ -659,6 +660,12 @@ public class UserService {
 //	
 //	}
 //	
-
+//	if(user.getEmail() != null) {
+//    	if(!(Pattern.compile("^[a-z0-9][a-z0-9(\\-[a-z0-9]+)(\\_[a-z0-9]+)]*[a-zA-Z0-9]+(\\.[a-z0-9]+)*[a-zA-Z0-9]+(\\-[a-z0-9]+)*[a-zA-Z0-9]+(\\_[a-z0-9]+)*[a-zA-Z0-9]*@[a-z0-9]+(\\.[a-z0-9]+)*(\\.[a-z]{2,})$").matcher(user.getEmail()).matches())) {
+//    		result.put("isSuccess", false);
+//			result.put("message", "Please, enter a valid email address");
+//			return result;
+//    	   }
+//    	}
 	
 }
