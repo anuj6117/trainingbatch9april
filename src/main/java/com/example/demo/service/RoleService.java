@@ -20,6 +20,8 @@ public class RoleService {
 	@Autowired
 	private UserRepository userRepository;
 	
+	Role role = null;
+	
 	public Map<String, Object> addRole(Role role)
 	{
 		Map<String, Object> result = new HashMap<String, Object>();
@@ -52,13 +54,35 @@ public class RoleService {
 		}
 	}
 	
-	public Map<String, Object> assignRole(RoleDTO roleDTO)
+	public Object assignRole(RoleDTO roleDTO)
+	{
+		User user = userRepository.findByUserId(roleDTO.getUserId());
+		Role role = roleRepository.findByRoleType(roleDTO.getRoleType().toUpperCase());
+		
+		if(user.getStatus().equals(UserStatus.ACTIVE))
+		{
+			user.getRoles().add(role);
+			userRepository.save(user);
+			return "Role assign Successfully.";
+		}
+		else
+		{
+			return "User is not active.";
+		}
+	}
+	
+	/*public Map<String, Object> assignRole(RoleDTO roleDTO)
 	{
 		Map<String, Object> result = new HashMap<String, Object>();
 		User user = null;
 		try
 		{
-			user = userRepository.findByUserId(roleDTO.getUserId());
+			if(userRepository.findByUserId(roleDTO.getUserId()) == null)
+			{
+				result.put("isSuccess", "false");
+				result.put("message", "User id does not exist.");
+				return result;
+			}
 		}
 		catch(Exception e)
 		{
@@ -67,7 +91,16 @@ public class RoleService {
 			return result;
 		}
 		
-		Role role=roleRepository.findByRoleType(roleDTO.getRoleType());
+		//Role role=roleRepository.findByRoleType(roleDTO.getRoleType());
+		if(roleRepository.findByRoleType(roleDTO.getRoleType().toUpperCase()) == null)
+		{
+			result.put("isSuccess", "false");
+			result.put("message", "Role is not available.");
+			return result;
+		}
+		
+		Role role=roleRepository.findByRoleType(roleDTO.getRoleType().toUpperCase());
+		
 		if(user.getStatus().equals(UserStatus.ACTIVE))
 		{
 			if(role != null)
@@ -92,5 +125,5 @@ public class RoleService {
 			result.put("message", "User is inactive");
 			return result;
 		}
-	}		
+	}*/		
 }
