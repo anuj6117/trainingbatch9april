@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.dto.RoleDTO;
 import com.example.demo.model.Role;
+import com.example.demo.repository.RoleRepository;
+import com.example.demo.repository.UserRepository;
 import com.example.demo.service.RoleService;
 import com.example.demo.utility.ResponseHandler;
 
@@ -20,6 +22,12 @@ public class RoleController {
 
 	@Autowired
 	private RoleService roleService;
+	
+	@Autowired
+	private UserRepository userRepository;
+	
+	@Autowired
+	private RoleRepository roleRepository;
 	
 	@RequestMapping(value = "/createrole", method = RequestMethod.POST)
 	public ResponseEntity<Object> createRole(@RequestBody Role role)
@@ -44,26 +52,21 @@ public class RoleController {
 	}
 	
 	@RequestMapping(value = "/assignrole", method = RequestMethod.POST)
-	public ResponseEntity<Object> assignRole(@RequestBody RoleDTO roleDTO)
+	public Object assignRole(@RequestBody RoleDTO roleDTO)
 	{
-		Map<String, Object> result = null;
-
-		try {
-			result = roleService.assignRole(roleDTO);
-
-			if (result.get("isSuccess").equals(true))
-			{
-				System.out.println("if block of Controller.");
-				return ResponseHandler.generateResponse(HttpStatus.OK, true, result.get("message").toString(), result);
-			} 
-			else
-			{
-				System.out.println("else block of controller.");
-				return ResponseHandler.generateResponse(HttpStatus.OK, false, result.get("message").toString(), result);
-			}
-
-		} catch (Exception e) {
-			return ResponseHandler.generateResponse(HttpStatus.BAD_REQUEST, false, e.getMessage(), result);
+		Integer userId = roleDTO.getUserId();
+		String roleType = roleDTO.getRoleType().toUpperCase();
+		if(userRepository.findByUserId(userId) == null)
+		{
+			return "User id does not exist.";
+		}
+		else if(roleRepository.findByRoleType(roleType) == null)
+		{
+			return "Role does not exist.";
+		}
+		else
+		{
+			return roleService.assignRole(roleDTO);
 		}
 	}
 }
