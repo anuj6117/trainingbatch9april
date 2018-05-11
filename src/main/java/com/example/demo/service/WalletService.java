@@ -121,11 +121,13 @@ public class WalletService
 	{
 		return walletRepository.findAll();
 	}
+	
+	
 
-	public List<Order> getWalletHistory(UserWalletDTO userWalletDTO)
+	/*public List<Order> getWalletHistory(UserWalletDTO userWalletDTO)
 	{
 		User user = userRepository.findByUserId(userWalletDTO.getUserId());
 		//walletRepository.findOrderByUserAndCoinName(user, userWalletDTO.getWalletType());
 		return null;
-	}
+	}*/
 }
