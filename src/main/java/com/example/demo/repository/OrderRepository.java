@@ -28,5 +28,8 @@ public interface OrderRepository extends JpaRepository<Order, Integer>
 	@Query("select odr from Order odr where UPPER(odr.orderType)=UPPER(:orderType) and orderStatus = 'PENDING' order by price ASC")
 	public CopyOnWriteArrayList<Order> getSellers(@Param("orderType")String order);
 	
-	public List<Order> findOrderByUserAndCoinName(User user, String CoinName);
+	//public List<Order> findOrderByUserAndCoinName(User user, String CoinName);
+	
+	@Query(value=" select * from ordertable where user_id =?1 and coin_name =?2",nativeQuery=true)
+	public List<Order> walletHistory(Integer userId, String coinName);
 }
