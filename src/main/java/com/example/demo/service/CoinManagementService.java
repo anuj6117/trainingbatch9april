@@ -17,7 +17,88 @@ public class CoinManagementService {
 	@Autowired
 	private CoinManagementRepository coinManagementRepository;
 	
-	public Map<String, Object> addCurrency(CoinManagement coinManagement)
+	public Object addCurrency(CoinManagement coinManagement)
+	{
+		String coinName=coinManagement.getCoinName();
+		Double initialSupply = coinManagement.getInitialSupply();
+		Double price = coinManagement.getPrice();
+		String symbol=coinManagement.getSymbol();
+		Double fee = coinManagement.getFee();
+		
+		CoinManagement coinManagementObject = coinManagementRepository.findByCoinName(coinName);
+		
+		if(coinManagementObject == null)
+		{
+			if(coinName.length() == 0)
+			{
+				return "Coin Name should not be empty.";
+			}
+			if(coinName.startsWith(" "))
+			{
+				return "Coin Name should not have leading space.";
+			}
+			if(coinName.endsWith(" "))
+			{
+				return "Coin Name should not have trailing space.";
+			}
+			if(!(Pattern.compile("^[a-zA-Z\\s]{3,15}$").matcher(coinName).matches())) 
+			{
+				return "Space and special character is not allowed in Coin Name or length should not exceed 15 character.";
+
+			}	
+			if(symbol.length() == 0)
+			{
+				return "symbol should not be empty.";
+			}
+			if(symbol.startsWith(" "))
+			{
+				return "symbol should not have leading space.";
+			}
+			if(symbol.endsWith(" "))
+			{
+				return "symbol should not have trailing space.";
+			}
+			
+			if(!(symbol.matches("^([a-zA-Z0-9[#?!@$%^&*-<>~`)(_+=}[{]':;/]]{2,}$)")))
+			{
+				return "Special character is not allowed in symbol or length should not exceed 15 character.";
+			}
+			
+			if(initialSupply == null)
+			{
+				return "initialSuppy should not be null.";
+			}
+			if(initialSupply < 0)
+			{
+				return "initialSuppy should not less than zero.";
+			}
+			if(price == null)
+			{
+				return "price should not be null.";
+			}
+			if(price < 0)
+			{
+				return "price should not less than zero.";
+			}
+			coinManagement.setCoinName(coinName);
+			coinManagement.setSymbol(symbol);
+			coinManagement.setPrice(price);
+			coinManagement.setInitialSupply(initialSupply);
+			coinManagement.setFee(fee);
+			coinManagement.setProfit(0.0);
+			coinManagement.setExchangeRate(0.0);
+			coinManagement.setCoinInInr(0.0);
+			coinManagementRepository.save(coinManagement);
+			
+			return "coin added successfully.";
+		}
+		else
+		{
+			return "Coin already exist.";
+		}
+	}
+	
+	/*public Map<String, Object> addCurrency(CoinManagement coinManagement)
 	{
 		Map<String, Object> result = new HashMap<String, Object>();
 		
@@ -49,10 +130,10 @@ public class CoinManagementService {
 				result.put("message", "Coin Name should not have trailing space.");
 				return result;
 			}
-			if(!(Pattern.compile("^[a-zA-Z]{3,15}$").matcher(coinName).matches())) 
+			if(!(Pattern.compile("^[a-zA-Z\\s]{3,15}$").matcher(coinName).matches())) 
 			{
 				result.put("isSuccess", false);
-				result.put("message", "Special character is not allowed in Coin Name or length should not exceed 15 character.");
+				result.put("message", "Space and special character is not allowed in Coin Name or length should not exceed 15 character.");
 				return result;
 			}	
 			if(symbol.length() == 0)
@@ -74,12 +155,13 @@ public class CoinManagementService {
 				return result;
 			}
 			
-			if(!(Pattern.compile("^[a-zA-Z]{3,15}$").matcher(symbol).matches())) 
+			if(!(symbol.matches("^([a-zA-Z0-9[#?!@$%^&*-<>~`)(_+=}[{]':;/]]{2,}$)")))
 			{
 				result.put("isSuccess", false);
-				result.put("message", "Special character is not allowed in symbol or length should not exceed 15 character .");
+				result.put("message", "Special character is not allowed in symbol or length should not exceed 15 character.");
 				return result;
 			}
+			
 			if(initialSupply == null)
 			{
 				result.put("isSuccess", false);
@@ -124,7 +206,7 @@ public class CoinManagementService {
 			result.put("message", "Coin already exist.");
 			return result;
 		}
-	}
+	}*/
 		
 	public Map<String, Object> updateCurrency(CoinManagement coinManagement)
 	{
@@ -208,6 +290,11 @@ public class CoinManagementService {
 	public List<CoinManagement> getAllCurrencies() 
 	{
 		return coinManagementRepository.findAll();
+	}
+
+	public Object getCurrencyById(Integer coinId) 
+	{
+		return coinManagementRepository.findOneByCoinId(coinId);
 	}
 	
 	
