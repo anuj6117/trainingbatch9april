@@ -5,7 +5,10 @@ import com.traningproject1.enumsclass.TransactionStatus;
 public class WalletApprovalDTO {
  private Integer userorderId;
  private String message;
+ private Integer userId;
  
+
+
 // @Enumerated(value=EnumType.STRING) 
 private TransactionStatus transactionStatus;
 
@@ -31,5 +34,11 @@ public TransactionStatus getTransactionStatus() {
 public void setTransactionStatus(TransactionStatus transactionStatus) {
 	this.transactionStatus = transactionStatus;
 }
+public Integer getUserId() {
+	return userId;
+}
 
+public void setUserId(Integer userId) {
+	this.userId = userId;
+}
 }

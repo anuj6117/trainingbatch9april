@@ -27,7 +27,7 @@ public class WalletController {
 	UserOrderRepository userOrderRepository;
 	@Autowired
 	UserRepository userRepository;
-	@RequestMapping(value="/walletapproval",method=RequestMethod.POST)
+	@RequestMapping(value="/depositapproval",method=RequestMethod.POST)
 	public String walletApproval(@RequestBody  WalletApprovalDTO walletapprovaldto)
 	{
 		UserOrder userorder=userOrderRepository.findByuserorderId(walletapprovaldto.getUserorderId());
@@ -35,7 +35,13 @@ public class WalletController {
 		{
 			return "Invalid UserOrder Id";
 		}
+				
 		  User user=userorder.getUser();
+		  
+		  if(userRepository.findByUserId(user.getUserId())==null)
+		  {
+			  return "Invalid User Id";
+		  }
 		 if(user.getStatus().equals(UserStatus.INACTIVE))
 		   {
 			  return "User is Not Authorized or Inactive";

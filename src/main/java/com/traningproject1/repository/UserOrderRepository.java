@@ -23,9 +23,5 @@ public interface UserOrderRepository extends JpaRepository<UserOrder,Integer> {
 	@Query(value=" select * from user_order where user_user_id =?1 and coin_name =?2",nativeQuery=true)
 	public List<UserOrder> walletHistory(Integer userId, String coinName);
 	
-	//public List<UserOrder> findAllByUserAndCoinName(User user,String coinName);
-	
-	//@Query("select od from UserOrder od where UPPER(od.userId)=UPPER(:userId) and coinName = ":"order by price DESC")
-	//public List<UserOrder> getHistory(@Param("userId") String type);
 }
 

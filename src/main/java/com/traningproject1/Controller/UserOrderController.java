@@ -37,9 +37,20 @@ public String createSellOrder(@RequestBody BuySellOrderDTO buysellorderdto)
 	{
 		return "Invalid user id";
 	}
-	
+	 String sellerprice=String.valueOf(buysellorderdto.getPrice());
+	  if(!(sellerprice.matches("^([0-9]){1,}$")))
+	 {
+	 	return "Price Can't be negative";
+	 }
+	  String coinquant=String.valueOf(buysellorderdto.getCoinQuantity());
+	  
+	  if(!(coinquant.matches("^([0-9]){1,}$")))
+	 {
+	 	return "Coin Quantity Can't be negative";
+	 }
   return userorderservice.createSellOrder(buysellorderdto);	
 }
+
 @RequestMapping(value="/createbuyorder",method=RequestMethod.POST)
 public String createBuyOrder(@RequestBody BuySellOrderDTO buysellorderdto)
 {
@@ -48,11 +59,26 @@ public String createBuyOrder(@RequestBody BuySellOrderDTO buysellorderdto)
 	{
 		return "Invalid user id";
 	} 
+	 String buyerprice=String.valueOf(buysellorderdto.getPrice());
+	  if(!(buyerprice.matches("^([0-9]){1,}$")))
+	 {
+	 	return "Price Can't be negative";
+	 }
+	  String coinquant=String.valueOf(buysellorderdto.getCoinQuantity());
+	  
+	  if(!(coinquant.matches("^([0-9]){1,}$")))
+	 {
+	 	return "Coin Quantity Can't be negative";
+	 }
 	Wallet wallet=walletRepository.findByUserAndCoinName(user, buysellorderdto.getCoinName());
 	if(wallet==null)
 	{
 		return "please add wallet first";
 	}
+	 if(!(buysellorderdto.getCoinName().matches("^([a-zA-Z0-9-_]{2,}$)"))){
+			return "Coin Name not valid";
+		}
+
   return userorderservice.createBuyOrder(buysellorderdto);	
 }
 
