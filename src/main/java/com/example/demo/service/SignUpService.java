@@ -293,7 +293,7 @@ public class SignUpService
 			{
 				return "User Name should not have trailing space.";
 			}
-			if(!(Pattern.compile("^[a-zA-Z0-9\\s\\\\._\\\\-]{3,25}$").matcher(userName).matches())) 
+			if(!(Pattern.compile("^[a-zA-Z0-9\\s\\\\_\\\\-]{3,25}$").matcher(userName).matches())) 
 			{
 				return "Special character is not allowed in username or length should not exceed 25 character.";
 			}

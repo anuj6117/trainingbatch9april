@@ -56,4 +56,10 @@ public class OrderController {
 	{
 		return orderService.sellOrder(orderDTO);		
 	}
+	
+	@RequestMapping(value = "/showallorder", method = RequestMethod.GET)
+	public Object showAllOrder()
+	{
+		return orderService.showAllOrder();
+	}
 }

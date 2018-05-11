@@ -37,7 +37,6 @@ public class WalletController {
 		Map<String, Object> result = null;
 		try 
 		{
-			System.out.println("111111111111111111111111");
 			result = walletService.addWallet(walletDTO);
 
 			if (result.get("isSuccess").equals(true))

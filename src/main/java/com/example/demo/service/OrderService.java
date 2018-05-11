@@ -96,7 +96,7 @@ public class OrderService {
 		boolean flag = false;
 		if(orderDTO.getUserId() == null)
 		{
-			return "User does not exist";
+			return "User does not exist.";
 		}
 		User user = userRepository.findByUserId(orderDTO.getUserId()); 
 		Double shadowBalance = null;
@@ -143,7 +143,7 @@ public class OrderService {
 					order.setOrderType(OrderType.BUYER);
 					order.setOrderStatus(OrderStatus.PENDING);
 					order.setGrossAmount(totalAmount);
-					order.setFee(coinManagementCoinName.getFee());
+					order.setFee((totalAmount)-(orderDTO.getCoinQuantity()*orderDTO.getPrice()));
 					order.setDateCreated(new Date());
 					order.setNetAmount(orderDTO.getCoinQuantity()*orderDTO.getPrice());
 					order.setUser(user);
@@ -168,12 +168,12 @@ public class OrderService {
 	
 		if(orderDTO.getUserId() == null)
 		{
-			return "User does not exist";
+			return "User does not exist.";
 		}
 		User user = userRepository.findByUserId(orderDTO.getUserId());
 		if(user==null)
 		{
-			return "null user";
+			return "null user.";
 		}
 		for(Wallet wallet1 : user.getWallets())
 		{
@@ -215,7 +215,12 @@ public class OrderService {
 		}
 		else
 		{
-			return "wallet not exist";
+			return "Wallet not exist";
 		}
+	}
+
+	public Object showAllOrder()
+	{
+		return orderRepository.findAll();
 	}
 }

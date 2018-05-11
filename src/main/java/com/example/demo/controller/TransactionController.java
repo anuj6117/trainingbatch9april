@@ -19,7 +19,7 @@ public class TransactionController
 	@RequestMapping(value = "/transaction", method = RequestMethod.GET)
 	public String approveTransaction()
 	{
-		return transactionService.transactionApproval();
+		return transactionService.gettransaction();
 	}
 	
 	@RequestMapping(value = "/getalltransaction", method = RequestMethod.GET)
