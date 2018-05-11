@@ -15,8 +15,10 @@ import org.springframework.web.bind.annotation.RestController;
 import com.traningproject1.demo.dto.ClassDTO;
 import com.traningproject1.demo.dto.DepositAmountDTO;
 import com.traningproject1.demo.dto.VerifyUserDTO;
+import com.traningproject1.domain.Role;
 import com.traningproject1.domain.User;
 import com.traningproject1.enumsclass.UserStatus;
+import com.traningproject1.repository.RoleRepository;
 import com.traningproject1.repository.UserRepository;
 import com.traningproject1.service.ServiceClass;
 import com.traningproject1.service.UserOTPService;
@@ -33,19 +35,20 @@ public class ControllerClass {
 	UserOTPService userOTPService;
 	@Autowired
 	UserRepository userRepository;
+	@Autowired
+	RoleRepository roleRepository;
 	
    Optional<User>user=null;
 	private static Pattern pswNamePtrn = 
 	        Pattern.compile("((?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&-<>~`+-]).{8,32})");
-	private static final String EMAIL_PATTERN = 
-			"^[A-Za-z0-9\\+]+(\\.[A-Za-z0-9]+)*@"
+	private static final String EMAIL_PATTERN = "^[A-Za-z0-9.\\+]+(\\.[-A-Za-z0-9_.]+)*@"
 			+ "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
 
 	     
 @RequestMapping(value="/signup",method=RequestMethod.POST)
 public String addUser(@RequestBody User user)
 {   
-	if(!(user.getUserName().matches("^([a-zA-Z0-9]{2,}\\s[a-zA-z0-9]{1,}'?-?[a-zA-Z0-9]{2,}\\s?([a-zA-Z0-9]{1,})?)"))){
+	if(!(user.getUserName().matches("^[A-Za-z0-9_-]{1,25}$"))){
 		return "User Name not valid";
 	}
 	
@@ -86,7 +89,7 @@ public String addUser(@RequestBody User user)
        
     
           String phone1=user.getPhoneNumber();
-          Pattern pattern=Pattern.compile("(0/91)?[6-9][0-9]{9}");
+          Pattern pattern=Pattern.compile("(0/91)?[0-9][0-9]{9}");
           Matcher matcher = pattern.matcher(phone1);
           if(!(matcher.matches()))
           {
@@ -218,7 +221,7 @@ public  String updateUserData(@RequestBody User user)
        
     
           String phone1=user.getPhoneNumber();
-          Pattern pattern=Pattern.compile("(0/91)?[6-9][0-9]{9}");
+          Pattern pattern=Pattern.compile("(0/91)?[0-9][0-9]{9}");
           Matcher matcher = pattern.matcher(phone1);
           if(!(matcher.matches()))
           {
@@ -249,6 +252,7 @@ public  String updateUserData(@RequestBody User user)
 public String assignRoleToUser(@RequestBody ClassDTO classDTO)
 {
 	User user=userRepository.findByuserId(classDTO.getUserId());
+	
 	if(user==null)
 	{
 		return "Invalid User id";
@@ -257,9 +261,20 @@ public String assignRoleToUser(@RequestBody ClassDTO classDTO)
 	{
 	 return "User is Not verified";
 	}
-  try
-  {
+	try {
+	List<Role>roles=user.getRole();
+	Iterator<Role>itrrole=roles.iterator();
+	while(itrrole.hasNext())
+	{
+		String roless=itrrole.next().getRoleType();
+		System.out.println(roless+"1111111111111111111111111111111111111111111111");
+		if(roless.equalsIgnoreCase(classDTO.getRoleType()))
+		{
+			return "Role Already assigned";
+		}
+	}
 	  serviceClass.assignRoleToUser(classDTO);
+	  //roleRepository.findByUserAndRole(classDTO.getRoleType());
   }
   catch(Exception e)
   {

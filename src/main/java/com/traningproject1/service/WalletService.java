@@ -125,14 +125,14 @@ public class WalletService
 	   {
 	      userorder.setStatus(UserOrderStatus.APPROVED);
       
-           transaction.setCoinType(CoinType.FIATE);
+           transaction.setCoinType(CoinType.FIAT);
       
          Set<Wallet> walletlist=user.getWallet();
          Iterator <Wallet> itr=walletlist.iterator();
          while(itr.hasNext())
           {
     	   Wallet wallet=itr.next();
-    	   if(wallet.getCoinType().equals(CoinType.FIATE))
+    	   if(wallet.getCoinType().equals(CoinType.FIAT))
     	   {
     		   wallet.setBalance(userorder.getCoinQuantity());
     		   wallet.setCoinName(userorder.getCoinName());
@@ -148,7 +148,7 @@ public class WalletService
 	  } 
 	  transaction.setStatus(walletapprovaldto.getTransactionStatus());
 	  transaction.setMessage(walletapprovaldto.getMessage());
-	  transaction.setCoinType(CoinType.FIATE);
+	  transaction.setCoinType(CoinType.FIAT);
       transaction.setUserOrderType(userorder.getOrderType());
       transaction.setGrossAmount(userorder.getGrossAmount());
       transaction.setNetAmount(userorder.getCoinQuantity());

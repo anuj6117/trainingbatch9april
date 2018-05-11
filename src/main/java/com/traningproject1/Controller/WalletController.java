@@ -58,7 +58,7 @@ public class WalletController {
 		{
 			return "Invalid UserId";
 		}
-		if(!(assignwalletdto.getCoinType().equals(CoinType.FIATE)))
+		if(!(assignwalletdto.getCoinType().equals(CoinType.FIAT)))
 		{
 		 return  walletService.assignWallet(assignwalletdto);
 		}

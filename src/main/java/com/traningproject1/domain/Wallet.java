@@ -27,8 +27,8 @@ private String coinName;
 //private WalletType walletType;
 
 
-private double balance;
-private double shadowBalance;
+private Double balance;
+private Double shadowBalance;
 
 @ManyToOne
 @JsonIgnore
@@ -36,8 +36,8 @@ private User user;
 
 public Wallet()
 {
- balance=0;
- shadowBalance=0;
+ balance=0.0;
+ shadowBalance=0.0;
 }
 public User getUser() {
 	return user;
@@ -59,21 +59,22 @@ public void setwId(Integer wId) {
 //	this.walletType = walletType;
 //}
 
-public double getBalance() {
-	return balance;
-}
-public void setBalance(double balance) {
-	this.balance = balance;
-}
-public double getShadowBalance() {
-	return shadowBalance;
-}
-public void setShadowBalance(double shadowBalance) {
-	this.shadowBalance = shadowBalance;
-}
+
 
 public CoinType getCoinType() {
 	return coinType;
+}
+public Double getBalance() {
+	return balance;
+}
+public void setBalance(Double balance) {
+	this.balance = balance;
+}
+public Double getShadowBalance() {
+	return shadowBalance;
+}
+public void setShadowBalance(Double shadowBalance) {
+	this.shadowBalance = shadowBalance;
 }
 public void setCoinType(CoinType coinType) {
 	this.coinType = coinType;

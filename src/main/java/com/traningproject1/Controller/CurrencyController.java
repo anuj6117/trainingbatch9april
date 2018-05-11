@@ -38,7 +38,12 @@ public String addCurrency(@RequestBody CurrencyClass currency)
 			return "CoinName Already Exist Or Coin Sysmbol Already exist";
 		}
 	   }
-		
+	   if(!(currency.getCoinName().matches("^([a-zA-Z]{2,}$)"))){
+			return "Coin Name not valid";
+		}
+	   if(!(currency.getSymbol().matches("^([a-zA-Z0-9[#?!@$%^&*-<>~`)(_+=}[{]':;/]]{2,}$)"))){
+			return "Symbol not valid";
+		}
 		if(currency.getCoinName().length()!=coin.length())
 		{
 			return "please remove the space from the coin name";
@@ -57,11 +62,11 @@ public String addCurrency(@RequestBody CurrencyClass currency)
      }
     else if(coin.equals(""))
     {
-    	return "put coin Name";
+    	return "Enter the valid coin Name";
     }
     else if(coin.equals(" "))
     {
-    	return "put Valid coin Name";
+    	return "enter valid coin Name";
     }
      if(currency.getPrice()<0)
     {

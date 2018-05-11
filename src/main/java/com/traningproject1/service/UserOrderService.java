@@ -53,7 +53,7 @@ public class UserOrderService {
     	       userorder.setPrice(buysellorderdto.getPrice());
     	       userorder.setGrossAmount(buysellorderdto.getCoinQuantity()*buysellorderdto.getPrice());
     	       userorder.setNetAmount(buysellorderdto.getCoinQuantity()*buysellorderdto.getPrice());
-    	       userorder.setFees(0);
+    	       userorder.setFees(0.0);
     	       userorder.setUser(user);
     	       userorder.setDateCreated(new Date());
     	       userorder.setOrderType(UserOrderType.SELLER);
@@ -70,7 +70,7 @@ public class UserOrderService {
     {
         
     	User user=userRepository.findByuserId(buysellorderdto.getUserId());
-    	Wallet wallet=walletRepository.findByUserAndCoinType(user,CoinType.FIATE);
+    	Wallet wallet=walletRepository.findByUserAndCoinType(user,CoinType.FIAT);
     	if(user.getUserId()==null)
     	{
     		return "Invalid User";
@@ -92,6 +92,7 @@ public class UserOrderService {
     		       
     		       if(sbalance>=calc)
     		       {
+    		    	   Double feecalc=calc-(buysellorderdto.getCoinQuantity()*buysellorderdto.getPrice());
     		        wallet.setShadowBalance(sbalance-calc);
     		        UserOrder userorder=new UserOrder();
     		        userorder.setCoinName(buysellorderdto.getCoinName());
@@ -101,7 +102,7 @@ public class UserOrderService {
     	    	    userorder.setStatus(UserOrderStatus.PENDING);
     	    	    userorder.setGrossAmount(calc);
     	    	    userorder.setNetAmount(buysellorderdto.getCoinQuantity()*buysellorderdto.getPrice());
-    	    	    userorder.setFees(currency.getFees());
+    	    	    userorder.setFees(feecalc);
     	    	    userorder.setUser(user);
     	            userorder.setDateCreated(new Date());
     	    	    userorderRepository.save(userorder); 

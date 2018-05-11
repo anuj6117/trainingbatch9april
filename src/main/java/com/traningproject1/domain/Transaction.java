@@ -21,9 +21,9 @@ public class Transaction {
 private Integer tranId;
 	@Enumerated(value=EnumType.STRING)
 private CoinType coinType;
-private double fees;
-private double exchangeRate;
-private double grossAmount;
+private Double fees;
+private Double exchangeRate;
+private Double grossAmount;
 
 private String coinName;
 private Integer buyerId;
@@ -32,9 +32,33 @@ private String message;
 @Enumerated(value=EnumType.STRING)
 private UserOrderType userOrderType;
 
+public Double getFees() {
+	return fees;
+}
+
+public void setFees(Double fees) {
+	this.fees = fees;
+}
+
+public Double getExchangeRate() {
+	return exchangeRate;
+}
+
+public void setExchangeRate(Double exchangeRate) {
+	this.exchangeRate = exchangeRate;
+}
+
+public void setGrossAmount(Double grossAmount) {
+	this.grossAmount = grossAmount;
+}
+
+public void setNetAmount(Double netAmount) {
+	this.netAmount = netAmount;
+}
+
 @Enumerated(EnumType.STRING)
 private TransactionStatus status;
-private double netAmount;
+private Double netAmount;
 
 private  Date dateCreated;
 
@@ -62,21 +86,9 @@ public void setCoinType(CoinType coinType) {
 
 
 
-public double getFees() {
-	return fees;
-}
 
-public void setFees(double fees) {
-	this.fees = fees;
-}
 
-public double getExchangeRate() {
-	return exchangeRate;
-}
 
-public void setExchangeRate(double exchangeRate) {
-	this.exchangeRate = exchangeRate;
-}
 
 public TransactionStatus getStatus() {
 	return status;

@@ -7,7 +7,7 @@ public class DepositAmountDTO {
 	
 		private Integer userId;
 		private CoinType coinType;
-		private Integer amount;
+		private Double amount;
 		private String coinName;
 		public String getCoinName() {
 			return coinName;
@@ -28,12 +28,13 @@ public class DepositAmountDTO {
 		public void setCoinType(CoinType coinType) {
 			this.coinType = coinType;
 		}
-		public Integer getAmount() {
+		public Double getAmount() {
 			return amount;
 		}
-		public void setAmount(Integer amount) {
+		public void setAmount(Double amount) {
 			this.amount = amount;
 		}
+		
 
 
 

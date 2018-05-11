@@ -2,8 +2,8 @@ package com.traningproject1.demo.dto;
 
 public class BuySellOrderDTO {
 private Integer userId;
-private Integer coinQuantity;
-private long price;
+private Double coinQuantity;
+private Double price;
 private String coinName;
 
 public Integer getUserId() {
@@ -12,16 +12,18 @@ public Integer getUserId() {
 public void setUserId(Integer userId) {
 	this.userId = userId;
 }
-public Integer getCoinQuantity() {
+
+public Double getCoinQuantity() {
 	return coinQuantity;
 }
-public void setCoinQuantity(Integer coinQuantity) {
+public void setCoinQuantity(Double coinQuantity) {
 	this.coinQuantity = coinQuantity;
 }
-public long getPrice() {
+
+public Double getPrice() {
 	return price;
 }
-public void setPrice(long price) {
+public void setPrice(Double price) {
 	this.price = price;
 }
 public String getCoinName() {

@@ -91,7 +91,7 @@ UserOTP userOTP;
 		Wallet wallet=new Wallet();
 		
 		
-		wallet.setCoinType(CoinType.FIATE);
+		wallet.setCoinType(CoinType.FIAT);
 		
 		wallet.setUser(user);
 		
@@ -103,7 +103,9 @@ UserOTP userOTP;
 		userRepository.save(user);
 		
 		 //smsService.sendSms(otp);
-		 mailService.sendMail(otp,user.getEmail());
+		
+	
+		 //mailService.sendMail(otp,user.getEmail());
 		 userOTP=new UserOTP(); 
 		 userOTP.setUserOTPId(user.getUserId());
 		 userOTP.setTokenOTP(otp);

@@ -22,6 +22,8 @@ public interface CurrencyRepository extends JpaRepository<CurrencyClass,Integer>
 
 	CurrencyClass findBySymbol(String sym);
 
+	CurrencyClass findOneByCoinName(String coinName);
+
 
 
 }

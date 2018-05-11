@@ -23,7 +23,7 @@ public class CurrencyClass {
 	@NotNull(message="symbol Should Not Accept null")
 	private String symbol;
 	@NotNull(message="symbol Should Not Accept null")
-	private Integer initialSupply;
+	private Double initialSupply;
 	@NotNull(message="symbol Should Not Accept null")
 	private Double  price;
 	
@@ -66,14 +66,15 @@ public class CurrencyClass {
 		this.symbol = symbol;
 	}
 	
-	public Integer getInitialSupply() {
+	
+	
+	
+	public Double getInitialSupply() {
 		return initialSupply;
 	}
-	public void setInitialSupply(Integer initialSupply) {
+	public void setInitialSupply(Double initialSupply) {
 		this.initialSupply = initialSupply;
 	}
-	
-	
 	public Double getPrice() {
 		return price;
 	}
