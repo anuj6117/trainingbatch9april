@@ -48,7 +48,7 @@ public class SignupController {
 		return result;
 	}
 	
-	@RequestMapping(value="/deleteuser",method=RequestMethod.DELETE)
+	@RequestMapping(value="/deleteuser",method=RequestMethod.GET)
 	  public String  deleteuser(@RequestParam("userId") Integer id ) {
 		return  userService.deleteUser(id);
 	}

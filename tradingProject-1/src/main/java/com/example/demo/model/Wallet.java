@@ -1,15 +1,9 @@
 package com.example.demo.model;
 
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 import com.example.demo.enums.CoinType;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 
 @Entity
@@ -17,7 +11,7 @@ import com.example.demo.enums.CoinType;
 public class Wallet {
 
 	@Id
-	@GeneratedValue
+	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Integer id;
 
 	@Enumerated(EnumType.STRING)
@@ -27,15 +21,27 @@ public class Wallet {
 	
 	private Double balance;
 	private Double shadowBalance;
-	
 
-	public Wallet() {
-		balance=0.0;
-		shadowBalance=0.0;
+	@ManyToOne
+	@JoinColumn(name = "userId")
+	@JsonIgnore
+	private User user;
+
+
+	public User getUser() {
+		return user;
 	}
-	
+
+	public void setUser(User user) {
+		this.user = user;
+	}
+
+public Wallet(){}
+
 	public Wallet(CoinType coinType) {
 		this.coinType=coinType;
+		balance=0.0;
+		shadowBalance=0.0;
 	}
 	
 	public Integer getId() {

@@ -22,6 +22,9 @@ public class Role {
 	@Column(name="roleType")
 	private String roleType;
 
+	@ManyToMany(mappedBy = "role")
+	private Set<User> user = new HashSet<>();	
+
 	
 	public Integer getRoleId() {
 		return roleId;
@@ -39,17 +42,9 @@ public class Role {
 		this.roleType = roleType;
 	}
 
-/*	public Set<User> getUser() {
-		return user;
-	}
 
-	public void setUser(Set<User> user) {
-		this.user = user;
-	}
-*/
+
 	
-//	@ManyToMany(mappedBy="id")
-//	private Set<User> user = new HashSet<>();	
 	
 	
 

@@ -4,16 +4,7 @@ package com.example.demo.model;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinTable;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToMany;
-import javax.persistence.Table;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 
 import com.example.demo.enums.UserStatus;
@@ -54,8 +45,27 @@ public class User {
 	joinColumns = {@JoinColumn(name = "user_id", referencedColumnName="id")},
 	inverseJoinColumns = { @JoinColumn(name = "role_id", referencedColumnName="roleId") })
 	private Set<Role> role = new HashSet<>();
-	
-	
+
+	public Set<Wallet> getWallets() {
+		return wallets;
+	}
+
+	public void setWallets(Set<Wallet> wallets) {
+		this.wallets = wallets;
+	}
+
+	@OneToMany(fetch=FetchType.EAGER, cascade = CascadeType.ALL, mappedBy = "user")
+	private Set<Wallet> wallets=new HashSet<>();
+
+
+	public Set<Role> getRole() {
+		return role;
+	}
+
+	public void setRole(Set<Role> role) {
+		this.role = role;
+	}
+
 	public UserStatus getStatus() {
 		return status;
 	}

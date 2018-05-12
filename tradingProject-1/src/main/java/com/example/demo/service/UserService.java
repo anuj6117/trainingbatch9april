@@ -1,15 +1,19 @@
 package com.example.demo.service;
 
 
+import com.example.demo.enums.CoinType;
+import com.example.demo.model.Wallet;
+import com.example.demo.repository.RoleRepository;
+import com.example.demo.utilities.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.*;
+import java.util.regex.Pattern;
 
 import com.example.demo.enums.UserStatus;
+import com.example.demo.model.Role;
 import com.example.demo.model.User;
 import com.example.demo.repository.UserRepository;
-import com.example.demo.utilities.EmailValidator;
-import com.example.demo.utilities.NameValidator;
 import com.example.demo.utilities.EmailValidator;
 //import com.example.demo.utilities.PasswordValidator;
 //import com.example.demo.utilities.PhoneValidator;
@@ -20,7 +24,9 @@ public class UserService {
 
 	@Autowired
 	private UserRepository userRepository;
-	
+
+	@Autowired
+	private RoleRepository roleRepository;
 //	@Autowired
 //	private EmailValidator emailValidator;
 	
@@ -33,7 +39,7 @@ public class UserService {
 	
 	public String  insertUser(User user) {
 		
-	/*	String userName=user.getUserName();
+		String userName=user.getUserName();
 		
 		if(userName.length()==0) {
 			return "user name can not be null";
@@ -48,9 +54,12 @@ public class UserService {
 		if(!new NameValidator().checkNameValidation(userName)) {
 			return "maximum characters allowed for this field is 25";
 		}
-		
-		if(userRepository.findByEmail(user.getEmail())==null) {
-			if (!emailValidator.checkEmail(user.getEmail())) {
+
+		if(user.getEmail().length()==0){
+			return "password field can not be empty";
+		}
+		if(userRepository.findOneByEmail(user.getEmail())==null) {
+			if (!new EmailValidator().checkEmail(user.getEmail())) {
 				return "Please enetr a valid email address";
 			}
 		}else {
@@ -58,40 +67,66 @@ public class UserService {
 		}
 
 		String phoneNumber=user.getPhoneNumber();
+		if(phoneNumber.length()==0){
+			return "please enter any valid phonenumer";
+		}
+		System.out.println("here i am ======================================================");
+
 		if(userRepository.findByPhoneNumber(phoneNumber)==null) {
-			if(!phoneValidator.checkPhoneNumber(phoneNumber)) {
+			if(!new PhoneValidator().checkPhoneNumber(phoneNumber)) {
 				return "Invalid phone number";
 			}
 		}else {
 			return "Oops! this number is already registered";
 		}
 
+		System.out.println("after phone number==============================================");
+
 		String country=user.getCountry();
-		if(country.trim().length()<=2) {
-			return "Country name must have atleast 2 characters";
+		if(country.length()==0){
+			return "country can not be blank";
 		}
-		
+
+		if(!(Pattern.compile("^[A-Za-z]{2,25}$").matcher(user.getCountry()).matches()))
+		{
+		return "country name is not valid";
+		}
+
+
 		String password=user.getPassword();
-		if(!passwordValidator.isValid(password)) {
+		if(password.length()==0){
+			return "password field can not be empty";
+		}
+		if(! new PasswordValidator().isValid(password)) {
 			return "Please provide valid password";
 		}
 
-*/		user.setStatus(UserStatus.INACTIVE);
+		user.setStatus(UserStatus.INACTIVE);
 		user.setDate(new Date().toString());
-//		Wallet wallet=new Wallet(CoinType.FIAT);
-//		wallet.setCoinName("INR");
-//		wallet.setUser(user);
-//		wallet.setBalance(0.0);
-//		wallet.setShadowBalance(0.0);
-		
-		
-//		Role role =null;
-//		if((role = roleRepository.findOneByRoleType("User"))==null) {
-//			role = new Role();
-//			role.setRoleType("User");
-//		}
-		
-	userRepository.save(user);	
+
+		//adding roles to user
+		Role role=roleRepository.findOneByRoleType("User");
+		if(role==null){
+			{
+				role=new Role();
+				role.setRoleType("User");
+			}
+		}else{
+			user.getRole().add(role);
+		}
+
+
+		//adding wallet to user
+
+		Wallet wallet =new Wallet(CoinType.FIAT);
+		wallet.setCoinName("INR");
+		wallet.setUser(user);
+		user.getWallets().add(wallet);
+
+
+
+		System.out.println("before saving========================================================");
+	userRepository.save(user);
 	return "successfully inserted";
  }
 	
@@ -130,7 +165,7 @@ public class UserService {
 	       if(!new NameValidator().checkNameValidation(userName)) {
 				return "maximum characters allowed for this field is 25";
 			}
-			if((userRepository.findByEmail(updateduser.getEmail())) != null) {
+			if((userRepository.findOneByEmail(updateduser.getEmail())) != null) {
 				return "Oops! this Emailid is already registered";
 			}
 			if(!new EmailValidator().checkEmail(updateduser.getEmail())) {
@@ -140,7 +175,7 @@ public class UserService {
 			updateduser.setDate(user.getDate());
 			userRepository.save(updateduser);
 		}else {
-			
+			return "id does not exist to update";
 		}
 		return "succesfully updated";
 		
