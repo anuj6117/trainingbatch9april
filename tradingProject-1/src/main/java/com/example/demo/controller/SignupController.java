@@ -4,6 +4,7 @@ package com.example.demo.controller;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.example.demo.combinedfields.UserRole;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -53,5 +54,8 @@ public class SignupController {
 		return  userService.deleteUser(id);
 	}
 	
-	
+	@RequestMapping(value="/assignrole",method = RequestMethod.POST)
+	public String assignRole(@RequestBody UserRole userRole){
+	return	userService.assignRole(userRole);
+	}
 }

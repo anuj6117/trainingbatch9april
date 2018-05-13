@@ -1,6 +1,7 @@
 package com.example.demo.service;
 
 
+import com.example.demo.combinedfields.UserRole;
 import com.example.demo.enums.CoinType;
 import com.example.demo.model.Wallet;
 import com.example.demo.repository.RoleRepository;
@@ -27,6 +28,9 @@ public class UserService {
 
 	@Autowired
 	private RoleRepository roleRepository;
+
+	@Autowired
+	RoleService roleService;
 //	@Autowired
 //	private EmailValidator emailValidator;
 	
@@ -189,5 +193,40 @@ public class UserService {
 		}else {
 			return "Record does not exist";
 		}
+	}
+
+	public String assignRole(UserRole userRole){
+		User user=userRepository.findOneById(userRole.getUserId());
+		if(user!=null){
+			/*Set<Role> roles=user.getRole();
+			for(Role role: roles){
+				if(!role.getRoleType().equals(userRole.getRoleType())){
+					Role roleFromRoleTable=roleRepository.findOneByRoleType(userRole.getRoleType());
+					if(roleFromRoleTable==null){
+					Role rolerepnse=roleService.createRole(userRole.getRoleType());
+
+					}
+					else{
+					roles.add(roleFromRoleTable);
+					return "role assigned successfully";
+				}else{
+					return "role already exists";
+				}*/
+			Role role=roleRepository.findOneByRoleType(userRole.getRoleType());
+			if(role==null){
+				role=roleService.createRole(userRole.getRoleType());
+			}
+Set<Role> roleassigned=user.getRole();
+			for(Role roles:roleassigned){
+				if(!roles.getRoleType().equals(role.getRoleType())){
+				}else{
+					return "role already assigned";
+				}
+			}
+			roleassigned.add(role);
+			userRepository.save(user);
+			return "role assigned successfully";
+		}
+			return "user does not exist for  userid";
 	}
 }
