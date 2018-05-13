@@ -36,7 +36,10 @@ public class Wallet {
 		this.user = user;
 	}
 
-public Wallet(){}
+public Wallet(){
+	balance=0.0;
+	shadowBalance=0.0;
+}
 
 	public Wallet(CoinType coinType) {
 		this.coinType=coinType;
