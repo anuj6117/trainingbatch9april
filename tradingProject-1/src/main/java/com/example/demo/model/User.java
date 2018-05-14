@@ -54,6 +54,9 @@ public class User {
 		this.wallets = wallets;
 	}
 
+/* we can also use @OnetoMany
+	@JoinColumn(name="foreignkey name specifed in wallet table")
+	*/
 	@OneToMany(fetch=FetchType.EAGER, cascade = CascadeType.ALL, mappedBy = "user")
 	private Set<Wallet> wallets=new HashSet<>();
 

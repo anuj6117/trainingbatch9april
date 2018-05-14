@@ -31,30 +31,33 @@ public class UserService {
 
 	@Autowired
 	RoleService roleService;
+
+	@Autowired
+	SendMailNSms sendMailNSms;
 //	@Autowired
 //	private EmailValidator emailValidator;
-	
+
 //	@Autowired
 //	private PhoneValidator phoneValidator;
-	
+
 //	@Autowired
 //	private PasswordValidator passwordValidator;
-	
-	
+
+
 	public String  insertUser(User user) {
-		
+
 		String userName=user.getUserName();
-		
+
 		if(userName.length()==0) {
 			return "user name can not be null";
 		}
-		
+
 		if(userName.startsWith(" ")){
 			return "user name should not have leading space";
 		}
 		if(userName.endsWith(" ")) {
 			return "user name should not have trailing space";
-		} 
+		}
 		if(!new NameValidator().checkNameValidation(userName)) {
 			return "maximum characters allowed for this field is 25";
 		}
@@ -93,7 +96,7 @@ public class UserService {
 
 		if(!(Pattern.compile("^[A-Za-z]{2,25}$").matcher(user.getCountry()).matches()))
 		{
-		return "country name is not valid";
+			return "country name is not valid";
 		}
 
 
@@ -130,43 +133,55 @@ public class UserService {
 
 
 		System.out.println("before saving========================================================");
-	userRepository.save(user);
-	return "successfully inserted";
- }
-	
-	
-	public List<User> getallUsers() {
-	List<User> users=	userRepository.findAll();
-	return users;
+		if((userRepository.save(user)!=null)){
+
+			Integer otp=OtpGenearator.generateOtp();
+			try {
+				sendMailNSms.sendSms(user,otp);
+				sendMailNSms.sendMail(user,otp);
+				return "user created suucessfully please verify it by using otp";
+			}catch(Exception e){
+				System.out.println(e.getMessage());
+			}
+		}else{
+			return "user not created";
+		}
+		return "successfully inserted";
 	}
-	
-	
+
+
+	public List<User> getallUsers() {
+		List<User> users=	userRepository.findAll();
+		return users;
+	}
+
+
 
 
 	public User getSingleUser(Integer id) {
 		return userRepository.findOneById(id);
 	}
-	
-	
+
+
 	//updating a user
 	public String updateUser(User updateduser) {
 //apply basic validation that have applied during insertion 		
 		if((userRepository.findOneById(updateduser.getId()))!=null){
 			User user=userRepository.findOneById(updateduser.getId());
-			
+
 			String userName=updateduser.getUserName();
 			System.out.print("jsjfksj ----------------------------------------jdsfjskjfkldjflldsj=---------sdfsdfsd");
 			System.out.println(updateduser.getEmail());
-	       if(userName.length()==0) {
-	    	   return "name can not be blank";
-	       }
-	       if(userName.startsWith(" ")) {
-	    	   return "name can not have leading space";
-	       }
-	       if(userName.endsWith(" ")) {
-	    	   return "name can not have trailing space";
-	       }
-	       if(!new NameValidator().checkNameValidation(userName)) {
+			if(userName.length()==0) {
+				return "name can not be blank";
+			}
+			if(userName.startsWith(" ")) {
+				return "name can not have leading space";
+			}
+			if(userName.endsWith(" ")) {
+				return "name can not have trailing space";
+			}
+			if(!new NameValidator().checkNameValidation(userName)) {
 				return "maximum characters allowed for this field is 25";
 			}
 			if((userRepository.findOneByEmail(updateduser.getEmail())) != null) {
@@ -182,10 +197,10 @@ public class UserService {
 			return "id does not exist to update";
 		}
 		return "succesfully updated";
-		
+
 	}
-	
-	
+
+
 	public String deleteUser(Integer id) {
 		if(userRepository.findOneById(id)!=null) {
 			userRepository.deleteById(id);
@@ -216,7 +231,7 @@ public class UserService {
 			if(role==null){
 				role=roleService.createRole(userRole.getRoleType());
 			}
-Set<Role> roleassigned=user.getRole();
+			Set<Role> roleassigned=user.getRole();
 			for(Role roles:roleassigned){
 				if(!roles.getRoleType().equals(role.getRoleType())){
 				}else{
@@ -227,6 +242,6 @@ Set<Role> roleassigned=user.getRole();
 			userRepository.save(user);
 			return "role assigned successfully";
 		}
-			return "user does not exist for  userid";
+		return "user does not exist for  userid";
 	}
 }
