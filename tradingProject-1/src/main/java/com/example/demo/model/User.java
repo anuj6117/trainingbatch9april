@@ -46,6 +46,13 @@ public class User {
 	inverseJoinColumns = { @JoinColumn(name = "role_id", referencedColumnName="roleId") })
 	private Set<Role> role = new HashSet<>();
 
+/* we can also use @OnetoMany
+	@JoinColumn(name="foreignkey name specifed in wallet table")
+	*/
+	@OneToMany(fetch=FetchType.EAGER, cascade = CascadeType.ALL, mappedBy = "user")
+	private Set<Wallet> wallets=new HashSet<>();
+
+
 	public Set<Wallet> getWallets() {
 		return wallets;
 	}
@@ -54,11 +61,6 @@ public class User {
 		this.wallets = wallets;
 	}
 
-/* we can also use @OnetoMany
-	@JoinColumn(name="foreignkey name specifed in wallet table")
-	*/
-	@OneToMany(fetch=FetchType.EAGER, cascade = CascadeType.ALL, mappedBy = "user")
-	private Set<Wallet> wallets=new HashSet<>();
 
 
 	public Set<Role> getRole() {

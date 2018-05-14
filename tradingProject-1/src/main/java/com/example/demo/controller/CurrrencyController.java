@@ -23,12 +23,12 @@ public class CurrrencyController {
         return currencyService.getAllCurrency();
     }
 
-    @RequestMapping(value="updatecurrency",method = RequestMethod.POST)
+    @RequestMapping(value="/updatecurrency",method = RequestMethod.POST)
     public String updateCurrency(@RequestBody Currency updatedCurrency){
         return  currencyService.updateCurrency(updatedCurrency);
     }
 
-    @RequestMapping(value="deletecurrency" ,method = RequestMethod.GET)
+    @RequestMapping(value="/deletecurrency" ,method = RequestMethod.GET)
     public String deleteCurrency(@RequestParam("coinId") Integer coinId){
         return  currencyService.deleteCurrency(coinId);
     }

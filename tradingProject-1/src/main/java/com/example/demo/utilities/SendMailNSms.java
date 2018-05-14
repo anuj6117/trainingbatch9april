@@ -48,6 +48,7 @@ public class SendMailNSms {
         MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(message);
 
         try{
+            mimeMessageHelper.setFrom("yash.arora@oodlestechnologies.com");
             mimeMessageHelper.setTo(user.getEmail());
             mimeMessageHelper.setText("Your otp is "+otp);
             mimeMessageHelper.setSubject("otp for verification");
