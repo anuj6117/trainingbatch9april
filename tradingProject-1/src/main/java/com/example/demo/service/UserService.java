@@ -21,9 +21,6 @@ import java.util.regex.Pattern;
 import com.example.demo.enums.UserStatus;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.utilities.EmailValidator;
-//import com.example.demo.utilities.PasswordValidator;
-//import com.example.demo.utilities.PhoneValidator;
-//import com.example.demo.utilities.NameValidator;
 
 @Service
 public class UserService {
@@ -60,8 +57,11 @@ public class UserService {
 		if (userName.endsWith(" ")) {
 			return "user name should not have trailing space";
 		}
+		if(userName.length()>25){
+			return "name should not exceeed 25 characters";
+		}
 		if (!new NameValidator().checkNameValidation(userName)) {
-			return "maximum characters allowed for this field is 25";
+			return "Name must be valid";
 		}
 
 		if (user.getEmail().length() == 0) {

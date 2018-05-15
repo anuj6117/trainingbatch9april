@@ -41,8 +41,8 @@ public class WalletService {
         }
     }
 
-public List<Wallet> getAllWallets(){
-       return walletRepository.findAll();
-}
+    public List<Wallet> getAllWallets(){
+        return walletRepository.findAll();
+    }
 
 }

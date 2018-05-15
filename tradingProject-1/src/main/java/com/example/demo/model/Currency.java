@@ -9,19 +9,13 @@ import javax.persistence.criteria.CriteriaBuilder;
 @Table(name="Currency")
 public class Currency {
 
-
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer coinId;
-
     private String coinName;
-
     private String symbol;
-
     private Double fees;
-
     private Double initialSupply;
-
     private Double price;
 
     @Enumerated(EnumType.STRING)
@@ -103,7 +97,4 @@ public class Currency {
     public void setCoinName(String coinName) {
         this.coinName = coinName;
     }
-
-
-
 }

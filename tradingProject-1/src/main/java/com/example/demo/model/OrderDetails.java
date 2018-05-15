@@ -27,6 +27,7 @@ public class OrderDetails {
     private Date orderCreatedOn;
     //    private Integer userId;
     private String coinName;
+    private Integer coinQuantity;
 
     @ManyToOne
     @JoinColumn(name = "userid")
@@ -65,14 +66,6 @@ public class OrderDetails {
     public void setOrderCreatedOn(Date orderCreatedOn) {
         this.orderCreatedOn = orderCreatedOn;
     }
-/*
-    public Integer getUserId() {
-        return userId;
-    }
-
-    public void setUserId(Integer userId) {
-        this.userId = userId;
-    }*/
 
     public String getCoinName() {
         return coinName;
@@ -89,8 +82,6 @@ public class OrderDetails {
     public void setOrderStatus(OrderStatus orderStatus) {
         this.orderStatus = orderStatus;
     }
-
-
 
     public OrderType getOrderType() {
         return orderType;
@@ -115,4 +106,13 @@ public class OrderDetails {
     public void setUser(User user) {
         this.user = user;
     }
+
+    public Integer getCoinQuantity() {
+        return coinQuantity;
+    }
+
+    public void setCoinQuantity(Integer coinQuantity) {
+        this.coinQuantity = coinQuantity;
+    }
+
 }

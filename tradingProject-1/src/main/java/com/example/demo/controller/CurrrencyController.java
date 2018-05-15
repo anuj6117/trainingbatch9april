@@ -15,7 +15,7 @@ public class CurrrencyController {
 
     @RequestMapping(value = "/addcurrency",method = RequestMethod.POST)
     public String addCurrency(@RequestBody  Currency currency){
-            return  currencyService.addCurrency(currency);
+        return  currencyService.addCurrency(currency);
     }
 
     @RequestMapping(value="/getallcurrency")
