@@ -4,6 +4,7 @@ package com.example.demo.service;
 import com.example.demo.combinedfields.UserRole;
 import com.example.demo.dto.ApprovalRequest;
 import com.example.demo.dto.DepositAmountDto;
+import com.example.demo.dto.WithDrawAmount;
 import com.example.demo.enums.CoinType;
 import com.example.demo.enums.OrderStatus;
 import com.example.demo.enums.OrderType;
@@ -280,13 +281,13 @@ public class UserService {
 	}
 
 
-	//deposit amount
+	//deposit amount to wallet having currency fiat
 	public String depositAmount(DepositAmountDto depositAmountDto) {
 		User user=userRepository.findOneById(depositAmountDto.getUserId());
 		int counter=0;
 		if(user!=null) {
 			if(user.getStatus().equals(UserStatus.ACTIVE)){
-				if (depositAmountDto.getWalletType().equals(CoinType.FIAT)) {
+				if (depositAmountDto.getWalletType().equals(CoinType.FIAT) && depositAmountDto.getAmount()!=null) {
 					Set<Wallet> wallets=user.getWallets();
 					for(Wallet wallet:wallets){
 						if(wallet.getCoinType().equals(CoinType.FIAT)){
@@ -294,16 +295,13 @@ public class UserService {
 							OrderDetails orderDetails=new OrderDetails();
 							orderDetails.setOrderType(OrderType.DEPOSIT);
 							orderDetails.setPrice(depositAmountDto.getAmount());
-//							orderDetails.setAmount(depositAmountDto.getAmount());
 							orderDetails.setOrderStatus(OrderStatus.PENDING);
 							orderDetails.setCoinName("INR");
 							orderDetails.setFee(0.0);
 							orderDetails.setOrderCreatedOn(new Date());
-//                        orderDetails.setUserId(user.getId());
 							user.getOrderDetailsList().add(orderDetails);
 							orderDetails.setUser(user);
 							orderRepository.save(orderDetails);
-//                        userRepository.save(user);
 						}
 					}
 					if(counter==0){
@@ -323,6 +321,43 @@ public class UserService {
 
 
 
+	//withdraw amount from user wallet having wallet type fiat
+	public String withDrawAmount(WithDrawAmount withDrawAmount){
+		User user=userRepository.findOneById(withDrawAmount.getUserId());
+		int counter=0;
+		if(user!=null) {
+			if (user.getStatus().equals(UserStatus.ACTIVE)) {
+				if (withDrawAmount.getWalletType().equals(CoinType.FIAT) && withDrawAmount.getAmount() != null) {
+					Set<Wallet> existingWallet=	user.getWallets();
+					for(Wallet wallet:existingWallet){
+						if(wallet.getCoinType().equals(CoinType.FIAT)){
+							counter=1;
+							OrderDetails orderDetails=new OrderDetails();
+							orderDetails.setOrderStatus(OrderStatus.PENDING);
+							orderDetails.setAmount(withDrawAmount.getAmount());
+							orderDetails.setFee(0.0);
+							orderDetails.setOrderType(OrderType.WITHDRAW);
+							orderDetails.setOrderCreatedOn(new Date());
+							orderDetails.setCoinName("INR");
+							user.getOrderDetailsList().add(orderDetails);
+							orderDetails.setUser(user);
+							orderRepository.save(orderDetails);
+						}else{
+							return "can not perform withdraw on cryptocurrency .Withdraw should be on Fiat";
+						}
+					}
+				}
+			} else {
+				return "user does not exist with this id";
+			}
+		}else{
+			return  "user is inactive";
+		}
+		return "withdraw request submitted";
+	}
+
+
+
 	public String approveRequest(ApprovalRequest approvalRequest){
 		OrderDetails orderDetails=orderRepository.findOneByOrderId(approvalRequest.getOrderId());
 		int counter=0;
@@ -334,12 +369,19 @@ public class UserService {
 					for (Wallet wallet : exisitngWallets) {
 						if (wallet.getCoinType().equals(CoinType.FIAT) && wallet.getCoinName().equalsIgnoreCase("inr")) {
 							counter = 1;
-							if(orderDetails.getOrderType().equals(OrderType.DEPOSIT)) {
+							if (orderDetails.getOrderType().equals(OrderType.DEPOSIT)) {
 								wallet.setShadowBalance(wallet.getBalance() + orderDetails.getAmount());
 								wallet.setBalance(wallet.getShadowBalance());
-								orderDetails.setOrderStatus(OrderStatus.APPROVED);
-								userRepository.save(user);
 							}
+							if (orderDetails.getOrderType().equals(OrderType.WITHDRAW)) {
+								if (wallet.getBalance() < orderDetails.getAmount()) {
+									return "transaction can not be done due to low amount in your wallet";
+								}
+								wallet.setShadowBalance(wallet.getBalance() - orderDetails.getAmount());
+								wallet.setBalance(wallet.getShadowBalance());
+							}
+							orderDetails.setOrderStatus(OrderStatus.APPROVED);
+							userRepository.save(user);
 						}
 					}
 					if (counter == 0) {

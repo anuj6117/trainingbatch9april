@@ -7,6 +7,7 @@ import java.util.List;
 import com.example.demo.combinedfields.UserRole;
 import com.example.demo.dto.ApprovalRequest;
 import com.example.demo.dto.DepositAmountDto;
+import com.example.demo.dto.WithDrawAmount;
 import com.example.demo.model.UserOtp;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -78,6 +79,11 @@ public class SignupController {
 	@RequestMapping(value="/depositamount",method = RequestMethod.POST)
 	public String depositAmount(@RequestBody  DepositAmountDto depositAmountDto ){
 		return userService.depositAmount(depositAmountDto);
+	}
+
+	@RequestMapping(value="/withdrawamount",method = RequestMethod.POST)
+	public String withDrawAmount(@RequestBody WithDrawAmount withDraw){
+		return userService.withDrawAmount(withDraw);
 	}
 
 	@RequestMapping(value="/approveRequest",method=RequestMethod.POST)
