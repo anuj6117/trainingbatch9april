@@ -1,7 +1,9 @@
 package com.example.demo.model;
 
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.persistence.*;
@@ -19,39 +21,50 @@ public class User {
 
 	@NotNull
 	private String userName;
-	
+
 	@NotNull
 	private String email;
-	
+
 	@NotNull
 	private String password;
-	
+
 	@NotNull
 	private String country;
-	
+
 	@NotNull
 	private String phoneNumber;
-	
+
 	private UserStatus status;
-	
+
 	private String date;
 
-	
+
 	@ManyToMany(fetch = FetchType.EAGER,cascade = {
-					CascadeType.PERSIST,
-					CascadeType.MERGE
-			})
+			CascadeType.PERSIST,
+			CascadeType.MERGE
+	})
 	@JoinTable(name="user_role",
-	joinColumns = {@JoinColumn(name = "user_id", referencedColumnName="id")},
-	inverseJoinColumns = { @JoinColumn(name = "role_id", referencedColumnName="roleId") })
+			joinColumns = {@JoinColumn(name = "user_id", referencedColumnName="id")},
+			inverseJoinColumns = { @JoinColumn(name = "role_id", referencedColumnName="roleId") })
 	private Set<Role> role = new HashSet<>();
 
-/* we can also use @OnetoMany
-	@JoinColumn(name="foreignkey name specifed in wallet table")
-	*/
+	/* we can also use @OnetoMany
+        @JoinColumn(name="foreignkey name specifed in wallet table")
+        */
 	@OneToMany(fetch=FetchType.EAGER, cascade = CascadeType.ALL, mappedBy = "user")
 	private Set<Wallet> wallets=new HashSet<>();
 
+	@OneToMany(fetch=FetchType.EAGER, cascade = CascadeType.ALL, mappedBy = "user")
+	private List<OrderDetails> orderDetailsList=new ArrayList<OrderDetails>();
+
+
+	public List<OrderDetails> getOrderDetailsList() {
+		return orderDetailsList;
+	}
+
+	public void setOrderDetailsList(List<OrderDetails> orderDetailsList) {
+		this.orderDetailsList = orderDetailsList;
+	}
 
 	public Set<Wallet> getWallets() {
 		return wallets;
@@ -60,8 +73,6 @@ public class User {
 	public void setWallets(Set<Wallet> wallets) {
 		this.wallets = wallets;
 	}
-
-
 
 	public Set<Role> getRole() {
 		return role;
@@ -79,7 +90,7 @@ public class User {
 		this.status = status;
 	}
 
-	
+
 	public String getDate() {
 		return date;
 	}

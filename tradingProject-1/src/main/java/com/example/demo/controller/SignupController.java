@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.example.demo.combinedfields.UserRole;
+import com.example.demo.dto.ApprovalRequest;
+import com.example.demo.dto.DepositAmountDto;
 import com.example.demo.model.UserOtp;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -34,15 +36,22 @@ public class SignupController {
 
 	@RequestMapping(value="/getallusers")
 	public List<User> getusers() {
-		List<User> users=userService.getallUsers();
-		return users;
+		List<User> user=null;
+		try {
+			user= userService.getallUsers();
+		}catch(Exception e){
+			System.out.println(e.getMessage());
+		}
+		return user;
 	}
 
 
 	@RequestMapping(value="/getbyuserid")
 	public User getUser(@RequestParam("id") Integer id) {
-		return userService.getSingleUser(id);
-
+//		 if(userService.getSingleUser(id)!=null)return
+		User user=userService.getSingleUser(id);
+		if(user!=null)return user;
+		else return null;
 	}
 
 	@RequestMapping(value="/updateuser",method=RequestMethod.POST)
@@ -65,4 +74,15 @@ public class SignupController {
 	public String verifyUser(@RequestBody UserOtp userotp){
 		return userService.verifyUser(userotp);
 	}
+
+	@RequestMapping(value="/depositamount",method = RequestMethod.POST)
+	public String depositAmount(@RequestBody  DepositAmountDto depositAmountDto ){
+		return userService.depositAmount(depositAmountDto);
+	}
+
+	@RequestMapping(value="/approveRequest",method=RequestMethod.POST)
+	public String approveRequest(@RequestBody ApprovalRequest approvalRequest){
+		return userService.approveRequest(approvalRequest);
+	}
+
 }

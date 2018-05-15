@@ -1,5 +1,7 @@
 package com.example.demo.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import java.util.HashSet;
 import java.util.Set;
 
@@ -21,11 +23,11 @@ public class Role {
 
 	@Column(name="roleType")
 	private String roleType;
-
+	@JsonIgnore
 	@ManyToMany(mappedBy = "role")
-	private Set<User> user = new HashSet<>();	
+	private Set<User> user = new HashSet<>();
 
-	
+
 	public Integer getRoleId() {
 		return roleId;
 	}
@@ -44,8 +46,8 @@ public class Role {
 
 
 
-	
-	
-	
+
+
+
 
 }

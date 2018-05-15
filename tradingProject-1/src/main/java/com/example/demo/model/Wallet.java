@@ -18,7 +18,7 @@ public class Wallet {
 	private CoinType coinType;
 
 	private String coinName;
-	
+
 	private Double balance;
 	private Double shadowBalance;
 
@@ -36,17 +36,17 @@ public class Wallet {
 		this.user = user;
 	}
 
-public Wallet(){
-	balance=0.0;
-	shadowBalance=0.0;
-}
+	public Wallet(){
+		balance=0.0;
+		shadowBalance=0.0;
+	}
 
 	public Wallet(CoinType coinType) {
 		this.coinType=coinType;
 		balance=0.0;
 		shadowBalance=0.0;
 	}
-	
+
 	public Integer getId() {
 		return id;
 	}
@@ -77,5 +77,5 @@ public Wallet(){
 	public void setBalance(Double balance) {
 		this.balance = balance;
 	}
-	
+
 }

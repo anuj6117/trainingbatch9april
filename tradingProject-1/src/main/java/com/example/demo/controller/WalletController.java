@@ -18,11 +18,11 @@ public class WalletController {
 
     @RequestMapping(value = "/addwallet",method = RequestMethod.POST)
     public String addWallet(@RequestBody UserWalletDto userWalletDto){
-           return walletService.addWallet(userWalletDto);
-        }
+        return walletService.addWallet(userWalletDto);
+    }
 
     @RequestMapping(value="/getallwallets")
     public List<Wallet> getAllWallets(){
-       return walletService.getAllWallets();
+        return walletService.getAllWallets();
     }
 }

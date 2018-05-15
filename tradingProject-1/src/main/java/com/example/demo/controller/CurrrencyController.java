@@ -32,4 +32,11 @@ public class CurrrencyController {
     public String deleteCurrency(@RequestParam("coinId") Integer coinId){
         return  currencyService.deleteCurrency(coinId);
     }
+
+    @RequestMapping(value="/getcurrencybyid")
+    public Currency getCurrencyById(@RequestParam("coinId") Integer coinId){
+        Currency currency= currencyService.getCurrencyById(coinId);
+        if(currency !=null) return currency;
+        else return new Currency();
+    }
 }

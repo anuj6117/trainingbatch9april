@@ -2,9 +2,13 @@ package com.example.demo.service;
 
 
 import com.example.demo.combinedfields.UserRole;
+import com.example.demo.dto.ApprovalRequest;
+import com.example.demo.dto.DepositAmountDto;
 import com.example.demo.enums.CoinType;
-import com.example.demo.model.UserOtp;
-import com.example.demo.model.Wallet;
+import com.example.demo.enums.OrderStatus;
+import com.example.demo.enums.OrderType;
+import com.example.demo.model.*;
+import com.example.demo.repository.OrderRepository;
 import com.example.demo.repository.RoleRepository;
 import com.example.demo.repository.UserOtpRepository;
 import com.example.demo.utilities.*;
@@ -14,8 +18,6 @@ import java.util.*;
 import java.util.regex.Pattern;
 
 import com.example.demo.enums.UserStatus;
-import com.example.demo.model.Role;
-import com.example.demo.model.User;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.utilities.EmailValidator;
 //import com.example.demo.utilities.PasswordValidator;
@@ -39,6 +41,9 @@ public class UserService {
 
 	@Autowired
 	UserOtpRepository userOtpRepository;
+
+	@Autowired
+	OrderRepository orderRepository;
 
 	public String insertUser(User user) {
 
@@ -151,15 +156,17 @@ public class UserService {
 
 	//get all users
 	public List<User> getallUsers() {
-		List<User> users = userRepository.findAll();
-		return users;
+		return userRepository.findAll();
 	}
 
 
 //get single user
 
-	public User getSingleUser(Integer id) {
+	public User getSingleUser(Integer id)
+	{ if(userRepository.findOneById(id)!=null)
 		return userRepository.findOneById(id);
+	else
+		return null;
 	}
 
 
@@ -270,5 +277,84 @@ public class UserService {
 		}else{
 			return "invalid user id";
 		}
+	}
+
+
+	//deposit amount
+	public String depositAmount(DepositAmountDto depositAmountDto) {
+		User user=userRepository.findOneById(depositAmountDto.getUserId());
+		int counter=0;
+		if(user!=null) {
+			if(user.getStatus().equals(UserStatus.ACTIVE)){
+				if (depositAmountDto.getWalletType().equals(CoinType.FIAT)) {
+					Set<Wallet> wallets=user.getWallets();
+					for(Wallet wallet:wallets){
+						if(wallet.getCoinType().equals(CoinType.FIAT)){
+							counter=1;
+							OrderDetails orderDetails=new OrderDetails();
+							orderDetails.setOrderType(OrderType.DEPOSIT);
+							orderDetails.setPrice(depositAmountDto.getAmount());
+//							orderDetails.setAmount(depositAmountDto.getAmount());
+							orderDetails.setOrderStatus(OrderStatus.PENDING);
+							orderDetails.setCoinName("INR");
+							orderDetails.setFee(0.0);
+							orderDetails.setOrderCreatedOn(new Date());
+//                        orderDetails.setUserId(user.getId());
+							user.getOrderDetailsList().add(orderDetails);
+							orderDetails.setUser(user);
+							orderRepository.save(orderDetails);
+//                        userRepository.save(user);
+						}
+					}
+					if(counter==0){
+						return "user don't have any wallet of cointype fiat";
+					}
+				} else {
+					return "withdraw and deposit functionality should be applied on fiat wallettype";
+				}
+			}else{
+				return  "user is not verified";
+			}
+		}else {
+			return "user id does not exist";
+		}
+		return "deposit amount request submitted";
+	}
+
+
+
+	public String approveRequest(ApprovalRequest approvalRequest){
+		OrderDetails orderDetails=orderRepository.findOneByOrderId(approvalRequest.getOrderId());
+		int counter=0;
+		if(orderDetails!=null){
+			if (orderDetails.getOrderStatus().equals(OrderStatus.PENDING)) {
+				if (approvalRequest.getStatus().equals(OrderStatus.APPROVED)) {
+					User user = orderDetails.getUser();
+					Set<Wallet> exisitngWallets = user.getWallets();
+					for (Wallet wallet : exisitngWallets) {
+						if (wallet.getCoinType().equals(CoinType.FIAT) && wallet.getCoinName().equalsIgnoreCase("inr")) {
+							counter = 1;
+							if(orderDetails.getOrderType().equals(OrderType.DEPOSIT)) {
+								wallet.setShadowBalance(wallet.getBalance() + orderDetails.getAmount());
+								wallet.setBalance(wallet.getShadowBalance());
+								orderDetails.setOrderStatus(OrderStatus.APPROVED);
+								userRepository.save(user);
+							}
+						}
+					}
+					if (counter == 0) {
+						return "wallet dont have any coin type fiat and coin name inr";
+					}
+				} else {
+					return "order can not APPROVED";
+				}
+			}else{
+				return  "order status is not pending";
+			}
+
+		}else{
+			return "order does not exist";
+		}
+		return "ordered successful";
 	}
 }

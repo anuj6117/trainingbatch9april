@@ -106,4 +106,13 @@ public class CurrencyService {
             return "id does not exist to delete";
         }
     }
+
+    //getcurrency by id
+    public Currency getCurrencyById(Integer coinId){
+        if(currencyRepository.findOneByCoinId(coinId)!=null){
+            return currencyRepository.findOneByCoinId(coinId);
+        }else{
+            return  null;
+        }
+    }
 }
