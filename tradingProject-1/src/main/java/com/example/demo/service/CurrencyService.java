@@ -31,11 +31,11 @@ public class CurrencyService {
             return " price can not be blank or negative";
         }
 
-        if(currency.getCoinType()==null )
-            return "coin type can not be null";
+//        if(currency.getCoinType()==null )
+//            return "coin type can not be null";
 
-        if(!currency.getCoinType().equals(CoinType.CRYPTO))
-            return "coin type is not correct";
+//        if(!currency.getCoinType().equals(CoinType.CRYPTO))
+//            return "coin type is not correct";
         if(currencyRepository.findOneBySymbol(currency.getSymbol())!=null)
             return "currency symbol already exist";
 
@@ -66,11 +66,11 @@ public class CurrencyService {
             if(currencyRepository.findOneByCoinName(updatedCurrency.getCoinName())!=null){
                 return "coin name already exist with this name";
             }
-            if(updatedCurrency.getCoinType()==null){
-                return "coin type can not be blank";
-            }
-            if(!updatedCurrency.getCoinType().equals(CoinType.CRYPTO))
-                return "coin type is not crypto";
+//            if(updatedCurrency.getCoinType()==null){
+//                return "coin type can not be blank";
+//            }
+//            if(!updatedCurrency.getCoinType().equals(CoinType.CRYPTO))
+//                return "coin type is not crypto";
 
             if(updatedCurrency.getSymbol()==null)
                 return "symbol can not be blank";

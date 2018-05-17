@@ -15,11 +15,10 @@ public class Currency {
     private String coinName;
     private String symbol;
     private Double fees;
-    private Double initialSupply;
+    private Integer initialSupply;
     private Double price;
 
-    @Enumerated(EnumType.STRING)
-    private CoinType coinType;
+    private CoinType coinType=CoinType.CRYPTO;
 
     private Double coinInINR;
     private Double profit;
@@ -50,11 +49,11 @@ public class Currency {
         this.fees = fees;
     }
 
-    public Double getInitialSupply() {
+    public Integer getInitialSupply() {
         return initialSupply;
     }
 
-    public void setInitialSupply(Double initialSupply) {
+    public void setInitialSupply(Integer initialSupply) {
         this.initialSupply = initialSupply;
     }
 
@@ -70,9 +69,9 @@ public class Currency {
         return coinType;
     }
 
-    public void setCoinType(CoinType coinType) {
-        this.coinType = coinType;
-    }
+//    public void setCoinType(CoinType coinType) {
+//        this.coinType = CoinType.CRYPTO;
+//    }
 
     public Double getCoinInINR() {
         return coinInINR;

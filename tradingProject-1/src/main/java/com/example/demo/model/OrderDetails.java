@@ -19,9 +19,9 @@ public class OrderDetails {
     @Enumerated(EnumType.STRING)
     private OrderType orderType;
 
-    private Double amount;
+//    private Double amount;
 
-    private Double price;
+    private Integer price;
     private OrderStatus orderStatus;
     private Double fee;
     private Date orderCreatedOn;
@@ -43,11 +43,11 @@ public class OrderDetails {
         this.orderId = orderId;
     }
 
-    public Double getPrice() {
+    public Integer getPrice() {
         return price;
     }
 
-    public void setPrice(Double price) {
+    public void setPrice(Integer price) {
         this.price = price;
     }
 
@@ -91,14 +91,14 @@ public class OrderDetails {
         this.orderType = orderType;
     }
 
-    public Double getAmount() {
+    /*public Double getAmount() {
         return amount;
     }
 
     public void setAmount(Double amount) {
         this.amount = amount;
     }
-
+*/
     public User getUser() {
         return user;
     }

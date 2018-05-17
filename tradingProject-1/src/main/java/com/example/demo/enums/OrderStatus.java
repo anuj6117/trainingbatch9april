@@ -1,7 +1,7 @@
 package com.example.demo.enums;
 
 public enum OrderStatus {
-    PENDING("Pending"),APPROVED("Approved"),REJECTED("Rejected");
+    PENDING("Pending"),APPROVED("Approved"),REJECTED("Rejected"),COMPLETED("Completed");
 
     public String getValue() {
         return value;

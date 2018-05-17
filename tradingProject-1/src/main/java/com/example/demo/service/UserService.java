@@ -334,7 +334,7 @@ public class UserService {
 							counter=1;
 							OrderDetails orderDetails=new OrderDetails();
 							orderDetails.setOrderStatus(OrderStatus.PENDING);
-							orderDetails.setAmount(withDrawAmount.getAmount());
+							orderDetails.setPrice(withDrawAmount.getAmount());
 							orderDetails.setFee(0.0);
 							orderDetails.setOrderType(OrderType.WITHDRAW);
 							orderDetails.setOrderCreatedOn(new Date());
@@ -370,14 +370,14 @@ public class UserService {
 						if (wallet.getCoinType().equals(CoinType.FIAT) && wallet.getCoinName().equalsIgnoreCase("inr")) {
 							counter = 1;
 							if (orderDetails.getOrderType().equals(OrderType.DEPOSIT)) {
-								wallet.setShadowBalance(wallet.getBalance() + orderDetails.getAmount());
+								wallet.setShadowBalance(wallet.getBalance() + orderDetails.getPrice());
 								wallet.setBalance(wallet.getShadowBalance());
 							}
 							if (orderDetails.getOrderType().equals(OrderType.WITHDRAW)) {
-								if (wallet.getBalance() < orderDetails.getAmount()) {
+								if (wallet.getBalance() < orderDetails.getPrice()) {
 									return "transaction can not be done due to low amount in your wallet";
 								}
-								wallet.setShadowBalance(wallet.getBalance() - orderDetails.getAmount());
+								wallet.setShadowBalance(wallet.getBalance() - orderDetails.getPrice());
 								wallet.setBalance(wallet.getShadowBalance());
 							}
 							orderDetails.setOrderStatus(OrderStatus.APPROVED);

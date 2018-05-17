@@ -4,8 +4,17 @@ public class BuyAndSellOrderDto {
 
     private Integer userId;
     private Integer coinQuantity;
-    private Double price;
+    private Integer price;
     private String coinName;
+
+
+    public Integer getPrice() {
+        return price;
+    }
+
+    public void setPrice(Integer price) {
+        this.price = price;
+    }
 
     public Integer getUserId() {
         return userId;
@@ -23,13 +32,6 @@ public class BuyAndSellOrderDto {
         this.coinQuantity = coinQuantity;
     }
 
-    public Double getPrice() {
-        return price;
-    }
-
-    public void setPrice(Double price) {
-        this.price = price;
-    }
 
     public String getCoinName() {
         return coinName;
