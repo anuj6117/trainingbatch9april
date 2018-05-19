@@ -1,0 +1,433 @@
+Transaction service
+
+
+//        if(buyerOrders!=null) {
+//            int counter=0;
+//            Integer maxPrice;
+//            for (OrderDetails singlebuyerDetail : buyerOrders) {
+//                if (singlebuyerDetail.getCoinName().equalsIgnoreCase("bitcoin")) {
+                    /*Integer coinQuantity = singlebuyerDetail.getCoinQuantity();
+                    Integer userId = singlebuyerDetail.getUser().getId();
+                    Integer amount = singlebuyerDetail.getPrice() * singlebuyerDetail.getCoinQuantity();
+                    if (bitcoinbuyersMap.containsKey(coinQuantity)) {
+                        Map<Integer, Integer> userIdWithPrice = new HashMap<>();
+                        userIdWithPrice.put(userId, amount);
+                        bitcoinbuyersMap.get(coinQuantity).add(userIdWithPrice);
+                    } else {
+                        List<Map<Integer, Integer>> differentPriceList = new ArrayList<>();
+                        Map<Integer, Integer> userId_Price = new HashMap<>();
+                        userId_Price.put(userId, amount);
+                        differentPriceList.add(userId_Price);
+                        bitcoinbuyersMap.put(coinQuantity, differentPriceList);
+                    }
+
+                    //admins control
+                    if(bitcoinadminsMap.containsKey(coinQuantity)){
+                        bitcoinadminsMap.get(coinQuantity).add(amount);
+                    }else{
+                        List<Integer> priceList=new ArrayList<>();
+                        priceList.add(amount);
+                        bitcoinadminsMap.put(coinQuantity,priceList);
+                    }*/
+
+
+
+
+                      TransactionService whole code
+
+
+
+   List<OrderDetails> bitcoinBuyers =  orderRepository.findByOrderTypeAndCoinName(OrderType.BUYORDER, "bitcoin");
+           List<OrderDetails> bitcoinSellers = orderRepository.findByOrderTypeAndCoinName(OrderType.SELLORDER, "bitcoin");
+           Integer maxprice = -1;
+           Integer minPrice = 2147483647;
+           OrderDetails maxPriceBuyerUser=null;
+           OrderDetails minPriceSellerUser=null;
+
+           if (bitcoinBuyers.isEmpty() != true) {
+               for (OrderDetails bitcoinbuyerorders : bitcoinBuyers) {
+                   if (bitcoinbuyerorders.getOrderStatus() != OrderStatus.COMPLETED) {
+                       Integer price = bitcoinbuyerorders.getPrice();
+                       if (price > maxprice) {
+                           maxprice = price;
+                       }
+                   }
+               }
+               maxPriceBuyerUser = orderRepository.findOneByPriceAndOrderType(maxprice, OrderType.BUYORDER);
+           } else {
+               return "no bitcoin buyer available right now";
+           }
+
+
+           if(bitcoinSellers.isEmpty()!=true){
+               for (OrderDetails bitcoinSellerOrders : bitcoinSellers) {
+                   if (bitcoinSellerOrders.getOrderStatus() != OrderStatus.COMPLETED) {
+                       Integer price = bitcoinSellerOrders.getPrice();
+                       if (price < minPrice) {
+                           minPrice = price;
+                       }
+                   }
+               }
+               minPriceSellerUser = orderRepository.findOneByPriceAndOrderType(minPrice, OrderType.SELLORDER);
+           }
+
+           if (minPriceSellerUser != null) {
+
+
+           }
+
+
+           Integer coinQuantity=maxPriceBuyerUser.getCoinQuantity();
+
+           Currency adminCurrency=currencyRepository.findOneByCoinName("bitcoin");
+           Integer adminAmount;
+           Integer buyerAmount;
+           Integer sellerAmount;
+
+           if(adminCurrency.getInitialSupply() > coinQuantity)
+           adminAmount=adminCurrency.getPrice()*maxPriceBuyerUser.getCoinQuantity();
+           else{
+               adminAmount=
+           }
+           buyerAmount=maxPriceBuyerUser.getPrice()*maxPriceBuyerUser.getCoinQuantity();
+
+            if(minPriceSellerUser.getCoinQuantity()>coinQuantity)
+            sellerAmount=minPriceSellerUser.getPrice()*maxPriceBuyerUser.getCoinQuantity();
+
+           if(adminAmount > buyerAmount){
+               if(bitcoinSellers.isEmpty()==true){
+                   return "deal can not possible";
+               }else{
+
+               }
+           }
+
+
+           if (bitcoinSellers.isEmpty() != true) {
+               //check if all sellers amount are gretaer than admin then make transaction from admin otherwise from seller
+   //            Currency adminCurrency=currencyRepository.findOneByCoinName("bitcoin");
+   //            Integer adminAmount;
+               Integer minPriceSelleramount;
+               if(adminCurrency.getInitialSupply()>maxPriceBuyerUser.getCoinQuantity()){
+                   adminAmount=adminCurrency.getPrice()*maxPriceBuyerUser.getCoinQuantity();
+               }
+
+
+               for (OrderDetails bitcoinSellerOrders : bitcoinSellers) {
+                   if (bitcoinSellerOrders.getOrderStatus() != OrderStatus.COMPLETED) {
+                       Integer price = bitcoinSellerOrders.getPrice();
+                       if (price < minPrice) {
+                           minPrice = price;
+                       }
+                   }
+               }
+
+               minPriceSellerUser = orderRepository.findOneByPriceAndOrderType(minPrice, OrderType.SELLORDER);
+                   minPriceSelleramount=minPriceSellerUser.getCoinQuantity()*minPriceSellerUser.getPrice();
+
+                   if(adminAmount < minPriceSelleramount)
+
+           } else {
+               //make a deal with admin
+               Currency adminCurrency=currencyRepository.findOneByCoinName("bitcoin");
+               if(adminCurrency.getInitialSupply() > maxPriceBuyerUser.getCoinQuantity()) {
+                   Integer buyerShouldPay=maxPriceBuyerUser.getCoinQuantity()*maxPriceBuyerUser.getPrice();
+   //                Double feeIncludedeprice=(buyerShouldPay*adminCurrency.getFees())/100;
+                   Integer adminPrice=adminCurrency.getPrice()*maxPriceBuyerUser.getCoinQuantity();
+                   if(buyerShouldPay > adminPrice) {
+                       adminCurrency.setInitialSupply(adminCurrency.getInitialSupply() - maxPriceBuyerUser.getCoinQuantity());
+                       Integer amountRecieved = maxPriceBuyerUser.getPrice() * maxPriceBuyerUser.getCoinQuantity();
+                       adminCurrency.setCoinInINR(amountRecieved);
+                       adminCurrency.setProfit((amountRecieved * adminCurrency.getFees()) / 100);
+                       currencyRepository.save(adminCurrency);
+
+                       Integer coinQuantity = maxPriceBuyerUser.getCoinQuantity();
+
+                       User buyer = userRepository.findOneById(maxPriceBuyerUser.getUser().getId());
+                       Wallet buyerInrWallet = walletRepository.findByCoinNameAndUserId("INR", buyer.getId());
+                       buyerInrWallet.setBalance(buyerInrWallet.getShadowBalance());
+                       Wallet buyerbitcoinWallet = walletRepository.findByCoinNameAndUserId("bitcoin", buyer.getId());
+                       buyerbitcoinWallet.setBalance(buyerbitcoinWallet.getShadowBalance());
+
+                       List<OrderDetails> ordersList = buyer.getOrderDetailsList();
+                       for (OrderDetails orders : ordersList) {
+                           if (orders.getCoinName().equalsIgnoreCase("bitcoin")) {
+                               orders.setOrderStatus(OrderStatus.COMPLETED);
+                           }
+                       }
+                       userRepository.save(buyer);
+
+   //                    AllTransactionDetails allTransactionDetails=new AllTransactionDetails(coinQuantity,"bitcoin",OrderStatus.COMPLETED,new Date(),netamount,adminCurrency.getProfit(),exchangerate,grossamount,buyer.getId(),null,"Transaction successfully completed");
+                   TransactionDetails allTransactionDetails=new TransactionDetails();
+                   allTransactionDetails.setBuyerId(buyer.getId());
+                   allTransactionDetails.setCoinQuantity(coinQuantity);
+                   allTransactionDetails.setCointype("bitcoin");
+                   allTransactionDetails.setDescription("Transaction succesfully completed with admin");
+                   allTransactionDetails.setExchangeRate();
+                   allTransactionDetails.setGrossAmount();
+                   allTransactionDetails.setNetAmount();
+                   allTransactionDetails.setSellerId(null);
+                   allTransactionDetails.setStatus(OrderStatus.COMPLETED);
+                   allTransactionDetails.setTransactionCreatedOn(new Date());
+                   allTransactionDetails.setTransationfee(adminCurrency.getProfit());
+                   transactionRepository.save(allTransactionDetails);
+                   }else{
+                       return "deal can not be cracked";
+                   }
+               }else{
+                   return "no seller found";
+               }
+           }
+
+           //make transaction based on buyer maxprice and seller less price
+
+           if(bitcoinSellers.isEmpty()!=true) {
+               //check for both admins and seller price and make transaction on that
+               if (maxPriceBuyerUser.getCoinQuantity() < minPriceSellerUser.getCoinQuantity()) {
+                   Integer coinQuantity = maxPriceBuyerUser.getCoinQuantity();
+
+                   User buyer = userRepository.findOneById(maxPriceBuyerUser.getUser().getId());
+                   Wallet buyerInrWallet = walletRepository.findByCoinNameAndUserId("INR", buyer.getId());
+                   buyerInrWallet.setBalance(buyerInrWallet.getShadowBalance());
+                   Wallet buyerbitcoinWallet = walletRepository.findByCoinNameAndUserId("bitcoin", buyer.getId());
+                   buyerbitcoinWallet.setBalance(buyerbitcoinWallet.getShadowBalance());
+
+                   List<OrderDetails> ordersList = buyer.getOrderDetailsList();
+                   for (OrderDetails orders : ordersList) {
+                       if (orders.getCoinName().equalsIgnoreCase("bitcoin")) {
+                           orders.setOrderStatus(OrderStatus.COMPLETED);
+                       }
+                   }
+                   userRepository.save(buyer);
+
+                   User seller = userRepository.findOneById(minPriceSellerUser.getUser().getId());
+                   Wallet sellerinrWallet = walletRepository.findByCoinNameAndUserId("INR", seller.getId());
+                   sellerinrWallet.setBalance(sellerinrWallet.getShadowBalance());
+                   Wallet sellerbitcoinwallet = walletRepository.findByCoinNameAndUserId("bitcoin", seller.getId());
+                   sellerbitcoinwallet.setBalance((sellerbitcoinwallet.getShadowBalance()));
+                   List<OrderDetails> sellerordersList = seller.getOrderDetailsList();
+                   for (OrderDetails ordres : sellerordersList) {
+                       if (ordres.getCoinName().equalsIgnoreCase("bitcoin")) {
+                           ordres.setCoinQuantity(ordres.getCoinQuantity() - coinQuantity);
+                       }
+                   }
+                   userRepository.save(seller);
+               }
+           }
+
+           return null;
+           }
+
+
+
+
+
+
+                                  // transaction  service
+
+
+  OrderDetails bitcoinMaximumPriceBuyer=orderRepository.findFirstByCoinNameAndOrderStatusAndOrderTypeOrderByPriceDesc("bitcoin",OrderStatus.PENDING,OrderType.BUYORDER);
+          OrderDetails bitcoinMinimumPriceSeller=orderRepository.findFirstByCoinNameAndOrderStatusAndOrderTypeOrderByPriceAsc("bitcoin",OrderStatus.PENDING,OrderType.SELLORDER);
+          OrderDetails etherMaximumPriceBuyer=orderRepository.findFirstByCoinNameAndOrderStatusAndOrderTypeOrderByPriceDesc("ethereum",OrderStatus.PENDING,OrderType.BUYORDER);
+          OrderDetails etherMinimumPriceSeller=orderRepository.findFirstByCoinNameAndOrderStatusAndOrderTypeOrderByPriceAsc("ethereum",OrderStatus.PENDING,OrderType.SELLORDER);
+
+
+
+
+
+           if(bitcoinMaximumPriceBuyer==null){
+               return "no pending order of bitcoin";
+           }
+
+           if(bitcoinMinimumPriceSeller != null){
+               Integer sellerprice=bitcoinMinimumPriceSeller.getPrice();
+               Currency adminCurrency=currencyRepository.findOneByCoinName("bitcoin");
+               if(sellerprice < adminCurrency.getPrice()){
+                   //deal with seller else deal with admin
+                  //find the no of quantity to be deal with seller
+                   int buyercoinquantity=bitcoinMaximumPriceBuyer.getCoinQuantity();
+                   int sellercoinquantity=bitcoinMinimumPriceSeller.getCoinQuantity();
+
+                   if(sellercoinquantity < buyercoinquantity){
+                       //make transaction acc to seller coins number
+                       //get buyer inr wallet and bitcoin wallet
+                       //get seller inr wallet and bitcoin wallet
+
+                       //make changes in buyer inr wallet and bitcoin wallet
+                      User buyer= userRepository.findOneById(bitcoinMaximumPriceBuyer.getUser().getId());
+                      Wallet buyerBitCoinwallet=walletRepository.findByCoinNameAndUserId("bitcoin",buyer.getId());
+  //                    Double alreadyShadowBalance=buyerBitCoinwallet.getShadowBalance();
+                      buyerBitCoinwallet.setShadowBalance(buyerBitCoinwallet.getBalance()+sellercoinquantity);
+                      buyerBitCoinwallet.setBalance(buyerBitCoinwallet.getShadowBalance());
+
+
+                      Wallet buyerInrWallet=walletRepository.findByCoinNameAndUserId("INR",buyer.getId());
+                      Double prevShadowBalance=buyerInrWallet.getShadowBalance();
+                      Integer buyeramountdeal=sellercoinquantity*bitcoinMaximumPriceBuyer.getPrice();
+                      Double taxondealAmount=(buyeramountdeal*adminCurrency.getFees())/100;
+                      Double amountdeducedfromBuyer=buyeramountdeal+taxondealAmount;
+                      buyerInrWallet.setShadowBalance(buyerInrWallet.getBalance()-amountdeducedfromBuyer);
+                      buyerInrWallet.setBalance(buyerInrWallet.getShadowBalance());
+
+
+                      //make changes in seller inr wallet and seller bitcoin wallet
+                      //as seller all quantitiy completes so change the order for seller
+
+                       User seller=userRepository.findOneById(bitcoinMinimumPriceSeller.getUser().getId());
+                      //bitcoin transactions
+                       Wallet sellerBitcoinwallet=walletRepository.findByCoinNameAndUserId("bitcoin",seller.getId());
+                      sellerBitcoinwallet.setBalance(sellerBitcoinwallet.getShadowBalance());
+                      //inr transactions
+                       Wallet sellerinrWallet=walletRepository.findByCoinNameAndUserId("INR",seller.getId());
+                       Integer amounttoAdded=bitcoinMinimumPriceSeller.getPrice()*sellercoinquantity;
+                       sellerinrWallet.setShadowBalance(sellerinrWallet.getBalance()+amounttoAdded);
+                       sellerinrWallet.setBalance(sellerinrWallet.getShadowBalance());
+
+                       //change the status of those who have lesser qunatity
+                       bitcoinMinimumPriceSeller.setOrderStatus(OrderStatus.COMPLETED);
+                       //the gap of amount between seller and buyer will go to admin
+
+                       Integer diffreneceInAmount=buyeramountdeal-bitcoinMinimumPriceSeller.getPrice()*bitcoinMinimumPriceSeller.getCoinQuantity();
+                       adminCurrency.setCoinInINR(adminCurrency.getCoinInINR()+diffreneceInAmount);
+                       adminCurrency.setProfit(adminCurrency.getProfit()+taxondealAmount);
+                       currencyRepository.save(adminCurrency);
+                       userRepository.save(buyer);
+                       userRepository.save(seller);
+
+                       TransactionDetails allTransactions=new TransactionDetails(sellercoinquantity, "bitcoin", OrderStatus.COMPLETED,new Date(),buyeramountdeal, taxondealAmount,bitcoinMaximumPriceBuyer.getPrice(), amountdeducedfromBuyer, buyer.getId(), seller.getId(),"Transaction succesfully completed");
+                       transactionRepository.save(allTransactions);
+                   }else{
+                       //now complete the whole transaction of buyer and leave the seller transaction as pending
+
+                       //getbuyer detail and chnage its balnce in inr and bitcoin
+                      User completeBuyer=userRepository.findOneById(bitcoinMaximumPriceBuyer.getUser().getId());
+
+                      //get  buyerbitcoin wallet
+                       Wallet buyerbitcoinwallet=walletRepository.findByCoinNameAndUserId("bitcoin",completeBuyer.getId());
+                       buyerbitcoinwallet.setShadowBalance(buyerbitcoinwallet.getBalance()+buyercoinquantity);
+                       buyerbitcoinwallet.setBalance(buyerbitcoinwallet.getShadowBalance());
+
+                       //get buyerinr wallet of that buyer
+                       Wallet buyerinrwallet=walletRepository.findByCoinNameAndUserId("INR",completeBuyer.getId());
+                       //amount to be deducted
+                       Integer buyeramountdeal=buyercoinquantity*bitcoinMaximumPriceBuyer.getPrice();
+                       Double taxondealAmount=(buyeramountdeal*adminCurrency.getFees())/100;
+                       Double amountdeducedfromBuyer=buyeramountdeal+taxondealAmount;
+                       buyerinrwallet.setShadowBalance(buyerinrwallet.getBalance()-amountdeducedfromBuyer);
+                       buyerinrwallet.setBalance(buyerinrwallet.getShadowBalance());
+
+                       //getseller wallet and make transaction acc to no of coins in buyer
+
+                       User partialSeller =userRepository.findOneById(bitcoinMinimumPriceSeller.getUser().getId());
+                       //get seller bitcoinwallet
+                       Wallet sellerbitcoinwallet=walletRepository.findByCoinNameAndUserId("bitcoin",partialSeller.getId());
+                       sellerbitcoinwallet.setShadowBalance(sellerbitcoinwallet.getBalance()-buyercoinquantity);
+                       sellerbitcoinwallet.setBalance(sellerbitcoinwallet.getShadowBalance());
+
+                       //get seller inr wallet
+                       Wallet sellerinrwallet=walletRepository.findByCoinNameAndUserId("bitcoin",partialSeller.getId());
+                       Integer netAmount=buyercoinquantity*bitcoinMinimumPriceSeller.getPrice();
+                       sellerinrwallet.setShadowBalance(sellerinrwallet.getBalance()+netAmount);
+                       sellerinrwallet.setBalance(sellerinrwallet.getShadowBalance());
+
+                       //make buyer order status completed
+                       bitcoinMaximumPriceBuyer.setOrderStatus(OrderStatus.COMPLETED);
+
+                       //the gap between seller and buyer to be transformed to admin
+                    Integer amountdiffernce=buyeramountdeal-buyercoinquantity*bitcoinMinimumPriceSeller.getPrice();
+                    adminCurrency.setCoinInINR(amountdiffernce);
+                    adminCurrency.setProfit(taxondealAmount);
+  //                     currencyRepository.save(adminCurrency);
+  //                     userRepository.save(buyer);
+  //                     userRepository.save(seller);
+                   }
+               }else{
+                   //deal with admin
+                      if(bitcoinMaximumPriceBuyer.getPrice() < adminCurrency.getPrice()){
+                          return "Transaction unsuccesful";
+                      }else{
+                        Integer  buyercoinquantity=bitcoinMaximumPriceBuyer.getCoinQuantity();
+                        if(adminCurrency.getInitialSupply() > buyercoinquantity){
+                            //chnage the buyer inr and crypto wallet
+                            //change admin no of coins
+
+                            User buyer=bitcoinMaximumPriceBuyer.getUser();
+                            // buyer inr wallet
+                            Wallet buyerinrwallet=walletRepository.findByCoinNameAndUserId("INR",buyer.getId());
+                            Integer buyeramountdeal=buyercoinquantity*bitcoinMaximumPriceBuyer.getPrice();
+                            Double taxondealAmount=(buyeramountdeal*adminCurrency.getFees())/100;
+                            Double amountdeducedfromBuyer=buyeramountdeal+taxondealAmount;
+                            buyerinrwallet.setShadowBalance(buyerinrwallet.getBalance()-amountdeducedfromBuyer);
+                            buyerinrwallet.setBalance(buyerinrwallet.getShadowBalance());
+
+                            //buyer crypto wallet
+                            Wallet buyercryptoWallet=walletRepository.findByCoinNameAndUserId("bitcoin",buyer.getId());
+                            buyercryptoWallet.setShadowBalance(buyercryptoWallet.getBalance()+buyercoinquantity);
+                            buyercryptoWallet.setBalance(buyercryptoWallet.getShadowBalance());
+
+
+                            //now decrease the admins coins
+                            Integer amounttobeadded=bitcoinMaximumPriceBuyer.getPrice()*bitcoinMaximumPriceBuyer.getCoinQuantity();
+                            adminCurrency.setCoinInINR(adminCurrency.getCoinInINR()+amounttobeadded);
+                            adminCurrency.setProfit(adminCurrency.getProfit()+taxondealAmount);
+                            adminCurrency.setInitialSupply(adminCurrency.getInitialSupply()-buyercoinquantity);
+
+                            //save the transaction and change the buyer status
+
+                            bitcoinMaximumPriceBuyer.setOrderStatus(OrderStatus.COMPLETED);
+                            currencyRepository.save(adminCurrency);
+
+                        }else{
+                            return  "Transaction unsuccesful";
+                        }
+                      }
+               }
+
+           }else{
+                  //no seller found so transaction should be from admin and make sure that admin selling price is lesser
+                       //than buyer price
+               //deal with admin
+               Currency adminCurrency=currencyRepository.findOneByCoinName("bitcoin");
+
+               if(bitcoinMaximumPriceBuyer.getPrice() < adminCurrency.getPrice()){
+                   return "Transaction unsuccesful";
+               }else{
+                   Integer  buyercoinquantity=bitcoinMaximumPriceBuyer.getCoinQuantity();
+                   if(adminCurrency.getInitialSupply() > buyercoinquantity){
+                       //chnage the buyer inr and crypto wallet
+                       //change admin no of coins
+
+                       User buyer=bitcoinMaximumPriceBuyer.getUser();
+                       // buyer inr wallet
+                       Wallet buyerinrwallet=walletRepository.findByCoinNameAndUserId("INR",buyer.getId());
+                       Integer buyeramountdeal=buyercoinquantity*bitcoinMaximumPriceBuyer.getPrice();
+                       Double taxondealAmount=(buyeramountdeal*adminCurrency.getFees())/100;
+                       Double amountdeducedfromBuyer=buyeramountdeal+taxondealAmount;
+                       buyerinrwallet.setShadowBalance(buyerinrwallet.getBalance()-amountdeducedfromBuyer);
+                       buyerinrwallet.setBalance(buyerinrwallet.getShadowBalance());
+
+                       //buyer crypto wallet
+                       Wallet buyercryptoWallet=walletRepository.findByCoinNameAndUserId("bitcoin",buyer.getId());
+                       buyercryptoWallet.setShadowBalance(buyercryptoWallet.getBalance()+buyercoinquantity);
+                       buyercryptoWallet.setBalance(buyercryptoWallet.getShadowBalance());
+
+
+                       //now decrease the admins coins
+                       Integer amounttobeadded=bitcoinMaximumPriceBuyer.getPrice()*bitcoinMaximumPriceBuyer.getCoinQuantity();
+                       adminCurrency.setCoinInINR(adminCurrency.getCoinInINR()+amounttobeadded);
+                       adminCurrency.setProfit(adminCurrency.getProfit()+taxondealAmount);
+                       adminCurrency.setInitialSupply(adminCurrency.getInitialSupply()-buyercoinquantity);
+
+                       //save the transaction and change the buyer status
+
+                       bitcoinMaximumPriceBuyer.setOrderStatus(OrderStatus.COMPLETED);
+                       currencyRepository.save(adminCurrency);
+                       return "transaction succesfull";
+                   }else{
+                       return  "Transaction unsuccesful";
+                   }
+               }
+           }
+
+
+

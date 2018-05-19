@@ -52,6 +52,11 @@ public class BuyAndSellService {
                         orderDetails.setCoinName(existingWallet.getCoinName());
                         orderDetails.setOrderCreatedOn(new Date());
                         orderDetails.setOrderType(OrderType.BUYORDER);
+                        int netAmount=buyorder.getCoinQuantity()*buyorder.getPrice();
+                        Double fees=currencyRepository.findOneByCoinName(buyorder.getCoinName()).getFees();
+                        Double grossAmount=netAmount+(netAmount*fees)/100;
+                        orderDetails.setNetAmount(netAmount);
+                        orderDetails.setGrossAmount(grossAmount);
                         Currency currency=currencyRepository.findOneByCoinName(buyorder.getCoinName());
                         if(currency ==null){
                             return "admin don't have currency of " + buyorder.getCoinName();
@@ -69,14 +74,18 @@ public class BuyAndSellService {
                         Integer amount;
                         amount=buyorder.getCoinQuantity()*buyorder.getPrice();
                         moneytoBeDeducted=amount+(amount*fee)/100;
-                        if(inrwallet.getBalance()<moneytoBeDeducted){
+                        if(inrwallet.getShadowBalance()<moneytoBeDeducted){
                             return "Lack of money in your account to make an order";
                         }else{
-                            inrwallet.setShadowBalance(inrwallet.getShadowBalance()-moneytoBeDeducted);
+                            if(inrwallet.getBalance()-inrwallet.getShadowBalance() != 0.0) {
+                                inrwallet.setShadowBalance(inrwallet.getShadowBalance() - moneytoBeDeducted);
+                            }else{
+                                inrwallet.setShadowBalance(inrwallet.getShadowBalance() - moneytoBeDeducted);
+                            }
                         }
-                        if(buyorder.getCoinName().equalsIgnoreCase("Bitcoin")) bitcoinWallet.setShadowBalance(bitcoinWallet.getBalance()+buyorder.getCoinQuantity());
-                        if(buyorder.getCoinName().equalsIgnoreCase("ethereum")) etherWallet.setShadowBalance(etherWallet.getBalance()+buyorder.getCoinQuantity());
-
+//                        if(buyorder.getCoinName().equalsIgnoreCase("Bitcoin")) bitcoinWallet.setShadowBalance(bitcoinWallet.getBalance()+buyorder.getCoinQuantity());
+//                        if(buyorder.getCoinName().equalsIgnoreCase("ethereum")) etherWallet.setShadowBalance(etherWallet.getBalance()+buyorder.getCoinQuantity());
+                        walletRepository.save(inrwallet);
                         orderRepository.save(orderDetails);
                         return "order succesfully created and waiting for transaction  to be approved";
                     }
@@ -97,6 +106,7 @@ public class BuyAndSellService {
 
     //create sell order
     public String createSellOrder(BuyAndSellOrderDto sellOrder){
+        //decrease the crypto currency
         if(sellOrder.getUserId()==null) return "user id is blank";
         if(sellOrder.getCoinName()==null | sellOrder.getCoinQuantity()==null | sellOrder.getPrice()==null){
             return "one of the field is empty";
@@ -119,12 +129,18 @@ public class BuyAndSellService {
                         orderDetails.setOrderCreatedOn(new Date());
                         orderDetails.setOrderType(OrderType.SELLORDER);
                         orderDetails.setPrice(sellOrder.getPrice());
+                        Integer netAmount=sellOrder.getCoinQuantity()*sellOrder.getPrice();
+                        orderDetails.setNetAmount(netAmount);
+                        orderDetails.setGrossAmount(netAmount+0.0);
                         orderDetails.setCoinQuantity(sellOrder.getCoinQuantity());
                         user.getOrderDetailsList().add(orderDetails);
-                        Wallet inrwallet=walletRepository.findByCoinNameAndUserId("INR",user.getId());
-                        Integer amount;
-                        amount=sellOrder.getCoinQuantity()*sellOrder.getPrice();
-                        inrwallet.setShadowBalance(inrwallet.getShadowBalance()+amount);
+//                        Wallet inrwallet=walletRepository.findByCoinNameAndUserId("INR",user.getId());
+//                        Integer amount;
+//                        amount=sellOrder.getCoinQuantity()*sellOrder.getPrice();
+//                        inrwallet.setShadowBalance(inrwallet.getShadowBalance()+amount);
+                        Wallet cryptoWallet=walletRepository.findByCoinNameAndUserId(sellOrder.getCoinName(),user.getId());
+                        cryptoWallet.setShadowBalance(cryptoWallet.getBalance()-sellOrder.getCoinQuantity());
+                        walletRepository.save(cryptoWallet);
                         orderRepository.save(orderDetails);
                         return "order succesfully created and waiting for transaction to be approved";
                     }

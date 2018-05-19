@@ -19,21 +19,40 @@ public class OrderDetails {
     @Enumerated(EnumType.STRING)
     private OrderType orderType;
 
-//    private Double amount;
-
     private Integer price;
+
+    @Enumerated(EnumType.STRING)
     private OrderStatus orderStatus;
+
     private Double fee;
     private Date orderCreatedOn;
-    //    private Integer userId;
     private String coinName;
     private Integer coinQuantity;
+
+    private Integer netAmount;
+    private Double grossAmount;
+
 
     @ManyToOne
     @JoinColumn(name = "userid")
     @JsonIgnore
     private User user;
 
+    public Integer getNetAmount() {
+        return netAmount;
+    }
+
+    public void setNetAmount(Integer netAmount) {
+        this.netAmount = netAmount;
+    }
+
+    public Double getGrossAmount() {
+        return grossAmount;
+    }
+
+    public void setGrossAmount(Double grossAmount) {
+        this.grossAmount = grossAmount;
+    }
 
     public Integer getOrderId() {
         return orderId;
@@ -91,14 +110,6 @@ public class OrderDetails {
         this.orderType = orderType;
     }
 
-    /*public Double getAmount() {
-        return amount;
-    }
-
-    public void setAmount(Double amount) {
-        this.amount = amount;
-    }
-*/
     public User getUser() {
         return user;
     }

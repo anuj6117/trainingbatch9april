@@ -118,6 +118,8 @@ public class UserService {
 			{
 				role = new Role();
 				role.setRoleType("User");
+				roleRepository.save(role);
+				user.getRole().add(role);
 			}
 		} else {
 			user.getRole().add(role);
@@ -133,6 +135,7 @@ public class UserService {
 
 
 		System.out.println("before saving========================================================");
+
 		if ((userRepository.save(user) != null)) {
 			Integer otp = OtpGenearator.generateOtp();
 			try {
@@ -142,8 +145,8 @@ public class UserService {
 				userOtp.setPhoneNumber(user.getPhoneNumber());
 				userOtp.setUserId(user.getId());
 				userOtpRepository.save(userOtp);
-				sendMailNSms.sendSms(user,otp);
-				sendMailNSms.sendMail(user,otp);
+//				sendMailNSms.sendSms(user,otp);
+//				sendMailNSms.sendMail(user,otp);
 				return "user created suucessfully please verify it by using otp";
 			} catch (Exception e) {
 				System.out.println(e.getMessage());

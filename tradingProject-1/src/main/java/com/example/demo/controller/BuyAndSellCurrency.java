@@ -20,9 +20,9 @@ public class BuyAndSellCurrency {
         return buyAndSellService.createBuyOrder(buyOrder);
     }
 
-//    @RequestMapping(value="/createsellorder",method=RequestMethod.POST)
-   /* public String createSellOrder(@RequestBody BuyAndSellOrderDto sellOrder){
-//        return  buyAndSellService.createSellOrder(sellOrder);
-    }*/
+    @RequestMapping(value="/createsellorder",method=RequestMethod.POST)
+    public String createSellOrder(@RequestBody BuyAndSellOrderDto sellOrder){
+        return  buyAndSellService.createSellOrder(sellOrder);
+    }
 
 }

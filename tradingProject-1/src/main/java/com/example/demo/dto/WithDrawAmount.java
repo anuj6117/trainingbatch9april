@@ -5,7 +5,7 @@ import com.example.demo.enums.CoinType;
 public class WithDrawAmount {
     private int userId;
     private CoinType walletType;
-    private Double amount;
+    private Integer amount;
 
     public int getUserId() {
         return userId;
@@ -23,11 +23,11 @@ public class WithDrawAmount {
         this.walletType = walletType;
     }
 
-    public Double getAmount() {
+    public Integer getAmount() {
         return amount;
     }
 
-    public void setAmount(Double amount) {
+    public void setAmount(Integer amount) {
         this.amount = amount;
     }
 }

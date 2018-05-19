@@ -10,22 +10,39 @@ import java.util.Date;
 @Table(name="transactions")
 public class TransactionDetails {
 
-@Id
-@GeneratedValue(strategy = GenerationType.AUTO)
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer transactionId;
 
-    private  Integer coinQuantity;
-    private String coinName;
+    private Integer coinQuantity;
+    private String cointype;
+    @Enumerated(EnumType.STRING)
     private OrderStatus status;
-    private Date transactionCompletedOn;
-    private Double netAmount;
-    private  Double transationFee;
-    private  Double exchangeRate;
+    private Date transactionCreatedOn;
+    private Integer netAmount;
+    private Double transationfee;
+    private Integer exchangeRate;
     private Double grossAmount;
     private Integer buyerId;
     private Integer sellerId;
     private String description;
 
+
+    public TransactionDetails( Integer coinQuantity, String cointype, OrderStatus status, Date transactionCreatedOn, Integer netAmount, Double transationfee, Integer exchangeRate, Double grossAmount, Integer buyerId, Integer sellerId, String description) {
+        this.coinQuantity = coinQuantity;
+        this.cointype = cointype;
+        this.status = status;
+        this.transactionCreatedOn = transactionCreatedOn;
+        this.netAmount = netAmount;
+        this.transationfee = transationfee;
+        this.exchangeRate = exchangeRate;
+        this.grossAmount = grossAmount;
+        this.buyerId = buyerId;
+        this.sellerId = sellerId;
+        this.description = description;
+    }
+
+    public TransactionDetails(){}
     public Integer getTransactionId() {
         return transactionId;
     }
@@ -42,12 +59,12 @@ public class TransactionDetails {
         this.coinQuantity = coinQuantity;
     }
 
-    public String getCoinName() {
-        return coinName;
+    public String getCointype() {
+        return cointype;
     }
 
-    public void setCoinName(String coinName) {
-        this.coinName = coinName;
+    public void setCointype(String cointype) {
+        this.cointype = cointype;
     }
 
     public OrderStatus getStatus() {
@@ -58,35 +75,35 @@ public class TransactionDetails {
         this.status = status;
     }
 
-    public Date getTransactionCompletedOn() {
-        return transactionCompletedOn;
+    public Date getTransactionCreatedOn() {
+        return transactionCreatedOn;
     }
 
-    public void setTransactionCompletedOn(Date transactionCompletedOn) {
-        this.transactionCompletedOn = transactionCompletedOn;
+    public void setTransactionCreatedOn(Date transactionCreatedOn) {
+        this.transactionCreatedOn = transactionCreatedOn;
     }
 
-    public Double getNetAmount() {
+    public Integer getNetAmount() {
         return netAmount;
     }
 
-    public void setNetAmount(Double netAmount) {
+    public void setNetAmount(Integer netAmount) {
         this.netAmount = netAmount;
     }
 
-    public Double getTransationFee() {
-        return transationFee;
+    public Double getTransationfee() {
+        return transationfee;
     }
 
-    public void setTransationFee(Double transationFee) {
-        this.transationFee = transationFee;
+    public void setTransationfee(Double transationfee) {
+        this.transationfee = transationfee;
     }
 
-    public Double getExchangeRate() {
+    public Integer getExchangeRate() {
         return exchangeRate;
     }
 
-    public void setExchangeRate(Double exchangeRate) {
+    public void setExchangeRate(Integer exchangeRate) {
         this.exchangeRate = exchangeRate;
     }
 
@@ -121,5 +138,4 @@ public class TransactionDetails {
     public void setDescription(String description) {
         this.description = description;
     }
-
 }

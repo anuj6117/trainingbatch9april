@@ -16,11 +16,11 @@ public class Currency {
     private String symbol;
     private Double fees;
     private Integer initialSupply;
-    private Double price;
+    private Integer price;
 
     private CoinType coinType=CoinType.CRYPTO;
 
-    private Double coinInINR;
+    private Integer coinInINR;
     private Double profit;
 
     public Currency(){}
@@ -57,11 +57,11 @@ public class Currency {
         this.initialSupply = initialSupply;
     }
 
-    public Double getPrice() {
+    public Integer getPrice() {
         return price;
     }
 
-    public void setPrice(Double price) {
+    public void setPrice(Integer price) {
         this.price = price;
     }
 
@@ -73,11 +73,11 @@ public class Currency {
 //        this.coinType = CoinType.CRYPTO;
 //    }
 
-    public Double getCoinInINR() {
+    public Integer getCoinInINR() {
         return coinInINR;
     }
 
-    public void setCoinInINR(Double coinInINR) {
+    public void setCoinInINR(Integer coinInINR) {
         this.coinInINR = coinInINR;
     }
 

@@ -43,7 +43,7 @@ public class CurrencyService {
             return "coin name already exist";
 
 
-        currency.setCoinInINR(0.0);
+        currency.setCoinInINR(0);
         currency.setProfit(0.0);
         currencyRepository.save(currency);
         return "currency added successfully";
@@ -58,14 +58,26 @@ public class CurrencyService {
 
     public String updateCurrency(Currency updatedCurrency){
 
-        Currency updatedCurrencyValue=currencyRepository.findOneByCoinId(updatedCurrency.getCoinId());
-        if(updatedCurrencyValue!=null){
-            if(updatedCurrency.getCoinName()==null){
+        Currency existingCurrency=currencyRepository.findOneByCoinId(updatedCurrency.getCoinId());
+        if(existingCurrency!=null) {
+            if (updatedCurrency.getCoinName() == null) {
                 return "coin name can not be null";
             }
-            if(currencyRepository.findOneByCoinName(updatedCurrency.getCoinName())!=null){
-                return "coin name already exist with this name";
+
+            Currency currencyName = currencyRepository.findOneByCoinName(updatedCurrency.getCoinName());
+            Currency currencySymbol=currencyRepository.findOneBySymbol(updatedCurrency.getSymbol());
+            if (currencyName != null ) {
+                if (currencyName.getSymbol().equals(updatedCurrency.getSymbol()) && existingCurrency.getCoinType().equals(updatedCurrency.getCoinType())) {
+                    existingCurrency.setInitialSupply(updatedCurrency.getInitialSupply());
+                    existingCurrency.setFees(updatedCurrency.getFees());
+                    existingCurrency.setPrice(updatedCurrency.getPrice());
+                } else {
+                    return "coin name and symbol mismatch";
+                }
+            } else {
+                return "No such coin exist";
             }
+
 //            if(updatedCurrency.getCoinType()==null){
 //                return "coin type can not be blank";
 //            }
@@ -75,9 +87,11 @@ public class CurrencyService {
             if(updatedCurrency.getSymbol()==null)
                 return "symbol can not be blank";
 
-            if(currencyRepository.findOneBySymbol(updatedCurrency.getSymbol())!=null)
-                return "coin symbol already exists";
+           /* if(currencySymbol!=null){
 
+            }
+                return "coin symbol already exists";
+*/
             if(updatedCurrency.getPrice()==null | updatedCurrency.getPrice()<0)
                 return "price can't be null or negative";
 
@@ -88,9 +102,9 @@ public class CurrencyService {
                 return "fees can not be null or negative";
 
             else{
-                updatedCurrency.setCoinInINR(updatedCurrencyValue.getCoinInINR());
-                updatedCurrency.setProfit(updatedCurrencyValue.getProfit());
-                currencyRepository.save(updatedCurrency);
+                existingCurrency.setCoinInINR(existingCurrency.getCoinInINR());
+                existingCurrency.setProfit(existingCurrency.getProfit());
+                currencyRepository.save(existingCurrency);
                 return "currency succesfully updated";
             }
         }else{

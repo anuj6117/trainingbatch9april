@@ -6,7 +6,7 @@ public class DepositAmountDto {
 
     private int userId;
     private CoinType walletType;
-    private Double amount;
+    private Integer amount;
 
     public int getUserId() {
         return userId;
@@ -24,11 +24,11 @@ public class DepositAmountDto {
         this.walletType = walletType;
     }
 
-    public Double getAmount() {
+    public Integer getAmount() {
         return amount;
     }
 
-    public void setAmount(Double amount) {
+    public void setAmount(Integer amount) {
         this.amount = amount;
     }
 }

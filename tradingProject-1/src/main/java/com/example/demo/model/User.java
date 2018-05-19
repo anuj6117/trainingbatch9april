@@ -10,10 +10,10 @@ import com.example.demo.enums.UserStatus;
 
 
 @Entity
-@Table(name="userstable")
+@Table(name="users")
 public class User {
 	@Id
-	@GeneratedValue(strategy=GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.SEQUENCE)
 	private Integer id;
 
 	@NotNull
@@ -31,6 +31,7 @@ public class User {
 	@NotNull
 	private String phoneNumber;
 
+	@Enumerated(EnumType.STRING)
 	private UserStatus status;
 
 	private String date;
@@ -52,14 +53,14 @@ public class User {
 	private Set<Wallet> wallets=new HashSet<>();
 
 	@OneToMany(fetch=FetchType.EAGER, cascade = CascadeType.ALL, mappedBy = "user")
-	private List<OrderDetails> orderDetailsList=new ArrayList<OrderDetails>();
+	private Set<OrderDetails> orderDetailsList=new HashSet<>();
 
 
-	public List<OrderDetails> getOrderDetailsList() {
+	public Set<OrderDetails> getOrderDetailsList() {
 		return orderDetailsList;
 	}
 
-	public void setOrderDetailsList(List<OrderDetails> orderDetailsList) {
+	public void setOrderDetailsList(Set<OrderDetails> orderDetailsList) {
 		this.orderDetailsList = orderDetailsList;
 	}
 
