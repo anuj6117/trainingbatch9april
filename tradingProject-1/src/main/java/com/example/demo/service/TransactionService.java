@@ -52,8 +52,11 @@ public class TransactionService {
             for(OrderDetails singleBuyer:buyersDetails) {
                 // buyer will  not switch to next untill first buyer transaction complete
                 //if first buyer transaction will complete then break from inner loop
+
+                int counter=0;
                 for (OrderDetails singleSeller : sellerDetails) {
                     if (singleBuyer.getCoinName().equalsIgnoreCase(singleSeller.getCoinName())) {
+                        counter++;
                         adminCurrency = currencyRepository.findOneByCoinName(singleSeller.getCoinName());
                         Double fee=adminCurrency.getFees();
                         String cointobedeal=singleBuyer.getCoinName();
@@ -71,6 +74,7 @@ public class TransactionService {
                                 Integer buyeruserId=singleBuyer.getUser().getId();
 //                                Integer selleruserId=singleSeller.getUser().getId();
                                 Integer finalcoinquantitiy=buyerquantity;
+
                                 //updating buyer  crypto wallet
                                 Wallet cryptoWallet= walletRepository.findByCoinNameAndUserId(cointobedeal,buyeruserId);
                                 cryptoWallet.setShadowBalance(cryptoWallet.getShadowBalance()+finalcoinquantitiy);
@@ -268,8 +272,8 @@ public class TransactionService {
                             }
                             else{
                                 Integer finalcoinquantitiy=singleBuyer.getCoinQuantity();
-Currency admincurrency=currencyRepository.findOneByCoinName(cointobedeal);
- fee=admincurrency.getFees();
+                                Currency admincurrency=currencyRepository.findOneByCoinName(cointobedeal);
+                                fee=admincurrency.getFees();
                                 //bueyr inr and crypto wallet
 
                                 Wallet cryptowallet=walletRepository.findByCoinNameAndUserId(cointobedeal,singleBuyer.getUser().getId());
@@ -313,6 +317,9 @@ Currency admincurrency=currencyRepository.findOneByCoinName(cointobedeal);
                             }
                         }
                     }
+                }
+                if(counter==0){
+                    //deal with admin
                 }
             }
         }else{
@@ -393,11 +400,8 @@ Currency admincurrency=currencyRepository.findOneByCoinName(cointobedeal);
                 return "Transaction unsuccesful";
             }
         }
-        return "Transaction succesful";
+        return "Transaction unsuccesful";
     }
-
-
-
 
 
     public List<TransactionDetails> getallTransactions(){
