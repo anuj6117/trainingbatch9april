@@ -21,7 +21,7 @@ public class WalletController {
         return walletService.addWallet(userWalletDto);
     }
 
-    @RequestMapping(value="/getallwallets")
+    @RequestMapping(value="/wallethistory")
     public List<Wallet> getAllWallets(){
         return walletService.getAllWallets();
     }

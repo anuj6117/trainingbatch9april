@@ -1,26 +1,21 @@
 package com.example.demo.controller;
 
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.example.demo.combinedfields.UserRole;
 import com.example.demo.dto.ApprovalRequest;
 import com.example.demo.dto.DepositAmountDto;
 import com.example.demo.dto.WithDrawAmount;
-import com.example.demo.model.UserOtp;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Repository;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-
 import com.example.demo.model.User;
+import com.example.demo.model.UserOtp;
 import com.example.demo.service.UserService;
+import com.example.demo.utilities.DataObj;
+import com.example.demo.utilities.ResponseFormatter;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
 
+import java.util.Date;
+import java.util.List;
 
 
 @RestController
@@ -30,9 +25,17 @@ public class SignupController {
 	private UserService userService;
 
 	@RequestMapping(value="/signup",method=RequestMethod.POST)
-	public String addUser(@RequestBody User user) {
-		String result=userService.insertUser(user);
-		return result;
+	public ResponseFormatter addUser(@RequestBody User user) {
+		try {
+			String result = userService.insertUser(user);
+			if(result.equalsIgnoreCase("user created suucessfully please verify it by using otp"))
+				return 	new ResponseFormatter(result,new Date(),HttpStatus.OK,true,new DataObj("suceess"));
+			else
+				return 	new ResponseFormatter(result,new Date(),HttpStatus.INTERNAL_SERVER_ERROR,false,new DataObj("failure"));
+		}catch (Exception e){
+			System.out.println(e.getMessage());
+			return 	new ResponseFormatter(e.getMessage(),new Date(),HttpStatus.BAD_REQUEST,false,new DataObj("failure"));
+		}
 	}
 
 	@RequestMapping(value="/getallusers")
@@ -43,52 +46,108 @@ public class SignupController {
 		}catch(Exception e){
 			System.out.println(e.getMessage());
 		}
-		return user;
+		if(user!=null) return user;
+		else return null;
 	}
 
 
 	@RequestMapping(value="/getbyuserid")
 	public User getUser(@RequestParam("id") Integer id) {
-//		 if(userService.getSingleUser(id)!=null)return
 		User user=userService.getSingleUser(id);
 		if(user!=null)return user;
 		else return null;
 	}
 
 	@RequestMapping(value="/updateuser",method=RequestMethod.POST)
-	public String updateUser(@RequestBody User updateduser) {
-		String result=userService.updateUser(updateduser);
-		return result;
+	public ResponseFormatter updateUser(@RequestBody User updateduser) {
+		try {
+			String result = userService.updateUser(updateduser);
+			if(result.equalsIgnoreCase("succesfully updated"))
+				return new ResponseFormatter(result,new Date(),HttpStatus.OK,true,new DataObj("success"));
+			else
+				return new ResponseFormatter(result,new Date(),HttpStatus.INTERNAL_SERVER_ERROR,false,new DataObj("failure"));
+		}catch(Exception e){
+			return new ResponseFormatter(e.getMessage(),new Date(),HttpStatus.BAD_REQUEST,false,new DataObj("failure"));
+
+		}
 	}
 
 	@RequestMapping(value="/deleteuser",method=RequestMethod.GET)
-	public String  deleteuser(@RequestParam("userId") Integer id ) {
-		return  userService.deleteUser(id);
+	public ResponseFormatter  deleteuser(@RequestParam("userId") Integer id ) {
+		try {
+			String result=userService.deleteUser(id);
+			if(result.equalsIgnoreCase("deleted succesfully"))
+				return new ResponseFormatter(result,new Date(),HttpStatus.OK,true,new DataObj("success"));
+			else
+				return new ResponseFormatter(result,new Date(),HttpStatus.INTERNAL_SERVER_ERROR,false,new DataObj("failure"));
+		}catch (Exception e){
+			return new ResponseFormatter(e.getMessage(),new Date(),HttpStatus.BAD_REQUEST,false,new DataObj("failure"));
+		}
 	}
 
 	@RequestMapping(value="/assignrole",method = RequestMethod.POST)
-	public String assignRole(@RequestBody UserRole userRole){
-		return	userService.assignRole(userRole);
+	public ResponseFormatter assignRole(@RequestBody UserRole userRole){
+		try {
+			String result=userService.assignRole(userRole);
+			if(result.equalsIgnoreCase("role assigned successfully"))
+				return new ResponseFormatter(result,new Date(),HttpStatus.OK,true,new DataObj("success"));
+			else
+				return new ResponseFormatter(result,new Date(),HttpStatus.INTERNAL_SERVER_ERROR,false,new DataObj("failure"));
+		}catch (Exception e){
+			return new ResponseFormatter(e.getMessage(),new Date(),HttpStatus.BAD_REQUEST,false,new DataObj("failure"));
+		}
 	}
 
 	@RequestMapping(value = "/verifyuser",method = RequestMethod.POST)
-	public String verifyUser(@RequestBody UserOtp userotp){
-		return userService.verifyUser(userotp);
+	public ResponseFormatter verifyUser(@RequestBody UserOtp userotp){
+		try {
+			String result=userService.verifyUser(userotp);
+			if(result.equalsIgnoreCase("valid user"))
+				return new ResponseFormatter(result,new Date(),HttpStatus.OK,true,new DataObj("success"));
+			else
+				return new ResponseFormatter(result,new Date(),HttpStatus.INTERNAL_SERVER_ERROR,false,new DataObj("failure"));
+		}catch (Exception e){
+			return new ResponseFormatter(e.getMessage(),new Date(),HttpStatus.BAD_REQUEST,false,new DataObj("failure"));
+		}
 	}
 
 	@RequestMapping(value="/depositamount",method = RequestMethod.POST)
-	public String depositAmount(@RequestBody  DepositAmountDto depositAmountDto ){
-		return userService.depositAmount(depositAmountDto);
+	public ResponseFormatter depositAmount(@RequestBody  DepositAmountDto depositAmountDto ){
+		try {
+			String result=userService.depositAmount(depositAmountDto);
+			if(result.equalsIgnoreCase("deposit amount request submitted"))
+				return new ResponseFormatter(result,new Date(),HttpStatus.OK,true,new DataObj("success"));
+			else
+				return new ResponseFormatter(result,new Date(),HttpStatus.INTERNAL_SERVER_ERROR,false,new DataObj("failure"));
+		}catch (Exception e){
+			return new ResponseFormatter(e.getMessage(),new Date(),HttpStatus.BAD_REQUEST,false,new DataObj("failure"));
+		}
 	}
 
 	@RequestMapping(value="/withdrawamount",method = RequestMethod.POST)
-	public String withDrawAmount(@RequestBody WithDrawAmount withDraw){
-		return userService.withDrawAmount(withDraw);
+	public ResponseFormatter withDrawAmount(@RequestBody WithDrawAmount withDraw){
+		try {
+			String result=userService.withDrawAmount(withDraw);
+			if(result.equalsIgnoreCase("withdraw request submitted"))
+				return new ResponseFormatter(result,new Date(),HttpStatus.OK,true,new DataObj("success"));
+			else
+				return new ResponseFormatter(result,new Date(),HttpStatus.INTERNAL_SERVER_ERROR,false,new DataObj("failure"));
+		}catch (Exception e){
+			return new ResponseFormatter(e.getMessage(),new Date(),HttpStatus.BAD_REQUEST,false,new DataObj("failure"));
+		}
 	}
 
 	@RequestMapping(value="/approveRequest",method=RequestMethod.POST)
-	public String approveRequest(@RequestBody ApprovalRequest approvalRequest){
-		return userService.approveRequest(approvalRequest);
+	public ResponseFormatter approveRequest(@RequestBody ApprovalRequest approvalRequest){
+		try {
+			String result=userService.approveRequest(approvalRequest);
+			if(result.equalsIgnoreCase("ordered successful"))
+				return new ResponseFormatter(result,new Date(),HttpStatus.OK,true,new DataObj("success"));
+			else
+				return new ResponseFormatter(result,new Date(),HttpStatus.INTERNAL_SERVER_ERROR,false,new DataObj("failure"));
+		}catch (Exception e){
+			return new ResponseFormatter(e.getMessage(),new Date(),HttpStatus.BAD_REQUEST,false,new DataObj("failure"));
+		}
 	}
 
 }

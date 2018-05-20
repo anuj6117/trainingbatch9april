@@ -43,7 +43,7 @@ public class UserService {
 	@Autowired
 	OrderRepository orderRepository;
 
-	public String insertUser(User user) {
+	public String insertUser(User user) throws Exception {
 
 		String userName = user.getUserName();
 
@@ -159,15 +159,15 @@ public class UserService {
 
 
 	//get all users
-	public List<User> getallUsers() {
+	public List<User> getallUsers() throws Exception{
 		return userRepository.findAll();
 	}
 
 
 //get single user
 
-	public User getSingleUser(Integer id)
-	{ if(userRepository.findOneById(id)!=null)
+	public User getSingleUser(Integer id)  {
+		if(userRepository.findOneById(id)!=null)
 		return userRepository.findOneById(id);
 	else
 		return null;
@@ -175,7 +175,7 @@ public class UserService {
 
 
 	//updating a user
-	public String updateUser(User updateduser) {
+	public String updateUser(User updateduser) throws Exception {
 //apply basic validation that have applied during insertion 		
 		if ((userRepository.findOneById(updateduser.getId())) != null) {
 			User user = userRepository.findOneById(updateduser.getId());
@@ -213,7 +213,7 @@ public class UserService {
 
 
 	//deleting a user
-	public String deleteUser(Integer id) {
+	public String deleteUser(Integer id) throws  Exception{
 		if (userRepository.findOneById(id) != null) {
 			userRepository.deleteById(id);
 			return "deleted succesfully";
@@ -224,23 +224,9 @@ public class UserService {
 
 
 	//assigning a role to user
-	public String assignRole(UserRole userRole) {
+	public String assignRole(UserRole userRole) throws Exception {
 		User user = userRepository.findOneById(userRole.getUserId());
 		if (user != null) {
-			/*Set<Role> roles=user.getRole();
-			for(Role role: roles){
-				if(!role.getRoleType().equals(userRole.getRoleType())){
-					Role roleFromRoleTable=roleRepository.findOneByRoleType(userRole.getRoleType());
-					if(roleFromRoleTable==null){
-					Role rolerepnse=roleService.createRole(userRole.getRoleType());
-
-					}
-					else{
-					roles.add(roleFromRoleTable);
-					return "role assigned successfully";
-				}else{
-					return "role already exists";
-				}*/
 			Role role = roleRepository.findOneByRoleType(userRole.getRoleType());
 			if (role == null) {
 				role = roleService.createRole(userRole.getRoleType());
@@ -261,7 +247,7 @@ public class UserService {
 
 
 	//verify the user
-	public String verifyUser(UserOtp userotp) {
+	public String verifyUser(UserOtp userotp) throws Exception{
 		if (userRepository.findOneById(userotp.getUserId()) != null) {
 			User initialuser = userRepository.findOneById(userotp.getUserId());
 			UserOtp userOtp = userOtpRepository.findOneByTokenOTP(userotp.getTokenOTP());
@@ -285,7 +271,7 @@ public class UserService {
 
 
 	//deposit amount to wallet having currency fiat
-	public String depositAmount(DepositAmountDto depositAmountDto) {
+	public String depositAmount(DepositAmountDto depositAmountDto) throws Exception {
 		User user=userRepository.findOneById(depositAmountDto.getUserId());
 		int counter=0;
 		if(user!=null) {
@@ -325,7 +311,7 @@ public class UserService {
 
 
 	//withdraw amount from user wallet having wallet type fiat
-	public String withDrawAmount(WithDrawAmount withDrawAmount){
+	public String withDrawAmount(WithDrawAmount withDrawAmount) throws Exception{
 		User user=userRepository.findOneById(withDrawAmount.getUserId());
 		int counter=0;
 		if(user!=null) {
@@ -361,7 +347,7 @@ public class UserService {
 
 
 
-	public String approveRequest(ApprovalRequest approvalRequest){
+	public String approveRequest(ApprovalRequest approvalRequest) throws Exception{
 		OrderDetails orderDetails=orderRepository.findOneByOrderId(approvalRequest.getOrderId());
 		int counter=0;
 		if(orderDetails!=null){
@@ -384,6 +370,7 @@ public class UserService {
 								wallet.setBalance(wallet.getShadowBalance());
 							}
 							orderDetails.setOrderStatus(OrderStatus.APPROVED);
+							orderRepository.save(orderDetails);
 							userRepository.save(user);
 						}
 					}

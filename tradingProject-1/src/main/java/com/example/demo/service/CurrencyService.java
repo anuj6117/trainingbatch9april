@@ -13,7 +13,7 @@ public class CurrencyService {
 
     @Autowired
     CurrencyRepository currencyRepository;
-    public String addCurrency(Currency currency){
+    public String addCurrency(Currency currency) throws Exception{
 
         if(currency.getCoinName().length()==0)
             return "please enter coin name";
@@ -30,12 +30,6 @@ public class CurrencyService {
         if(currency.getPrice()==null | currency.getPrice()<0){
             return " price can not be blank or negative";
         }
-
-//        if(currency.getCoinType()==null )
-//            return "coin type can not be null";
-
-//        if(!currency.getCoinType().equals(CoinType.CRYPTO))
-//            return "coin type is not correct";
         if(currencyRepository.findOneBySymbol(currency.getSymbol())!=null)
             return "currency symbol already exist";
 
@@ -56,7 +50,7 @@ public class CurrencyService {
 
     //updating currency value
 
-    public String updateCurrency(Currency updatedCurrency){
+    public String updateCurrency(Currency updatedCurrency) throws  Exception{
 
         Currency existingCurrency=currencyRepository.findOneByCoinId(updatedCurrency.getCoinId());
         if(existingCurrency!=null) {
@@ -78,20 +72,9 @@ public class CurrencyService {
                 return "No such coin exist";
             }
 
-//            if(updatedCurrency.getCoinType()==null){
-//                return "coin type can not be blank";
-//            }
-//            if(!updatedCurrency.getCoinType().equals(CoinType.CRYPTO))
-//                return "coin type is not crypto";
 
             if(updatedCurrency.getSymbol()==null)
                 return "symbol can not be blank";
-
-           /* if(currencySymbol!=null){
-
-            }
-                return "coin symbol already exists";
-*/
             if(updatedCurrency.getPrice()==null | updatedCurrency.getPrice()<0)
                 return "price can't be null or negative";
 
@@ -112,7 +95,7 @@ public class CurrencyService {
         }
     }
 
-    public String deleteCurrency(Integer coinId){
+    public String deleteCurrency(Integer coinId) {
         if(currencyRepository.findOneByCoinId(coinId)!=null){
             currencyRepository.deleteById(coinId);
             return "succefully deleted currency";

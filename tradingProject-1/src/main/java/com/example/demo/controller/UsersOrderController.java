@@ -15,7 +15,7 @@ public class UsersOrderController {
     @Autowired
     UsersOrderService usersOrderService;
 
-    @RequestMapping(value="/getallorders")
+    @RequestMapping(value="/showallorder")
     public List<OrderDetails> getAllOrders(){
         return usersOrderService.getAllOrders();
     }

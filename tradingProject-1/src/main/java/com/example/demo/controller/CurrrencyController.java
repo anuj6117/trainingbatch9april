@@ -2,9 +2,13 @@ package com.example.demo.controller;
 
 import com.example.demo.model.Currency;
 import com.example.demo.service.CurrencyService;
+import com.example.demo.utilities.DataObj;
+import com.example.demo.utilities.ResponseFormatter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -14,8 +18,17 @@ public class CurrrencyController {
     CurrencyService currencyService;
 
     @RequestMapping(value = "/addcurrency",method = RequestMethod.POST)
-    public String addCurrency(@RequestBody  Currency currency){
-        return  currencyService.addCurrency(currency);
+    public ResponseFormatter addCurrency(@RequestBody  Currency currency){
+        try {
+            String result = currencyService.addCurrency(currency);
+            if(result.equalsIgnoreCase("currency added successfully"))
+                return 	new ResponseFormatter(result,new Date(),HttpStatus.OK,true,new DataObj("suceess"));
+            else
+                return 	new ResponseFormatter(result,new Date(),HttpStatus.INTERNAL_SERVER_ERROR,false,new DataObj("failure"));
+        }catch (Exception e){
+            System.out.println(e.getMessage());
+            return 	new ResponseFormatter(e.getMessage(),new Date(),HttpStatus.BAD_REQUEST,false,new DataObj("failure"));
+        }
     }
 
     @RequestMapping(value="/getallcurrency")
@@ -24,13 +37,31 @@ public class CurrrencyController {
     }
 
     @RequestMapping(value="/updatecurrency",method = RequestMethod.POST)
-    public String updateCurrency(@RequestBody Currency updatedCurrency){
-        return  currencyService.updateCurrency(updatedCurrency);
+    public ResponseFormatter updateCurrency(@RequestBody Currency updatedCurrency){
+        try {
+            String result = currencyService.updateCurrency(updatedCurrency);
+            if(result.equalsIgnoreCase("currency succesfully updated"))
+                return 	new ResponseFormatter(result,new Date(),HttpStatus.OK,true,new DataObj("suceess"));
+            else
+                return 	new ResponseFormatter(result,new Date(),HttpStatus.INTERNAL_SERVER_ERROR,false,new DataObj("failure"));
+        }catch (Exception e){
+            System.out.println(e.getMessage());
+            return 	new ResponseFormatter(e.getMessage(),new Date(),HttpStatus.BAD_REQUEST,false,new DataObj("failure"));
+        }
     }
 
     @RequestMapping(value="/deletecurrency" ,method = RequestMethod.GET)
-    public String deleteCurrency(@RequestParam("coinId") Integer coinId){
-        return  currencyService.deleteCurrency(coinId);
+    public ResponseFormatter deleteCurrency(@RequestParam("coinId") Integer coinId){
+        try {
+            String result = currencyService.deleteCurrency(coinId);
+            if(result.equalsIgnoreCase("succefully deleted currency"))
+                return 	new ResponseFormatter(result,new Date(),HttpStatus.OK,true,new DataObj("suceess"));
+            else
+                return 	new ResponseFormatter(result,new Date(),HttpStatus.INTERNAL_SERVER_ERROR,false,new DataObj("failure"));
+        }catch (Exception e){
+            System.out.println(e.getMessage());
+            return 	new ResponseFormatter(e.getMessage(),new Date(),HttpStatus.BAD_REQUEST,false,new DataObj("failure"));
+        }
     }
 
     @RequestMapping(value="/getcurrencybyid")

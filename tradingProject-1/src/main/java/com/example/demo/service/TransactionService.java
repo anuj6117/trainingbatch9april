@@ -1,6 +1,5 @@
 package com.example.demo.service;
 
-import com.example.demo.enums.CoinType;
 import com.example.demo.enums.OrderStatus;
 import com.example.demo.enums.OrderType;
 import com.example.demo.model.*;
@@ -35,16 +34,13 @@ public class TransactionService {
         List<OrderDetails>  buyersDetails=orderRepository.findByOrderTypeAndOrderStatus(OrderType.BUYORDER,OrderStatus.PENDING);
         List<OrderDetails> sellerDetails=orderRepository.findByOrderTypeAndOrderStatus(OrderType.SELLORDER,OrderStatus.PENDING);
 
-        if(buyersDetails.isEmpty()==true){
-            return "no buyer available";
-        }
+        if(buyersDetails.isEmpty()==true){ return "no buyer available"; }
 
         //sort the buyers in decreasing price list
         Collections.sort(buyersDetails,new BuyerIncreasingPriceComparator());
         Collections.reverse(buyersDetails);//buyersdetail with inc-->dec order
         if(sellerDetails.isEmpty()!=true)
             Collections.sort(sellerDetails,new SellerDecreasingPriceComparator()); //sellers list with dec-->inc order
-
 
         if(sellerDetails.isEmpty()!=true){
             //seller is available
@@ -62,8 +58,7 @@ public class TransactionService {
                         String cointobedeal=singleBuyer.getCoinName();
 
                         if (adminCurrency.getPrice() < singleSeller.getPrice()) {
-                            //deal with admin currency
-                            //and make deal with the no of lesser coins of either buyer and admin
+                            //deal with admin currency and make deal with the no of lesser coins of either buyer and admin
                             Integer admincurrencyQuantity = adminCurrency.getInitialSupply();
                             Integer buyerquantity = singleBuyer.getCoinQuantity();
                             if (buyerquantity < admincurrencyQuantity) {
@@ -71,82 +66,29 @@ public class TransactionService {
                                 //update buyer inr and crypto wallet  and chnage the status to completed
                                 //update admin  crypto wallet
                                 System.out.println("buyer have lesser no of coins than admins");
-                                Integer buyeruserId=singleBuyer.getUser().getId();
-//                                Integer selleruserId=singleSeller.getUser().getId();
                                 Integer finalcoinquantitiy=buyerquantity;
+                                buyerQuantityIsLesser(cointobedeal,finalcoinquantitiy,singleBuyer);
 
-                                //updating buyer  crypto wallet
-                                Wallet cryptoWallet= walletRepository.findByCoinNameAndUserId(cointobedeal,buyeruserId);
-                                cryptoWallet.setShadowBalance(cryptoWallet.getShadowBalance()+finalcoinquantitiy);
-                                cryptoWallet.setBalance(cryptoWallet.getShadowBalance());
-                                walletRepository.save(cryptoWallet);
-
-                                //updating buyer inr wallet
-                                Wallet inrWallet=walletRepository.findByCoinNameAndUserId("INR",buyeruserId);
                                 Integer amountdeal=finalcoinquantitiy*singleBuyer.getPrice();
                                 Double taxondeal=(amountdeal*fee)/100;
-
-                                inrWallet.setBalance(inrWallet.getShadowBalance());
-                                walletRepository.save(inrWallet);
-
-                                singleBuyer.setOrderStatus(OrderStatus.COMPLETED);
-                                orderRepository.save(singleBuyer);
-
-
-                                //update admin coinininr and profit and dec its supply
-
-                                adminCurrency.setCoinInINR(adminCurrency.getCoinInINR() + amountdeal);
-                                adminCurrency.setProfit(adminCurrency.getProfit()+taxondeal);
-                                adminCurrency.setInitialSupply(adminCurrency.getInitialSupply()-finalcoinquantitiy);
-
-                                currencyRepository.save(adminCurrency);
-//                                userRepository.save(singleBuyer.getUser());
-
-                                // add the transaction details object so transaction can be showed in table
-                                TransactionDetails transactionDetails=new TransactionDetails( finalcoinquantitiy, cointobedeal, OrderStatus.COMPLETED, new Date(), amountdeal, taxondeal, amountdeal, amountdeal+taxondeal, singleBuyer.getUser().getId(),null, "Transaction successful with admin");
-                                transactionRepository.save(transactionDetails);
+                                setAdminCurrencyValue( amountdeal, taxondeal, finalcoinquantitiy,"admin",adminCurrency);
+                                setValuesInTransactionTable(finalcoinquantitiy, cointobedeal, OrderStatus.COMPLETED, amountdeal, taxondeal, amountdeal, amountdeal+taxondeal, singleBuyer,null, "Transaction successful with admin");
                                 return "Transaction succesfull";
-//                                break;   //break from inner for loop
-
-
                             } else {
                                 // deal with whatever coins admins have and update the coins in buyer
                                 System.out.println("admins have lesser no of coins than buyer coins");
                                 Integer finalcoinquantity=adminCurrency.getInitialSupply();
-                                Integer buyeruserId=singleBuyer.getUser().getId();
 
                                 //updating buyer  crypto wallet
-                                Wallet cryptoWallet= walletRepository.findByCoinNameAndUserId(cointobedeal,buyeruserId);
-                                cryptoWallet.setShadowBalance(cryptoWallet.getBalance()+finalcoinquantity);
-                                cryptoWallet.setBalance(cryptoWallet.getShadowBalance());
-                                walletRepository.save(cryptoWallet);
-
-                                //updating buyer inr wallet
-                                Wallet inrWallet=walletRepository.findByCoinNameAndUserId("INR",buyeruserId);
                                 Integer amountdeal=finalcoinquantity*singleBuyer.getPrice();
                                 Double taxondeal=(amountdeal*fee)/100;
                                 Double totalamountdedeductedAfterTax=amountdeal+taxondeal;
-                                inrWallet.setShadowBalance(inrWallet.getBalance()-totalamountdedeductedAfterTax);
-                                inrWallet.setBalance(inrWallet.getShadowBalance());
-                                walletRepository.save(inrWallet);
 
-                                singleBuyer.setOrderStatus(OrderStatus.PENDING);
-                                singleBuyer.setCoinQuantity(singleBuyer.getCoinQuantity()-finalcoinquantity);
-                                orderRepository.save(singleBuyer);
-
+                                buyerQuantityIsGreater(cointobedeal,singleBuyer,finalcoinquantity,fee);
                                 //update admin coinininr and profit and dec its supply
-
-                                adminCurrency.setCoinInINR(adminCurrency.getCoinInINR() + amountdeal);
-                                adminCurrency.setProfit(adminCurrency.getProfit()+taxondeal);
-                                adminCurrency.setInitialSupply(adminCurrency.getInitialSupply()-finalcoinquantity);
-
-                                currencyRepository.save(adminCurrency);
-                                TransactionDetails transactionDetails=new TransactionDetails(finalcoinquantity, cointobedeal, OrderStatus.COMPLETED, new Date(), amountdeal, taxondeal, amountdeal, totalamountdedeductedAfterTax, singleBuyer.getUser().getId(), null, "Transaction succesfull with admin");
-                                transactionRepository.save(transactionDetails);
+                                setAdminCurrencyValue(amountdeal,taxondeal,finalcoinquantity,"admin",adminCurrency);
+                                setValuesInTransactionTable(finalcoinquantity, cointobedeal, OrderStatus.COMPLETED, amountdeal, taxondeal, amountdeal, totalamountdedeductedAfterTax, singleBuyer, null, "Transaction succesfull with admin");
                                 return "Transaction succesful";
-//                                userRepository.save(singleBuyer.getUser());
-
-// add transaction details to show transaction in transaction table
                             }
                         } else {
                             //deal with seller and with lesser no of coins
@@ -159,31 +101,8 @@ public class TransactionService {
                             }
 
                             if (buyerCoinQuantity < sellercoinQuantity) {
-                                //update the buyer coins and exist from inner for looop
-                                //update buyer inr wallet n crypto wallet
-                                //update seller inr n crypto wallet
-                                //update the profit in admin currency with the deal
-                                //change orderstatus to complete and break from inner loop
-
-
                                 Integer finalCoinQuantity=buyerCoinQuantity;
-//                                Integer buyeruserid=singleBuyer.getUser().getId();
-//                                Integer selleruserid=singleSeller.getUser().getId();
-
-                                //buyer crypto wallet
-                                Wallet cryptowallet=walletRepository.findByCoinNameAndUserId(cointobedeal,buyeruserid);
-                                cryptowallet.setShadowBalance(cryptowallet.getShadowBalance()+finalCoinQuantity);
-                                cryptowallet.setBalance(cryptowallet.getShadowBalance());
-                                walletRepository.save(cryptowallet);
-                                //bueyr inr wallet
-                                Wallet inrwallet=walletRepository.findByCoinNameAndUserId("INR",buyeruserid);
-                                inrwallet.setBalance(inrwallet.getShadowBalance());
-                                walletRepository.save(inrwallet);
-
-                                singleBuyer.setOrderStatus(OrderStatus.COMPLETED);
-                                orderRepository.save(singleBuyer);
-
-
+                                buyerQuantityIsLesser(cointobedeal,finalCoinQuantity,singleBuyer);
                                 //seller crypto wallet
                                 Wallet sellercryptoWallet=walletRepository.findByCoinNameAndUserId(cointobedeal,selleruserid);
                                 sellercryptoWallet.setShadowBalance(sellercryptoWallet.getBalance()-finalCoinQuantity);
@@ -204,46 +123,20 @@ public class TransactionService {
                                 Double taxondeal=(amountdeal*fee)/100;
                                 Integer differnceofamountbetweensellernbuyer=amountdeal-finalCoinQuantity*singleSeller.getPrice();
 
-
                                 //update admin currency
-                                adminCurrency.setCoinInINR(adminCurrency.getCoinInINR()+differnceofamountbetweensellernbuyer);
-                                adminCurrency.setProfit(adminCurrency.getProfit()+taxondeal);
-                                currencyRepository.save(adminCurrency);
-//                                userRepository.save(singleBuyer.getUser());
-//                                userRepository.save(singleSeller.getUser());
-                                TransactionDetails transactionDetails=new TransactionDetails( finalCoinQuantity, cointobedeal, OrderStatus.COMPLETED, new Date(), amountdeal, taxondeal, differnceofamountbetweensellernbuyer, amountdeal+taxondeal, singleBuyer.getUser().getId(),singleSeller.getUser().getId(), "Transaction succefull");
-                                transactionRepository.save(transactionDetails);
+                                setAdminCurrencyValue(differnceofamountbetweensellernbuyer,taxondeal,0,"seller",adminCurrency);
+                                setValuesInTransactionTable(finalCoinQuantity, cointobedeal, OrderStatus.COMPLETED, amountdeal, taxondeal, differnceofamountbetweensellernbuyer, amountdeal+taxondeal, singleBuyer,singleSeller, "Transaction succefull");
                                 return "Transaction succesful";
-
-
-//add transaction detail to transaction table
-//                                break;  //as buyer demand finish
-
                             } else if(buyerCoinQuantity>sellercoinQuantity) {
                                 System.out.println("buyer have more no of coins than seller");
                                 //deal with whatever coins seller have and update the coins in both buyer and seller
                                 Integer finalCoinQuantity=sellercoinQuantity;
 
                                 //buyer crypto wallet
-                                Wallet cryptowallet=walletRepository.findByCoinNameAndUserId(cointobedeal,buyeruserid);
-                                cryptowallet.setShadowBalance(cryptowallet.getBalance()+finalCoinQuantity);
-                                cryptowallet.setBalance(cryptowallet.getShadowBalance());
-                                walletRepository.save(cryptowallet);
-                                //buyer inr wallet
-                                Wallet inrwallet=walletRepository.findByCoinNameAndUserId("INR",buyeruserid);
                                 Integer amountdeal=finalCoinQuantity*singleBuyer.getPrice();
                                 Double taxondeal=(amountdeal*fee)/100;
-                                Double finalamountdeducted=amountdeal+taxondeal;
                                 Integer differnceofamountbetweensellernbuyer=amountdeal-finalCoinQuantity*singleSeller.getPrice();
-
-                                inrwallet.setShadowBalance(inrwallet.getBalance()-finalamountdeducted);
-                                inrwallet.setBalance(inrwallet.getShadowBalance());
-                                walletRepository.save(inrwallet);
-
-                                singleBuyer.setOrderStatus(OrderStatus.PENDING);
-                                singleBuyer.setCoinQuantity(singleBuyer.getCoinQuantity()-finalCoinQuantity);
-                                orderRepository.save(singleBuyer);
-
+                                buyerQuantityIsGreater(cointobedeal,singleBuyer,finalCoinQuantity,fee);
 
                                 //seller inr and crypto wallet update
                                 Wallet sellercryptowallet=walletRepository.findByCoinNameAndUserId(cointobedeal,selleruserid);
@@ -255,27 +148,18 @@ public class TransactionService {
                                 sellerinrwallet.setBalance(sellerinrwallet.getShadowBalance());
                                 walletRepository.save(sellerinrwallet);
 
-
                                 singleSeller.setOrderStatus(OrderStatus.COMPLETED);
                                 orderRepository.save(singleSeller);
                                 //admin currency change
-                                adminCurrency.setCoinInINR(adminCurrency.getCoinInINR()+differnceofamountbetweensellernbuyer);
-                                adminCurrency.setProfit(adminCurrency.getProfit()+taxondeal);
-                                currencyRepository.save(adminCurrency);
-//                                singleSeller.setOrderStatus(OrderStatus.COMPLETED);
-//                                userRepository.save(singleBuyer.getUser());
-//                                userRepository.save(singleSeller.getUser());
-//save transaction detail to table
-                                TransactionDetails transactionDetails=new TransactionDetails( finalCoinQuantity, cointobedeal, OrderStatus.COMPLETED, new Date(), amountdeal, taxondeal, differnceofamountbetweensellernbuyer, amountdeal+taxondeal, singleBuyer.getUser().getId(), singleSeller.getUser().getId(), "Transaction succesfull");
-                                transactionRepository.save(transactionDetails);
+
+                                setAdminCurrencyValue(differnceofamountbetweensellernbuyer,taxondeal,0,"seller",adminCurrency);
+                                setValuesInTransactionTable(finalCoinQuantity, cointobedeal, OrderStatus.COMPLETED, amountdeal, taxondeal, differnceofamountbetweensellernbuyer, amountdeal+taxondeal, singleBuyer, singleSeller, "Transaction succesfull");
                                 return "Transaction successful";
                             }
                             else{
                                 Integer finalcoinquantitiy=singleBuyer.getCoinQuantity();
                                 Currency admincurrency=currencyRepository.findOneByCoinName(cointobedeal);
                                 fee=admincurrency.getFees();
-                                //bueyr inr and crypto wallet
-
                                 Wallet cryptowallet=walletRepository.findByCoinNameAndUserId(cointobedeal,singleBuyer.getUser().getId());
                                 cryptowallet.setShadowBalance(cryptowallet.getBalance()+finalcoinquantitiy);
                                 cryptowallet.setBalance(cryptowallet.getShadowBalance());
@@ -310,7 +194,6 @@ public class TransactionService {
                                 admincurrency.setProfit(admincurrency.getProfit()+taxondeal);
                                 currencyRepository.save(admincurrency);
 
-
                                 TransactionDetails transactionDetails=new TransactionDetails( finalcoinquantitiy, cointobedeal, OrderStatus.COMPLETED, new Date(), amountdeal, taxondeal, differnceinamount, amountaftertax, singleBuyer.getUser().getId(), singleSeller.getUser().getId(), "Transaction succesfull");
                                 transactionRepository.save(transactionDetails);
                                 return "Transacton succesful";
@@ -320,89 +203,126 @@ public class TransactionService {
                 }
                 if(counter==0){
                     //deal with admin
+                    dealWithAdmin(buyersDetails);
                 }
             }
         }else{
             //deal with admin currency and make sure that admin price is less than buyer price
-            int counter=0;
-            for(OrderDetails singlebuyer:buyersDetails){
-                Currency admincurrency=currencyRepository.findOneByCoinName(singlebuyer.getCoinName());
-                String cointobedeal=singlebuyer.getCoinName();
-                if(admincurrency != null){
-                    if(admincurrency.getPrice() < singlebuyer.getPrice()){
-                        if(admincurrency.getInitialSupply() > singlebuyer.getCoinQuantity()){
-                            //mke a deal and sell the buyer status completed after transaction done
-                            Integer finalcoinquantity=singlebuyer.getCoinQuantity();
-
-                            //make change of inr and crypto wallet
-                            Wallet buyerinrwallet=walletRepository.findByCoinNameAndUserId("INR",singlebuyer.getUser().getId());
-                            buyerinrwallet.setBalance(buyerinrwallet.getShadowBalance());
-                            walletRepository.save(buyerinrwallet);
-
-                            Wallet buyercryptowalelt=walletRepository.findByCoinNameAndUserId(cointobedeal,singlebuyer.getUser().getId());
-                            buyercryptowalelt.setShadowBalance(buyercryptowalelt.getShadowBalance()+finalcoinquantity);
-                            buyercryptowalelt.setBalance(buyercryptowalelt.getShadowBalance());
-                            walletRepository.save(buyercryptowalelt);
-                            singlebuyer.setOrderStatus(OrderStatus.COMPLETED);
-
-                            orderRepository.save(singlebuyer);
-                            //sub currency frm admin wallet and add money and profit in admin coin in  inr
-                            Integer amountDeal=finalcoinquantity*singlebuyer.getPrice();
-                            Double profit=(amountDeal*admincurrency.getFees())/100;
-
-                            admincurrency.setCoinInINR(admincurrency.getCoinInINR()+amountDeal);
-                            admincurrency.setProfit(admincurrency.getProfit()+profit);
-                            admincurrency.setInitialSupply(admincurrency.getInitialSupply()-finalcoinquantity);
-                            currencyRepository.save(admincurrency);
-                            TransactionDetails transactionDetails=new TransactionDetails( finalcoinquantity,cointobedeal, OrderStatus.COMPLETED, new Date(), amountDeal, profit, amountDeal, amountDeal+profit, singlebuyer.getUser().getId(),null, "Transaction succesfull");
-                            transactionRepository.save(transactionDetails);
-                            return "Transaction succesfull";
-                        }else{
-                            //deal with whatever coins admin have and make coin less in buyer status and make status pending
-                            Integer finalcoinQuantity=admincurrency.getInitialSupply();
-                            Integer amountdeal=finalcoinQuantity*singlebuyer.getPrice();
-                            Double profit=(amountdeal*admincurrency.getFees())/100;
-                            Double taxincludedamount=amountdeal+profit;
-
-                            //buyer inr waller
-                            Wallet buyerinrwallet=walletRepository.findByCoinNameAndUserId("INR",singlebuyer.getUser().getId());
-                            buyerinrwallet.setShadowBalance(buyerinrwallet.getBalance()-taxincludedamount);
-                            buyerinrwallet.setBalance(buyerinrwallet.getShadowBalance());
-                            walletRepository.save(buyerinrwallet);
-
-                            //buyer crypto wallet
-                            Wallet buyercryptowallet=walletRepository.findByCoinNameAndUserId(cointobedeal,singlebuyer.getUser().getId());
-                            buyercryptowallet.setShadowBalance(buyercryptowallet.getShadowBalance()+finalcoinQuantity);
-                            buyercryptowallet.setBalance(buyercryptowallet.getShadowBalance());
-                            walletRepository.save(buyercryptowallet);
-
-                            singlebuyer.setOrderStatus(OrderStatus.PENDING);
-                            singlebuyer.setCoinQuantity(singlebuyer.getCoinQuantity()-finalcoinQuantity);
-                            orderRepository.save(singlebuyer);
-
-                            //admin currency
-                            admincurrency.setCoinInINR(admincurrency.getCoinInINR()+singlebuyer.getPrice()*finalcoinQuantity);
-                            admincurrency.setProfit(admincurrency.getProfit()+profit);
-                            admincurrency.setInitialSupply(admincurrency.getInitialSupply()-finalcoinQuantity);
-                            currencyRepository.save(admincurrency);
-                            TransactionDetails transactionDetails=new  TransactionDetails(finalcoinQuantity, cointobedeal, OrderStatus.COMPLETED, new Date(), amountdeal, profit, amountdeal, taxincludedamount, singlebuyer.getUser().getId(), null, "Transaction succesfull with admin");
-                            transactionRepository.save(transactionDetails);
-                            return "Transaction succesfull";
-                        }
-                    }else{
-                        counter=1;
-                    }
-                }else{
-                    return "Transaction unsuccesful";
-                }
-            }
-            if(counter==1){
-                return "Transaction unsuccesful";
-            }
+            dealWithAdmin(buyersDetails);
         }
         return "Transaction unsuccesful";
     }
 
+
+    public void buyerQuantityIsLesser( String cointobedeal,Integer finalcoinquantitiy, OrderDetails singleBuyer){
+        Integer buyeruserId=singleBuyer.getUser().getId();
+        Wallet cryptoWallet= walletRepository.findByCoinNameAndUserId(cointobedeal,buyeruserId);
+        cryptoWallet.setShadowBalance(cryptoWallet.getShadowBalance()+finalcoinquantitiy);
+        cryptoWallet.setBalance(cryptoWallet.getShadowBalance());
+        walletRepository.save(cryptoWallet);
+
+        //updating buyer inr wallet
+        Wallet inrWallet=walletRepository.findByCoinNameAndUserId("INR",buyeruserId);
+        inrWallet.setBalance(inrWallet.getShadowBalance());
+        walletRepository.save(inrWallet);
+
+        singleBuyer.setOrderStatus(OrderStatus.COMPLETED);
+        orderRepository.save(singleBuyer);
+    }
+
+
+    public void buyerQuantityIsGreater(String cointobedeal,OrderDetails singleBuyer,Integer finalCoinQuantity,Double fee){
+        Integer buyeruserid=singleBuyer.getUser().getId();
+        Wallet cryptowallet=walletRepository.findByCoinNameAndUserId(cointobedeal,buyeruserid);
+        cryptowallet.setShadowBalance(cryptowallet.getBalance()+finalCoinQuantity);
+        cryptowallet.setBalance(cryptowallet.getShadowBalance());
+        walletRepository.save(cryptowallet);
+        //buyer inr wallet
+        Wallet inrwallet=walletRepository.findByCoinNameAndUserId("INR",buyeruserid);
+        Integer amountdeal=finalCoinQuantity*singleBuyer.getPrice();
+        Double taxondeal=(amountdeal*fee)/100;
+        Double finalamountdeducted=amountdeal+taxondeal;
+
+        inrwallet.setShadowBalance(inrwallet.getBalance()-finalamountdeducted);
+        inrwallet.setBalance(inrwallet.getShadowBalance());
+        walletRepository.save(inrwallet);
+
+        singleBuyer.setOrderStatus(OrderStatus.PENDING);
+        singleBuyer.setCoinQuantity(singleBuyer.getCoinQuantity()-finalCoinQuantity);
+        orderRepository.save(singleBuyer);
+    }
+
+
+    public String dealWithAdmin( List<OrderDetails>  buyersDetails){
+        int counter=0;
+        for(OrderDetails singlebuyer:buyersDetails){
+            Currency admincurrency=currencyRepository.findOneByCoinName(singlebuyer.getCoinName());
+            String cointobedeal=singlebuyer.getCoinName();
+            if(admincurrency != null){
+                if(admincurrency.getPrice() < singlebuyer.getPrice()){
+                    if(admincurrency.getInitialSupply() > singlebuyer.getCoinQuantity()){
+                        //mke a deal and sell the buyer status completed after transaction done
+                        Integer finalcoinquantity=singlebuyer.getCoinQuantity();
+                        //make change of inr and crypto wallet
+                        buyerQuantityIsLesser(cointobedeal,finalcoinquantity,singlebuyer);
+                        //sub currency frm admin wallet and add money and profit in admin coin in  inr
+                        Integer amountDeal=finalcoinquantity*singlebuyer.getPrice();
+                        Double profit=(amountDeal*admincurrency.getFees())/100;
+
+                        setAdminCurrencyValue(amountDeal,profit,finalcoinquantity,"admin",admincurrency);
+                        setValuesInTransactionTable(finalcoinquantity,cointobedeal, OrderStatus.COMPLETED, amountDeal, profit, amountDeal, amountDeal+profit, singlebuyer,null, "Transaction succesfull with admin");
+                        return "Transaction succesfull";
+                    }else{
+                        //deal with whatever coins admin have and make coin less in buyer status and make status pending
+                        Integer finalcoinQuantity=admincurrency.getInitialSupply();
+                        Integer amountdeal=finalcoinQuantity*singlebuyer.getPrice();
+                        Double profit=(amountdeal*admincurrency.getFees())/100;
+                        Double taxincludedamount=amountdeal+profit;
+
+                        //buyer inr waller
+                        buyerQuantityIsGreater(cointobedeal,singlebuyer,finalcoinQuantity,admincurrency.getFees());
+
+                        //admin currency
+                        setAdminCurrencyValue(singlebuyer.getPrice()*finalcoinQuantity,profit,finalcoinQuantity,"admin",admincurrency);
+                        TransactionDetails transactionDetails=new  TransactionDetails(finalcoinQuantity, cointobedeal, OrderStatus.COMPLETED, new Date(), amountdeal, profit, amountdeal, taxincludedamount, singlebuyer.getUser().getId(), null, "Transaction succesfull with admin");
+                        transactionRepository.save(transactionDetails);
+                        return "Transaction succesfull";
+                    }
+                }else{
+                    counter=1;
+                }
+            }else{
+                return "Transaction unsuccesful";
+            }
+        }
+        if(counter==1){
+            return "Transaction unsuccesful";
+        }
+        return "Transaction unsuccesful";
+    }
+
+
+    public void setAdminCurrencyValue(Integer amountdeal,Double taxondeal,Integer finalcoinquantitiy,String dealer,Currency adminCurrency){
+        if(dealer.equalsIgnoreCase("admin")){
+            adminCurrency.setInitialSupply(adminCurrency.getInitialSupply()-finalcoinquantitiy);
+        }
+        adminCurrency.setCoinInINR(adminCurrency.getCoinInINR() + amountdeal);
+        adminCurrency.setProfit(adminCurrency.getProfit()+taxondeal);
+        currencyRepository.save(adminCurrency);
+    }
+
+
+    public void setValuesInTransactionTable(Integer finalcoinquantitiy, String cointobedeal,OrderStatus orderStatus, Integer amountdeal, Double taxondeal,Integer exchangerate
+            , Double grossAmount, OrderDetails singlebuyer,OrderDetails singleSelelr, String description){
+        TransactionDetails transactionDetails=null;
+        if(singleSelelr != null){
+            Integer sellerid= singleSelelr.getUser().getId();
+            transactionDetails=new TransactionDetails(finalcoinquantitiy,cointobedeal,orderStatus,new Date(),amountdeal,taxondeal,exchangerate,grossAmount,singlebuyer.getUser().getId(),sellerid,description);
+        }else{
+            transactionDetails=new TransactionDetails(finalcoinquantitiy,cointobedeal,orderStatus,new Date(),amountdeal,taxondeal,exchangerate,grossAmount,singlebuyer.getUser().getId(),null,description);
+        }
+        transactionRepository.save(transactionDetails);
+    }
 
     public List<TransactionDetails> getallTransactions(){
         return  transactionRepository.findAll();
