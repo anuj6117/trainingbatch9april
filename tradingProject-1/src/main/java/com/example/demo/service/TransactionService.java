@@ -9,7 +9,6 @@ import com.example.demo.utilities.BuyerIncreasingPriceComparator;
 import com.example.demo.utilities.SellerDecreasingPriceComparator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import java.util.*;
 
 @Service
@@ -33,6 +32,7 @@ public class TransactionService {
 
         List<OrderDetails>  buyersDetails=orderRepository.findByOrderTypeAndOrderStatus(OrderType.BUYORDER,OrderStatus.PENDING);
         List<OrderDetails> sellerDetails=orderRepository.findByOrderTypeAndOrderStatus(OrderType.SELLORDER,OrderStatus.PENDING);
+        Integer sellerElements;
 
         if(buyersDetails.isEmpty()==true){ return "no buyer available"; }
 
@@ -48,11 +48,12 @@ public class TransactionService {
             for(OrderDetails singleBuyer:buyersDetails) {
                 // buyer will  not switch to next untill first buyer transaction complete
                 //if first buyer transaction will complete then break from inner loop
-
                 int counter=0;
+                sellerDetails=orderRepository.findByOrderTypeAndOrderStatus(OrderType.SELLORDER,OrderStatus.PENDING);
+                Collections.sort(sellerDetails,new SellerDecreasingPriceComparator()); //sellers list with dec-->inc order
+                sellerElements=sellerDetails.size();
                 for (OrderDetails singleSeller : sellerDetails) {
                     if (singleBuyer.getCoinName().equalsIgnoreCase(singleSeller.getCoinName())) {
-                        counter++;
                         adminCurrency = currencyRepository.findOneByCoinName(singleSeller.getCoinName());
                         Double fee=adminCurrency.getFees();
                         String cointobedeal=singleBuyer.getCoinName();
@@ -73,7 +74,7 @@ public class TransactionService {
                                 Double taxondeal=(amountdeal*fee)/100;
                                 setAdminCurrencyValue( amountdeal, taxondeal, finalcoinquantitiy,"admin",adminCurrency);
                                 setValuesInTransactionTable(finalcoinquantitiy, cointobedeal, OrderStatus.COMPLETED, amountdeal, taxondeal, amountdeal, amountdeal+taxondeal, singleBuyer,null, "Transaction successful with admin");
-                                return "Transaction succesfull";
+                                break;
                             } else {
                                 // deal with whatever coins admins have and update the coins in buyer
                                 System.out.println("admins have lesser no of coins than buyer coins");
@@ -88,7 +89,6 @@ public class TransactionService {
                                 //update admin coinininr and profit and dec its supply
                                 setAdminCurrencyValue(amountdeal,taxondeal,finalcoinquantity,"admin",adminCurrency);
                                 setValuesInTransactionTable(finalcoinquantity, cointobedeal, OrderStatus.COMPLETED, amountdeal, taxondeal, amountdeal, totalamountdedeductedAfterTax, singleBuyer, null, "Transaction succesfull with admin");
-                                return "Transaction succesful";
                             }
                         } else {
                             //deal with seller and with lesser no of coins
@@ -126,7 +126,7 @@ public class TransactionService {
                                 //update admin currency
                                 setAdminCurrencyValue(differnceofamountbetweensellernbuyer,taxondeal,0,"seller",adminCurrency);
                                 setValuesInTransactionTable(finalCoinQuantity, cointobedeal, OrderStatus.COMPLETED, amountdeal, taxondeal, differnceofamountbetweensellernbuyer, amountdeal+taxondeal, singleBuyer,singleSeller, "Transaction succefull");
-                                return "Transaction succesful";
+                                break;
                             } else if(buyerCoinQuantity>sellercoinQuantity) {
                                 System.out.println("buyer have more no of coins than seller");
                                 //deal with whatever coins seller have and update the coins in both buyer and seller
@@ -154,7 +154,6 @@ public class TransactionService {
 
                                 setAdminCurrencyValue(differnceofamountbetweensellernbuyer,taxondeal,0,"seller",adminCurrency);
                                 setValuesInTransactionTable(finalCoinQuantity, cointobedeal, OrderStatus.COMPLETED, amountdeal, taxondeal, differnceofamountbetweensellernbuyer, amountdeal+taxondeal, singleBuyer, singleSeller, "Transaction succesfull");
-                                return "Transaction successful";
                             }
                             else{
                                 Integer finalcoinquantitiy=singleBuyer.getCoinQuantity();
@@ -196,12 +195,13 @@ public class TransactionService {
 
                                 TransactionDetails transactionDetails=new TransactionDetails( finalcoinquantitiy, cointobedeal, OrderStatus.COMPLETED, new Date(), amountdeal, taxondeal, differnceinamount, amountaftertax, singleBuyer.getUser().getId(), singleSeller.getUser().getId(), "Transaction succesfull");
                                 transactionRepository.save(transactionDetails);
-                                return "Transacton succesful";
                             }
                         }
+                    }else{
+                        counter++;
                     }
                 }
-                if(counter==0){
+                if(counter==sellerElements){
                     //deal with admin
                     dealWithAdmin(buyersDetails);
                 }
@@ -210,7 +210,7 @@ public class TransactionService {
             //deal with admin currency and make sure that admin price is less than buyer price
             dealWithAdmin(buyersDetails);
         }
-        return "Transaction unsuccesful";
+        return "Transaction succesful";
     }
 
 
@@ -255,7 +255,16 @@ public class TransactionService {
 
     public String dealWithAdmin( List<OrderDetails>  buyersDetails){
         int counter=0;
-        for(OrderDetails singlebuyer:buyersDetails){
+        List<OrderDetails> pendingBuyers=new ArrayList<>();
+        for(OrderDetails order:buyersDetails){
+            if(order.getOrderStatus().equals(OrderStatus.PENDING)){
+                pendingBuyers.add(order);
+            }
+        }
+        //sort the buyers in decreasing price list
+        Collections.sort(pendingBuyers,new BuyerIncreasingPriceComparator());
+        Collections.reverse(pendingBuyers);
+        for(OrderDetails singlebuyer:pendingBuyers){
             Currency admincurrency=currencyRepository.findOneByCoinName(singlebuyer.getCoinName());
             String cointobedeal=singlebuyer.getCoinName();
             if(admincurrency != null){
@@ -271,7 +280,7 @@ public class TransactionService {
 
                         setAdminCurrencyValue(amountDeal,profit,finalcoinquantity,"admin",admincurrency);
                         setValuesInTransactionTable(finalcoinquantity,cointobedeal, OrderStatus.COMPLETED, amountDeal, profit, amountDeal, amountDeal+profit, singlebuyer,null, "Transaction succesfull with admin");
-                        return "Transaction succesfull";
+                        break;
                     }else{
                         //deal with whatever coins admin have and make coin less in buyer status and make status pending
                         Integer finalcoinQuantity=admincurrency.getInitialSupply();
@@ -286,7 +295,6 @@ public class TransactionService {
                         setAdminCurrencyValue(singlebuyer.getPrice()*finalcoinQuantity,profit,finalcoinQuantity,"admin",admincurrency);
                         TransactionDetails transactionDetails=new  TransactionDetails(finalcoinQuantity, cointobedeal, OrderStatus.COMPLETED, new Date(), amountdeal, profit, amountdeal, taxincludedamount, singlebuyer.getUser().getId(), null, "Transaction succesfull with admin");
                         transactionRepository.save(transactionDetails);
-                        return "Transaction succesfull";
                     }
                 }else{
                     counter=1;
