@@ -13,27 +13,28 @@ public class CurrencyService {
 
     @Autowired
     CurrencyRepository currencyRepository;
-    public String addCurrency(Currency currency) throws Exception{
 
-        if(currency.getCoinName().length()==0)
+    public String addCurrency(Currency currency) throws Exception {
+
+        if (currency.getCoinName().length() == 0)
             return "please enter coin name";
 
-        if(currency.getSymbol().length()==0)
+        if (currency.getSymbol().length() == 0)
             return " coin symbol can not be blank";
 
-        if(currency.getFees()==null | currency.getFees()<0)
-            return  " fee can not be blank or negative";
+        if (currency.getFees() == null | currency.getFees() < 0)
+            return " fee can not be blank or negative";
 
-        if(currency.getInitialSupply()==null | currency.getInitialSupply()<0)
+        if (currency.getInitialSupply() == null | currency.getInitialSupply() < 0)
             return " initialsupply can not be blank or negative";
 
-        if(currency.getPrice()==null | currency.getPrice()<0){
+        if (currency.getPrice() == null | currency.getPrice() < 0) {
             return " price can not be blank or negative";
         }
-        if(currencyRepository.findOneBySymbol(currency.getSymbol())!=null)
+        if (currencyRepository.findOneBySymbol(currency.getSymbol()) != null)
             return "currency symbol already exist";
 
-        if(currencyRepository.findOneByCoinName(currency.getCoinName())!=null)
+        if (currencyRepository.findOneByCoinName(currency.getCoinName()) != null)
             return "coin name already exist";
 
 
@@ -44,72 +45,88 @@ public class CurrencyService {
     }
 
     //getting all currency
-    public List<Currency> getAllCurrency(){
-        return  currencyRepository.findAll();
+    public List<Currency> getAllCurrency() {
+        return currencyRepository.findAll();
     }
 
     //updating currency value
 
-    public String updateCurrency(Currency updatedCurrency) throws  Exception{
+    public String updateCurrency(Currency updatedCurrency) throws Exception {
 
-        Currency existingCurrency=currencyRepository.findOneByCoinId(updatedCurrency.getCoinId());
-        if(existingCurrency!=null) {
-            if (updatedCurrency.getCoinName() == null) {
-                return "coin name can not be null";
-            }
+        if (updatedCurrency.getCoinName() == null) {
+            return "coin name can not be null";
+        }
 
-            Currency currencyName = currencyRepository.findOneByCoinName(updatedCurrency.getCoinName());
-            Currency currencySymbol=currencyRepository.findOneBySymbol(updatedCurrency.getSymbol());
-            if (currencyName != null ) {
-                if (currencyName.getSymbol().equals(updatedCurrency.getSymbol()) && existingCurrency.getCoinType().equals(updatedCurrency.getCoinType())) {
-                    existingCurrency.setInitialSupply(updatedCurrency.getInitialSupply());
-                    existingCurrency.setFees(updatedCurrency.getFees());
-                    existingCurrency.setPrice(updatedCurrency.getPrice());
+        if (updatedCurrency.getSymbol() == null)
+            return "symbol can not be blank";
+
+        if (updatedCurrency.getPrice() == null || updatedCurrency.getPrice() < 0)
+            return "price can't be null or negative";
+
+        if (updatedCurrency.getInitialSupply() == null || updatedCurrency.getInitialSupply() < 0)
+            return "initial suppy can not be null or negative";
+
+        if (updatedCurrency.getFees() == null || updatedCurrency.getFees() < 0)
+            return "fees can not be null or negative";
+
+
+        Currency existingCurrency = currencyRepository.findOneByCoinId(updatedCurrency.getCoinId());
+        if (existingCurrency == null) {
+            return "coinid does not exist";
+        }
+
+        if (existingCurrency.getCoinName().equals(updatedCurrency.getCoinName()) && existingCurrency.getSymbol().equals(updatedCurrency.getSymbol())) {
+            existingCurrency.setProfit(existingCurrency.getProfit());
+            existingCurrency.setCoinInINR(existingCurrency.getCoinInINR());
+            existingCurrency.setPrice(updatedCurrency.getPrice());
+            existingCurrency.setFees(updatedCurrency.getFees());
+            existingCurrency.setInitialSupply(updatedCurrency.getInitialSupply());
+            currencyRepository.save(existingCurrency);
+            return "currency updated succesfully";
+        }
+
+
+        if (existingCurrency != null) {
+            if (!existingCurrency.getCoinName().equals(updatedCurrency.getCoinName())) {
+                if (currencyRepository.findOneByCoinName(updatedCurrency.getCoinName()) == null) {
+                    if (currencyRepository.findOneBySymbol(updatedCurrency.getSymbol()) == null) {
+                        existingCurrency.setCoinName(updatedCurrency.getCoinName());
+                        existingCurrency.setSymbol(updatedCurrency.getSymbol());
+                        existingCurrency.setPrice(updatedCurrency.getPrice());
+                        existingCurrency.setFees(updatedCurrency.getFees());
+                        existingCurrency.setInitialSupply(updatedCurrency.getInitialSupply());
+                        currencyRepository.save(existingCurrency);
+                        return "currency updated succesfully";
+                    } else {
+                        return "symbol already exist";
+                    }
                 } else {
-                    return "coin name and symbol mismatch";
+                    return "coin name already exist";
                 }
             } else {
-                return "No such coin exist";
+                return "coin name already exist";
             }
-
-
-            if(updatedCurrency.getSymbol()==null)
-                return "symbol can not be blank";
-            if(updatedCurrency.getPrice()==null | updatedCurrency.getPrice()<0)
-                return "price can't be null or negative";
-
-            if(updatedCurrency.getInitialSupply()==null | updatedCurrency.getInitialSupply()<0)
-                return "initial suppy can not be null or negative";
-
-            if(updatedCurrency.getFees()==null | updatedCurrency.getFees()<0)
-                return "fees can not be null or negative";
-
-            else{
-                existingCurrency.setCoinInINR(existingCurrency.getCoinInINR());
-                existingCurrency.setProfit(existingCurrency.getProfit());
-                currencyRepository.save(existingCurrency);
-                return "currency succesfully updated";
-            }
-        }else{
-            return  "coin id does not exist";
         }
+        return null;
     }
 
-    public String deleteCurrency(Integer coinId) {
-        if(currencyRepository.findOneByCoinId(coinId)!=null){
+
+    public String deleteCurrency (Integer coinId){
+        if (currencyRepository.findOneByCoinId(coinId) != null) {
             currencyRepository.deleteById(coinId);
             return "succefully deleted currency";
-        }else{
+        } else {
             return "id does not exist to delete";
         }
     }
 
     //getcurrency by id
-    public Currency getCurrencyById(Integer coinId){
-        if(currencyRepository.findOneByCoinId(coinId)!=null){
+    public Currency getCurrencyById (Integer coinId){
+        if (currencyRepository.findOneByCoinId(coinId) != null) {
             return currencyRepository.findOneByCoinId(coinId);
-        }else{
-            return  null;
+        } else {
+            return null;
         }
     }
 }
+

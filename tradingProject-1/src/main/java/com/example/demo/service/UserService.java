@@ -350,9 +350,10 @@ public class UserService {
 							user.getOrderDetailsList().add(orderDetails);
 							orderDetails.setUser(user);
 							orderRepository.save(orderDetails);
-						}else{
-							return "can not perform withdraw on cryptocurrency .Withdraw should be on Fiat";
 						}
+					}
+					if(counter==0){
+						return "user dont have fiat coin type";
 					}
 				}
 			} else {
@@ -391,6 +392,7 @@ public class UserService {
 							orderDetails.setOrderStatus(OrderStatus.APPROVED);
 							orderRepository.save(orderDetails);
 							userRepository.save(user);
+							return "ordered successful";
 						}
 					}
 					if (counter == 0) {
