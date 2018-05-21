@@ -19,6 +19,8 @@ import java.util.List;
 
 
 @RestController
+@RequestMapping("/trading")
+
 public class SignupController {
 
 	@Autowired
@@ -38,7 +40,7 @@ public class SignupController {
 		}
 	}
 
-	@RequestMapping(value="/getallusers")
+	@RequestMapping(value="/getallusers",method = RequestMethod.GET)
 	public List<User> getusers() {
 		List<User> user=null;
 		try {
@@ -51,7 +53,7 @@ public class SignupController {
 	}
 
 
-	@RequestMapping(value="/getbyuserid")
+	@RequestMapping(value="/getbyuserid",method = RequestMethod.GET)
 	public User getUser(@RequestParam("id") Integer id) {
 		User user=userService.getSingleUser(id);
 		if(user!=null)return user;

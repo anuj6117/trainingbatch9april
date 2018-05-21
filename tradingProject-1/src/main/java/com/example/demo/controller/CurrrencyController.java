@@ -12,6 +12,8 @@ import java.util.Date;
 import java.util.List;
 
 @RestController
+@RequestMapping("/trading")
+
 public class CurrrencyController {
 
     @Autowired
@@ -31,7 +33,7 @@ public class CurrrencyController {
         }
     }
 
-    @RequestMapping(value="/getallcurrency")
+    @RequestMapping(value="/getallcurrency",method = RequestMethod.GET)
     public List<Currency> getAllCurrency(){
         return currencyService.getAllCurrency();
     }
@@ -40,7 +42,7 @@ public class CurrrencyController {
     public ResponseFormatter updateCurrency(@RequestBody Currency updatedCurrency){
         try {
             String result = currencyService.updateCurrency(updatedCurrency);
-            if(result.equalsIgnoreCase("currency succesfully updated"))
+            if(result.equalsIgnoreCase("currency updated succesfully"))
                 return 	new ResponseFormatter(result,new Date(),HttpStatus.OK,true,new DataObj("suceess"));
             else
                 return 	new ResponseFormatter(result,new Date(),HttpStatus.INTERNAL_SERVER_ERROR,false,new DataObj("failure"));
@@ -64,7 +66,7 @@ public class CurrrencyController {
         }
     }
 
-    @RequestMapping(value="/getcurrencybyid")
+    @RequestMapping(value="/getcurrencybyid",method = RequestMethod.GET)
     public Currency getCurrencyById(@RequestParam("coinId") Integer coinId){
         Currency currency= currencyService.getCurrencyById(coinId);
         if(currency !=null) return currency;

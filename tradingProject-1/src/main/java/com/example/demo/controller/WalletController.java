@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
+@RequestMapping("/trading")
+
 public class WalletController {
     @Autowired
     WalletService walletService;
@@ -21,7 +23,7 @@ public class WalletController {
         return walletService.addWallet(userWalletDto);
     }
 
-    @RequestMapping(value="/wallethistory")
+    @RequestMapping(value="/wallethistory",method = RequestMethod.GET)
     public List<Wallet> getAllWallets(){
         return walletService.getAllWallets();
     }
