@@ -181,8 +181,6 @@ public class UserService {
 			User user = userRepository.findOneById(updateduser.getId());
 
 			String userName = updateduser.getUserName();
-			System.out.print("jsjfksj ----------------------------------------jdsfjskjfkldjflldsj=---------sdfsdfsd");
-			System.out.println(updateduser.getEmail());
 			if (userName.length() == 0) {
 				return "name can not be blank";
 			}
@@ -195,15 +193,36 @@ public class UserService {
 			if (!new NameValidator().checkNameValidation(userName)) {
 				return "maximum characters allowed for this field is 25";
 			}
+			if(updateduser.getPhoneNumber().length()==0){
+				return "phone number can n ot be blank";
+			}
+			if(updateduser.getEmail().length()==0){
+				return "email can not be blank";
+			}
 			if ((userRepository.findOneByEmail(updateduser.getEmail())) != null) {
 				return "Oops! this Emailid is already registered";
 			}
 			if (!new EmailValidator().checkEmail(updateduser.getEmail())) {
 				return "Enter valid email";
 			}
-			updateduser.setStatus(user.getStatus());
-			updateduser.setDate(user.getDate());
-			userRepository.save(updateduser);
+			if(updateduser.getPassword().length()==0){
+				return "password field can not be blank";
+			}
+			if(!new PasswordValidator().isValid(updateduser.getPassword())){
+				return "invalid password";
+			}
+			if(!new PhoneValidator().checkPhoneNumber(updateduser.getPhoneNumber())){
+				return "Invalid phone number";
+			}
+			if(userRepository.findByPhoneNumber(updateduser.getPhoneNumber()) != null){
+				return "Oops! this number already exist";
+			}
+			user.setCountry(updateduser.getCountry());
+			user.setEmail(updateduser.getEmail());
+			user.setPassword(updateduser.getPassword());
+			user.setPhoneNumber(updateduser.getPhoneNumber());
+			user.setUserName(updateduser.getUserName());
+			userRepository.save(user);
 		} else {
 			return "id does not exist to update";
 		}
