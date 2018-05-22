@@ -28,13 +28,5 @@ public class WalletController {
         return walletService.getAllWallets();
     }
 
-    @RequestMapping(value="/getvalues")
-    public void getValues(){
 
-    }
-
-    @RequestMapping(value = "/testinggit")
-    public void git() {
-
-    }
 }
