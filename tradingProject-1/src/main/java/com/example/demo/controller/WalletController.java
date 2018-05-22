@@ -32,4 +32,9 @@ public class WalletController {
     public void getValues(){
 
     }
+
+    @RequestMapping(value = "/testinggit")
+    public void git() {
+
+    }
 }
