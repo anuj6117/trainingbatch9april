@@ -27,4 +27,9 @@ public class WalletController {
     public List<Wallet> getAllWallets(){
         return walletService.getAllWallets();
     }
+
+    @RequestMapping(value="/getvalues")
+    public void getValues(){
+
+    }
 }
